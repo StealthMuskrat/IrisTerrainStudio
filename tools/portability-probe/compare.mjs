@@ -32,7 +32,8 @@ export function compareProbe(native, workers, methodCount = native?.scope === 'v
       if (!reference || seen.has(row.id)) throw new Error('Duplicate or unknown worker sample');
       seen.add(row.id);
       for (const mode of ['cold', 'warm']) {
-        if (typeof row[mode] !== 'string' || !pattern.test(row[mode])) throw new Error('Invalid worker bit output');
+        if (typeof row[mode] !== 'string' || !pattern.test(row[mode])) throw new Error(
+          `Invalid worker bit output at ${worker.order}/${mode}, id=${row.id}, seed=${JSON.stringify(reference.seed)}: ${String(row[mode]).slice(0,600)}`);
         const values = row[mode].split(':');
         reference.bits.split(':').forEach((bits, method) => {
           if (values[method] !== bits) {

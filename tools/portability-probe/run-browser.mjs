@@ -106,6 +106,7 @@ try {
   const evaluation = await command('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }, sessionId);
   if (evaluation.exceptionDetails) throw new Error(JSON.stringify(evaluation.exceptionDetails));
   const workers = evaluation.result.value;
+  await writeFile(new URL('browser.json', target), JSON.stringify(workers));
   const comparison = compareProbe(native, workers.noise);
   const rngComparison = compareProbe(rngNative, workers.rng);
   const report = {

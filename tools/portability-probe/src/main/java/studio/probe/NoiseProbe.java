@@ -41,7 +41,11 @@ public final class NoiseProbe {
 
     @JSExport
     public static String sampleRng(String seed, boolean textSeed, String signature) {
-        return RngProbe.sample(seed, textSeed, signature);
+        try {
+            return RngProbe.sample(seed, textSeed, signature);
+        } catch (Throwable error) {
+            return "ERROR: " + error;
+        }
     }
 
     public static void main(String[] args) {
