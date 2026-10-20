@@ -3,6 +3,24 @@ gradle.beforeProject { project ->
     project.tasks.withType(org.gradle.api.tasks.testing.Test).configureEach { enabled = false }
 }
 gradle.projectsEvaluated {
+    def nativeProject = gradle.rootProject.findProject(':native:v26_3_R1')
+    if (nativeProject != null) {
+        nativeProject.tasks.register('studioRegistryInputs') {
+            dependsOn(nativeProject.tasks.named('paperweightUserdevSetup'))
+            doLast {
+                def files = nativeProject.sourceSets.main.compileClasspath.files.findAll { it.exists() }
+                def output = new File(System.getenv('IRIS_REGISTRY_INPUTS'))
+                output.parentFile.mkdirs()
+                output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+                    formatVersion: 1, scope: 'minecraft-26.3-development-registry-export',
+                    volmLibCandidate: 'e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac',
+                    releaseMatchVerified: false,
+                    classpath: files.collect { file -> [path: file.absolutePath,
+                        sha256: file.isFile() ? HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(file.bytes)) : null] }
+                ]))
+            }
+        }
+    }
     def core = gradle.rootProject.findProject(':core')
     if (core == null) return
     // The browser compiler consumes classes, not the Bukkit plugin's dynamic

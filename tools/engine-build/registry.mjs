@@ -1,0 +1,15 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {spawn} from 'node:child_process';
+const root=fileURLToPath(new URL('../../',import.meta.url)),local=path.join(root,'.local-tools'),java=process.env.IRIS_JAVA_HOME||path.join(local,'jdk-25.0.4.1+1'),temporary=path.join(local,'tmp');
+await fs.mkdir(temporary,{recursive:true});const working=path.join(local,'registry-run');await fs.mkdir(working,{recursive:true});
+const env={...process.env,JAVA_HOME:java,PATH:path.join(java,'bin')+path.delimiter+process.env.PATH,LD_LIBRARY_PATH:[path.join(java,'lib'),path.join(java,'lib/server'),process.env.LD_LIBRARY_PATH].filter(Boolean).join(path.delimiter),GRADLE_USER_HOME:path.join(local,'gradle-cache'),IRIS_REGISTRY_INPUTS:path.join(local,'registry-inputs.json')};
+let network=' -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts';const proxyValue=process.env.HTTPS_PROXY||process.env.HTTP_PROXY;if(proxyValue){const proxy=new URL(proxyValue),port=proxy.port||80;network+=` -Dhttps.proxyHost=${proxy.hostname} -Dhttps.proxyPort=${port} -Dhttp.proxyHost=${proxy.hostname} -Dhttp.proxyPort=${port}`;}env.JAVA_OPTS=`-Djava.io.tmpdir=${temporary}${network}`;
+async function run(command,args,name,cwd=root){const filename=path.join(local,name),log=await fs.open(filename,'w');try{await new Promise((resolve,reject)=>{const child=spawn(command,args,{cwd,env,stdio:['ignore',log.fd,log.fd]});child.on('error',reject);child.on('exit',code=>code===0?resolve():reject(new Error(`${path.basename(command)} exited ${code}; see ${filename}`)));});}catch(error){console.error((await fs.readFile(filename,'utf8')).split('\n').slice(-20).join('\n'));throw error;}finally{await log.close();}}
+console.log('Exporting native Minecraft 26.3 registry data locally. No test tasks are invoked.');
+await run(process.env.IRIS_GRADLE_BIN||path.join(local,'gradle-9.5.1/bin/gradle'),['-p','.upstream/Iris','--no-daemon','--console=plain','--max-workers=2','--init-script',path.join(root,'tools/engine-build/export-inputs.gradle'),`-Dorg.gradle.jvmargs=-Xmx2g -Djava.io.tmpdir=${temporary}${network}`,`-PlocalVolmLibDirectory=${path.join(root,'.upstream/VolmLib')}`,':VolmLib:native:v26_3_R1:studioRegistryInputs'],'registry-build.log');
+const inputs=JSON.parse(await fs.readFile(env.IRIS_REGISTRY_INPUTS,'utf8')),classpath=inputs.classpath.map(entry=>entry.path).join(path.delimiter);
+await run(path.join(java,'bin/java'),['-Xmx2g',`-Djava.io.tmpdir=${temporary}`,'-classpath',classpath,'net.minecraft.data.Main','--reports','--output',path.join(root,'.reference-output/minecraft-26.3-registry')],'registry-export.log',working);
+await run('python3',[path.join(root,'tools/engine-build/registry-normalize.py')],'registry-package.log');
+console.log((await fs.readFile(path.join(local,'registry-package.log'),'utf8')).trim());

@@ -18,6 +18,7 @@
     "parity:compare": "node tools/reference-tests/compare.mjs",
     "reference:preflight": "node tools/reference-tests/preflight.mjs",
     "release:check": "node tools/check-project.mjs --release",
-    "engine:setup": "node tools/engine-build/setup.mjs"
+    "engine:setup": "node tools/engine-build/setup.mjs",
+    "engine:registry": "node tools/engine-build/registry.mjs"
   }
 }

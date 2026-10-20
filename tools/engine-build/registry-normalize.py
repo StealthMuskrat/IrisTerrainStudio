@@ -1,0 +1,42 @@
+"""Package genuine Minecraft data-generator reports for browser registry lookup."""
+from pathlib import Path
+import hashlib
+import json
+import sys
+import zipfile
+
+root=Path(__file__).resolve().parents[2]
+inputs=json.loads((root/'.local-tools/registry-inputs.json').read_text())
+reports=root/'.reference-output/minecraft-26.3-registry/reports'
+output=root/'apps/web/engine/registry-generated'
+output.mkdir(parents=True,exist_ok=True)
+server=next(Path(entry['path']) for entry in inputs['classpath'] if Path(entry['path']).name=='mappedServerJar.jar')
+with zipfile.ZipFile(server) as archive:
+    version=json.loads(archive.read('version.json'))
+if version['id']!='26.3' or not version['stable']:
+    raise ValueError('Registry source does not identify stable Minecraft 26.3')
+blocks=json.loads((reports/'blocks.json').read_text())
+ids=set()
+for name,block in blocks.items():
+    states=block['states']
+    if sum(bool(state.get('default')) for state in states)!=1:
+        raise ValueError('Registry has no unique default state for '+name)
+    for state in states:
+        if state['id'] in ids:
+            raise ValueError('Duplicate native state id')
+        ids.add(state['id'])
+        properties=state.get('properties',{})
+        if properties.keys()!=block.get('properties',{}).keys():
+            raise ValueError('Incomplete state properties for '+name)
+        for key,value in properties.items():
+            if value not in block['properties'][key]:
+                raise ValueError('State value outside native property domain')
+files={}
+for name in ('blocks.json','registries.json'):
+    source=(reports/name).read_bytes()
+    encoded=(json.dumps(json.loads(source),ensure_ascii=False,separators=(',',':'))+'\n').encode()
+    (output/name).write_bytes(encoded)
+    files[name]={'sha256':hashlib.sha256(encoded).hexdigest(),'sourceReportSha256':hashlib.sha256(source).hexdigest(),'bytes':len(encoded)}
+manifest={'formatVersion':1,'scope':'minecraft-development-registry-export','minecraft':version,'source':'Pinned VolmLib v26_3_R1 Paper development bundle; Minecraft data-generator --reports','volmLibCandidate':inputs['volmLibCandidate'],'releaseMatchVerified':False,'registryParityVerified':False,'sourceServerJarSha256':hashlib.sha256(server.read_bytes()).hexdigest(),'blocks':len(blocks),'states':len(ids),'files':files,'limitations':['Native occlusion shapes, rendering layers, fluid geometry and biome tint data are not exported by these data reports.','Native report state ids are build-specific; full block identifiers and properties remain authoritative.']}
+(output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print(f'Packaged {len(blocks)} native blocks and {len(ids)} block states for Minecraft {version["id"]}.')

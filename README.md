@@ -27,10 +27,11 @@ Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager and s
 
 ```sh
 npm run engine:setup
+npm run engine:registry
 npm run engine:build
 ```
 
-The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
+The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
 
 ## Native noise laboratory
 

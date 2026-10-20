@@ -26,7 +26,7 @@ The complete Iris browser engine is not connected. Region/biome selection, terra
 
 The current voxel renderer is not a finished Minecraft rendering implementation: rotated UV-lock adaptation, exact weighted-model selection, fluids, authoritative biome tint inputs, complete Minecraft transparency behavior and remaining client rendering behavior still need implementation and verification. Missing or unsupported model behavior produces diagnostics rather than invented geometry. A scalar noise field is never converted to fake terrain.
 
-Pinned Iris schemas and the Minecraft registry still need real exports. Creating an empty folder or blank JSON does not create a validated Iris dimension pack. Native resources can be duplicated as templates; existing resources are structurally edited while unknown data is preserved.
+A local Minecraft 26.3 development registry export now contains 1,286 blocks and 35,723 states, with source-JAR and report hashes. A native reflection inventory covers 126 Iris configuration types and supplies inspector descriptions and enums. Full native SchemaBuilder exports and production registry qualification remain outstanding. Creating an empty folder or blank JSON does not create a validated Iris dimension pack. Native resources can be duplicated as templates; existing resources are structurally edited while unknown data is preserved.
 
 F8thful and a matching authorized vanilla asset baseline have not been supplied. Users can load their resource packs locally; they remain in that browser. Full parity, application verification and release checks remain required before calling the program finished.
 
@@ -38,6 +38,7 @@ npm run dev
 npm run build
 npm run engine:install -- /path/to/noise-rng-evidence.zip
 npm run engine:setup
+npm run engine:registry
 npm run engine:build
 # Reuse the captured native classes while changing only the browser bridge:
 npm run engine:build -- --reuse-native-inputs

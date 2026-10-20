@@ -16,12 +16,14 @@ As of 2026-10-20. **Local application implementation is in progress. Native/brow
 - Compiled the actual Iris core and executed both unchanged native noise/seed suites: 14 tests pass; the pinned all-style checksum fails. Captured Gradle/dependency inputs and a fail-closed native audit report. [Evidence](evidence/native-reference-audit-2026-10-20.json).
 - Executed six native noise isolation profiles: 186 styles and 16,740 samples each; 83,700 comparisons against current agree exactly and all profiles reproduce the failing checksum. The tested noise/interpolation source changes and interpreter/JIT mode do not explain this run. [Diagnostics](research/NATIVE_CHECKSUM_DIAGNOSTICS.md).
 
+A [local native-input export](evidence/native-input-development-2026-10-20.json) records actual Minecraft registry data and Iris field annotations. Production readiness remains unchanged.
+
 A local pack-management server, browser editor, lossless JSON document model, WebGPU field visualizer, optional native-noise laboratory and resource-pack/voxel rendering modules are now implemented. [Implementation notes](DEVELOPMENT.md) describe behavior, the focused editing check and remaining work. The full Iris terrain engine is not connected. The actual Iris NoiseStyle/CNG, configured-style, SeedManager, noise-layer and composite-generator bridge now compiles locally to Wasm GC; a focused native Java/Node export check passes. [Local development evidence](evidence/local-engine-development-2026-10-20.json) records its limited scope. The primitive module uses real, unmodified VolmLib source on a separate candidate revision; production compatibility remains unproved.
 
 ## Remaining engine and application work
 
 1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15): establish the original fixture, full dependency and platform inputs, then qualify the dependency/build identity and release provenance. The tested noise source history and interpreter/JIT diagnostics reproduce identical outputs; the reference remains unqualified.
-2. Export the Minecraft 26.3 block registry and Iris schemas with content hashes. Choose a real minimal in-scope pack and hash its content.
+2. Qualify the newly exported Minecraft 26.3 development registry (1,286 blocks / 35,723 states) and export full native Iris schemas. The 126-type native field inventory provides editor guidance. Choose a real minimal in-scope pack and hash its content.
 3. Build a Java 25 reference harness and capture upstream noise results, including raw IEEE-754 bits. Preserve existing upstream noise/seed tests.
 4. Continue the compiled Iris NoiseStyle/CNG, configured-style, SeedManager and standalone-generator bridge into browser pack resources and dimension selection; qualify complete coverage after implementation.
 5. Extend native resource loading, regions, biomes, terrain heights and minimal voxel chunks. Browser image maps, expressions, persistent float caches and platform registry adapters remain outstanding.

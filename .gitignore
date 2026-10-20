@@ -16,3 +16,5 @@ __pycache__/
 /apps/web/engine/generated/
 /.local-tools/
 /apps/web/engine/iris-generated/
+
+/apps/web/engine/registry-generated/
