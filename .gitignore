@@ -1,0 +1,12 @@
+node_modules/
+.upstream/
+.local-assets/
+.reference-output/
+coverage/
+dist/
+*.log
+*.jar
+*.zip
+.env
+.env.*
+!.env.example

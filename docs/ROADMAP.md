@@ -1,0 +1,38 @@
+# Roadmap and gates
+
+No calendar estimates are assigned before browser feasibility is demonstrated. Phase numbers and completion gates follow the implementation specification.
+
+| Phase | Result | Completion gate | Current state |
+| --- | --- | --- | --- |
+| 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | In progress; source audit complete, toolchain/dependency/registry/browser blockers open |
+| 1 | Supported-path generation proof of concept | Exact native/browser noise, seeds, regions, biomes, heights, and minimal voxel output for a stated real-pack subset | Blocked by Phase 0 |
+| 2 | Native pack editor and safe server IO | Schema-driven editing, references, unknown-field preservation, undo/redo, atomic saves, backups and conflict tests | Not started |
+| 3 | WebGPU 2D visualizer | Real engine outputs, navigation, revision-aware workers and invalidation; exact parity remains passing | Not started |
+| 4 | WebGPU 3D voxel renderer | Actual voxel chunks, correct block models/states, clipping and inspection; measured rendering behavior | Not started |
+| 5 | Remaining in-scope terrain systems | Feature-by-feature native/browser regression evidence across volumetric, cave, subterrain, river, material, ore, decorator, object and tree systems | Not started |
+| 6 | Resource-pack system | Authorized F8thful/default baseline, local ZIP imports, dependency resolution and non-cube models; switches preserve voxels | Not started |
+| 7 | Performance, deployment and release | Measured budgets, full applicable parity/security/integration tests, Docker/persistence checks and documentation | Not started |
+
+## Working process
+
+Track acceptance criteria in GitHub issues. Link each implementation PR to its phase and prerequisite issues. Keep PRs small enough to review against the pinned source. Record test commands, failed/unavailable checks, and remaining blockers. Close issues only when the acceptance evidence is present. Native execution and browser execution are separate results; foundation CI does not certify either.
+
+The first work queue is dependency provenance, schema/registry capture, native reference export, and the TeaVM worker experiment. UI polish, deployment packaging, and new features must not displace that critical path. Asset provenance work can proceed independently without bundling assets.
+
+## GitHub work queue
+
+| Priority | Work | Tracking |
+| --- | --- | --- |
+| P0 | freeze VolmLib provenance and reproduce the Java 25 reference build | [#2](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/2) |
+| P0 | export pinned schemas, registry, and native noise reference captures | [#3](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/3) |
+| P0 | execute real Iris noise in a TeaVM browser worker and prove scalar parity | [#4](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/4) |
+| P1 | establish authorized F8thful and vanilla asset inputs | [#5](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/5) |
+| P0 | extend proved generation path through seeds, biomes, heights, and voxels | [#6](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/6) |
+| P1 | implement native pack editing and safe pack-management server | [#7](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/7) |
+| P1 | implement WebGPU 2D views over authoritative browser outputs | [#8](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/8) |
+| P1 | implement WebGPU voxel rendering and block inspection | [#9](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/9) |
+| P1 | implement remaining terrain systems with per-feature exact parity | [#10](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/10) |
+| P1 | implement local resource-pack loading and accurate model resolution | [#11](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/11) |
+| P1 | measure performance, verify deployment, and enforce evidence-based release gates | [#12](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/12) |
+
+Dependencies are recorded in each issue. Start with [#2](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/2); [#4](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/4) is the first browser-execution proof gate. No future monitoring or recurring task has been scheduled.
