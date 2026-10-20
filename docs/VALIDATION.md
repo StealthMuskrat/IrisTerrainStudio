@@ -43,3 +43,11 @@ The evidence ZIP was also downloaded and verified against its published SHA-256 
 - Missing JDK operations were handled by an explicit six-call compiler compatibility adapter without changing RNG/M source. Native Java independently validated 257 UUID cases and 65,560 UTF-8 cases; the malformed-surrogate browser failure remains in the regression inputs and now passes.
 
 The native build audit's successful workflow completion means its diagnostics were recorded, **not that native regressions passed**. The report's `nativeRegressionsPassed` field and `--require-pass` command enforce that distinction. Full Iris/browser terrain parity and release qualification remain blocked by the unresolved native checksum and other recorded prerequisites.
+
+## Executed native noise isolation, 2026-10-20
+
+Foundation validation: **22 Node tests and 13 Python report/capture tests pass**. The additional tests reject truncated, reordered, corrupted, duplicate and missing-style captures, including missing whole styles in both compared files.
+
+The [verified six-profile evidence](evidence/native-cng-isolation-2026-10-20.json) records 16,740 samples per profile, 100,440 captured outputs total and 83,700 comparisons against current with zero differences. Three exact historical CNG sources, the full changed fixture-era noise/interpolation source cohort and current-source interpreter/JIT modes all produce `3659164368724912644`, reproducing the unchanged upstream assertion failure. The archive digest and every capture pair were independently checked locally. [Investigation and limits](research/NATIVE_CHECKSUM_DIAGNOSTICS.md).
+
+No qualified native reference or Iris-level browser parity is established. The source-cohort profile is a controlled overlay against the current dependency graph, not a complete historical build.

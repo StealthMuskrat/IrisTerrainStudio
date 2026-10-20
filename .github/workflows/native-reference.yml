@@ -36,6 +36,7 @@ jobs:
           repository: VolmitSoftware/VolmLib
           ref: e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
           path: .upstream/VolmLib
+          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
@@ -86,6 +87,36 @@ jobs:
           native_exit=${PIPESTATUS[0]}
           printf '%s\n' "$native_exit" > "$GITHUB_WORKSPACE/.reference-output/native-reference/gradle-exit-code.txt"
           exit "$native_exit"
+      - name: Capture per-style CNG history isolation
+        if: always() && steps.native.outcome != 'skipped'
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          manifest=Path('tools/native-reference/cng-history.json')
+          lock=json.loads(manifest.read_text())
+          out=Path('.reference-output/native-reference/cng-isolation')
+          out.mkdir(parents=True,exist_ok=True)
+          (out/'manifest.json').write_bytes(manifest.read_bytes())
+          for profile in lock['profiles']:
+            for item in [{'path':lock['path'],'sha256':profile['sha256']}, *profile.get('extraSources',[])]:
+              data=subprocess.check_output(['git','-C','.upstream/VolmLib','show',profile['commit']+':'+item['path']])
+              assert hashlib.sha256(data).hexdigest()==item['sha256'], (profile['id'],item['path'])
+              source=out/profile['id']/'src'/Path(item['path']).name
+              source.parent.mkdir(parents=True,exist_ok=True)
+              source.write_bytes(data)
+          PY
+          cd .upstream/Iris
+          "$GITHUB_WORKSPACE/.reference-output/gradle-9.5.1/bin/gradle" --no-daemon --max-workers=2 --console=plain \
+            --init-script "$GITHUB_WORKSPACE/tools/native-reference/record-inputs.gradle" \
+            --init-script "$GITHUB_WORKSPACE/tools/native-reference/capture.gradle" \
+            -Dorg.gradle.jvmargs='-Xmx3g -Dfile.encoding=UTF-8' \
+            "-PlocalVolmLibDirectory=$GITHUB_WORKSPACE/.upstream/VolmLib" \
+            :core:captureStudioCngHistory \
+            2>&1 | tee "$GITHUB_WORKSPACE/.reference-output/native-reference/cng-isolation/gradle.log"
+          cd "$GITHUB_WORKSPACE"
+          python3 tools/native-reference/compare-cng.py --captures .reference-output/native-reference/cng-isolation
       - name: Report native readiness explicitly
         if: always()
         run: |

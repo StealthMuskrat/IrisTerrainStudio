@@ -33,3 +33,15 @@ python3 -m unittest discover -s tools/native-reference -p 'test_*.py'
 ```
 
 An empty/missing XML directory, skipped tests, mismatched JUnit counters, malformed output, absent required suites or a failed Gradle invocation cannot yield a passing native result. All generated inputs/results stay in ignored work directories; normal application runtime never uses a native generation server.
+
+## Checksum investigation
+
+The audit also runs `:core:captureStudioCngHistory` through `capture.gradle`. `NoiseStyleCapture.java` invokes the unchanged upstream test's private `samples` method and seed field, preserving its enum, seed and coordinate order. It captures all three dimensions as hexadecimal IEEE-754 values and executes the original checksum assertion again. No assertion or upstream source is edited.
+
+`cng-history.json` pins exact CNG sources at the seed-cohesion fixture, parent-invalidation and unsigned-memo changes, alongside the current candidate. CI obtains those files with `git show` and verifies SHA-256 before compiling. Each historical class set goes into a separate output directory, first on a fresh JVM's classpath. For the CNG-only profiles, **only CNG is exchanged**; Iris and every other dependency remain the current candidate. These are controlled isolation experiments, not full historical builds or supported legacy engines. A matching checksum would identify a sufficient source difference, not establish shipping provenance.
+
+`compare-cng.py` verifies the pinned 186-style enum order, seed order, duplicate/coordinate coverage, bit encoding and the checksum recomputed from samples before reporting per-style difference counts and the first differing sample. Run it against the artifact's `cng-isolation/` directory. The comparison can complete while the native qualification remains blocked; inspect `report.json` separately. Capture/compile/validation failures fail their workflow step.
+
+An additional current-source `-Xint` JVM profile checks whether interpreter/JIT math behavior changes this fixture in the same environment. It is a runtime diagnostic, not an algorithm replacement or a production runtime recommendation.
+
+The separate `fixture_noise` profile exchanges all five noise/math/interpolation sources that differ between the fixture-era commit and the current candidate: CNG, FractalBillowSimplexNoise, InterpolatedNoise, IrisInterpolation and NoiseBoundsSampleCache2D. Each exact file has its own SHA-256 pin. It checks the remaining noise-source changes together; other dependencies are still current, so this is not a complete historical build. The older Billow class contains only the Java path and has no native backend API.
