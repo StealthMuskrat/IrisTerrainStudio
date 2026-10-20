@@ -26,12 +26,13 @@ jobs:
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: temurin
-          java-version: '25.0.4.1+1'
+          java-version: '25.0.4+1'
       - name: Verify candidate source and record toolchain
         run: |
           test "$(git -C .upstream/VolmLib rev-parse HEAD)" = e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
           node tools/portability-probe/prepare.mjs .upstream/VolmLib
           java --version > tools/portability-probe/target/provenance/java-version.txt 2>&1
+          grep -F 'build 25.0.4.1+1-LTS' tools/portability-probe/target/provenance/java-version.txt
           mvn --version > tools/portability-probe/target/provenance/maven-version.txt
           google-chrome --version > tools/portability-probe/target/provenance/chrome-version.txt
       - name: Compile the verified source for the JVM
@@ -50,6 +51,7 @@ jobs:
           find "$HOME/.m2/repository" -type f -name '*.jar' -print0 | sort -z | xargs -0 -r sha256sum > tools/portability-probe/target/provenance/resolved-jars.sha256
           cp tools/portability-probe/src/main/java/studio/probe/NoiseProbe.java tools/portability-probe/target/provenance/
           cp tools/portability-probe/pom.xml tools/portability-probe/target/provenance/
+          cp tools/portability-probe/licenses/TeaVM-*.txt tools/portability-probe/target/provenance/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:

@@ -31,3 +31,5 @@ node tools/portability-probe/run-browser.mjs
 The workflow retains captures, the report, exact downloaded sources and license, harness/POM, Java/Maven/Chrome versions, native class digests and resolved Maven JAR digests. No pack/game assets are involved. Downloaded source, generated code, compiler artifacts and captures remain ignored under `target/` and `.upstream/`; the project does not vendor upstream implementation code.
 
 The experimental harness is GPL-3.0-or-later. Preserve the included upstream notices/license with compiled outputs and their source. This does not select a license for unrelated original project components.
+
+`licenses/TeaVM-LICENSE.txt` and `licenses/TeaVM-NOTICE.txt` are preserved from TeaVM commit `e87d452e4bd70c77b9e19314a46c3d6971c148b6` and accompany experiment artifacts. The Java setup coordinate is `25.0.4+1`; the workflow additionally requires the JVM's reported runtime build to be exactly `25.0.4.1+1-LTS`.
