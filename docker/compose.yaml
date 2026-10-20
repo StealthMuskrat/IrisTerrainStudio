@@ -1,0 +1,14 @@
+services:
+  iris-terrain-studio:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "127.0.0.1:4783:4783"
+    environment:
+      IRIS_STUDIO_TOKEN: ${IRIS_STUDIO_TOKEN:?Set IRIS_STUDIO_TOKEN to at least 32 random characters}
+    volumes:
+      - iris-packs:/data/packs
+    restart: unless-stopped
+volumes:
+  iris-packs:

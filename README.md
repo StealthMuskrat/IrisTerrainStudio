@@ -1,10 +1,37 @@
 # Iris Terrain Studio
 
-A planned self-hosted editor for real Iris dimension packs, with generation entirely in browser workers and WebGPU visualization.
+A self-hosted browser workspace for real Iris dimension packs. The server manages pack files; generation modules execute in browser workers and visualization uses WebGPU.
 
-**Status: Phase 0, feasibility investigation. There is no terrain engine, editor, renderer, or deployable application yet. Iris terrain parity remains unproved.**
+**Development build:** the local pack editor and file server are implemented. Full Iris terrain generation and release qualification remain incomplete. No approximate terrain is substituted.
 
-The [implementation specification](docs/SPECIFICATION.md) is the project brief. Work proceeds through its gates: prove browser execution and deterministic parity before building the editor.
+The [implementation specification](docs/SPECIFICATION.md) is the project brief. The user directed sustained local implementation, repository checkpoints, focused checks as needed and comprehensive verification after the program is developed. Automatic GitHub test runs are disabled; workflows remain manually available.
+
+## Run the editor
+
+Use Node.js 24. No npm install is needed.
+
+```sh
+cp .env.example .env
+npm start
+```
+
+Open `http://127.0.0.1:4783`. Place native Iris pack folders under `packs/`, set `IRIS_PACKS_DIR` to their parent directory, or import a pack ZIP/folder in the editor. The editor preserves unrelated resources and unknown JSON fields. Numeric tokens are retained exactly, including Java long values.
+
+Implemented editing includes resource search, field/JSON views, undo/redo, local draft recovery, duplicate/rename/delete operations, version-checked saves, backups and restore, and complete pack ZIP export. New resources can copy an existing native resource as a template. Empty JSON is not presented as an engine-valid Iris template.
+
+`npm run build` creates a standalone development copy in `dist/`. Docker configuration is in `docker/`; remote binding requires a server access token of at least 32 characters. Use HTTPS when accessing WebGPU remotely.
+
+## Native noise laboratory
+
+The optional noise laboratory uses the previously executed, hash-verified TeaVM Wasm GC module. Install its recorded evidence archive locally:
+
+```sh
+npm run engine:install -- /path/to/noise-rng-evidence.zip
+```
+
+Select a **Noise lab** field and generate. These are actual VolmLib primitive samples, not dimension terrain. Wasm, runtime and archive hashes are verified during installation; corresponding source and license material are installed alongside the module. Generated engine assets, packs and browser-local resource packs are not committed.
+
+Pack terrain modes remain explicitly unavailable until the complete browser engine is connected and qualified. F8thful and matching vanilla assets must be supplied locally. See [development implementation notes](docs/DEVELOPMENT.md).
 
 ## Verified target
 
@@ -24,7 +51,7 @@ The [portability experiment](tools/portability-probe/README.md) now passes **195
 
 The actual Iris core build runs, but its unchanged noise/seed suites pass **14 of 15 tests**: the all-style checksum differs from the pinned expectation. The [native audit](docs/research/NATIVE_RNG_AUDIT.md) records the mismatch. The candidate is not a qualified release reference, and Iris seed-manager, browser noise-wrapper and terrain parity remain unproved.
 
-## Run the foundation checks
+## Verification tools
 
 Use Node.js 24. No npm dependencies or install step are needed.
 
@@ -35,7 +62,7 @@ npm run reference:preflight
 npm run release:check
 ```
 
-`reference:preflight` and `release:check` deliberately exit nonzero while prerequisites are unresolved. Passing tooling tests is not a generation parity result. The CI foundation check runs only `check` and `test`; it is not a release approval.
+`reference:preflight` and `release:check` deliberately exit nonzero while prerequisites are unresolved. Passing tooling tests is not a generation parity result. Workflows are manual during development; full application verification is reserved for the completed program.
 
 To compare two genuine captures once exporters exist:
 
@@ -57,4 +84,4 @@ The comparator checks provenance, complete capture bounds, exact floating-point 
 - [Third-party code and asset provenance](docs/THIRD_PARTY.md)
 - [Contribution workflow](CONTRIBUTING.md)
 
-No F8thful archive or Minecraft assets were supplied with the specification. Asset validation and redistribution review remain open. No third-party engine code or game assets are bundled in this foundation.
+No F8thful archive or Minecraft assets were supplied with the specification. Asset validation and redistribution review remain open. The optional noise-module installer preserves the compiled module's corresponding source and notices. No proprietary game assets are committed.

@@ -1,6 +1,6 @@
 # Third-party code and assets
 
-This initial foundation includes original project tooling and the user-supplied specification. It does not include copied Iris/VolmLib implementation code, a compiled engine, F8thful, vanilla textures/models, or Minecraft binaries.
+The repository includes original application/tooling code and the user-supplied specification. No F8thful, vanilla textures/models or Minecraft binaries are committed. An optional local installer provisions the previously verified experimental VolmLib/TeaVM noise module into an ignored generated directory, together with corresponding source, licenses and notices. A development distribution containing that module must retain those materials. The complete Iris terrain engine is not yet integrated.
 
 | Input | Observed provenance | Current handling | Before distribution |
 | --- | --- | --- | --- |

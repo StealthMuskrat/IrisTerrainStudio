@@ -1,11 +1,15 @@
 {
   "name": "iris-terrain-studio",
-  "version": "0.0.0",
+  "version": "0.1.0-dev",
   "private": true,
   "type": "module",
-  "description": "Phase 0 research and deterministic parity tooling for Iris Terrain Studio",
+  "description": "Local Iris pack editor, browser generation workspace and WebGPU visualizers",
   "engines": { "node": ">=24 <25" },
   "scripts": {
+    "start": "node --env-file-if-exists=.env apps/server/index.mjs",
+    "dev": "node --env-file-if-exists=.env --watch apps/server/index.mjs",
+    "build": "node tools/build-app.mjs",
+    "engine:install": "node tools/install-noise-engine.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "node tools/check-project.mjs",
     "parity:compare": "node tools/reference-tests/compare.mjs",

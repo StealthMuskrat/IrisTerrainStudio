@@ -1,6 +1,6 @@
 # Project status
 
-As of 2026-10-20. Current phase: **0 — research and technical feasibility**. Gate: **open; blocked**.
+As of 2026-10-20. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, focused checks only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
 
 ## Implemented
 
@@ -16,9 +16,9 @@ As of 2026-10-20. Current phase: **0 — research and technical feasibility**. G
 - Compiled the actual Iris core and executed both unchanged native noise/seed suites: 14 tests pass; the pinned all-style checksum fails. Captured Gradle/dependency inputs and a fail-closed native audit report. [Evidence](evidence/native-reference-audit-2026-10-20.json).
 - Executed six native noise isolation profiles: 186 styles and 16,740 samples each; 83,700 comparisons against current agree exactly and all profiles reproduce the failing checksum. The tested noise/interpolation source changes and interpreter/JIT mode do not explain this run. [Diagnostics](research/NATIVE_CHECKSUM_DIAGNOSTICS.md).
 
-No application generation feature is implemented. The executable primitive experiment uses real, unmodified VolmLib source on an explicitly separate candidate revision; production compatibility remains unproved. Comparator unit tests still use synthetic data and remain distinct from the executed Java/browser experiment.
+A local pack-management server, browser editor, lossless JSON document model, WebGPU field visualizer, optional native-noise laboratory and resource-pack/voxel rendering modules are now implemented. [Implementation notes](DEVELOPMENT.md) describe behavior, the focused editing check and remaining work. The full Iris terrain engine is not connected. The primitive module uses real, unmodified VolmLib source on a separate candidate revision; production compatibility remains unproved.
 
-## Immediate work, in order
+## Remaining engine and application work
 
 1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15): establish the original fixture, full dependency and platform inputs, then qualify the dependency/build identity and release provenance. The tested noise source history and interpreter/JIT diagnostics reproduce identical outputs; the reference remains unqualified.
 2. Export the Minecraft 26.3 block registry and Iris schemas with content hashes. Choose a real minimal in-scope pack and hash its content.

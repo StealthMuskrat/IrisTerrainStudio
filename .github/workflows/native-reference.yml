@@ -1,17 +1,7 @@
 name: Native reference build audit
 
 on:
-  pull_request:
-    paths:
-      - '.github/workflows/native-reference.yml'
-      - 'tools/native-reference/**'
-      - 'upstream.lock.json'
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/native-reference.yml'
-      - 'tools/native-reference/**'
-      - 'upstream.lock.json'
+  workflow_dispatch:
 
 permissions:
   contents: read

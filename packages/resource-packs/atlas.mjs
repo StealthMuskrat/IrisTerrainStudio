@@ -1,0 +1,19 @@
+export class TextureAtlas {
+  constructor(device, size = 2048) { this.device = device; this.size = Math.min(size, device.limits.maxTextureDimension2D); this.canvas = new OffscreenCanvas(this.size,this.size); this.context = this.canvas.getContext('2d', { willReadFrequently: true }); this.context.imageSmoothingEnabled = false; this.entries = new Map(); this.x = 1; this.y = 1; this.rowHeight = 0; this.texture = device.createTexture({ size: [this.size,this.size,1], format: 'rgba8unorm', usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT }); this.sampler = device.createSampler({ magFilter: 'nearest', minFilter: 'nearest', mipmapFilter: 'nearest' }); }
+  async add(name, stack) {
+    if (this.entries.has(name)) return this.entries.get(name);
+    const { bitmap, animation } = await stack.bitmap(name), frameWidth = animation?.width || bitmap.width, frameHeight = animation?.height || (animation ? Math.min(bitmap.width,bitmap.height) : bitmap.height);
+    if (frameWidth < 1 || frameHeight < 1 || bitmap.width % frameWidth || bitmap.height % frameHeight || animation?.interpolate) throw new Error(`Texture ${name} has an unsupported animation layout or interpolation mode.`);
+    if (frameWidth + 2 > this.size || frameHeight + 2 > this.size) throw new Error(`Texture ${name} exceeds atlas dimensions.`);
+    if (this.x + frameWidth + 1 > this.size) { this.x = 1; this.y += this.rowHeight; this.rowHeight = 0; }
+    if (this.y + frameHeight + 1 > this.size) throw new Error('The texture atlas is full. Use a smaller resource pack.');
+    const frameCount = bitmap.width / frameWidth * (bitmap.height / frameHeight), frames = animation?.frames?.length ? animation.frames.map(f => typeof f === 'number' ? { index:f,time:animation.frametime || 1 } : { index:f.index,time:f.time || animation.frametime || 1 }) : Array.from({length:frameCount},(_,i)=>({ index:i,time:animation?.frametime || 1 }));
+    if (frames.some(f => !Number.isInteger(f.index) || f.index < 0 || f.index >= frameCount || !Number.isInteger(f.time) || f.time < 1)) throw new Error(`Texture ${name} has invalid animation frames.`);
+    const entry = { name, bitmap, x:this.x, y:this.y, width:frameWidth, height:frameHeight, frames, frame:0, cycle:frames.reduce((sum,f)=>sum+f.time,0)*50, uv:[this.x/this.size,this.y/this.size,(this.x+frameWidth)/this.size,(this.y+frameHeight)/this.size] };
+    this.entries.set(name,entry); this.x += frameWidth + 2; this.rowHeight = Math.max(this.rowHeight,frameHeight+2); this.upload(entry,entry.frames[0].index);
+    const pixels = this.context.getImageData(entry.x,entry.y,entry.width,entry.height).data; let transparent=false, partial=false; for(let i=3;i<pixels.length;i+=4){if(pixels[i]<255)transparent=true;if(pixels[i]>0&&pixels[i]<255)partial=true;} entry.transparency = partial ? 'blend' : transparent ? 'cutout' : 'opaque'; return entry;
+  }
+  upload(entry,index) { const columns=entry.bitmap.width/entry.width, sx=index%columns*entry.width,sy=Math.floor(index/columns)*entry.height; this.context.clearRect(entry.x,entry.y,entry.width,entry.height);this.context.drawImage(entry.bitmap,sx,sy,entry.width,entry.height,entry.x,entry.y,entry.width,entry.height);this.device.queue.copyExternalImageToTexture({source:this.canvas,origin:[entry.x,entry.y]},{texture:this.texture,origin:[entry.x,entry.y]},[entry.width,entry.height]); }
+  update(time) { for(const entry of this.entries.values()) if(entry.frames.length>1){let tick=time%entry.cycle, index=0;for(let i=0;i<entry.frames.length;i++){tick-=entry.frames[i].time*50;if(tick<0){index=i;break;}}if(index!==entry.frame){entry.frame=index;this.upload(entry,entry.frames[index].index);}} }
+  dispose(){this.texture.destroy();this.entries.clear();this.canvas.width=1;this.canvas.height=1;}
+}
