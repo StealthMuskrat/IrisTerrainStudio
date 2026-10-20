@@ -2,6 +2,10 @@
 package studio.probe;
 
 import java.util.UUID;
+import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /** Missing JDK UUID-v3 operations for TeaVM, checked independently against the native JDK. */
 public final class UuidCompat {
@@ -37,6 +41,24 @@ public final class UuidCompat {
 
     public static long getMostSignificantBits(UUID uuid) { return half(uuid, 0); }
     public static long getLeastSignificantBits(UUID uuid) { return half(uuid, 16); }
+
+    public static byte[] utf8(String value, Charset charset) {
+        if (!charset.equals(StandardCharsets.UTF_8)) throw new IllegalArgumentException("Only the pinned RNG UTF-8 call is supported");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        for (int i = 0; i < value.length(); i++) {
+            int c = value.charAt(i);
+            if (c < 0x80) out.write(c);
+            else if (c < 0x800) { out.write(0xc0 | (c >>> 6)); out.write(0x80 | (c & 63)); }
+            else if (c >= 0xd800 && c <= 0xdbff && i + 1 < value.length() &&
+                    value.charAt(i + 1) >= 0xdc00 && value.charAt(i + 1) <= 0xdfff) {
+                int codepoint = 0x10000 + ((c - 0xd800) << 10) + value.charAt(++i) - 0xdc00;
+                out.write(0xf0 | (codepoint >>> 18)); out.write(0x80 | ((codepoint >>> 12) & 63));
+                out.write(0x80 | ((codepoint >>> 6) & 63)); out.write(0x80 | (codepoint & 63));
+            } else if (c >= 0xd800 && c <= 0xdfff) out.write('?');
+            else { out.write(0xe0 | (c >>> 12)); out.write(0x80 | ((c >>> 6) & 63)); out.write(0x80 | (c & 63)); }
+        }
+        return out.toByteArray();
+    }
 
     private static long half(UUID uuid, int start) {
         String value = uuid.toString().replace("-", "");
@@ -99,5 +121,17 @@ public final class UuidCompat {
             }
         }
         System.err.println("UUID compatibility: 257 independent native JDK cases passed");
+        for (int c = 0; c <= 0xffff; c++) verifyEncoding(String.valueOf((char) c));
+        for (int high : new int[] {0xd800, 0xd801, 0xdbfe, 0xdbff}) {
+            for (int low : new int[] {0xdc00, 0xdc01, 0xdffe, 0xdfff}) verifyEncoding(new String(new char[] {(char) high, (char) low}));
+        }
+        for (String value : new String[] {"", "Iris World Generator", "洞窟🌲", "é", "e\u0301", "line\n\u0000seed", "\uD800x\uDC00", "\uD800\uD800"}) verifyEncoding(value);
+        System.err.println("UTF-8 compatibility: 65560 independent native JDK cases passed");
+    }
+
+    private static void verifyEncoding(String value) {
+        if (!Arrays.equals(value.getBytes(StandardCharsets.UTF_8), utf8(value, StandardCharsets.UTF_8))) {
+            throw new IllegalStateException("UTF-8 compatibility mismatch");
+        }
     }
 }
