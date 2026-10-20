@@ -5,6 +5,7 @@ import art.arcane.iris.generation.mantle.MantleWriter;
 import art.arcane.volmlib.util.mantle.runtime.*;
 import art.arcane.volmlib.util.matter.*;
 import art.arcane.volmlib.util.matter.slices.CavernMatter;
+import art.arcane.volmlib.util.matter.slices.MarkerMatter;
 import art.arcane.volmlib.util.io.CountingDataInputStream;
 import art.arcane.volmlib.util.function.Consumer4;
 import java.io.DataOutputStream;
@@ -30,17 +31,19 @@ public final class WorkerCaveStorage {
     public static Mantle<Matter> getMantle(MantleWriter unused){requireActive();return null;}
     public static int getWorldHeight(Mantle<?> unused){requireActive();return height;}
     public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requireActive();if(x!=chunkX||z!=chunkZ)throw studio.engine.UnsupportedPlatform.unavailable("Cave access outside the prepared chunk");return active;}
+    public static void setMarker(Mantle<?> ignored,int x,int y,int z,Object value){requireActive();if(!(value instanceof MatterMarker marker))throw unsupported();if(y<0||y>=height)return;MantleChunk<Matter> chunk=existingChunk(ignored,x>>4,z>>4);if(chunk==null)throw studio.engine.UnsupportedPlatform.unavailable("Cave marker writes outside the prepared window");chunk.getOrCreate(y>>4).<MatterMarker>slice(MatterMarker.class).set(x&15,y&15,z&15,marker);}
+    public static String markerEntries()throws java.io.IOException{requireActive();var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){writer.beginArray();for(int y=0;y<height;y++)for(int z=0;z<16;z++)for(int x=0;x<16;x++){MatterMarker marker=active.get(x,y,z,MatterMarker.class);if(marker!=null){writer.beginArray();writer.value(x);writer.value(y);writer.value(z);writer.value(marker.getTag());writer.endArray();}}writer.endArray();}return output.toString();}
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
     public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
     private static void requireActive(){if(active==null)throw new IllegalStateException("No worker cave storage");}
-    private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Non-cavern Matter storage or persistence");}
+    private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Non-cavern/marker Matter storage or persistence");}
     private static final class CavernSection implements Matter {
         private final MatterHeader header=new MatterHeader();
         private final Map<Class<?>,MatterSlice<?>> slices=new HashMap<>();
         public MatterHeader getHeader(){return header;}
         public int getWidth(){return 16;}public int getHeight(){return 16;}public int getDepth(){return 16;}
         public Map<Class<?>,MatterSlice<?>> getSliceMap(){return slices;}
-        @SuppressWarnings("unchecked") public <T>MatterSlice<T> createSlice(Class<T> type,Matter matter){if(type!=MatterCavern.class)throw unsupported();return (MatterSlice<T>)new CavernMatter(16,16,16);}
+        @SuppressWarnings("unchecked") public <T>MatterSlice<T> createSlice(Class<T> type,Matter matter){if(type==MatterCavern.class)return (MatterSlice<T>)new CavernMatter(16,16,16);if(type==MatterMarker.class)return (MatterSlice<T>)new MarkerMatter(16,16,16);throw unsupported();}
     }
     private static final class CavernAdapter implements MantleDataAdapter<Matter> {
         public Matter createSection(){return new CavernSection();}
@@ -48,7 +51,7 @@ public final class WorkerCaveStorage {
         public void writeSection(Matter section,DataOutputStream output){throw unsupported();}
         public void trimSection(Matter section){section.trimSlices();}
         public boolean isSectionEmpty(Matter section){return section.isEmpty();}
-        public Class<?> classifyValue(Object value){if(value instanceof MatterCavern)return MatterCavern.class;throw unsupported();}
+        public Class<?> classifyValue(Object value){if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;throw unsupported();}
         public <T>void set(Matter section,int x,int y,int z,Class<?> type,T value){section.<T>slice(type).set(x,y,z,value);}
         public <T>void remove(Matter section,int x,int y,int z,Class<T> type){MatterSlice<T> slice=section.getSlice(type);if(slice!=null)slice.set(x,y,z,null);}
         public <T>T get(Matter section,int x,int y,int z,Class<T> type){MatterSlice<T> slice=section.getSlice(type);return slice==null?null:slice.get(x,y,z);}

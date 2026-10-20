@@ -30,19 +30,20 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }if(mantle!=1||chunks!=2||heights!=1||subterrain!=1)throw new IllegalStateException("Pinned carving component storage calls changed: "+mantle+","+chunks+","+heights+","+subterrain);
             }
             if(name.equals("art.arcane.iris.generation.stage.IrisCarveModifier")){
-                int hostCalls=0,lookups=0;
+                int hostCalls=0,decorationCalls=0,lookups=0;
                 for(MethodHolder method:cls.getMethods()){
                     if(method.getName().equals("existingMantleChunk")){
                         Program p=new Program();p.createVariable();Variable mantle=p.createVariable(),x=p.createVariable(),z=p.createVariable(),result=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage","existingChunk",ValueType.object("art.arcane.volmlib.util.mantle.runtime.Mantle"),ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.volmlib.util.mantle.runtime.MantleChunk")));call.setArguments(mantle,x,z);call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);lookups++;continue;
                     }
-                    if(!method.getName().equals("onModify"))continue;Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                    if(!java.util.Set.of("onModify","decorateNaturalCaves").contains(method.getName()))continue;Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
                         MethodReference ref=call.getMethod();String target=null;
                         if(ref.getClassName().equals("art.arcane.iris.generation.runtime.Engine")&&ref.getName().equals("getMantle"))target="engineMantle";
                         else if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle"))target="getMantle";
                         else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="useChunk";
-                        if(target!=null){redirectHostCall(call,target);hostCalls++;}
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("set")&&method.getName().equals("decorateNaturalCaves"))target="setMarker";
+                        if(target!=null){redirectHostCall(call,target);if(method.getName().equals("onModify"))hostCalls++;else decorationCalls++;}
                     }
-                }if(hostCalls!=3||lookups!=1)throw new IllegalStateException("Pinned native cave modifier storage calls changed");
+                }if(hostCalls!=3||decorationCalls!=5||lookups!=1)throw new IllegalStateException("Pinned native cave modifier storage calls changed");
             }
 
             if(java.util.Set.of("art.arcane.volmlib.util.hunk.bits.HashPalette","art.arcane.volmlib.util.hunk.bits.LinearPalette").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
@@ -127,6 +128,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 if(instruction instanceof ConstructInstruction construct&&construct.getType().equals("java.lang.ref.WeakReference"))construct.setType("studio.engine.terrain.NullableWeakReference");
                 if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.ref.WeakReference")&&call.getMethod().getName().equals("<init>"))call.setMethod(new MethodReference("studio.engine.terrain.NullableWeakReference",call.getMethod().getDescriptor()));
             }}
+            if(name.equals("art.arcane.iris.platform.bukkit.BukkitBlockState"))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Bukkit block-state handles in a browser worker");
             if(name.equals("art.arcane.iris.pack.loading.IrisData"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("customBiomeResourceKey"))unavailable(method,"Custom biome registry contributions and epoch contracts");
             if(name.equals("art.arcane.iris.configuration.IrisSettings"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("read"))unavailable(method,"Server settings filesystem IO; install worker settings first");
             if(name.equals("art.arcane.iris.generation.runtime.IrisComplex")){

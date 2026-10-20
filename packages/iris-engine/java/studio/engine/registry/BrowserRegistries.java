@@ -18,8 +18,8 @@ public final class BrowserRegistries implements PlatformRegistries {
         BlockType(String name,int state,String[] order,boolean leaf){this.name=name;this.defaultState=state;this.order=order;this.leaf=leaf;}
     }
     static final class State {
-        final int id,type,flags;final String key;final String[] values;
-        State(int id,int type,String key,int flags,String[] values){this.id=id;this.type=type;this.key=key;this.flags=flags;this.values=values;}
+        final int id,type,flags,faces;final String key;final String[] values;
+        State(int id,int type,String key,int flags,int faces,String[] values){this.id=id;this.type=type;this.key=key;this.flags=flags;this.faces=faces;this.values=values;}
     }
     private final List<BlockType> types=new ArrayList<>();
     private final List<State> states=new ArrayList<>();
@@ -35,13 +35,14 @@ public final class BrowserRegistries implements PlatformRegistries {
 
     public static BrowserRegistries read(String text)throws IOException{
         if(text==null||text.length()>16*1024*1024)throw new IllegalArgumentException("Native registry input exceeds its text budget");
-        BrowserRegistries result=new BrowserRegistries();List<List<NativeBlockProperty>> groups=new ArrayList<>();Map<String,Integer> assignments=new LinkedHashMap<>();
+        BrowserRegistries result=new BrowserRegistries();List<List<NativeBlockProperty>> groups=new ArrayList<>();Map<String,Integer> assignments=new LinkedHashMap<>();boolean faceLayout=false;
         try(JsonReader reader=new JsonReader(new java.io.StringReader(text))){
             reader.beginObject();while(reader.hasNext())switch(reader.nextName()){
-                case"formatVersion"->{if(reader.nextInt()!=1)throw new IllegalArgumentException("Unsupported native registry version");}
+                case"formatVersion"->{if(reader.nextInt()!=2)throw new IllegalArgumentException("Unsupported native registry version");}
                 case"scope"->{if(!reader.nextString().equals("native-browser-registry-input"))throw new IllegalArgumentException("Invalid native registry scope");}
                 case"minecraft"->{if(!reader.nextString().equals("26.3"))throw new IllegalArgumentException("Native registry version mismatch");}
                 case"flagNames"->{if(!Arrays.equals(strings(reader),FLAGS))throw new IllegalArgumentException("Native predicate layout mismatch");}
+                case"faceNames"->{faceLayout=true;if(!Arrays.equals(strings(reader),new String[]{"north","east","south","west","up","down"}))throw new IllegalArgumentException("Native full-face support layout mismatch");}
                 case"types"->{reader.beginArray();while(reader.hasNext()){
                     if(result.types.size()>=4096)throw new IllegalArgumentException("Too many native block types");
                     String name=null;int state=-1;String[] order=null;boolean leaf=false;reader.beginObject();while(reader.hasNext())switch(reader.nextName()){case"name"->name=reader.nextString();case"defaultState"->state=reader.nextInt();case"order"->order=strings(reader);case"leaf"->leaf=reader.nextBoolean();default->reader.skipValue();}reader.endObject();
@@ -49,9 +50,9 @@ public final class BrowserRegistries implements PlatformRegistries {
                 }reader.endArray();}
                 case"states"->{reader.beginArray();while(reader.hasNext()){
                     if(result.states.size()>=131072)throw new IllegalArgumentException("Too many native block states");
-                    int id=-1,type=-1,flags=-1;String key=null;String[] values=null;reader.beginObject();while(reader.hasNext())switch(reader.nextName()){case"id"->id=reader.nextInt();case"type"->type=reader.nextInt();case"flags"->flags=reader.nextInt();case"key"->key=reader.nextString();case"values"->values=strings(reader);default->reader.skipValue();}reader.endObject();
-                    if(id!=result.states.size()||type<0||type>=result.types.size()||key==null||values==null||flags<0||flags>=(1<<FLAGS.length)||values.length!=result.types.get(type).order.length)throw new IllegalArgumentException("Invalid native state identity");
-                    State value=new State(id,type,key,flags,values);if(!result.canonical(type,values).equals(key)||result.byKey.put(key,value)!=null)throw new IllegalArgumentException("Invalid native canonical state key");result.states.add(value);
+                    int id=-1,type=-1,flags=-1,faces=-1;String key=null;String[] values=null;reader.beginObject();while(reader.hasNext())switch(reader.nextName()){case"id"->id=reader.nextInt();case"type"->type=reader.nextInt();case"flags"->flags=reader.nextInt();case"faces"->faces=reader.nextInt();case"key"->key=reader.nextString();case"values"->values=strings(reader);default->reader.skipValue();}reader.endObject();
+                    if(id!=result.states.size()||type<0||type>=result.types.size()||key==null||values==null||faces<0||faces>63||flags<0||flags>=(1<<FLAGS.length)||values.length!=result.types.get(type).order.length)throw new IllegalArgumentException("Invalid native state identity");
+                    State value=new State(id,type,key,flags,faces,values);if(!result.canonical(type,values).equals(key)||result.byKey.put(key,value)!=null)throw new IllegalArgumentException("Invalid native canonical state key");result.states.add(value);
                 }reader.endArray();}
                 case"placementBits"->result.placement=Base64.getDecoder().decode(reader.nextString());
                 case"toDeepSlate"->stringMap(reader,result.deep);
@@ -63,6 +64,7 @@ public final class BrowserRegistries implements PlatformRegistries {
                 default->reader.skipValue();
             }reader.endObject();if(reader.peek()!=JsonToken.END_DOCUMENT)throw new IllegalArgumentException("Trailing native registry data");
         }
+        if(!faceLayout)throw new IllegalArgumentException("Native face-support metadata is missing; rebuild the registry");
         if(result.types.isEmpty()||result.states.isEmpty()||result.placement==null||result.placement.length!=(result.types.size()*result.types.size()+7)/8||assignments.size()!=result.types.size())throw new IllegalArgumentException("Incomplete native registry coverage");
         for(BlockType type:result.types){
             if(type.defaultState<0||type.defaultState>=result.states.size()||result.states.get(type.defaultState).type!=result.typeIds.get(type.name))throw new IllegalArgumentException("Invalid native default state");
@@ -89,6 +91,8 @@ public final class BrowserRegistries implements PlatformRegistries {
     }
     private static boolean validKey(String key){return key!=null&&key.matches("[a-z0-9_.-]+:[a-z0-9_./-]+");}
     String canonical(int type,String[] values){BlockType block=types.get(type);StringBuilder key=new StringBuilder(block.name);if(values.length>0){key.append('[');for(int i=0;i<values.length;i++){if(i>0)key.append(',');key.append(block.order[i]).append('=').append(values[i]);}key.append(']');}return key.toString();}
+    public int faceSupport(String key){return ((BrowserBlockState)decodeBlockState(key)).state.faces;}
+    public boolean isFaceSturdy(NativeBlockState state,int face){if(!(state instanceof BrowserBlockState value)||value.owner!=this||face<0||face>=6)throw new IllegalArgumentException("Face support requires an owned native state");return (value.state.faces&(1<<face))!=0;}
     BrowserBlockState intern(State state,Map<String,String> parsed){return interned.computeIfAbsent(state.id,id->new BrowserBlockState(this,state,parsed));}
     BrowserBlockState direct(State state){return intern(state,null);}
     private BrowserBlockState strict(String text){

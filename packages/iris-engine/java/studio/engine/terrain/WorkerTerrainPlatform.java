@@ -20,6 +20,9 @@ public final class WorkerTerrainPlatform {
             public void msg(String message){System.err.println(message);}
             public void reportError(Throwable error){error.printStackTrace();}
         });
+        if(!(registry instanceof studio.engine.registry.BrowserRegistries owned))throw new IllegalArgumentException("Worker decorators require the native registry");
+        var decorators=new WorkerDecoratorHooks(owned);
+        art.arcane.iris.generation.decoration.DecoratorPlatformHooks.bind(decorators,decorators);
         IrisSettings.settings=new IrisSettings();
         IrisServices.register(PreservationRegistry.class,new PreservationRegistry(){
             public void register(Thread value){throw new UnsupportedOperationException("Worker terrain cannot register server threads");}

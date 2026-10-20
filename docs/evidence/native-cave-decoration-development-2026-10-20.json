@@ -1,0 +1,366 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-overworld-cave-decoration-stage-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "64298b4fed996115833d447748720786503f7db6ea0c24cc315056905fba3e3b",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "260e9d7993158eeff923c491baed94b43e1d255f6ccdc679e92f3da234e55d51",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "9532814fb7c77132b665b833dcf85300ac05b69b7594320f92645dba920683b2",
+  "focusedCheck": {
+    "command": "node tools/checks/native-cave-decoration-link.mjs",
+    "result": "pass",
+    "chunks": 32,
+    "exactBlockStateComparisons": 2228224,
+    "exactMarkerComparisons": 814,
+    "worldSeeds": [
+      "0",
+      "9223372036854775807"
+    ],
+    "chunkOrigins": [
+      [
+        0,
+        0
+      ],
+      [
+        -16,
+        32
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "none",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 317,
+            "sha256": "c2b727253ee4a9b1c31eeff14ebcc423c4f6e328a3584f483e68bab4d1d803d4"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "floor",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 394,
+            "sha256": "4413bc271dbd9e1223c1bc2fdca06d04940daa0470337ff727a3030028ae70ab"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "ceiling",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 410,
+            "sha256": "5e363032ef06d4c8366954ecfeaedd2f5da633016ced8c5460f8463a58b317af"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "stacked",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 542,
+            "sha256": "c39d551c34c72ce43aebaeee37705997d62398b7b7f4319d824e8a2193b506cb"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "dripstone",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 627,
+            "sha256": "e497d5816d35a63b4d2530aa7bf4a528ecd9dc3c5fd47b662a1f8369dfac7081"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "two-block",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 246,
+            "sha256": "95d7207cec60b0c0befd1685f8703b99500eb508607010114c31f4660c5d66ee"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 392,
+            "sha256": "a983875ab8b661ed79e93d51b7f460d3ba31dfe8e8e1618f092e483f03f83d9d"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "wet",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 247,
+            "sha256": "76aab28eba1257d7bad92a5bd6d25db85ff212d89f6eb1db9f8998ed174271a8"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 555,
+            "sha256": "364db2a8680fa73cf5aff084acb678e3f3e6d4b98bd4651965cb7c10f9f4327f"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "negative",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 248,
+            "sha256": "cff40a3f82c29566b872838ce2eabb2c156e38d98fbdb6c93964f3a45eaa53a1"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 488,
+            "sha256": "826f0d4bfbd32328294f285b1d39b300b3666e36bee79641810eca5c8ca7c244"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "statesExercised": [
+      "minecraft:air",
+      "minecraft:amethyst_block",
+      "minecraft:bedrock",
+      "minecraft:cave_air",
+      "minecraft:glowstone",
+      "minecraft:pointed_dripstone[thickness=base,vertical_direction=down,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=base,vertical_direction=up,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=frustum,vertical_direction=down,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=frustum,vertical_direction=up,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=middle,vertical_direction=down,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=middle,vertical_direction=up,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=tip,vertical_direction=up,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=tip_merge,vertical_direction=down,waterlogged=false]",
+      "minecraft:pointed_dripstone[thickness=tip_merge,vertical_direction=up,waterlogged=false]",
+      "minecraft:red_mushroom",
+      "minecraft:stone",
+      "minecraft:tall_grass[half=lower]",
+      "minecraft:tall_grass[half=upper]",
+      "minecraft:water[level=0]"
+    ],
+    "guards": [
+      "No-decorator cells agree exactly with preceding floating stage while cave markers remain",
+      "Both cave marker tags, stacked blocks, dripstone thickness states and both tall-grass halves occur",
+      "Old registry format, invalid face mask and wrong face layout refuse",
+      "All native face masks match the Wasm API",
+      "Selected vines, wrong mode and unaligned origins refuse; valid requests recover"
+    ],
+    "reference": "Java 25 executes actual five-chunk carving, terrain painting, carve/post/floating modification and IrisCarveModifier.decorateNaturalCaves in native Overworld order. Original MarkerMatter and ModdedDecoratorHooks/NativeBlockFaces provide reference behavior. No saved world region is loaded or written."
+  },
+  "workerCheck": {
+    "command": "node tools/checks/native-cave-decoration-worker.mjs",
+    "result": "pass",
+    "runtime": "Actual worker script and Wasm hosted in Node, not a browser",
+    "volumeCells": 98304,
+    "minWorldY": -64,
+    "origin": [
+      16,
+      -64,
+      -16
+    ],
+    "clientCacheBytes": 393216,
+    "checks": [
+      "Exact native cells and canonical palette",
+      "Cave-decoration/floating/post/Overworld flags and marker count",
+      "World-Y bedrock and mushroom decoration inspection",
+      "Cave-air properties",
+      "No-profile path and wrong-mode refusal",
+      "Cancellation suppresses result",
+      "Typed client transfer/cache reuse with timeout"
+    ]
+  },
+  "harnesses": {
+    "tools/checks/native-cave-decoration-link.mjs": "9a38cfc0af26d654b36fb3f74f100ace91e02f5bd22b780e2924a68735667e41",
+    "tools/checks/NativeTerrainLinkCheck.java": "8a20a123e67054ededf54e3d92df053c675e30330a9e90c5677bc4493e79b8df",
+    "tools/checks/native-cave-decoration-worker.mjs": "ace5cd8434250ea069338ed28b8aef8eb65f20319eed12e543331faa272ef92e",
+    "apps/web/workers/iris-worker.js": "747dea7f2a8008bfc41525b222a387bd8af5feba133270b09bc162701cfaaec1",
+    "packages/iris-engine/client.mjs": "e37af3ee47eb3529a1bfd0d50ac62a7a974706798019a231178b480dc65cec06",
+    "tools/engine-build/NativeStateExport.java": "f14bd3b68360ad57dfa37d06f0e00c8a0e7e21df3e1c71448ed1e10e809ea958",
+    "tools/engine-build/registry-normalize.py": "212aad76db475fabd3ddf743ebacfc9719cb61588464079bad1d9cf237b19797"
+  },
+  "boundaries": [
+    "Original cave zone, biome, decoration, stacking, speleothem, waterlogging and marker algorithms remain native",
+    "Ephemeral original CavernMatter/MarkerMatter in a guarded five-chunk window",
+    "Native full-face support masks and unchanged EngineMantle fluid-height defaults",
+    "Vine neighbor/matter correction and Bukkit handles refuse explicitly",
+    "Browser registry format 2 requires complete support metadata; rebuild engine and registry together",
+    "Restored native source preparation succeeded with serial workers after a parallel failure; Gradle/Maven shell launchers run through bash"
+  ],
+  "limitations": [
+    "Incomplete Overworld prefix; complete biome volume, content/deposit insertion, surface/floating decorators, perfection/custom stages and mode/Mantle scheduling remain unfinished",
+    "Vine correction and complete decorator-option coverage are unqualified",
+    "Subterrain, hydrology, transitions, transforms, upper/stacked dimensions and buffet remain unsupported",
+    "Custom registries, images, expressions, persistent float caches and binary resources remain unconnected",
+    "Browser/GPU/GC and final verification, native checksum mismatch, dependency provenance and authorized assets remain release gates",
+    "No comprehensive application suite or GitHub workflow ran",
+    "The restored generated mapped-server JAR has a different byte hash than the earlier export; rebuilt-archive versus dependency-change cause is unverified. New comparisons are tied only to the recorded current digest."
+  ],
+  "registry": {
+    "formatVersion": 2,
+    "states": 35723,
+    "fullFaceBooleanValues": 214338,
+    "faceNames": [
+      "north",
+      "east",
+      "south",
+      "west",
+      "up",
+      "down"
+    ],
+    "faceMaskCounts": {
+      "0": 19946,
+      "1": 744,
+      "2": 744,
+      "4": 744,
+      "8": 744,
+      "16": 2146,
+      "17": 194,
+      "18": 194,
+      "19": 388,
+      "20": 194,
+      "22": 388,
+      "24": 194,
+      "25": 388,
+      "28": 388,
+      "32": 2935,
+      "33": 194,
+      "34": 194,
+      "35": 388,
+      "36": 194,
+      "38": 388,
+      "40": 194,
+      "41": 388,
+      "44": 388,
+      "47": 9,
+      "63": 3055
+    },
+    "browserInputSha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "nativePredicatesSha256": "4249d5bcfa45375a70eb31f22f9431d1ff15df2ea40239d0ae325a2a7222444d",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "releaseMatchVerified": false,
+    "registryParityVerified": false,
+    "source": "Actual BlockState.isFaceSturdy(EmptyBlockGetter.INSTANCE, BlockPos.ZERO, direction, SupportType.FULL), the native NativeBlockFaces context",
+    "previousDevelopmentServerJarSha256": "841f58fe2a961c24705720054db0cc671bc7760db1e0e6992ed463b19cb8aa89",
+    "rebuildByteIdentityVerified": false
+  }
+}

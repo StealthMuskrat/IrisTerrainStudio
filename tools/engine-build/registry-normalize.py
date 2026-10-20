@@ -61,6 +61,8 @@ if set(platform['entityCategories'])!=set(platform['keys']['entities']) or not s
     raise ValueError('Native platform type metadata is incomplete')
 # A compact bridge format, derived only from the checked native reports. Seeds
 # and pack configuration never pass through this transformation.
+if predicates.get('faceNames')!=['north','east','south','west','up','down'] or len(predicates.get('faceSupport',[]))!=len(ids) or any(type(value) is not int or value<0 or value>63 for value in predicates['faceSupport']):
+    raise ValueError('Native full-face support coverage is missing or invalid')
 types=predicates['blockTypes']
 wire_types=[]
 wire_states=[None]*len(ids)
@@ -72,8 +74,8 @@ for type_id,name in enumerate(types):
     for state in block['states']:
         properties=state.get('properties',{})
         canonical=name+('['+','.join(key+'='+properties[key] for key in order)+']' if order else '')
-        wire_states[state['id']]={'id':state['id'],'type':type_id,'key':canonical,'flags':predicates['stateFlags'][state['id']],'values':[properties[key] for key in order]}
-wire={'formatVersion':1,'scope':'native-browser-registry-input','minecraft':'26.3','flagNames':predicates['flagNames'],'types':wire_types,'states':wire_states,'placementBits':predicates['placementBits'],'toDeepSlate':predicates['toDeepSlate'],'toNormalOre':predicates['toNormalOre'],'keys':platform['keys'],'propertyGroups':platform['propertyGroups'],'blockPropertyGroups':platform['blockPropertyGroups'],'entityCategories':platform['entityCategories']}
+        wire_states[state['id']]={'id':state['id'],'type':type_id,'key':canonical,'flags':predicates['stateFlags'][state['id']],'faces':predicates['faceSupport'][state['id']],'values':[properties[key] for key in order]}
+wire={'formatVersion':2,'scope':'native-browser-registry-input','minecraft':'26.3','flagNames':predicates['flagNames'],'faceNames':predicates['faceNames'],'types':wire_types,'states':wire_states,'placementBits':predicates['placementBits'],'toDeepSlate':predicates['toDeepSlate'],'toNormalOre':predicates['toNormalOre'],'keys':platform['keys'],'propertyGroups':platform['propertyGroups'],'blockPropertyGroups':platform['blockPropertyGroups'],'entityCategories':platform['entityCategories']}
 encoded=(json.dumps(wire,separators=(',',':'))+'\n').encode()
 (output/'browser-registry.json').write_bytes(encoded)
 files['browser-registry.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}

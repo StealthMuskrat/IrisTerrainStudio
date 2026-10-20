@@ -19,6 +19,10 @@ public final class TerrainCarvingComponent {
         return paint(engine,x,z,post,false);
     }
     public static String paint(BrowserTerrainEngine engine,int x,int z,boolean post,boolean floating)throws IOException {
+        return paint(engine,x,z,post,floating,false);
+    }
+    public static String paint(BrowserTerrainEngine engine,int x,int z,boolean post,boolean floating,boolean decorate)throws IOException {
+        if(decorate&&!floating)throw new IllegalArgumentException("Cave decoration requires the native floating-stage prefix");
         if(floating&&!post)throw new IllegalArgumentException("Floating solids require the native post-stage prefix");
         if(post&&!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Post-stage preview outside the native Overworld mode");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Carving component window exceeds worker bounds");
@@ -30,10 +34,12 @@ public final class TerrainCarvingComponent {
             WorkerCaveStorage.select(cx,cz);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
-            new IrisCarveModifier(engine).onModify(cx,cz,blocks,false,context);
+            IrisCarveModifier cave=new IrisCarveModifier(engine);cave.onModify(cx,cz,blocks,false,context);
             if(post)new art.arcane.iris.generation.stage.IrisPostModifier(engine).onModify(x,z,blocks,false,context);
             if(floating)new art.arcane.iris.generation.stage.IrisFloatingChildBiomeModifier(engine).onModify(x,z,blocks,false,context);
-            return TerrainPaintStage.serialize(engine,x,z,blocks,floating?"native-overworld-floating-material-stage-development":post?"native-overworld-post-material-stage-development":"native-carving-component-material-stage-development");
+            if(decorate)cave.decorateNaturalCaves(x,z,blocks,context);
+            String result=TerrainPaintStage.serialize(engine,x,z,blocks,decorate?"native-overworld-cave-decoration-stage-development":floating?"native-overworld-floating-material-stage-development":post?"native-overworld-post-material-stage-development":"native-carving-component-material-stage-development");
+            return decorate?result.substring(0,result.length()-1)+",\"markers\":"+WorkerCaveStorage.markerEntries()+"}":result;
         } finally {if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}
     }
 }
