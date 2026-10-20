@@ -1,0 +1,116 @@
+{
+  "formatVersion": 1,
+  "verifiedAt": "2026-10-20",
+  "iris": {
+    "repository": "https://github.com/VolmitSoftware/Iris",
+    "version": "4.3.4",
+    "tag": "4.3.4-26.1.2-26.3",
+    "commit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "tree": "c3a9449a026078c44a87c9776766f54a67779392",
+    "releaseUrl": "https://github.com/VolmitSoftware/Iris/releases/tag/4.3.4-26.1.2-26.3"
+  },
+  "minecraft": {
+    "version": "26.3",
+    "registrySha256": null
+  },
+  "java": {
+    "major": 25
+  },
+  "volmLib": {
+    "repository": "https://github.com/VolmitSoftware/VolmLib",
+    "commit": null,
+    "artifactSha256": null,
+    "resolution": "Upstream uses master-SNAPSHOT or an unpinned local composite checkout."
+  },
+  "schemas": {
+    "sourceCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "bundleSha256": null
+  },
+  "browserCompiler": {
+    "name": "TeaVM",
+    "version": null,
+    "backend": "wasm-gc",
+    "status": "not-compiled"
+  },
+  "assets": {
+    "f8thfulSha256": null,
+    "vanillaBaselineSha256": null
+  },
+  "sources": [
+    {
+      "path": "LICENSE.md",
+      "gitBlobSha": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7"
+    },
+    {
+      "path": "core/build.gradle",
+      "gitBlobSha": "abaab4f4ebf85f895d3e24519de88b617346349a"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/NoiseStyle.java",
+      "gitBlobSha": "3b4deebf03db31f8aafacb399d3c95b3a28f0653"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngine.java",
+      "gitBlobSha": "3074fbe9f5f8b22605661346d692b430367db781"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/SeedManager.java",
+      "gitBlobSha": "93ca94bc72ef30087ff748a8ddd6ed4208509877"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/pack/loading/IrisData.java",
+      "gitBlobSha": "d7f2bd1047a3e8a64dac2de140d0acb3362150d0"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/pack/schema/SchemaBuilder.java",
+      "gitBlobSha": "44fefdf2ade42fbd1e4481f1b36f502710ce9317"
+    },
+    {
+      "path": "core/src/test/java/art/arcane/iris/generation/noise/NoiseSeedCohesionTest.java",
+      "gitBlobSha": "ace172193838c69cc1cd31004c2bfa7d6af25dca"
+    },
+    {
+      "path": "gradle.properties",
+      "gitBlobSha": "d5745b3e0afafc0af52cd468f49c771830681b2e"
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "gitBlobSha": "0579cc126d09fa103f4ec0f3f50f7754d2dadc28"
+    },
+    {
+      "path": "gradle/volmlib-resolution.settings.gradle",
+      "gitBlobSha": "ca1f9e821a080c322eb4469b81fbba189d605f04"
+    },
+    {
+      "path": "probe/build.gradle",
+      "gitBlobSha": "bc874dddb2f308a87eaad5b204d145262caae718"
+    },
+    {
+      "path": "probe/src/main/java/art/arcane/iris/probe/GenerationProbe.java",
+      "gitBlobSha": "38c63808ca32890db3350c5dde2e1f84d046d429"
+    },
+    {
+      "path": "probe/src/main/java/art/arcane/iris/probe/StubPlatform.java",
+      "gitBlobSha": "65c658e282c16fdc4dfc9d2a63161449f60225d9"
+    },
+    {
+      "path": "settings.gradle",
+      "gitBlobSha": "d5fa041aa089bd423dbffc742aadc737a09278b2"
+    }
+  ],
+  "readiness": {
+    "phase": 0,
+    "status": "blocked",
+    "nativeReferenceExecuted": false,
+    "browserGenerationExecuted": false,
+    "parityVerified": false,
+    "blockers": [
+      "Resolve the release's exact VolmLib source and dependency artifact hashes.",
+      "Provision and verify a Java 25 build toolchain.",
+      "Export and hash the matching schemas and Minecraft 26.3 block registry.",
+      "Compile and execute an actual Iris/VolmLib generation path in a browser worker.",
+      "Produce native/browser reference captures and pass exact comparisons.",
+      "F8thful.zip and an authorized vanilla asset baseline were not attached."
+    ]
+  }
+}
