@@ -19,3 +19,4 @@ jobs:
           node-version: '24'
       - run: npm run check
       - run: npm test
+      - run: python3 -m unittest discover -s tools/native-reference -p 'test_*.py'

@@ -5,6 +5,7 @@ node_modules/
 coverage/
 dist/
 target/
+__pycache__/
 *.log
 *.jar
 *.zip

@@ -1,0 +1,6 @@
+// Development audit only. Write resolved dependency locks/checksums into ignored checkouts.
+gradle.beforeProject { project ->
+    project.configurations.configureEach { configuration ->
+        configuration.resolutionStrategy.activateDependencyLocking()
+    }
+}
