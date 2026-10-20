@@ -53,6 +53,8 @@ jobs:
           find "$HOME/.m2/repository" -type f -name '*.jar' -print0 | sort -z | xargs -0 -r sha256sum > tools/portability-probe/target/provenance/resolved-jars.sha256
           cp tools/portability-probe/src/main/java/studio/probe/NoiseProbe.java tools/portability-probe/target/provenance/
           cp tools/portability-probe/src/main/java/studio/probe/RngProbe.java tools/portability-probe/target/provenance/
+          cp tools/portability-probe/src/main/java/studio/probe/Uuid*.java tools/portability-probe/target/provenance/
+          cp tools/portability-probe/src/main/resources/META-INF/services/org.teavm.vm.spi.TeaVMPlugin tools/portability-probe/target/provenance/teavm-plugin-services.txt
           cp tools/portability-probe/pom.xml tools/portability-probe/target/provenance/
           cp tools/portability-probe/licenses/TeaVM-*.txt tools/portability-probe/target/provenance/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

@@ -57,6 +57,7 @@ public final class RngProbe {
     }
 
     public static void main(String[] args) {
+        UuidCompat.verifyAgainstNativeJdk();
         System.out.print("{\"formatVersion\":1,\"scope\":\"volmlib-rng-portability\",\"cases\":[");
         int id = 0;
         for (int mode = 0; mode < 2; mode++) for (String seed : mode == 0 ? NUMERIC : TEXT) for (String signature : SIGNATURES) {

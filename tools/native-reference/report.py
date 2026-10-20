@@ -11,6 +11,7 @@ def summarize(results, exit_code, required_suites):
         raise ValueError('At least one named required suite is necessary')
     suites = {}
     diagnostics = []
+    failed_cases = []
     for path in sorted(Path(results).glob('TEST-*.xml')):
         try:
             if path.stat().st_size > 16 * 1024 * 1024:
@@ -34,6 +35,12 @@ def summarize(results, exit_code, required_suites):
             if any(not name for name in names) or len(set(names)) != count:
                 raise ValueError('Missing or duplicate test case names')
             suites[name] = {'tests': count, 'failures': failures, 'errors': errors, 'skipped': skipped}
+            for case in cases:
+                for tag in ['failure', 'error']:
+                    problem = case.find(tag)
+                    if problem is not None and len(failed_cases) < 20:
+                        failed_cases.append({'suite': name, 'case': case.get('name'), 'kind': tag,
+                                             'message': problem.get('message', '')[:2000]})
         except (ET.ParseError, OSError, ValueError) as error:
             diagnostics.append(f'{path.name}: {error}')
     missing = sorted(set(required_suites) - suites.keys())
@@ -43,7 +50,8 @@ def summarize(results, exit_code, required_suites):
     return {'formatVersion': 1, 'scope': 'native-iris-source-build-audit',
             'gradleExitCode': exit_code, 'nativeRegressionsPassed': passed,
             'releaseMatchVerified': False, 'irisBrowserParityVerified': False,
-            'suites': suites, 'missingRequiredSuites': missing, 'diagnostics': diagnostics}
+            'suites': suites, 'missingRequiredSuites': missing, 'diagnostics': diagnostics,
+            'failedCases': failed_cases}
 
 
 def main():

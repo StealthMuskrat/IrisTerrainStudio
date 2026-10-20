@@ -42,6 +42,12 @@ class NativeReportTests(unittest.TestCase):
                 self.write(f'<testcase name="broken"><{name}/></testcase>', **fields)
                 self.assertFalse(summarize(self.root, 0, ['required.Suite'])['nativeRegressionsPassed'])
 
+    def test_failure_evidence_retains_case_and_native_message(self):
+        self.write('<testcase name="checksum"><failure message="expected 1 but was 2"/></testcase>', failures=1)
+        report = summarize(self.root, 1, ['required.Suite'])
+        self.assertEqual(report['failedCases'][0]['case'], 'checksum')
+        self.assertEqual(report['failedCases'][0]['message'], 'expected 1 but was 2')
+
     def test_report_counters_cannot_hide_a_failure(self):
         self.write('<testcase name="broken"><failure/></testcase>')
         report = summarize(self.root, 0, ['required.Suite'])

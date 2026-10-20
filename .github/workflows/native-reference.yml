@@ -62,6 +62,8 @@ jobs:
           from pathlib import Path
           import hashlib
           checksum = Path('.reference-output/native-reference/gradle-9.5.1-bin.zip.sha256').read_text().strip()
+          import json
+          assert checksum == json.loads(Path('tools/native-reference/source-lock.json').read_text())['gradle']['sha256']
           assert len(checksum) == 64 and all(c in '0123456789abcdef' for c in checksum)
           assert hashlib.sha256(Path('.reference-output/gradle-9.5.1-bin.zip').read_bytes()).hexdigest() == checksum
           PY
@@ -74,7 +76,7 @@ jobs:
           cd .upstream/Iris
           "$GITHUB_WORKSPACE/.reference-output/gradle-9.5.1/bin/gradle" --no-daemon --max-workers=2 --stacktrace --console=plain \
             --init-script "$GITHUB_WORKSPACE/tools/native-reference/record-inputs.gradle" \
-            --write-locks --write-verification-metadata sha256 \
+            --write-locks \
             -Dorg.gradle.jvmargs='-Xmx3g -Dfile.encoding=UTF-8' \
             "-PlocalVolmLibDirectory=$GITHUB_WORKSPACE/.upstream/VolmLib" \
             :core:test \

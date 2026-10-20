@@ -6,7 +6,7 @@ The candidate is not verified as the shipping release dependency. Passing native
 
 The workflow is an **audit**, not a parity gate: it records a failed build as `nativeRegressionsPassed: false`, including missing required suites and the actual Gradle exit code. A completed audit never changes production readiness flags. Consumers requiring passing native tests must use the report command's `--require-pass` flag.
 
-The audited Gradle distribution is the pinned source's version 9.5.1. Its official checksum is verified and retained with the downloaded distribution hash. The initial dependency resolution is exploratory; generated Gradle locks, verification metadata and resolved JAR digests are retained for subsequent explicit pinning. They must be reviewed before adopting this as a production reference environment.
+The audited Gradle distribution is the pinned source's version 9.5.1. Its official checksum is checked against the committed source manifest and retained with the downloaded distribution hash. The initial dependency resolution is exploratory; generated Gradle locks and resolved JAR digests are retained for subsequent explicit pinning. They must be reviewed before adopting this as a production reference environment. Gradle's verification-metadata writer is excluded from the build attempt because it independently failed on duplicate timestamped spark-api entries; checksum collection does not depend on that writer.
 
 ## Run with the pinned source checkouts
 
@@ -15,7 +15,7 @@ Use Java 25, the Gradle version from `source-lock.json`, and exact Iris/VolmLib 
 ```sh
 gradle --no-daemon --max-workers=2 --stacktrace \
   --init-script /path/to/IrisTerrainStudio/tools/native-reference/record-inputs.gradle \
-  --write-locks --write-verification-metadata sha256 \
+  --write-locks \
   -PlocalVolmLibDirectory=/absolute/path/to/VolmLib \
   :core:test \
   --tests art.arcane.iris.generation.noise.NoiseSeedCohesionTest \
