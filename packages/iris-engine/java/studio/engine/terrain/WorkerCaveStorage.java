@@ -10,7 +10,7 @@ import art.arcane.volmlib.util.function.Consumer4;
 import java.io.DataOutputStream;
 import java.util.*;
 
-/** One ephemeral native Mantle chunk. No region loading, persistence, or world access. */
+/** A bounded ephemeral native Mantle chunk window. No region loading, persistence, or world access. */
 public final class WorkerCaveStorage {
     private static MantleChunk<Matter> active;
     private static int height,chunkX,chunkZ;
@@ -31,6 +31,7 @@ public final class WorkerCaveStorage {
     public static int getWorldHeight(Mantle<?> unused){requireActive();return height;}
     public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requireActive();if(x!=chunkX||z!=chunkZ)throw studio.engine.UnsupportedPlatform.unavailable("Cave access outside the prepared chunk");return active;}
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
+    public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
     private static void requireActive(){if(active==null)throw new IllegalStateException("No worker cave storage");}
     private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Non-cavern Matter storage or persistence");}
     private static final class CavernSection implements Matter {

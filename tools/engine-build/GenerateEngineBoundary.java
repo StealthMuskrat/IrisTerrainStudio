@@ -12,6 +12,7 @@ public final class GenerateEngineBoundary {
     public static void main(String[] args) throws Exception {
         generate(Engine.class,"EngineBoundary",args[0]);
         generate(art.arcane.iris.spi.IrisPlatform.class,"PlatformBoundary",args[0]);
+        generate(art.arcane.iris.generation.mantle.EngineMantle.class,"MantleBoundary",args[0]);
     }
     private static void generate(Class<?> api,String name,String directory)throws Exception {
         TreeMap<String,Method> methods=new TreeMap<>();
@@ -25,7 +26,7 @@ public final class GenerateEngineBoundary {
             out.append("@Override public ").append(method.getReturnType().getCanonicalName()).append(' ').append(method.getName()).append('(');
             Class<?>[] parameters=method.getParameterTypes();
             for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append(parameters[i].getCanonicalName()).append(" p").append(i);}
-            if(api==Engine.class&&NATIVE_DEFAULTS.contains(method.getName())){
+            if(api==Engine.class&&NATIVE_DEFAULTS.contains(method.getName())||api==art.arcane.iris.generation.mantle.EngineMantle.class&&Set.of("getData","getComplex").contains(method.getName())){
                 if(!method.isDefault())throw new IllegalStateException("Pinned native engine default changed: "+method);
                 out.append("){");if(method.getReturnType()!=void.class)out.append("return ");out.append(api.getCanonicalName()).append(".super.").append(method.getName()).append('(');for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append('p').append(i);}out.append(");}\n");
             }else out.append("){throw studio.engine.UnsupportedPlatform.unavailable(\"Native engine platform operation: ").append(method.getName()).append("\");}\n");
