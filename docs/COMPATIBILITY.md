@@ -8,7 +8,8 @@ No feature is currently advertised as supported. “Inspected” means source re
 | --- | --- | --- | --- |
 | Noise and seed derivation | Iris core compiles; 14/15 tests pass; six native noise/runtime profiles reproduce the failing checksum with identical bits | Actual Iris NoiseStyle/CNG/configured styles/SeedManager compiled to Wasm; worker connection implemented | 195,696 earlier primitive/RNG browser comparisons pass; new focused native/Node check passes, complete browser coverage pending |
 | Dimensions, regions, biomes, heights | Source locations inventoried | Native standalone generators, region selection, inferred biome variants and actual IrisComplex surface-biome/procedural-height streams connected for a limited scalar subset | 336 native/Node region selections, 28 inferred-biome views, 384 surface-biome choices and 384 exact height-bit comparisons agree in scoped checks; complete browser qualification pending |
-| Volumetric terrain, caves, subterrain | Upstream systems exist; detailed reachability audit pending | None | Not run |
+| Volumetric terrain | Actual Terrain3DRuntime, column spans and fragment filter connected | Native height/column outputs and categorical occupancy slices | 64 native/Node biome-height-column results and 9,216 occupancy API checks agree; full qualification pending |
+| Caves and subterrain | Upstream systems exist; detailed reachability audit pending | Not connected | Not run |
 | Hydrology | Upstream probe entry points identified | None | Not run |
 | Surfaces and material selection | Registry/platform boundary identified | None | Not run |
 | Deposits, decorators | Detailed behavior audit pending | None | Not run |

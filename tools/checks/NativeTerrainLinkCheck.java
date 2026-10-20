@@ -14,7 +14,7 @@ import java.util.*;
 /** Independent JVM host for unchanged IrisComplex biome and scalar height composition. */
 public final class NativeTerrainLinkCheck {
     public static void main(String[] args)throws Exception{
-        Gson gson=new Gson();JsonObject request=JsonParser.parseString(Files.readString(Path.of(args[0]))).getAsJsonObject();JsonArray result=new JsonArray();
+        Gson gson=new GsonBuilder().serializeNulls().create();JsonObject request=JsonParser.parseString(Files.readString(Path.of(args[0]))).getAsJsonObject();JsonArray result=new JsonArray();
         art.arcane.iris.configuration.IrisSettings.settings=new art.arcane.iris.configuration.IrisSettings();
         IrisServices.register(PreservationRegistry.class,Proxy.newProxyInstance(PreservationRegistry.class.getClassLoader(),new Class<?>[]{PreservationRegistry.class},(self,method,values)->null));
         try(HeadlessNativeRegistries loaded=HeadlessNativeRegistries.load(Map.of())){
@@ -36,7 +36,9 @@ public final class NativeTerrainLinkCheck {
                         case"getFocusRegion"->{String key=dimension.getFocusRegion();var region=key==null||key.isBlank()?null:data.getRegionLoader().load(key);yield region==null||region.isCompatExcluded()?null:region;}
                         default->throw new UnsupportedOperationException(method.toString());
                     });runtime[0]=new IrisComplex(engine);
-                    JsonArray samples=new JsonArray();for(JsonElement point:request.getAsJsonArray("points")){JsonArray coordinates=point.getAsJsonArray();double x=coordinates.get(0).getAsDouble(),z=coordinates.get(1).getAsDouble();JsonObject sample=new JsonObject();sample.addProperty("height",Long.toUnsignedString(Double.doubleToRawLongBits(runtime[0].getHeightStream().getDouble(x,z)),16));sample.addProperty("biome",runtime[0].getTrueBiomeStream().get(x,z).getLoadKey());samples.add(sample);}pack.add(samples);
+                    JsonArray samples=new JsonArray();for(JsonElement point:request.getAsJsonArray("points")){JsonArray coordinates=point.getAsJsonArray();double x=coordinates.get(0).getAsDouble(),z=coordinates.get(1).getAsDouble();JsonObject sample=new JsonObject();sample.addProperty("height",Long.toUnsignedString(Double.doubleToRawLongBits(runtime[0].getHeightStream().getDouble(x,z)),16));sample.addProperty("biome",runtime[0].getTrueBiomeStream().get(x,z).getLoadKey());if(request.has("columns")&&request.get("columns").getAsBoolean()){
+                        var column=runtime[0].naturalTerrainColumn((int)Math.floor(x),(int)Math.floor(z));if(column==null)sample.add("column",JsonNull.INSTANCE);else{JsonObject value=new JsonObject();value.addProperty("baseHeight",String.format("%016x",Double.doubleToRawLongBits(column.baseHeight())));value.addProperty("minY",column.minY());value.addProperty("topY",column.topY());value.addProperty("shaped",column.shaped());JsonArray spans=new JsonArray();for(int i=0;i<column.spanCount();i++){JsonArray span=new JsonArray();span.add(column.ceiling(i));span.add(column.floor(i));spans.add(span);}value.add("spans",spans);StringBuilder occupancy=new StringBuilder();for(int y=0;y<dimension.getMaxHeight()-dimension.getMinHeight();y++)occupancy.append(column.isSolid(y)?'1':'0');value.addProperty("occupancy",occupancy.toString());sample.add("column",value);}}
+                        samples.add(sample);}pack.add(samples);
                 }result.add(pack);
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}

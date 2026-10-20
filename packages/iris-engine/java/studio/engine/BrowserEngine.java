@@ -46,6 +46,16 @@ public final class BrowserEngine {
     @JSExport public static String sampleTerrainHeight(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");return bits(terrain.getComplex().getHeightStream().getDouble(x,z));}
     @JSExport public static String sampleTerrainBiome(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");var biome=terrain.getComplex().getTrueBiomeStream().get(x,z);if(biome==null)throw new IllegalStateException("Native biome pool returned no biome");return biome.getLoadKey();}
 
+    @JSExport public static String sampleTerrainColumn(int x,int z)throws java.io.IOException{
+        if(terrain==null)throw new IllegalStateException("Prepare native terrain first");var column=terrain.getComplex().naturalTerrainColumn(x,z);if(column==null)return "null";
+        StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("baseHeight").value(bits(column.baseHeight()));writer.name("minY").value(column.minY());writer.name("topY").value(column.topY());writer.name("shaped").value(column.shaped());writer.name("spans").beginArray();for(int i=0;i<column.spanCount();i++){writer.beginArray();writer.value(column.ceiling(i));writer.value(column.floor(i));writer.endArray();}writer.endArray();writer.name("occupancy");StringBuilder occupancy=new StringBuilder();for(int y=0;y<terrain.getHeight();y++)occupancy.append(column.isSolid(y)?'1':'0');writer.value(occupancy.toString());writer.endObject();}return output.toString();
+    }
+    /** Categorical native column state: unshaped, empty, or solid; never a replacement block palette. */
+    @JSExport public static int sampleTerrainOccupancy(double x,double worldY,double z){
+        if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(worldY)||!Double.isFinite(z)||Math.abs(x)>30000000||Math.abs(z)>30000000||Math.abs(worldY)>30000000)throw new IllegalArgumentException("Coordinates exceed native inspection bounds");
+        var column=terrain.getComplex().naturalTerrainColumn((int)Math.floor(x),(int)Math.floor(z));return column==null?0:column.isSolid((int)Math.floor(worldY)-terrain.getMinHeight())?2:1;
+    }
+
     @JSExport public static void prepareRegionSelection(String dimensionKey,String decimalWorldSeed,boolean buffet){
         pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",dimensionKey);if(!(resource instanceof IrisDimension dimension))throw new IllegalArgumentException("The selected native dimension could not be loaded");if(dimension.isCompatExcluded())throw new IllegalArgumentException("The native compatibility gate excluded this dimension: "+String.join("; ",pack.open().getCompatReport().detailLines()));
         supportedStyle(dimension.getRegionStyle(),0);long complexSeed=new SeedManager(Long.parseLong(decimalWorldSeed)).getComplex();selectedRegions=RegionSelection.restore(new RegionSelection.Snapshot(dimension,pack.open(),complexSeed,buffet));

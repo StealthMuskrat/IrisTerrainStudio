@@ -1,0 +1,31 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+const root=fileURLToPath(new URL('../../',import.meta.url)),local=path.join(root,'.local-tools'),temporary=await fs.mkdtemp(path.join(local,'terrain-link-')),java=process.env.IRIS_JAVA_HOME||path.join(local,'jdk-25.0.4.1+1');
+try{
+  const names=['dimensions/terrain3d.json','regions/ledges.json','biomes/ledges.json','generators/flat.json'],fixture=path.join(root,'.upstream/Iris/probe/src/test/resources/terrain3d-pack'),source=new Map(await Promise.all(names.map(async name=>[name,await fs.readFile(path.join(fixture,name),'utf8')])));
+  const packs=[];
+  for(const kind of ['base','fractured','negative-minimum','unshaped']){
+    const resources=new Map(source),dimension=JSON.parse(resources.get(names[0])),biome=JSON.parse(resources.get(names[2]));
+    if(kind==='fractured'){biome.terrain3D.amplitude=96;biome.terrain3D.horizontalScale=48;biome.terrain3D.verticalScale=8;biome.terrain3D.crackDepth=6;}
+    if(kind==='negative-minimum')dimension.dimensionHeight={min:-64,max:320};
+    if(kind==='unshaped')delete biome.terrain3D;
+    resources.set(names[0],JSON.stringify(dimension));resources.set(names[2],JSON.stringify(biome));
+    const directory=path.join(temporary,kind);for(const[name,text]of resources){const filename=path.join(directory,name);await fs.mkdir(path.dirname(filename),{recursive:true});await fs.writeFile(filename,text);}packs.push({directory,resources});
+  }
+  const seeds=['0','9223372036854775807'],points=[[0,0],[17.25,-3.5],[-128.5,64.25],[96,96],[-96,-96],[1024,2048],[-512,-2048],[3.14159,2.71828]],request=path.join(temporary,'request.json'),reference=path.join(temporary,'reference.json');
+  await fs.writeFile(request,JSON.stringify({packs:packs.map(pack=>pack.directory),seeds,points,columns:true}));
+  const captures=await Promise.all(['registry-inputs.json','iris-inputs.json'].map(name=>fs.readFile(path.join(local,name),'utf8').then(JSON.parse))),classes=path.join(local,'registry-classes'),classpath=[classes,...new Set(captures.flatMap(capture=>capture.classpath.map(entry=>entry.path)))].join(path.delimiter),env={...process.env,LD_LIBRARY_PATH:[path.join(java,'lib'),path.join(java,'lib/server')].join(path.delimiter)};
+  async function run(binary,args){const logfile=path.join(temporary,binary+'.log'),file=await fs.open(logfile,'w');try{await new Promise((resolve,reject)=>{const child=spawn(path.join(java,'bin',binary),args,{cwd:root,env,stdio:['ignore',file.fd,file.fd]});child.on('error',reject);child.on('exit',code=>code===0?resolve():reject(new Error(`Native terrain reference exited ${code}`)));});}catch(error){console.error((await fs.readFile(logfile,'utf8')).split('\n').slice(-18).join('\n'));throw error;}finally{await file.close();}}
+  await run('javac',['-classpath',classpath,'-d',classes,'tools/checks/NativeTerrainLinkCheck.java']);await run('java',['-Dvolmlib.noise.nativeBillow=false',`-Djava.io.tmpdir=${path.join(local,'tmp')}`,'-classpath',classpath,'art.arcane.iris.probe.NativeTerrainLinkCheck',request,reference]);
+  const expected=JSON.parse(await fs.readFile(reference,'utf8'));await fs.copyFile(reference,path.join(local,'native-volume-link-native-reference.json'));
+  await import(pathToFileURL(path.join(root,'apps/web/engine/iris-generated/iris.wasm-runtime.js')));const{exports:api}=await TeaVM.wasmGC.load(await fs.readFile(path.join(root,'apps/web/engine/iris-generated/iris.wasm')));api.installRegistry(await fs.readFile(path.join(root,'apps/web/engine/registry-generated/browser-registry.json'),'utf8'));
+  const actual=packs.map(pack=>seeds.map(seed=>{api.clear();for(const[name,text]of pack.resources)api.registerPackResource(name,text);try{const metadata=JSON.parse(api.prepareTerrain('terrain3d',seed)),dimension=JSON.parse(pack.resources.get(names[0]));assert.equal(metadata.minHeight,dimension.dimensionHeight.min);assert.equal(metadata.maxHeight,dimension.dimensionHeight.max);assert.equal(metadata.terrainParityVerified,false);}catch(error){throw new Error('Prepare '+path.basename(pack.directory)+' seed '+seed,{cause:error});}return points.map(([x,z])=>{try{return {height:api.sampleTerrainHeight(x,z).replace(/^0+(?=.)/,''),biome:api.sampleTerrainBiome(x,z),column:JSON.parse(api.sampleTerrainColumn(Math.floor(x),Math.floor(z)))};}catch(error){throw new Error('Sample '+path.basename(pack.directory)+' seed '+seed+' at '+x+','+z,{cause:error});}});}));assert.deepEqual(actual,expected,'Native biome or height composition differs');
+  let occupancyComparisons=0;
+  for(const pack of packs){api.clear();for(const[name,text]of pack.resources)api.registerPackResource(name,text);api.prepareTerrain('terrain3d',seeds[0]);const dimension=JSON.parse(pack.resources.get(names[0]));for(const [x,z]of points){const column=JSON.parse(api.sampleTerrainColumn(Math.floor(x),Math.floor(z)));for(let y=0;y<dimension.dimensionHeight.max-dimension.dimensionHeight.min;y++){assert.equal(api.sampleTerrainOccupancy(x,y+dimension.dimensionHeight.min,z),column===null?0:column.occupancy[y]==='1'?2:1);occupancyComparisons++;}}}
+  api.clear();for(const[name,text]of source){let value=text;if(name===names[0]){const dimension=JSON.parse(text);dimension.hydrology={rivers:{enabled:true}};value=JSON.stringify(dimension);}api.registerPackResource(name,value);}assert.throws(()=>api.prepareTerrain('terrain3d','1'),/not connected/);assert.throws(()=>api.sampleTerrainHeight(0,0));
+  await fs.writeFile(path.join(local,'native-volume-link-results.json'),JSON.stringify({packs:packs.map(pack=>({name:path.basename(pack.directory),resources:[...pack.resources].map(([path,text])=>({path,bytes:Buffer.byteLength(text),sha256:createHash('sha256').update(text).digest('hex')}))})),seeds,points,occupancyComparisons,samples:actual},null,2)+'\n');console.log('Focused native volumetric linkage passed: 64 native biome/height/column comparisons and '+occupancyComparisons+' occupancy slice checks across four controlled packs. Full browser, voxel-material and terrain qualification remain outstanding.');
+}finally{await fs.rm(temporary,{recursive:true,force:true});}
