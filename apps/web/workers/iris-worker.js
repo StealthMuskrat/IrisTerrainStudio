@@ -1,4 +1,4 @@
-let runtime, active = 0;
+let runtime, registryRuntime, active = 0;
 const digest = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('');
 async function engine() {
   if (!runtime) runtime = (async()=>{
@@ -19,6 +19,15 @@ async function engine() {
   })().catch(error=>{runtime=null;throw error;});
   return runtime;
 }
+async function registry(api,engineManifest){
+  if(!registryRuntime)registryRuntime=(async()=>{
+    const base='/app/engine/registry-generated/',response=await fetch(base+'manifest.json',{cache:'no-cache'});if(!response.ok)throw new Error('Install the native registry with npm run engine:registry before loading native packs.');
+    const manifest=await response.json();if(manifest.scope!=='minecraft-development-registry-export'||manifest.minecraft?.id!=='26.3'||!manifest.minecraft.stable||manifest.volmLibCandidate!==engineManifest.volmLibCandidate)throw new Error('The native registry does not match the engine build inputs.');
+    const record=manifest.files?.['browser-registry.json'];if(!record||!Number.isSafeInteger(record.bytes)||record.bytes>16*1024*1024)throw new Error('Re-export the native registry to install its browser input.');
+    const file=await fetch(base+'browser-registry.json',{cache:'no-cache'});if(!file.ok)throw new Error('The browser registry input is missing.');const bytes=await file.arrayBuffer();if(bytes.byteLength!==record.bytes||await digest(bytes)!==record.sha256)throw new Error('Native registry bytes differ from the export manifest.');
+    const installed=JSON.parse(api.installRegistry(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));if(installed.blocks!==manifest.blocks||installed.states!==manifest.states)throw new Error('Native registry state coverage differs from the export manifest.');return installed;
+  })().catch(error=>{registryRuntime=null;throw error;});return registryRuntime;
+}
 const bits=new DataView(new ArrayBuffer(8));
 function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris returned invalid double bits.');bits.setBigUint64(0,BigInt('0x'+hex));const value=bits.getFloat64(0);if(!Number.isFinite(value))throw new Error('Iris returned a non-finite value.');return value; }
 self.onmessage=async({data})=>{
@@ -29,12 +38,14 @@ self.onmessage=async({data})=>{
     const {api,manifest}=await engine();
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
     if(data.kind==='inspect-pack'){
-      if(active!==id)return;if(typeof api.registerPackResource!=='function')throw new Error('Rebuild the local Iris engine to enable native pack loading.');api.clear();try{for(const resource of data.snapshot.resources)api.registerPackResource(resource.path,resource.text);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{api.clear();}return;
+      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;api.clear();try{for(const resource of data.snapshot.resources)api.registerPackResource(resource.path,resource.text);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{api.clear();}return;
     }
     if(active!==id)return;
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;
     const dimensions=options.field==='iris-style3d'?3:2;
+    if(options.packSnapshot){await registry(api,manifest);if(active!==id)return;}
     api.clear();
+    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,false);}
     if(options.nativeConfig){for(const resource of options.nativeConfig.snippets||[])api.registerSnippet(resource.path,resource.text);api[{generator:'loadGeneratorJson',style:'loadStyleJson',dimension:'loadDimensionJson'}[options.nativeConfig.kind]](options.nativeConfig.id,options.nativeConfig.text);}
     if(options.configured){for(const d of options.configured.definitions)api.defineStyle(d.id,d.style,d.zoom,d.exponent,d.frequency,d.cellularZoom,d.fracture,d.multiplier,d.octaves);}
     if(options.generator){
@@ -42,16 +53,17 @@ self.onmessage=async({data})=>{
       for(const d of options.generator.layers)api.defineLayer(d.id,d.style,d.seed,d.zoom,d.opacity,d.offsetX,d.offsetY,d.offsetZ,d.exponent,d.negative,d.enabled,d.parametric,d.bezier,d.sinCentered,d.octaves,d.children.join(','));
       const d=options.generator.generator;if(d)api.defineGenerator(d.id,d.children.join(','),d.seed,d.zoom,d.opacity,d.surfaceDetail,d.multiplicitive,d.offsetX,d.offsetZ,d.cellZoom,d.cellShuffle,d.cellHeight,d.cellPercent,d.cliffMin,d.cliffMax,d.cliffLayer||'',d.interpolation,d.interpolationScale);
     }
-    const sample=options.nativeConfig?(options.nativeConfig.kind==='dimension'?(px,pz)=>api.sampleDimensionControl(options.nativeConfig.id,seed,options.field,px,pz):options.nativeConfig.kind==='generator'?(px,pz)=>api.sampleGenerator(options.nativeConfig.id,seed,px,pz):(px,pz)=>api.sampleLoadedStyle(options.nativeConfig.id,seed,px,y,pz,dimensions)):options.generator?(px,pz)=>api[options.generator.kind==='layer'?'sampleLayer':'sampleGenerator'](options.generator.root,seed,px,pz):options.configured?(px,pz)=>api.sampleConfigured(options.configured.root,seed,px,y,pz,dimensions):(px,pz)=>api.sampleStyle(options.style,seed,px,y,pz,dimensions);
+    const categories=[],categoryIds=new Map();
+    const sample=options.field==='regions'?(px,pz)=>{const key=api.sampleRegion(px,pz);if(!categoryIds.has(key)){categoryIds.set(key,categories.length);categories.push(key);}return categoryIds.get(key);}:options.nativeConfig?(options.nativeConfig.kind==='dimension'?(px,pz)=>api.sampleDimensionControl(options.nativeConfig.id,seed,options.field,px,pz):options.nativeConfig.kind==='generator'?(px,pz)=>api.sampleGenerator(options.nativeConfig.id,seed,px,pz):(px,pz)=>api.sampleLoadedStyle(options.nativeConfig.id,seed,px,y,pz,dimensions)):options.generator?(px,pz)=>api[options.generator.kind==='layer'?'sampleLayer':'sampleGenerator'](options.generator.root,seed,px,pz):options.configured?(px,pz)=>api.sampleConfigured(options.configured.root,seed,px,y,pz,dimensions):(px,pz)=>api.sampleStyle(options.style,seed,px,y,pz,dimensions);
     const values=new Float64Array(width*height);let min=Infinity,max=-Infinity;
     for(let row=0;row<height;row++){
       for(let column=0;column<width;column++){
-        const px=x-span/2+(column+.5)*span/width,pz=z-depth/2+(row+.5)*depth/height,value=decode(sample(px,pz));
+        const px=x-span/2+(column+.5)*span/width,pz=z-depth/2+(row+.5)*depth/height,value=options.field==='regions'?sample(px,pz):decode(sample(px,pz));
         values[row*width+column]=value;min=Math.min(min,value);max=Math.max(max,value);
       }
       if((row&7)===0){self.postMessage({kind:'progress',id,progress:(row+1)/height});await new Promise(resolve=>setTimeout(resolve,0));if(active!==id)return;}
     }
     if(active!==id)return;
-    self.postMessage({kind:'result',id,result:{values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,style:options.style,configuredPointer:options.configured?.pointer,scope:options.nativeConfig?.kind==='dimension'?'iris-dimension-control-development':options.generator||options.nativeConfig?.kind==='generator'?'iris-generator-development':'iris-noise-style-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started}},[values.buffer]);
+    self.postMessage({kind:'result',id,result:{values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,categories:options.field==='regions'?categories:undefined,style:options.style,configuredPointer:options.configured?.pointer,scope:options.field==='regions'?'iris-region-selection-development':options.nativeConfig?.kind==='dimension'?'iris-dimension-control-development':options.generator||options.nativeConfig?.kind==='generator'?'iris-generator-development':'iris-noise-style-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started}},[values.buffer]);
   }catch(error){self.postMessage({id,error:error.message||String(error)});}
 };

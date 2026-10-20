@@ -22,6 +22,9 @@ import studio.engine.pack.MemoryPack;
 import art.arcane.iris.pack.loading.IrisRegistrant;
 import com.google.gson.stream.JsonWriter;
 import java.io.StringWriter;
+import studio.engine.registry.BrowserRegistries;
+import art.arcane.iris.generation.terrain.RegionSelection;
+import art.arcane.iris.generation.terrain.IrisRegion;
 
 /** Browser entry points into the actual pinned Iris classes. No terrain replacement algorithms. */
 public final class BrowserEngine {
@@ -35,13 +38,29 @@ public final class BrowserEngine {
     private static final Map<String, IrisGenerator> composites = new LinkedHashMap<>();
     private static final Map<String, CNG> generators = new LinkedHashMap<>();
     private static MemoryPack pack=new MemoryPack();
+    private static BrowserRegistries registry;
+    private static ProceduralStream<IrisRegion> selectedRegions;
+
+    @JSExport public static void prepareRegionSelection(String dimensionKey,String decimalWorldSeed,boolean buffet){
+        pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",dimensionKey);if(!(resource instanceof IrisDimension dimension))throw new IllegalArgumentException("The selected native dimension could not be loaded");if(dimension.isCompatExcluded())throw new IllegalArgumentException("The native compatibility gate excluded this dimension: "+String.join("; ",pack.open().getCompatReport().detailLines()));
+        if(buffet||dimension.getFocus()!=null&&!dimension.getFocus().isBlank()||dimension.getFocusRegion()!=null&&!dimension.getFocusRegion().isBlank())throw UnsupportedPlatform.unavailable("Focused and buffet region selection");
+        supportedStyle(dimension.getRegionStyle(),0);long complexSeed=new SeedManager(Long.parseLong(decimalWorldSeed)).getComplex();selectedRegions=RegionSelection.select(new RegionSelection.Options(dimension,pack.open(),dimension.getRegionStyle().create(new RNG(complexSeed).nextParallelRNG(883),pack.open()).stream().zoom(dimension.getRegionZoom()),art.arcane.iris.generation.image.IrisImageMapRuntime.compile(pack.open(),dimension,dimension.getMinHeight()),null));
+    }
+    @JSExport public static String sampleRegion(double x,double z){if(selectedRegions==null)throw new IllegalStateException("Prepare the native region selection first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Region coordinates must be finite");IrisRegion region=selectedRegions.get(x,z);if(region==null)throw new IllegalStateException("The native region pool returned no region");return region.getLoadKey();}
+
+    @JSExport public static String installRegistry(String text)throws java.io.IOException{
+        if(pack.resourceCount()!=0)throw new IllegalStateException("Install the native registry before adding pack resources");
+        BrowserRegistries installed=BrowserRegistries.read(text);pack.release();registry=installed;pack=new MemoryPack(registry);return "{\"blocks\":"+registry.typeCount()+",\"states\":"+registry.stateCount()+"}";
+    }
+    @JSExport public static String registryState(String text,boolean strict)throws java.io.IOException{if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.describe(text,strict);}
+    @JSExport public static boolean registryMatches(String first,String other){if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.decodeBlockState(first).matches(registry.decodeBlockState(other));}
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
     @JSExport public static String openPack(){pack.open();return "{\"resources\":"+pack.resourceCount()+",\"compatibilityReady\":"+pack.compatibilityReady()+"}";}
     /** Authoring graph inspection; not a terrain preview or compatibility success claim. */
     @JSExport public static String inspectPackResource(String folder,String name)throws java.io.IOException{
         pack.open();IrisRegistrant resource=pack.load(folder,name);StringWriter output=new StringWriter();
-        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());}json.endObject();}return output.toString();
+        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());json.name("excluded").value(resource.isCompatExcluded());}json.name("findings").beginArray();for(String line:pack.open().getCompatReport().detailLines())json.value(line);json.endArray();json.endObject();}return output.toString();
     }
 
     @JSExport
@@ -268,6 +287,6 @@ public final class BrowserEngine {
     public static String diagnosticRng(String seed) { return studio.probe.RngProbe.sample(seed, false, "0"); }
 
     @JSExport
-    public static void clear() { pack.release();pack=new MemoryPack();definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
+    public static void clear() { selectedRegions=null;pack.release();pack=new MemoryPack(registry);definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
     public static void main(String[] args) { }
 }

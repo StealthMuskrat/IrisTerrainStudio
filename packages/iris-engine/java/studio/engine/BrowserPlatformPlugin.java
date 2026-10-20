@@ -13,6 +13,10 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            // TeaVM 0.16's Wasm reflection emitter dereferences a missing raw
+            // generic type when a field also has runtime annotations. Supply
+            // equivalent raw metadata; preserve every actual generic signature.
+            if(studio.engine.config.NativeConfigMetadata.TYPES.contains(name))for(FieldHolder field:cls.getFields())if(field.getGenericType()==null)field.setGenericType(rawGeneric(field.getType()));
             if(name.equals("art.arcane.iris.pack.loading.IrisData")){
                 int initializers=0,gates=0;
                 for(MethodHolder method:cls.getMethods()){
@@ -21,11 +25,10 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }
                 if(initializers!=2||gates!=1)throw new IllegalStateException("Pinned native data IO entry points changed");
             }
-            if(name.equals("art.arcane.iris.pack.validation.ContentGate")){
-                for(MethodHolder method:cls.getMethods())if(method.getName().equals("evaluate")){
-                    Program program=new Program();Variable self=program.createVariable(),resource=program.createVariable(),result=program.createVariable();BasicBlock block=program.createBasicBlock();
-                    InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.pack.MemoryPack","evaluateUnbound",ValueType.object(name),ValueType.object("art.arcane.iris.pack.loading.IrisRegistrant"),ValueType.object("art.arcane.iris.pack.validation.CompatStatus")));call.setArguments(self,resource);call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(program);
-                }
+            if(name.equals("art.arcane.iris.pack.validation.CompatWalker")){
+                int changed=0;for(MethodHolder method:cls.getMethods()){Program program=method.getProgram();if(program==null)continue;for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.Class")&&call.getMethod().getName().equals("isRecord")){
+                    Variable type=call.getInstance();call.setInstance(null);call.setArguments(type);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.config.NativeConfigMetadata","isRecord",ValueType.object("java.lang.Class"),ValueType.BOOLEAN));changed++;
+                }}if(changed!=1)throw new IllegalStateException("Pinned compatibility record metadata call changed");
             }
             if(name.equals("art.arcane.iris.generation.noise.IrisExpression"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("expression"))unavailable(method,"Native expression bytecode compiler");
             if(name.equals("art.arcane.iris.structure.object.IrisObjectScale")){
@@ -89,6 +92,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if (name.equals("art.arcane.iris.generation.noise.ImageNoise")) {
                 for (MethodHolder method : cls.getMethods()) if (method.getProgram() != null) unavailable(method, "Image-map resources");
             }
+            if(name.equals("art.arcane.iris.generation.image.IrisImageMapRuntime"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("compileBinding"))unavailable(method,"Native image-map resource binding");
             if (name.equals("art.arcane.iris.pack.loading.ResourceLoader")) {
                 int constructors=0;
                 for (MethodHolder method : cls.getMethods()) {
@@ -135,6 +139,14 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if (changed != 2) throw new IllegalStateException("Pinned Billow platform entry points changed: " + changed);
             System.out.println("Browser platform: select the original Java Billow branch; no native FFM or substitute noise");
         });
+    }
+    private static GenericValueType rawGeneric(ValueType type){
+        if(type instanceof ValueType.Object object)return new GenericValueType.Object(null,object.getClassName(),new GenericValueType.Argument[0]);
+        if(type instanceof ValueType.Array array)return new GenericValueType.Array(rawGeneric(array.getItemType()));
+        if(type==ValueType.VOID)return GenericValueType.VOID;
+        return switch(((ValueType.Primitive)type).getKind()){
+            case BOOLEAN->GenericValueType.BOOLEAN;case BYTE->GenericValueType.BYTE;case SHORT->GenericValueType.SHORT;case INTEGER->GenericValueType.INT;case LONG->GenericValueType.LONG;case FLOAT->GenericValueType.FLOAT;case DOUBLE->GenericValueType.DOUBLE;case CHARACTER->GenericValueType.CHAR;
+        };
     }
     private static void delegateInstance(MethodHolder method,String target,ValueType result){
         Program program=new Program();Variable self=program.createVariable();BasicBlock block=program.createBasicBlock();

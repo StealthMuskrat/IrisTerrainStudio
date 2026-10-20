@@ -57,6 +57,26 @@ for key in ('biomes','structures','enchantments'):
         raise ValueError('Native dynamic registry is missing or duplicated: '+key)
 (output/'native-registries.json').write_bytes(encoded)
 files['native-registries.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}
+if set(platform['entityCategories'])!=set(platform['keys']['entities']) or not set(platform['leafBlockTypes']).issubset(blocks):
+    raise ValueError('Native platform type metadata is incomplete')
+# A compact bridge format, derived only from the checked native reports. Seeds
+# and pack configuration never pass through this transformation.
+types=predicates['blockTypes']
+wire_types=[]
+wire_states=[None]*len(ids)
+for type_id,name in enumerate(types):
+    block=blocks[name]
+    order=predicates['propertyOrder'][name]
+    default=next(state['id'] for state in block['states'] if state.get('default'))
+    wire_types.append({'name':name,'defaultState':default,'order':order,'leaf':name in platform['leafBlockTypes']})
+    for state in block['states']:
+        properties=state.get('properties',{})
+        canonical=name+('['+','.join(key+'='+properties[key] for key in order)+']' if order else '')
+        wire_states[state['id']]={'id':state['id'],'type':type_id,'key':canonical,'flags':predicates['stateFlags'][state['id']],'values':[properties[key] for key in order]}
+wire={'formatVersion':1,'scope':'native-browser-registry-input','minecraft':'26.3','flagNames':predicates['flagNames'],'types':wire_types,'states':wire_states,'placementBits':predicates['placementBits'],'toDeepSlate':predicates['toDeepSlate'],'toNormalOre':predicates['toNormalOre'],'keys':platform['keys'],'propertyGroups':platform['propertyGroups'],'blockPropertyGroups':platform['blockPropertyGroups'],'entityCategories':platform['entityCategories']}
+encoded=(json.dumps(wire,separators=(',',':'))+'\n').encode()
+(output/'browser-registry.json').write_bytes(encoded)
+files['browser-registry.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}
 manifest={'formatVersion':1,'scope':'minecraft-development-registry-export','minecraft':version,'source':'Pinned VolmLib v26_3_R1 Paper development bundle; Minecraft data-generator --reports','volmLibCandidate':inputs['volmLibCandidate'],'releaseMatchVerified':False,'registryParityVerified':False,'sourceServerJarSha256':hashlib.sha256(server.read_bytes()).hexdigest(),'blocks':len(blocks),'states':len(ids),'files':files,'limitations':['Occlusion shapes, rendering layers, fluid geometry and biome tint data are not included in this export.','Native report state ids are build-specific; full block identifiers and properties remain authoritative.']}
 (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(f'Packaged {len(blocks)} native blocks and {len(ids)} block states for Minecraft {version["id"]}.')

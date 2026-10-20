@@ -62,7 +62,8 @@ public final class GenerateConfigReaders {
         JsonObject inventory=JsonParser.parseString(Files.readString(Path.of(args[2]))).getAsJsonObject();
         for(String name:inventory.getAsJsonObject("definitions").keySet())TYPES.put(name,Class.forName(name));
         Set<String> emitted=new HashSet<>();
-        try(JarOutputStream jar=new JarOutputStream(Files.newOutputStream(overrides))){
+        Path staging=overrides.resolveSibling(overrides.getFileName()+".part");
+        try(JarOutputStream jar=new JarOutputStream(Files.newOutputStream(staging))){
             for(Class<?> cls:TYPES.values()){
                 String name=cls.getSimpleName(),type=javaName(cls);
                 if(!java.lang.reflect.Modifier.isPublic(cls.getModifiers())||java.lang.reflect.Modifier.isAbstract(cls.getModifiers()))throw new IllegalStateException("Native data class is not directly constructible: "+cls);
@@ -86,6 +87,7 @@ public final class GenerateConfigReaders {
                 overrideClass(cls,jar,emitted);for(Field field:fields(cls))overrideClass(field.getDeclaringClass(),jar,emitted);
             }
         }
+        Files.move(staging,overrides,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING);
         for(int index=0;index<CONTAINERS.size();index++){
             ParameterizedType container=new ArrayList<>(CONTAINERS.values()).get(index);Class<?> raw=(Class<?>)container.getRawType();Type[] parameters=container.getActualTypeArguments();String type=container.getTypeName().replace('$','.');
             source.append("private static ").append(type).append(" container").append(index).append("(JsonReader reader)throws IOException{if(reader.peek()==JsonToken.NULL){reader.nextNull();return null;}enter();try{");
@@ -106,6 +108,11 @@ public final class GenerateConfigReaders {
         for(Class<?> cls:TYPES.values())if(art.arcane.iris.pack.loading.IrisRegistrant.class.isAssignableFrom(cls))source.append("if(type==").append(javaName(cls)).append(".class)return read").append(cls.getSimpleName()).append("(text);\n");
         source.append("throw new IllegalArgumentException(\"Native resource type is not linked: \"+type.getName());}\n");
         source.append("}\n");Path target=directory.resolve("studio/engine/config/NativeConfigReader.java");Files.createDirectories(target.getParent());Files.writeString(target,source,StandardCharsets.UTF_8);
+        Set<Class<?>> reflected=new LinkedHashSet<>();for(Class<?> cls:TYPES.values())for(Class<?> current=cls;current!=null&&current!=Object.class;current=current.getSuperclass())reflected.add(current);
+        StringBuilder metadata=new StringBuilder("package studio.engine.config;\npublic final class NativeConfigMetadata {public static final java.util.Set<String> TYPES=java.util.Set.of(");
+        boolean first=true;for(Class<?> cls:reflected){if(!first)metadata.append(',');first=false;metadata.append(quote(cls.getName()));}metadata.append(");public static boolean isRecord(Class<?> type){return switch(type.getName()){");
+        for(Class<?> cls:reflected)metadata.append("case ").append(quote(cls.getName())).append("->").append(cls.isRecord()).append(';');metadata.append("default->throw new IllegalStateException(\"Native compatibility type is not linked: \"+type.getName());};}}\n");
+        Files.writeString(target.getParent().resolve("NativeConfigMetadata.java"),metadata,StandardCharsets.UTF_8);
         System.out.println("Generated field readers for "+TYPES.size()+" native types; numerical bytecode is unchanged.");
     }
 }

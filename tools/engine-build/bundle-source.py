@@ -28,6 +28,15 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add(str(filename.relative_to(root)), filename.read_bytes())
     add('package.json', (root / 'package.json').read_bytes())
     add('native-inputs.json', (root / '.local-tools/iris-inputs.json').read_bytes())
+    dependency_lock=json.loads((root/'tools/engine-build/dependencies.lock.json').read_text())['brigadier']
+    source_jar=root/'.local-tools'/dependency_lock['sourceArchive']
+    if hashlib.sha256(source_jar.read_bytes()).hexdigest()!=dependency_lock['sourceSha256']:
+        raise ValueError('Brigadier source archive differs from its pinned checksum')
+    with zipfile.ZipFile(source_jar) as source:
+        for name in sorted(source.namelist()):
+            if name.endswith('.java'):
+                add('upstream/Brigadier/'+name,source.read(name))
+    add('upstream/Brigadier/LICENSE.txt',(root/'tools/engine-build/BRIGADIER-LICENSE.txt').read_bytes())
     with zipfile.ZipFile(jdk / 'lib/src.zip') as source:
         for name in ('java.base/java/util/SplittableRandom.java', 'java.base/java/util/random/RandomGenerator.java', 'java.base/jdk/internal/util/random/RandomSupport.java'):
             add('upstream/OpenJDK/' + name, source.read(name))
@@ -37,5 +46,5 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
     add('BUILD-INSTRUCTIONS.txt', b'Iris Terrain Studio development browser engine.\nUse Node 24+, Python 3, git, curl and tar. Run npm run engine:setup then npm run engine:build in the repository root.\nThe setup uses checksummed development tools and pinned Iris/VolmLib source commits. Java source is unmodified; browser-only bytecode platform adapters are retained with the sources.\nThis is not a qualified release build. Noise-style native/browser qualification and full terrain implementation remain outstanding.\n')
     add('SOURCE-SHA256.json', (json.dumps(records, indent=2, sort_keys=True) + '\n').encode())
 (output / 'LICENSE.txt').write_bytes((root / '.upstream/Iris/LICENSE.md').read_bytes())
-(output / 'THIRD-PARTY-NOTICES.txt').write_text('Iris and VolmLib: GPL-3.0-or-later. Full corresponding upstream and adapter source is in source.zip.\nOpenJDK restricted SplittableRandom adapter: GPL-2.0-only WITH Classpath-exception-2.0. Full source files and license notices are in source.zip.\nTeaVM 0.16.0: Apache-2.0. Runtime source and license: https://github.com/konsoletyper/teavm/tree/0.16.0 .\n')
+(output / 'THIRD-PARTY-NOTICES.txt').write_text('Iris and VolmLib: GPL-3.0-or-later. Full corresponding upstream and adapter source is in source.zip.\nOpenJDK restricted SplittableRandom adapter: GPL-2.0-only WITH Classpath-exception-2.0. Full source files and license notices are in source.zip.\nBrigadier 1.3.10: Copyright (c) Microsoft Corporation. All rights reserved. MIT License; complete pinned sources and license are in source.zip.\nTeaVM 0.16.0: Apache-2.0. Runtime source and license: https://github.com/konsoletyper/teavm/tree/0.16.0 .\n')
 print(f'Retained {len(records)} source/build files and license notices.')

@@ -13,6 +13,7 @@ import com.google.gson.stream.*;
 import studio.engine.config.NativeConfigReader;
 import java.io.*;
 import java.util.*;
+import art.arcane.iris.spi.PlatformRegistries;
 
 /** Worker-owned immutable authoring snapshot. No filesystem or server generation calls. */
 public final class MemoryPack {
@@ -23,6 +24,9 @@ public final class MemoryPack {
     private int bytes;
     private IrisData data;
     private ContentGate gate;
+    private final PlatformRegistries registries;
+    public MemoryPack(){this(null);}
+    public MemoryPack(PlatformRegistries registries){this.registries=registries;}
 
     public void register(String path,String text){
         if(data!=null)throw new IllegalStateException("The native pack snapshot is sealed");
@@ -54,21 +58,13 @@ public final class MemoryPack {
         data.setBlockLoader(pack.loader(new IrisBlockData(),IrisBlockData.class));
         data.setExpressionLoader(pack.loader(new IrisExpression(),IrisExpression.class));
         data.setImageMapLoader(pack.loader(new IrisImageMap(),IrisImageMap.class));
-        // Unbound native ContentGate records UNKNOWN, never a successful registry
-        // qualification. Terrain entry points must require a ready registry.
-        pack.gate=new ContentGate(null,pack::fallbacks,data.getCompatReport(),key->data.getBlockLoader().load(key,false));
-        data.getCompatReport().markIncomplete("Browser native registry and compatibility walker are not linked");
+        pack.gate=new ContentGate(pack.registries,pack::fallbacks,data.getCompatReport(),key->data.getBlockLoader().load(key,false));
+        if(pack.registries==null)data.getCompatReport().markIncomplete("Browser native registry is not installed");
     }
     private <T extends IrisRegistrant> MemoryResourceLoader<T> loader(T defaults,Class<T> type){
         MemoryResourceLoader<T> loader=new MemoryResourceLoader<>(this,data,defaults.getFolderName(),defaults.getTypeName(),type);loaders.put(defaults.getFolderName(),loader);data.getLoaders().put(type,loader);return loader;
     }
     public static ContentGate contentGate(IrisData data){return owner(data).gate;}
-    /** Preserve ContentGate's actual unready branch without linking its JVM reflection walker. */
-    public static CompatStatus evaluateUnbound(ContentGate gate,IrisRegistrant resource){
-        if(resource==null)return CompatStatus.OK;
-        if(gate.ready())throw new IllegalStateException("The browser native compatibility walker is not linked");
-        gate.report().markIncomplete("registry not ready");return CompatStatus.OK;
-    }
     public static MemoryPack owner(IrisData data){MemoryPack pack=OWNERS.get(data);if(pack==null)throw new IllegalStateException("No worker snapshot owns this native data instance");return pack;}
     public IrisRegistrant load(String folder,String name){if(data==null)throw new IllegalStateException("Open the pack snapshot first");MemoryResourceLoader<?> loader=loaders.get(folder);if(loader==null)throw new IllegalArgumentException("Native resource folder is not linked: "+folder);return loader.load(name);}
     public int resourceCount(){return resources.size();}

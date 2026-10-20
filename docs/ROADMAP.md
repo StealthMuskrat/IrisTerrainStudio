@@ -17,7 +17,7 @@ No calendar estimates are assigned before browser feasibility is demonstrated. P
 
 Track acceptance criteria in GitHub issues. Link each implementation PR to its phase and prerequisite issues. Keep PRs small enough to review against the pinned source. Record test commands, failed/unavailable checks, and remaining blockers. Close issues only when the acceptance evidence is present. Native execution and browser execution are separate results; foundation CI does not certify either.
 
-The native authoring graph now loads through worker memory snapshots and typed loaders, with real registry keys, predicates and property descriptors exported. The next engine milestone is the Java platform registry adapter and complete native compatibility walking, followed by region/biome/height composition. Authoring inspection does not qualify terrain.
+The native authoring graph now loads through worker memory snapshots and typed loaders, with real registry keys, predicates and property descriptors exported. The Java registry adapter and actual native compatibility walker are now connected, with ordinary region selection. The next engine milestone is inferred biome variants, focused/buffet selection, biome composition and terrain heights. Authoring inspection does not qualify terrain.
 
 Development proceeds locally in coherent implementation batches under the user's 2026-10-20 instruction. GitHub pushes are checkpoints and workflows are manual. Use focused local checks to resolve specific problems; reserve comprehensive program verification for the completed implementation. Dependency provenance, native schema/registry capture and full browser terrain generation remain required for release. Asset provenance work can proceed independently without bundling assets.
 

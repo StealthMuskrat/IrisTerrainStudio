@@ -27,6 +27,8 @@ public final class NativeRegistryExport {
                 List<NativeBlockProperty> group=entry.getValue();Integer id=identities.get(group);if(id==null){id=identities.size();identities.put(group,id);groups.add(gson.toJsonTree(group));}blocks.addProperty(entry.getKey(),id);
             }
             result.add("propertyGroups",groups);result.add("blockPropertyGroups",blocks);result.addProperty("lootTablesExported",true);
+            JsonObject categories=new JsonObject();for(String key:access.entityKeys())categories.addProperty(key,access.entity(key).spawnCategory());result.add("entityCategories",categories);
+            JsonArray leaves=new JsonArray();for(var block:net.minecraft.core.registries.BuiltInRegistries.BLOCK)if(block instanceof net.minecraft.world.level.block.LeavesBlock)leaves.add(net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block).toString());result.add("leafBlockTypes",leaves);
             Path output=Path.of(args[0]);Files.createDirectories(output.getParent());Files.writeString(output,gson.toJson(result)+"\n");System.out.println("Exported native world registry keys and "+groups.size()+" shared block-property descriptor groups.");
         }
     }

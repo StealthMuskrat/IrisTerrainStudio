@@ -1,0 +1,10 @@
+{
+  "brigadier": {
+    "version": "1.3.10",
+    "sourceUrl": "https://libraries.minecraft.net/com/mojang/brigadier/1.3.10/brigadier-1.3.10-sources.jar",
+    "sourceArchive": "brigadier-1.3.10-sources.jar",
+    "sourceSha256": "b2ae3f539c21d936b85b0006332ebe7185d4032782c1a18dd4719ea9cdf07981",
+    "stringReaderClassSha256": "b5c6164171c6f8e1d98baea38a7e8a6353f9ae7e228eddc405d76bf2cdbbc39f",
+    "note": "The captured Minecraft 26.3 Brigadier 1.3.11 and Iris Brigadier 1.3.10 StringReader.class bytes have this same hash."
+  }
+}
