@@ -4,7 +4,7 @@ No calendar estimates are assigned before browser feasibility is demonstrated. P
 
 | Phase | Result | Completion gate | Current state |
 | --- | --- | --- | --- |
-| 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | In progress; source audit complete, toolchain/dependency/registry/browser blockers open |
+| 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | Candidate primitive JVM/Wasm proof passes; full Iris/dependency/schema/registry gates remain open |
 | 1 | Supported-path generation proof of concept | Exact native/browser noise, seeds, regions, biomes, heights, and minimal voxel output for a stated real-pack subset | Blocked by Phase 0 |
 | 2 | Native pack editor and safe server IO | Schema-driven editing, references, unknown-field preservation, undo/redo, atomic saves, backups and conflict tests | Not started |
 | 3 | WebGPU 2D visualizer | Real engine outputs, navigation, revision-aware workers and invalidation; exact parity remains passing | Not started |
