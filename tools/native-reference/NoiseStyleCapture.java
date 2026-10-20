@@ -4,11 +4,14 @@ import art.arcane.iris.generation.noise.NoiseSeedCohesionTest;
 import art.arcane.iris.generation.noise.NoiseStyle;
 import art.arcane.volmlib.util.math.RNG;
 import art.arcane.volmlib.util.noise.CNG;
+import art.arcane.volmlib.util.noise.FractalBillowSimplexNoise;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 
 /** Development diagnostic. Calls the unchanged upstream fixture's own sampler. */
 public final class NoiseStyleCapture {
@@ -20,6 +23,10 @@ public final class NoiseStyleCapture {
         sampler.setAccessible(true);
         Path output = Path.of(args[0]);
         Files.createDirectories(output.getParent());
+        String classHash;
+        try (var bytes = CNG.class.getResourceAsStream("CNG.class")) {
+            classHash = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes.readAllBytes()));
+        }
         long aggregate = 0xcbf29ce484222325L;
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(output))) {
             out.println("{\"formatVersion\":1,\"scope\":\"native-cng-isolation-diagnostic\",\"styles\":[");
@@ -39,7 +46,7 @@ public final class NoiseStyleCapture {
                     out.print("]}");
                 }
             }
-            out.println("],\"aggregate\":\"" + aggregate + "\"}");
+            out.println("],\"cngClassSha256\":\"" + classHash + "\",\"aggregate\":\"" + aggregate + "\"}");
             if (out.checkError()) throw new java.io.IOException("Capture write failed");
         }
         // Preserve and execute the original assertion; a diagnostic match is not release qualification.
@@ -50,5 +57,7 @@ public final class NoiseStyleCapture {
             System.out.println("Original upstream checksum assertion: FAIL: " + failure.getMessage());
         }
         System.out.println("Captured aggregate: " + aggregate);
+        System.out.println("Native billow backend: " + FractalBillowSimplexNoise.nativeBackendStatus());
+        System.out.println("JVM mode: " + System.getProperty("java.vm.info"));
     }
 }

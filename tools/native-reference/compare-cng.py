@@ -70,7 +70,8 @@ def main():
               'irisBrowserParityVerified': False, 'expectedUpstreamChecksum': EXPECTED, 'profiles': {}}
     for profile in manifest['profiles']:
         capture = json.loads((root / (profile['id'] + '.json')).read_text())
-        report['profiles'][profile['id']] = {**profile, **compare(current, capture, manifest['expectedStyleOrder'])}
+        report['profiles'][profile['id']] = {**profile, 'cngClassSha256': capture['cngClassSha256'],
+                                            **compare(current, capture, manifest['expectedStyleOrder'])}
     (root / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
 
