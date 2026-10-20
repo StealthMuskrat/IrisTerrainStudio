@@ -7,6 +7,8 @@ import xml.etree.ElementTree as ET
 
 
 def summarize(results, exit_code, required_suites):
+    if not required_suites or any(not isinstance(name, str) or not name for name in required_suites):
+        raise ValueError('At least one named required suite is necessary')
     suites = {}
     diagnostics = []
     for path in sorted(Path(results).glob('TEST-*.xml')):

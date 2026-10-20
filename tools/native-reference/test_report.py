@@ -25,6 +25,11 @@ class NativeReportTests(unittest.TestCase):
         self.assertFalse(report['nativeRegressionsPassed'])
         self.assertEqual(report['missingRequiredSuites'], ['required.Suite'])
 
+    def test_empty_requirement_list_cannot_certify_a_run(self):
+        self.write('<testcase name="actual"/>')
+        with self.assertRaises(ValueError):
+            summarize(self.root, 0, [])
+
     def test_empty_suite_cannot_pass(self):
         self.write('', tests=0)
         self.assertFalse(summarize(self.root, 0, ['required.Suite'])['nativeRegressionsPassed'])

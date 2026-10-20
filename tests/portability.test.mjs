@@ -49,3 +49,39 @@ test('primitive comparison rejects empty captures, duplicate IDs, missing worker
     assert.throws(() => compareProbe(data.native, data.workers));
   }
 });
+
+function rngFixture() {
+  const bits = Array(112).fill('3ff0000000000000').join(':');
+  return {
+    native: { formatVersion: 1, scope: 'volmlib-rng-portability', cases: [
+      { id: 0, seed: '', textSeed: true, signature: '-9223372036854775808', bits },
+      { id: 1, seed: '9007199254740993', textSeed: false, signature: '9223372036854775807', bits },
+    ] },
+    workers: ['forward', 'reverse', 'shuffle'].map(order => ({ order, backend: 'WebAssembly GC',
+      results: [1, 0].map(id => ({ id, cold: bits, warm: bits })) })),
+  };
+}
+
+test('RNG capture comparison preserves textual seeds, 64-bit signatures and per-output diagnostics', () => {
+  const { native, workers } = rngFixture();
+  assert.equal(compareProbe(native, workers).comparisons, 1344);
+  workers[1].results[0].warm = workers[1].results[0].warm.replace(/.$/, '1');
+  const report = compareProbe(native, workers);
+  assert.equal(report.mismatches, 1);
+  assert.equal(report.diagnostics[0].seed, '9007199254740993');
+  assert.equal(report.diagnostics[0].signature, '9223372036854775807');
+  assert.equal(report.diagnostics[0].method, 111);
+});
+
+test('RNG capture input rejects lossy numeric seeds, invalid signatures and missing mode', () => {
+  for (const change of [
+    data => { data.native.cases[1].seed = 9007199254740992; },
+    data => { data.native.cases[1].signature = '9223372036854775808'; },
+    data => { delete data.native.cases[0].textSeed; },
+    data => { data.native.cases[0].bits = 'bad'; },
+  ]) {
+    const data = rngFixture();
+    change(data);
+    assert.throws(() => compareProbe(data.native, data.workers));
+  }
+});

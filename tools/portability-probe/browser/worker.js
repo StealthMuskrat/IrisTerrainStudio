@@ -4,7 +4,8 @@ self.onmessage = async ({ data }) => {
   try {
     const engine = await TeaVM.wasmGC.load('/probe.wasm');
     if (!(engine.instance instanceof WebAssembly.Instance)) throw new Error('No actual WebAssembly instance');
-    if (typeof engine.exports.sample !== 'function') throw new Error('Missing compiled sample export');
+    const sampler = data.kind === 'rng' ? engine.exports.sampleRng : engine.exports.sample;
+    if (typeof sampler !== 'function') throw new Error('Missing compiled sample export');
     const cases = [...data.cases];
     if (data.order === 'reverse') cases.reverse();
     if (data.order === 'shuffle') {
@@ -15,10 +16,9 @@ self.onmessage = async ({ data }) => {
         [cases[i], cases[j]] = [cases[j], cases[i]];
       }
     }
-    const results = cases.map(row => ({ id: row.id,
-      cold: engine.exports.sample(row.seed, row.x, row.y, row.z, false),
-      warm: engine.exports.sample(row.seed, row.x, row.y, row.z, true),
-    }));
+    const results = cases.map(row => data.kind === 'rng' ? {
+      id: row.id, cold: sampler(row.seed, row.textSeed, row.signature), warm: sampler(row.seed, row.textSeed, row.signature),
+    } : { id: row.id, cold: sampler(row.seed, row.x, row.y, row.z, false), warm: sampler(row.seed, row.x, row.y, row.z, true) });
     self.postMessage({ order: data.order, backend: 'WebAssembly GC', results });
   } catch (error) {
     self.postMessage({ error: String(error.stack || error) });
