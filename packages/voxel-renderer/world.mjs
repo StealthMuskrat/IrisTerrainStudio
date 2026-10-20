@@ -8,6 +8,17 @@ struct Output{@builtin(position) position:vec4f,@location(0) normal:vec3f,@locat
 @vertex fn vertex(@location(0) position:vec3f,@location(1) normal:vec3f,@location(2) color:vec4f,@location(3) uv:vec2f)->Output{var out:Output;out.position=camera.matrix*vec4f(position,1.);out.normal=normal;out.color=color;out.uv=uv;out.distance=distance(position,camera.eye.xyz);return out;}
 @fragment fn fragment(in:Output)->@location(0) vec4f{var color=textureSample(atlas,nearest,in.uv)*in.color;if(color.a<.01){discard;}let light=.48+.52*max(dot(normalize(in.normal),normalize(vec3f(.35,.85,.45))),0.);color=vec4f(color.rgb*light,color.a);let fog=smoothstep(220.,700.,in.distance);return vec4f(mix(color.rgb,vec3f(.061,.089,.092),fog),color.a);}
 `;
+// Only fully covered opaque unit-cube models can occlude a neighboring face here.
+// Other model shapes retain their faces until the exact Minecraft shape adapter is connected.
+function opaqueUnitCube(quads){
+  const covered=new Set();for(const quad of quads){if(quad.transparency!=='opaque'||quad.positions.length!==4)continue;
+    for(let axis=0;axis<3;axis++)for(const side of [0,1]){
+      const rest=[0,1,2].filter(value=>value!==axis),corners=new Set();let valid=true;
+      for(const point of quad.positions){if(point[axis]!==side||!rest.every(index=>point[index]===0||point[index]===1)){valid=false;break;}corners.add(point[rest[0]]+','+point[rest[1]]);}
+      if(valid&&corners.size===4)covered.add(axis+':'+side);
+    }
+  }return covered.size===6;
+}
 export class WorldRenderer{
   constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
@@ -20,7 +31,7 @@ export class WorldRenderer{
     const volume=input instanceof VoxelVolume?input:new VoxelVolume(input);this.cancelMesh();const id=this.job,atlas=new TextureAtlas(this.gpu.device),models=[],diagnostics=[];
     try{
       for(let i=0;i<volume.palette.length;i++){
-        try{models[i]=await bakeBlock(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
+        try{if(volume.palette[i].air===true){models[i]=[];continue;}models[i]=await bakeBlock(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
         catch(error){models[i]=[];diagnostics.push({block:volume.palette[i].id,message:error.message});}
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
@@ -29,7 +40,7 @@ export class WorldRenderer{
         this.meshReject=reject;
         worker.onmessage=({data})=>{if(id!==this.job)return;if(data.error){reject(new Error(data.error));return;}if(data.kind==='progress'){this.onProgress?.(data.progress);return;}resolve(data);};
         worker.onerror=event=>reject(new Error(event.message));
-        worker.postMessage({id,width:volume.width,height:volume.height,depth:volume.depth,blocks:volume.blocks,palette:volume.palette,models,clip});
+        const palette=volume.palette.map((block,index)=>({...block,solid:opaqueUnitCube(models[index])}));worker.postMessage({id,width:volume.width,height:volume.height,depth:volume.depth,blocks:volume.blocks,palette,models,clip});
       });
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       this.meshReject=null;worker.terminate();this.worker=null;
@@ -38,6 +49,7 @@ export class WorldRenderer{
       this.faces=mesh.faces;this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
     }catch(error){atlas.dispose();if(this.job===id){this.worker?.terminate();this.worker=null;this.meshReject=null;}throw error;}
   }
+  clear(){this.cancelMesh();this.volume=null;this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   upload(name,data){
     this[name]?.destroy();this[name+'Count']=data.length/12;
     if(name==='transparent'){

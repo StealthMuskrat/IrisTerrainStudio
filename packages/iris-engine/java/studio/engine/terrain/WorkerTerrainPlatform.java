@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 
 /** Explicit host boundary for isolated scalar sampling; no server services are simulated. */
 public final class WorkerTerrainPlatform {
+    private static final art.arcane.iris.generation.simd.SimdKernels SCALAR=new art.arcane.iris.generation.simd.ScalarSimdKernels();
+    public static art.arcane.iris.generation.simd.SimdKernels scalarKernels(){return SCALAR;}
     public static void install(PlatformRegistries registry){
         IrisPlatforms.unbind();
         IrisPlatforms.bind(new PlatformBoundary(){

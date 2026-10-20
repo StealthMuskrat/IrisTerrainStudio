@@ -13,6 +13,19 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("art.arcane.iris.generation.context.ChunkContext")){
+                replaceClass(cls,"java.util.concurrent.CompletableFuture","studio.engine.terrain.WorkerFuture");
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("shouldPrefillAsync")){Program p=new Program();for(int i=0;i<=method.parameterCount();i++)p.createVariable();Variable value=p.createVariable();BasicBlock block=p.createBasicBlock();IntegerConstantInstruction zero=new IntegerConstantInstruction();zero.setConstant(0);zero.setReceiver(value);block.add(zero);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(value);block.add(exit);method.setProgram(p);}
+                    Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();if(instruction instanceof GetFieldInstruction field&&field.getField().equals(new FieldReference("art.arcane.iris.generation.concurrent.MultiBurst","burst"))){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(field.getReceiver());instruction.replace(empty);}instruction=next;}
+                }
+            }
+            if(name.equals("art.arcane.iris.generation.simd.SimdSupport"))for(MethodHolder method:cls.getMethods()){
+                if(method.getName().equals("<clinit>")){Program p=new Program();p.createVariable();p.createBasicBlock().add(new ExitInstruction());method.setProgram(p);}
+                else if(method.getName().equals("kernels")){Program p=new Program();p.createVariable();Variable value=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerTerrainPlatform","scalarKernels",ValueType.object("art.arcane.iris.generation.simd.SimdKernels")));call.setReceiver(value);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(value);block.add(exit);method.setProgram(p);}
+                else if(method.getProgram()!=null)unavailable(method,"JVM vector-module discovery");
+            }
+            if(java.util.Set.of("art.arcane.iris.generation.runtime.UpperDimensionContext","art.arcane.iris.generation.runtime.DimensionStackContext").contains(name))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Upper or stacked dimension runtime");
             if(name.equals("java.util.TemplateCollections$NEtriesMap")){
                 FieldHolder data=cls.getField("data");ValueType entries=ValueType.arrayOf(ValueType.object("java.util.Map$Entry"));if(data==null||!data.getType().equals(entries))throw new IllegalStateException("Pinned immutable-map storage changed");int changed=0;
                 for(MethodHolder method:cls.getMethods())if(method.getName().equals("get")){

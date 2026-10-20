@@ -24,7 +24,7 @@ public final class GenerateEngineBoundary {
             out.append("@Override public ").append(method.getReturnType().getCanonicalName()).append(' ').append(method.getName()).append('(');
             Class<?>[] parameters=method.getParameterTypes();
             for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append(parameters[i].getCanonicalName()).append(" p").append(i);}
-            out.append("){throw new UnsupportedOperationException(\"Native engine platform operation is not connected: ").append(method.getName()).append("\");}\n");
+            out.append("){throw studio.engine.UnsupportedPlatform.unavailable(\"Native engine platform operation: ").append(method.getName()).append("\");}\n");
         }
         out.append("}\n");Path file=Path.of(directory,"studio/engine/terrain/"+name+".java");Files.createDirectories(file.getParent());Files.writeString(file,out);
     }

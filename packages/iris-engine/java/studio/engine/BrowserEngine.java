@@ -46,6 +46,7 @@ public final class BrowserEngine {
     @JSExport public static String sampleTerrainHeight(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");return bits(terrain.getComplex().getHeightStream().getDouble(x,z));}
     @JSExport public static String sampleTerrainBiome(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");var biome=terrain.getComplex().getTrueBiomeStream().get(x,z);if(biome==null)throw new IllegalStateException("Native biome pool returned no biome");return biome.getLoadKey();}
 
+    @JSExport public static String paintTerrainChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainPaintStage.paint(terrain,x,z);}
     @JSExport public static String sampleTerrainColumn(int x,int z)throws java.io.IOException{
         if(terrain==null)throw new IllegalStateException("Prepare native terrain first");var column=terrain.getComplex().naturalTerrainColumn(x,z);if(column==null)return "null";
         StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("baseHeight").value(bits(column.baseHeight()));writer.name("minY").value(column.minY());writer.name("topY").value(column.topY());writer.name("shaped").value(column.shaped());writer.name("spans").beginArray();for(int i=0;i<column.spanCount();i++){writer.beginArray();writer.value(column.ceiling(i));writer.value(column.floor(i));writer.endArray();}writer.endArray();writer.name("occupancy");StringBuilder occupancy=new StringBuilder();for(int y=0;y<terrain.getHeight();y++)occupancy.append(column.isSolid(y)?'1':'0');writer.value(occupancy.toString());writer.endObject();}return output.toString();
@@ -71,6 +72,7 @@ public final class BrowserEngine {
         BrowserRegistries installed=BrowserRegistries.read(text);pack.release();registry=installed;pack=new MemoryPack(registry);return "{\"blocks\":"+registry.typeCount()+",\"states\":"+registry.stateCount()+"}";
     }
     @JSExport public static String registryState(String text,boolean strict)throws java.io.IOException{if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.describe(text,strict);}
+    @JSExport public static String registryRenderingState(String key)throws java.io.IOException{if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.describeRendering(key);}
     @JSExport public static boolean registryMatches(String first,String other){if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.decodeBlockState(first).matches(registry.decodeBlockState(other));}
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}

@@ -1,0 +1,200 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-terrain-painting-stage-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "ce2438792c84a5e1860423c38c359eefc2818d1f9df99ff57a7cfd7acd4a7024",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "7aafefbce82c1baa25594a1b750b1383a88e2b90d50aea6f5870ddcc7b68c391",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "3dccb7e951745b700ead8e48051ba83b7bd865534700b9edd2aad0746023f94a",
+  "focusedCheck": {
+    "command": "node tools/checks/native-paint-link.mjs",
+    "result": "pass",
+    "chunks": 16,
+    "exactBlockStateComparisons": 1048576,
+    "worldSeeds": [
+      "0",
+      "9223372036854775807"
+    ],
+    "chunkOrigins": [
+      [
+        0,
+        0
+      ],
+      [
+        -16,
+        32
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "flat",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "layered",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 300,
+            "sha256": "5212f72ffd5ea62961bf6c42be7eaa61fe62fa5d5c9cb52d19d817bc47b3b97a"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "volumetric",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 441,
+            "sha256": "05d02d2beaee9d87d7594a75ddd5aacf26b35b7348ed66dc8f9ab0dd48be26d7"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "fluids",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 228,
+            "sha256": "46146bcea6250b1ee9582840742a374890f70ec8752a1e64518ea5976ed17377"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 306,
+            "sha256": "669ef64a42bb9149f1dc796815ac8993e23e014a5aa995a9316d02a5eae986a0"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "nativeStatesExercised": [
+      "minecraft:air",
+      "minecraft:bedrock",
+      "minecraft:deepslate[axis=y]",
+      "minecraft:dirt",
+      "minecraft:grass_block[snowy=false]",
+      "minecraft:ice",
+      "minecraft:sand",
+      "minecraft:stone",
+      "minecraft:water[level=0]"
+    ],
+    "oracle": "Unmodified JVM IrisTerrainNormalActuator.paint, ChunkContext, biome layer generators and native registry helpers with explicit host fields",
+    "guards": [
+      "Unconnected hydrology refuses preparation and leaves no stale terrain",
+      "A persistent float-cache request inside a biome palette aborts painting instead of silently dropping the layer"
+    ]
+  },
+  "workerClientCheck": {
+    "command": "node tools/checks/native-terrain-worker.mjs",
+    "result": "pass",
+    "scalarSamples": 12,
+    "voxelCells": 98304,
+    "voxelDimensions": [
+      16,
+      384,
+      16
+    ],
+    "worldOrigin": [
+      16,
+      -64,
+      -16
+    ],
+    "clientCacheBytes": 393216,
+    "environment": "Actual worker script, checked Wasm and registry in a Node vm context, plus actual GenerationClient and VoxelVolume; no browser or GPU",
+    "checks": [
+      "Typed voxel transfer and cache reuse",
+      "Canonical block-state properties independent of matching masks",
+      "World minimum-Y and tall-volume block inspection"
+    ]
+  },
+  "harnessSha256": {
+    "tools/checks/NativeTerrainLinkCheck.java": "496aa7bccdd4f4ec5e974e0b7777d76a585eb7e95be09c71c22b09b3dab34eb1",
+    "tools/checks/native-paint-link.mjs": "723329ff5b15aacabd1859be59533577deb9b94a39779f412b24829f13f698d3",
+    "tools/checks/native-terrain-worker.mjs": "cb0eb97f9dd0299cca3b96bb563f6379a716aa05dfd953cda158ea5f8fb8e0ab"
+  },
+  "implementation": [
+    "Unmodified native terrain painter, layer/material generation and air-initialized native block buffer",
+    "Single-worker native context dispatch and actual scalar SIMD kernels",
+    "Engine-failure causes at unconnected platform boundaries",
+    "Canonical rendering state table metadata and typed one-chunk voxel results",
+    "Editor 3D stage preview, mesh invalidation, resource-pack remeshing and native state-key inspection",
+    "Tall voxel volumes with existing cell/mesh budgets and opaque unit-cube-only culling proof"
+  ],
+  "limitations": [
+    "This is only the native terrain painting stage, with an explicit incomplete-pipeline marker",
+    "No caves, later modifiers, deposits, decorators, object/tree content insertion or completed chunks",
+    "Hydrology, transforms, transitions, upper/stacked dimensions and terrain buffet remain unsupported",
+    "No browser/GPU visual verification or complete Minecraft rendering qualification",
+    "Authorized assets, biome tints, fluids, weighted model choices and exact shape behavior remain outstanding",
+    "No full option matrix, custom registry/settings, performance, release or comprehensive application qualification",
+    "No GitHub workflow or comprehensive program suite was run"
+  ]
+}

@@ -136,6 +136,11 @@ public final class BrowserRegistries implements PlatformRegistries {
     @Override public Map<String,List<NativeBlockProperty>> blockStateProperties(){return Collections.unmodifiableMap(properties);}
     public int stateCount(){return states.size();}
     public int typeCount(){return types.size();}
+    /** Full canonical state metadata; independent of native first-parse matching masks. */
+    public String describeRendering(String key)throws IOException{
+        State state=byKey.get(key);if(state==null)throw new IllegalArgumentException("Painted state is absent from the native registry");BlockType type=types.get(state.type);java.io.StringWriter output=new java.io.StringWriter();
+        try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("id").value(type.name);writer.name("stateKey").value(state.key);writer.name("nativeStateId").value(state.id);writer.name("nativeFlags").value(state.flags);writer.name("air").value((state.flags&1)!=0);writer.name("properties").beginObject();for(int i=0;i<type.order.length;i++)writer.name(type.order[i]).value(state.values[i]);writer.endObject();writer.endObject();}return output.toString();
+    }
     public String describe(String text,boolean strict)throws IOException{
         BrowserBlockState value=(BrowserBlockState)(strict?decodeBlockState(text):blockOrNull(text));java.io.StringWriter output=new java.io.StringWriter();try(JsonWriter writer=new JsonWriter(output)){if(value==null)writer.nullValue();else{writer.beginObject();writer.name("key").value(value.key());writer.name("flags").value(value.state.flags);writer.name("parsed");if(value.parsed==null)writer.nullValue();else{writer.beginObject();for(var entry:value.parsed.entrySet())writer.name(entry.getKey()).value(entry.getValue());writer.endObject();}writer.endObject();}}return output.toString();
     }

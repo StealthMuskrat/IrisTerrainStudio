@@ -11,13 +11,13 @@ No feature is currently advertised as supported. “Inspected” means source re
 | Volumetric terrain | Actual Terrain3DRuntime, column spans and fragment filter connected | Native height/column outputs and categorical occupancy slices | 64 native/Node biome-height-column results and 9,216 occupancy API checks agree; full qualification pending |
 | Caves and subterrain | Upstream systems exist; detailed reachability audit pending | Not connected | Not run |
 | Hydrology | Upstream probe entry points identified | None | Not run |
-| Surfaces and material selection | Registry/platform boundary identified | None | Not run |
+| Surfaces and material selection | Actual native terrain painter/layer generator connected | One-chunk terrain-stage voxel output and canonical rendering metadata | 16 native/Node chunks and 1,048,576 exact state comparisons agree; complete option/pipeline qualification pending |
 | Deposits, decorators | Detailed behavior audit pending | None | Not run |
 | Procedural objects and trees | Detailed behavior audit pending | None | Not run |
 | Native pack-specific schemas | Unchanged SchemaBuilder with native world/reloadable registries | 70-schema fixture export and snapshot/hash-checked editor attachment | Four unchanged fixture resources report zero validation issues; complete conformance and browser verification pending |
 | Native pack resources and registries | Actual native IO, compatibility pools and registry exporters inspected | Memory snapshots/loaders and authoring inspection; native predicates/registry metadata; Java registry adapter and actual compatibility walker connected | Focused parser/matching and six native compatibility scenarios agree in Node Wasm; full parity pending |
 | Pack IO, schema editing, saving, undo | Schema builder and resource loader inspected | Local server/editor, lossless JSON, schema rules, recovery and conflicts implemented | Focused editing/recovery checks pass; final integration pending |
-| WebGPU 2D/3D visualizers | Design boundary recorded | Scalar WebGPU view and block-model renderer modules implemented | GPU verification pending |
+| WebGPU 2D/3D visualizers | Design boundary recorded | Native scalar/occupancy maps and native painting-stage voxel renderer connection implemented | GPU verification pending |
 | Resource packs and block models | Required assets absent | Local ZIP stack, models, atlas, animations implemented; remaining client adapters missing | Not run |
 
 Excluded scope follows the specification: gameplay, administration, unrelated structure editors, legacy engines, automatic pack migration, and server-generated previews. In-scope generation with unproved behavior must be reported as unsupported rather than replaced with fabricated output.

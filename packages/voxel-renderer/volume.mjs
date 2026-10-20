@@ -1,7 +1,7 @@
 export class VoxelVolume {
   constructor(data) {
     const { width,height,depth,origin,palette,blocks }=data;
-    if(![width,height,depth].every(n=>Number.isInteger(n)&&n>0&&n<=256)||width*height*depth>16_777_216)throw new Error('Voxel dimensions exceed the preview memory limit.');
+    if(![width,depth].every(n=>Number.isInteger(n)&&n>0&&n<=256)||!Number.isInteger(height)||height<1||height>4096||width*height*depth>16_777_216)throw new Error('Voxel dimensions exceed the preview memory limit.');
     if(!Array.isArray(origin)||origin.length!==3||!origin.every(Number.isSafeInteger))throw new Error('Voxel origin must contain exact integer world coordinates.');
     if(!Array.isArray(palette)||!palette.length||palette.length>65536||palette.some(block=>typeof block.id!=='string'))throw new Error('Voxel block palette is invalid.');
     if(!(blocks instanceof Uint16Array||blocks instanceof Uint32Array)||blocks.length!==width*height*depth)throw new Error('Voxel block coverage is incomplete.');

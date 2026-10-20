@@ -28,6 +28,8 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
     @Override public boolean isStudio(){return false;}
     @Override public boolean isClosed(){return false;}
+    @Override public int getCacheID(){return System.identityHashCode(this);}
+    @Override public UpperDimensionContext getUpperContext(){return null;}
     @Override public IrisBiome getFocus(){String key=dimension.getFocus();if(key==null||key.trim().isEmpty())return null;IrisBiome biome=data.getBiomeLoader().load(key);return biome==null||biome.isCompatExcluded()?null:biome;}
     @Override public IrisRegion getFocusRegion(){String key=dimension.getFocusRegion();if(key==null||key.trim().isEmpty())return null;IrisRegion region=data.getRegionLoader().load(key);return region==null||region.isCompatExcluded()?null:region;}
 }
