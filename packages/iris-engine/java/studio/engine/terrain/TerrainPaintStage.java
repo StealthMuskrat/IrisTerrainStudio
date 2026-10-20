@@ -17,10 +17,14 @@ public final class TerrainPaintStage {
         ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());
         ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
         new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
+        return serialize(engine,x,z,blocks,"native-terrain-paint-stage-development");
+    }
+    public static String serialize(BrowserTerrainEngine engine,int x,int z,ArrayHunk<NativeBlockState> blocks,String scope)throws IOException{
+        int height=engine.getHeight();
         LinkedHashMap<String,Integer> indices=new LinkedHashMap<>();int[] cells=new int[16*height*16];
         for(int y=0;y<height;y++)for(int localZ=0;localZ<16;localZ++)for(int localX=0;localX<16;localX++){
             NativeBlockState block=blocks.getRaw(localX,y,localZ);if(block==null)throw new IllegalStateException("Native terrain painter returned an uninitialized block");String key=block.key();Integer index=indices.get(key);if(index==null){index=indices.size();indices.put(key,index);}cells[(y*16+localZ)*16+localX]=index;
         }
-        StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("scope").value("native-terrain-paint-stage-development");writer.name("x").value(x);writer.name("z").value(z);writer.name("minY").value(engine.getMinHeight());writer.name("height").value(height);writer.name("palette").beginArray();for(String key:indices.keySet())writer.value(key);writer.endArray();writer.name("cells").beginArray();for(int cell:cells)writer.value(cell);writer.endArray();writer.endObject();}return output.toString();
+        StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("scope").value(scope);writer.name("x").value(x);writer.name("z").value(z);writer.name("minY").value(engine.getMinHeight());writer.name("height").value(height);writer.name("palette").beginArray();for(String key:indices.keySet())writer.value(key);writer.endArray();writer.name("cells").beginArray();for(int cell:cells)writer.value(cell);writer.endArray();writer.endObject();}return output.toString();
     }
 }

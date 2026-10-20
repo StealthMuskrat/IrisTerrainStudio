@@ -13,6 +13,21 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("art.arcane.iris.generation.stage.IrisCarveModifier")){
+                int hostCalls=0,lookups=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("existingMantleChunk")){
+                        Program p=new Program();p.createVariable();Variable mantle=p.createVariable(),x=p.createVariable(),z=p.createVariable(),result=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage","existingChunk",ValueType.object("art.arcane.volmlib.util.mantle.runtime.Mantle"),ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.volmlib.util.mantle.runtime.MantleChunk")));call.setArguments(mantle,x,z);call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);lookups++;continue;
+                    }
+                    if(!method.getName().equals("onModify"))continue;Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.runtime.Engine")&&ref.getName().equals("getMantle"))target="engineMantle";
+                        else if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle"))target="getMantle";
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="useChunk";
+                        if(target!=null){redirectHostCall(call,target);hostCalls++;}
+                    }
+                }if(hostCalls!=3||lookups!=1)throw new IllegalStateException("Pinned native cave modifier storage calls changed");
+            }
 
             if(java.util.Set.of("art.arcane.volmlib.util.hunk.bits.HashPalette","art.arcane.volmlib.util.hunk.bits.LinearPalette").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
             if(java.util.Set.of("art.arcane.volmlib.util.hunk.bits.DataContainer","art.arcane.volmlib.util.hunk.bits.DataBits").contains(name)){
@@ -92,6 +107,10 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }}
             }
             if(name.equals("art.arcane.iris.generation.runtime.IrisComplex$BoundsSampler"))replaceClass(cls,"java.lang.ref.WeakReference","studio.engine.terrain.WorkerWeakReference");
+            if(java.util.Set.of("art.arcane.iris.generation.terrain.IrisDimensionCarvingResolver","art.arcane.iris.generation.terrain.IrisDimensionCarvingResolver$State").contains(name))for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
+                if(instruction instanceof ConstructInstruction construct&&construct.getType().equals("java.lang.ref.WeakReference"))construct.setType("studio.engine.terrain.NullableWeakReference");
+                if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.ref.WeakReference")&&call.getMethod().getName().equals("<init>"))call.setMethod(new MethodReference("studio.engine.terrain.NullableWeakReference",call.getMethod().getDescriptor()));
+            }}
             if(name.equals("art.arcane.iris.configuration.IrisSettings"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("read"))unavailable(method,"Server settings filesystem IO; install worker settings first");
             if(name.equals("art.arcane.iris.generation.runtime.IrisComplex")){
                 int uuids=0;for(MethodHolder method:cls.getMethods()){Program program=method.getProgram();if(program==null)continue;for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference(java.util.UUID.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class))){call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class));uuids++;}}
@@ -243,6 +262,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
         });
     }
     private static ValueType replaced(ValueType type,String original,String replacement){return type.equals(ValueType.object(original))?ValueType.object(replacement):type;}
+    private static void redirectHostCall(InvokeInstruction call,String target){MethodReference ref=call.getMethod();java.util.List<Variable> args=new java.util.ArrayList<>();args.add(call.getInstance());args.addAll(call.getArguments());ValueType[] old=ref.getSignature(),signature=new ValueType[old.length+1];signature[0]=ValueType.object(ref.getClassName());System.arraycopy(old,0,signature,1,old.length);call.setInstance(null);call.setArguments(args.toArray(Variable[]::new));call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage",new MethodDescriptor(target,signature)));}
     private static void replaceDeclarations(ClassHolder cls,String original,String replacement){
         for(MethodHolder old:new java.util.ArrayList<>(cls.getMethods())){
             ValueType[] signature=old.getDescriptor().getSignature();boolean changed=false;for(int i=0;i<signature.length;i++){ValueType next=replaced(signature[i],original,replacement);changed|=!next.equals(signature[i]);signature[i]=next;}if(!changed)continue;

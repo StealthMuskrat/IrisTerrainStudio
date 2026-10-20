@@ -45,7 +45,7 @@ npm run engine:install -- /path/to/noise-rng-evidence.zip
 
 Select a **Noise lab** field and generate. These are actual VolmLib primitive samples, not dimension terrain. Wasm, runtime and archive hashes are verified during installation; corresponding source and license material are installed alongside the module. Generated engine assets, packs and browser-local resource packs are not committed.
 
-The voxel preview currently contains the native terrain painting stage. A separate dimension cave-profile map shows native cave markers for one chunk at Slice Y; cave block resolution and remaining cave stages are unfinished. Hydrology and the complete chunk pipeline remain unfinished and unqualified. F8thful and matching vanilla assets must be supplied locally. See [development implementation notes](docs/DEVELOPMENT.md).
+The voxel previews contain the native terrain painting stage and a separate dimension-profile cave material stage using the actual native carve modifier and a five-chunk marker window. A one-chunk Slice Y map also shows native cave markers. Biome-profile carving, cave decoration and later stages are unfinished. Hydrology and the complete chunk pipeline remain unfinished and unqualified. F8thful and matching vanilla assets must be supplied locally. See [development implementation notes](docs/DEVELOPMENT.md).
 
 ## Verified target
 

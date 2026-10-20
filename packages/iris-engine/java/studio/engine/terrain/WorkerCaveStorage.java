@@ -14,12 +14,19 @@ import java.util.*;
 public final class WorkerCaveStorage {
     private static MantleChunk<Matter> active;
     private static int height,chunkX,chunkZ;
+    private static final Map<Long,MantleChunk<Matter>> chunks=new LinkedHashMap<>();
     public static void begin(int worldHeight,int x,int z){
         if(active!=null)throw new IllegalStateException("Nested worker cave storage");
         height=worldHeight;chunkX=x;chunkZ=z;
-        active=new MantleChunk<>((worldHeight+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE);
+        active=new MantleChunk<>((worldHeight+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE);chunks.put(key(x,z),active);
     }
-    public static void clear(){active=null;height=0;}
+    public static void clear(){active=null;height=0;chunks.clear();}
+    public static void select(int x,int z){requireActive();if(chunks.size()>=5&&!chunks.containsKey(key(x,z)))throw new IllegalStateException("Cave window exceeds five chunks");active=chunks.computeIfAbsent(key(x,z),ignored->new MantleChunk<>((height+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE));chunkX=x;chunkZ=z;}
+    private static long key(int x,int z){return ((long)x<<32)|(z&0xffffffffL);}
+    public static art.arcane.iris.generation.mantle.EngineMantle engineMantle(art.arcane.iris.generation.runtime.Engine ignored){requireActive();return null;}
+    public static Mantle<Matter> getMantle(art.arcane.iris.generation.mantle.EngineMantle ignored){requireActive();return null;}
+    public static art.arcane.volmlib.util.mantle.MantleChunk<Matter> useChunk(Mantle<?> ignored,int x,int z){MantleChunk<Matter> chunk=existingChunk(ignored,x,z);if(chunk==null)throw new IllegalStateException("Cave chunk is not prepared");return chunk.use();}
+    public static MantleChunk<Matter> existingChunk(Mantle<?> ignored,int x,int z){requireActive();return chunks.get(key(x,z));}
     public static Mantle<Matter> getMantle(MantleWriter unused){requireActive();return null;}
     public static int getWorldHeight(Mantle<?> unused){requireActive();return height;}
     public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requireActive();if(x!=chunkX||z!=chunkZ)throw studio.engine.UnsupportedPlatform.unavailable("Cave access outside the prepared chunk");return active;}
