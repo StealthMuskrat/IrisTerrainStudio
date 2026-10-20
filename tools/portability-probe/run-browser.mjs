@@ -74,7 +74,7 @@ try {
     socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
   });
   const version = await command('Browser.getVersion');
-  const { targetId } = await command('Target.createTarget', { url: origin });
+  const { targetId } = await command('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await command('Target.attachToTarget', { targetId, flatten: true });
   const expression = `(async () => {
     const cases = await (await fetch('${origin}/inputs.json')).json();

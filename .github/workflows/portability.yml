@@ -34,10 +34,12 @@ jobs:
           java --version > tools/portability-probe/target/provenance/java-version.txt 2>&1
           mvn --version > tools/portability-probe/target/provenance/maven-version.txt
           google-chrome --version > tools/portability-probe/target/provenance/chrome-version.txt
-      - name: Compile the same unmodified source for the JVM and Wasm GC
-        run: mvn --batch-mode --no-transfer-progress --file tools/portability-probe/pom.xml process-classes
+      - name: Compile the verified source for the JVM
+        run: mvn --batch-mode --no-transfer-progress --file tools/portability-probe/pom.xml compile
       - name: Capture native primitive outputs
         run: java -cp tools/portability-probe/target/classes studio.probe.NoiseProbe > tools/portability-probe/target/native.json
+      - name: Compile the same verified source to Wasm GC
+        run: mvn --batch-mode --no-transfer-progress --file tools/portability-probe/pom.xml process-classes
       - name: Compare actual browser workers against native results
         run: node tools/portability-probe/run-browser.mjs
       - name: Record compiler inputs and resolved artifact digests

@@ -12,11 +12,17 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.teavm</groupId><artifactId>teavm-classlib</artifactId><version>${teavm.version}</version><scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.teavm</groupId><artifactId>teavm-jso</artifactId><version>${teavm.version}</version>
     </dependency>
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-resources-plugin</artifactId><version>3.5.0</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version>
       </plugin>
