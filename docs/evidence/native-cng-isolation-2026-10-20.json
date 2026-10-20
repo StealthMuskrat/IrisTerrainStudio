@@ -67,11 +67,41 @@
       "differencesFromCurrent": 0,
       "changedStyles": {},
       "firstDifference": null
+    },
+    "fixture_noise": {
+      "id": "fixture_noise",
+      "commit": "12bc569151b854946fe15dcda0b15a4cdf43dfc1",
+      "sha256": "d24281559241094c063233e62a4cc1812209fffc020b882914df62dd7f5e643e",
+      "extraSources": [
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/interpolation/IrisInterpolation.java",
+          "sha256": "2bef6ba8d4172aaabad254e680e8eb997bf97011ea8e529d7f385a59da669511"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/interpolation/NoiseBoundsSampleCache2D.java",
+          "sha256": "25940451fcee3ebc5c0e6efc25965e16f86e61723b60cbc35b785fb91be6140a"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/noise/FractalBillowSimplexNoise.java",
+          "sha256": "a57cdfbffdc10336930b2a0b70b4b3b068b5361c8cefb30bf514257fcc1de6c0"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/noise/InterpolatedNoise.java",
+          "sha256": "c73a8046173d1ef6f8cfd54f0dc42bbc10322ff0e88a34320038f56d58473f71"
+        }
+      ],
+      "cngClassSha256": "12b9621eb5b385fb8e9501108d8d4187b62625c571c765ab61ca3d303116a50b",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
     }
   },
   "styleCount": 186,
-  "capturedOutputCount": 83700,
-  "comparisonsAgainstCurrent": 66960,
+  "capturedOutputCount": 100440,
+  "comparisonsAgainstCurrent": 83700,
   "inputs": {
     "formatVersion": 1,
     "purpose": "Native Iris source-build audit with explicit experimental VolmLib input",
@@ -107,7 +137,7 @@
     "skipped": 0
   },
   "runtime": {
-    "billowBackend": "java-native-access-disabled",
+    "billowBackend": "java-native-access-disabled in five profiles; java-only-source (no native backend API) in fixture_noise",
     "currentJvm": "mixed mode, sharing",
     "interpretedJvm": "interpreted mode, sharing"
   },
@@ -116,7 +146,8 @@
     "fixture": "1935a27f3a5d7de590b3e02995f5b9c4cb2073edc714e6590ed2bc1088fd8546",
     "mutation": "e847012b6f8943ac0bebaf19f370516a9f7458c599599b8b02852168d4002a65",
     "memo": "466324e72be8e0679093239bc668829fe36e1e2bcaf6c7fdf9e91f4389d1af02",
-    "interpreted": "91df6d36b459dd910dd7d7773a45ed6c3fa28be8ab568bc9aabbe4d224c4c4bd"
+    "interpreted": "91df6d36b459dd910dd7d7773a45ed6c3fa28be8ab568bc9aabbe4d224c4c4bd",
+    "fixture_noise": "1935a27f3a5d7de590b3e02995f5b9c4cb2073edc714e6590ed2bc1088fd8546"
   },
   "sourceFindings": {
     "noiseStyleUnchangedSinceFixture": true,
@@ -132,14 +163,15 @@
     ]
   },
   "evidence": {
-    "workflowUrl": "https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39438966442",
-    "workflowRunId": 39438966442,
-    "commit": "dc31d813a4e17e1a3f7d859e20a2e5ce38605948",
-    "artifactId": 12272524073,
-    "artifactSha256": "ded4a07d0c72ead23327094356b28a64e19a02bbacb3d1c4df05f0383acdc50c",
+    "workflowUrl": "https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39440406127",
+    "workflowRunId": 39440406127,
+    "commit": "c73fdac9ee3edd662c9764caaa2a446d6870aee9",
+    "artifactId": 12273921114,
+    "artifactSha256": "fdee3a2820ecfea8938859046b28773fdd23540da384a14cf7c73a00f8ba0b5e",
     "archiveDigestVerified": true,
     "capturesIndependentlyCompared": true,
+    "overlaySourcesIndependentlyHashVerified": true,
     "retentionDays": 30
   },
-  "conclusion": "CNG-only historical overlays and interpreter/JIT mode produced no differing sample in this Linux/Java environment. This does not explain the upstream checksum or exclude other source/platform/fixture differences."
+  "conclusion": "CNG-only overlays, the complete changed fixture-era noise/math/interpolation source cohort, and interpreter/JIT mode produced no differing sample in this Linux/Java environment. The original checksum remains unexplained; other dependency/platform/fixture inputs and release provenance remain unresolved."
 }
