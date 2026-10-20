@@ -41,6 +41,10 @@ public final class BrowserEngine {
     private static MemoryPack pack=new MemoryPack();
     private static BrowserRegistries registry;
     private static ProceduralStream<IrisRegion> selectedRegions;
+    private static studio.engine.terrain.BrowserTerrainEngine terrain;
+    @JSExport public static String prepareTerrain(String key,String seed){terrain=null;pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",key);if(!(resource instanceof IrisDimension dimension)||dimension.isCompatExcluded())throw new IllegalArgumentException("Native dimension unavailable or excluded");terrain=new studio.engine.terrain.BrowserTerrainEngine(dimension,pack.open(),Long.parseLong(seed),registry);return "{\"minHeight\":"+terrain.getMinHeight()+",\"maxHeight\":"+terrain.getMaxHeight()+",\"terrainParityVerified\":false}";}
+    @JSExport public static String sampleTerrainHeight(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");return bits(terrain.getComplex().getHeightStream().getDouble(x,z));}
+    @JSExport public static String sampleTerrainBiome(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");var biome=terrain.getComplex().getTrueBiomeStream().get(x,z);if(biome==null)throw new IllegalStateException("Native biome pool returned no biome");return biome.getLoadKey();}
 
     @JSExport public static void prepareRegionSelection(String dimensionKey,String decimalWorldSeed,boolean buffet){
         pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",dimensionKey);if(!(resource instanceof IrisDimension dimension))throw new IllegalArgumentException("The selected native dimension could not be loaded");if(dimension.isCompatExcluded())throw new IllegalArgumentException("The native compatibility gate excluded this dimension: "+String.join("; ",pack.open().getCompatReport().detailLines()));
@@ -291,6 +295,6 @@ public final class BrowserEngine {
     public static String diagnosticRng(String seed) { return studio.probe.RngProbe.sample(seed, false, "0"); }
 
     @JSExport
-    public static void clear() { selectedRegions=null;pack.release();pack=new MemoryPack(registry);definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
+    public static void clear() {terrain=null; selectedRegions=null;pack.release();pack=new MemoryPack(registry);definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
     public static void main(String[] args) { }
 }

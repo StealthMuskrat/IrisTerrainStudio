@@ -21,7 +21,7 @@ Implemented editing includes resource search, field/JSON views, undo/redo, local
 
 `npm run build` creates a standalone development copy in `dist/`. Docker configuration is in `docker/`; remote binding requires a server access token of at least 32 characters. Use HTTPS when accessing WebGPU remotely.
 
-## Iris noise development module
+## Native Iris development module
 
 Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager, native configuration reader and standalone generator bridge locally:
 
@@ -31,7 +31,7 @@ npm run engine:build
 npm run engine:registry
 ```
 
-The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Raw dimension continent/region control fields are also available; the separate **Native regions** mode now selects actual region resources from the native compatibility-filtered pool. Focused region choices and the dimension studio layout are connected; use **Studio layout** for native buffet region choices. Biome composition and complete terrain remain unfinished. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
+The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Raw dimension continent/region control fields are also available; the separate **Native regions** mode now selects actual region resources from the native compatibility-filtered pool. Focused region choices and the dimension studio layout are connected; use **Studio layout** for native buffet region choices. The **Native procedural height** and **Native surface biomes** maps now execute the original IrisComplex biome/height streams with world-seed derivation, child pools, generator interpolation and shore correction. Heights display world Y; Studio layout is currently limited to region previews. Volumetric terrain, hydrology, transforms and upper/stacked dimensions still refuse this scalar path. Complete chunks and release qualification remain unfinished. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
 
 Native resources can be inspected through the worker memory loader. To export schemas for a specific saved pack, run `npm run engine:schemas -- /path/to/your/pack`, then select **Load matching native schema** in the inspector. With no path, the exporter uses the pinned upstream terrain fixture. The editor verifies the saved pack snapshot before attaching a schema; exported metadata warnings are retained. The bundle currently uses vanilla registries and is not production-qualified.
 
@@ -45,7 +45,7 @@ npm run engine:install -- /path/to/noise-rng-evidence.zip
 
 Select a **Noise lab** field and generate. These are actual VolmLib primitive samples, not dimension terrain. Wasm, runtime and archive hashes are verified during installation; corresponding source and license material are installed alongside the module. Generated engine assets, packs and browser-local resource packs are not committed.
 
-Pack terrain modes remain explicitly unavailable until the complete browser engine is connected and qualified. F8thful and matching vanilla assets must be supplied locally. See [development implementation notes](docs/DEVELOPMENT.md).
+Density, hydrology and voxel previews remain unavailable until their native browser paths are connected and qualified. F8thful and matching vanilla assets must be supplied locally. See [development implementation notes](docs/DEVELOPMENT.md).
 
 ## Verified target
 
@@ -54,10 +54,10 @@ Checked on 2026-10-20 against upstream's latest non-prerelease release:
 | Component | Target | State |
 | --- | --- | --- |
 | Iris | 4.3.4, tag `4.3.4-26.1.2-26.3` | Commit `c3a9449a026078c44a87c9776766f54a67779392` pinned |
-| Minecraft | 26.3 | Version verified; registry export pending |
+| Minecraft | 26.3 | Development registry exported; qualification pending |
 | Native build toolchain | Java 25 | Iris core compiles locally and in CI; pinned native noise checksum fails |
 | VolmLib | Release-matching source and binaries | Unresolved; upstream uses mutable snapshot/composite resolution |
-| Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Iris styles, configured styles, seeds and standalone generators compile; full terrain pending |
+| Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Iris styles, generators, region/biome selection and procedural heights compile; full terrain pending |
 
 [upstream.lock.json](upstream.lock.json) records source blob hashes, unresolved inputs, and readiness. Pinning Iris alone does not establish a reproducible engine.
 

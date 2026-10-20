@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+package studio.engine.terrain;
+
+import art.arcane.iris.configuration.IrisSettings;
+import art.arcane.iris.generation.runtime.*;
+import art.arcane.iris.spi.*;
+import java.util.concurrent.ExecutorService;
+
+/** Explicit host boundary for isolated scalar sampling; no server services are simulated. */
+public final class WorkerTerrainPlatform {
+    public static void install(PlatformRegistries registry){
+        IrisPlatforms.unbind();
+        IrisPlatforms.bind(new PlatformBoundary(){
+            public String platformName(){return "browser-worker";}
+            public String minecraftVersion(){return "26.3";}
+            public PlatformRegistries registries(){return registry;}
+            public void log(LogLevel level,String message){System.err.println(level+": "+message);}
+            public void msg(String message){System.err.println(message);}
+            public void reportError(Throwable error){error.printStackTrace();}
+        });
+        IrisSettings.settings=new IrisSettings();
+        IrisServices.register(PreservationRegistry.class,new PreservationRegistry(){
+            public void register(Thread value){throw new UnsupportedOperationException("Worker terrain cannot register server threads");}
+            public void register(ExecutorService value){throw new UnsupportedOperationException("Worker terrain cannot register server executors");}
+            public void registerCache(MeteredCache value){} // Lifetime is the owning worker snapshot.
+            public void dereference(){}
+        });
+    }
+}

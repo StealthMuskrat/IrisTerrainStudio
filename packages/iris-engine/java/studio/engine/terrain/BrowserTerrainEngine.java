@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+package studio.engine.terrain;
+
+import art.arcane.iris.generation.runtime.*;
+import art.arcane.iris.generation.terrain.*;
+import art.arcane.iris.generation.biome.IrisBiome;
+import art.arcane.iris.pack.loading.IrisData;
+
+/** Worker-owned runtime state. Native IrisComplex owns all biome and height algorithms. */
+public final class BrowserTerrainEngine extends EngineBoundary {
+    private final IrisDimension dimension;
+    private final IrisData data;
+    private final SeedManager seeds;
+    private IrisComplex complex;
+    public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
+        if(dimension.hasUpperDimension()||dimension.hasDimensionStack())throw new UnsupportedOperationException("Upper dimensions and dimension stacks are not connected in the worker terrain runtime");
+        this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
+        WorkerTerrainPlatform.install(registry);
+        complex=new IrisComplex(this);
+    }
+    @Override public IrisDimension getDimension(){return dimension;}
+    @Override public IrisData getData(){return data;}
+    @Override public SeedManager getSeedManager(){return seeds;}
+    @Override public IrisComplex getComplex(){return complex;}
+    @Override public int getMinHeight(){return dimension.getMinHeight();}
+    @Override public int getMaxHeight(){return dimension.getMaxHeight();}
+    @Override public int getHeight(){return getMaxHeight()-getMinHeight();}
+    @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
+    @Override public boolean isStudio(){return false;}
+    @Override public boolean isClosed(){return false;}
+    @Override public IrisBiome getFocus(){String key=dimension.getFocus();if(key==null||key.trim().isEmpty())return null;IrisBiome biome=data.getBiomeLoader().load(key);return biome==null||biome.isCompatExcluded()?null:biome;}
+    @Override public IrisRegion getFocusRegion(){String key=dimension.getFocusRegion();if(key==null||key.trim().isEmpty())return null;IrisRegion region=data.getRegionLoader().load(key);return region==null||region.isCompatExcluded()?null:region;}
+}

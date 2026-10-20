@@ -13,6 +13,36 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("java.util.TemplateCollections$NEtriesMap")){
+                FieldHolder data=cls.getField("data");ValueType entries=ValueType.arrayOf(ValueType.object("java.util.Map$Entry"));if(data==null||!data.getType().equals(entries))throw new IllegalStateException("Pinned immutable-map storage changed");int changed=0;
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("get")){
+                    Program p=new Program();Variable self=p.createVariable(),key=p.createVariable(),array=p.createVariable(),result=p.createVariable();BasicBlock block=p.createBasicBlock();
+                    GetFieldInstruction field=new GetFieldInstruction();field.setInstance(self);field.setField(new FieldReference(name,"data"));field.setFieldType(entries);field.setReceiver(array);block.add(field);
+                    InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(WorkerCollections.class,"immutableGet",java.util.Map.Entry[].class,Object.class,Object.class));call.setArguments(array,key);call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);changed++;
+                }if(changed!=1)throw new IllegalStateException("Pinned immutable-map get method changed");
+            }
+            if(java.util.Set.of("art.arcane.iris.generation.hydrology.runtime.IrisHydrologyRuntime","art.arcane.iris.world.history.TransitionDisplacementField","art.arcane.iris.world.history.TransitionGenerationPlan","art.arcane.iris.generation.terrain.transform.TerrainTransformRuntime","art.arcane.iris.generation.terrain.Terrain3DRuntime","art.arcane.iris.generation.runtime.HydrologyNoiseCacheBudget","art.arcane.iris.generation.runtime.EngineThreadState").contains(name))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Native hydrology, saved-world transition, transform or volumetric runtime");
+            if(name.equals("art.arcane.iris.generation.stream.CachedStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2D","studio.engine.terrain.WorkerWorldCache");
+            if(name.equals("art.arcane.iris.generation.stream.CachedDoubleStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2DDouble","studio.engine.terrain.WorkerWorldDoubleCache");
+            if(name.equals("art.arcane.iris.generation.runtime.SharedCornerBounds")){
+                replaceClass(cls,"java.lang.invoke.VarHandle","studio.engine.terrain.WorkerArrayAccess");
+                for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.invoke.MethodHandles"))call.setMethod(new MethodReference("studio.engine.terrain.WorkerArrayAccess",call.getMethod().getDescriptor()));}
+            }
+            if(java.util.Set.of("art.arcane.iris.generation.runtime.IrisComplex","art.arcane.volmlib.util.stream.interpolation.Interpolated").contains(name)){
+                for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();
+                    if(instruction instanceof ConstructInstruction construct&&construct.getType().equals("java.util.UUID"))instruction.delete();
+                    if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.util.UUID")){
+                        if(call.getMethod().getName().equals("<init>")){call.setReceiver(call.getInstance());call.setInstance(null);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"fromBits",long.class,long.class,java.util.UUID.class));}
+                        else if(call.getMethod().getName().equals("getMostSignificantBits")){Variable self=call.getInstance();call.setInstance(null);call.setArguments(self);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"getMostSignificantBits",java.util.UUID.class,long.class));}
+                    }instruction=next;
+                }}
+            }
+            if(name.equals("art.arcane.iris.generation.runtime.IrisComplex$BoundsSampler"))replaceClass(cls,"java.lang.ref.WeakReference","studio.engine.terrain.WorkerWeakReference");
+            if(name.equals("art.arcane.iris.configuration.IrisSettings"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("read"))unavailable(method,"Server settings filesystem IO; install worker settings first");
+            if(name.equals("art.arcane.iris.generation.runtime.IrisComplex")){
+                int uuids=0;for(MethodHolder method:cls.getMethods()){Program program=method.getProgram();if(program==null)continue;for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference(java.util.UUID.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class))){call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class));uuids++;}}
+                if(uuids!=1)throw new IllegalStateException("Pinned complex focus UUID call changed");
+            }
             // TeaVM 0.16's Wasm reflection emitter dereferences a missing raw
             // generic type when a field also has runtime annotations. Supply
             // equivalent raw metadata; preserve every actual generic signature.
@@ -91,7 +121,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }
                 if(changed!=2)throw new IllegalStateException("Pinned noise offset range calls changed: "+changed);
             }
-            if (java.util.Set.of("art.arcane.iris.generation.noise.IrisGenerator$SurfaceCacheStripe","art.arcane.iris.generation.biome.IrisBiomePaletteLayer").contains(name)) {
+            if (java.util.Set.of("art.arcane.iris.generation.noise.IrisGenerator$SurfaceCacheStripe","art.arcane.iris.generation.biome.IrisBiomePaletteLayer","art.arcane.iris.generation.terrain.ProceduralTerrainHeightSampler").contains(name)) {
                 String original="java.util.concurrent.atomic.AtomicReferenceArray",replacement="studio.engine.WorkerReferenceArray";
                 for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
                 int allocations=0;
@@ -157,6 +187,16 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if (changed != 2) throw new IllegalStateException("Pinned Billow platform entry points changed: " + changed);
             System.out.println("Browser platform: select the original Java Billow branch; no native FFM or substitute noise");
         });
+    }
+    private static ValueType replaced(ValueType type,String original,String replacement){return type.equals(ValueType.object(original))?ValueType.object(replacement):type;}
+    private static void replaceClass(ClassHolder cls,String original,String replacement){
+        for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
+        for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
+            if(instruction instanceof ConstructInstruction construct&&construct.getType().equals(original))construct.setType(replacement);
+            if(instruction instanceof GetFieldInstruction get)get.setFieldType(replaced(get.getFieldType(),original,replacement));
+            if(instruction instanceof PutFieldInstruction put)put.setFieldType(replaced(put.getFieldType(),original,replacement));
+            if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();ValueType[] signature=ref.getDescriptor().getSignature();for(int i=0;i<signature.length;i++)signature[i]=replaced(signature[i],original,replacement);call.setMethod(new MethodReference(ref.getClassName().equals(original)?replacement:ref.getClassName(),new MethodDescriptor(ref.getName(),signature)));}
+        }}
     }
     private static GenericValueType rawGeneric(ValueType type){
         if(type instanceof ValueType.Object object)return new GenericValueType.Object(null,object.getClassName(),new GenericValueType.Argument[0]);

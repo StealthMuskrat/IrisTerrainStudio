@@ -45,7 +45,8 @@ self.onmessage=async({data})=>{
     const dimensions=options.field==='iris-style3d'?3:2;
     if(options.packSnapshot){await registry(api,manifest);if(active!==id)return;}
     api.clear();
-    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);}
+    let terrainInfo;
+    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}}
     if(options.nativeConfig){for(const resource of options.nativeConfig.snippets||[])api.registerSnippet(resource.path,resource.text);api[{generator:'loadGeneratorJson',style:'loadStyleJson',dimension:'loadDimensionJson'}[options.nativeConfig.kind]](options.nativeConfig.id,options.nativeConfig.text);}
     if(options.configured){for(const d of options.configured.definitions)api.defineStyle(d.id,d.style,d.zoom,d.exponent,d.frequency,d.cellularZoom,d.fracture,d.multiplier,d.octaves);}
     if(options.generator){
@@ -54,16 +55,17 @@ self.onmessage=async({data})=>{
       const d=options.generator.generator;if(d)api.defineGenerator(d.id,d.children.join(','),d.seed,d.zoom,d.opacity,d.surfaceDetail,d.multiplicitive,d.offsetX,d.offsetZ,d.cellZoom,d.cellShuffle,d.cellHeight,d.cellPercent,d.cliffMin,d.cliffMax,d.cliffLayer||'',d.interpolation,d.interpolationScale);
     }
     const categories=[],categoryIds=new Map();
-    const sample=options.field==='regions'?(px,pz)=>{const key=api.sampleRegion(px,pz);if(!categoryIds.has(key)){categoryIds.set(key,categories.length);categories.push(key);}return categoryIds.get(key);}:options.nativeConfig?(options.nativeConfig.kind==='dimension'?(px,pz)=>api.sampleDimensionControl(options.nativeConfig.id,seed,options.field,px,pz):options.nativeConfig.kind==='generator'?(px,pz)=>api.sampleGenerator(options.nativeConfig.id,seed,px,pz):(px,pz)=>api.sampleLoadedStyle(options.nativeConfig.id,seed,px,y,pz,dimensions)):options.generator?(px,pz)=>api[options.generator.kind==='layer'?'sampleLayer':'sampleGenerator'](options.generator.root,seed,px,pz):options.configured?(px,pz)=>api.sampleConfigured(options.configured.root,seed,px,y,pz,dimensions):(px,pz)=>api.sampleStyle(options.style,seed,px,y,pz,dimensions);
+    const categorical=['regions','biomes'].includes(options.field);
+    const sample=categorical?(px,pz)=>{const key=api[options.field==='regions'?'sampleRegion':'sampleTerrainBiome'](px,pz);if(!categoryIds.has(key)){categoryIds.set(key,categories.length);categories.push(key);}return categoryIds.get(key);}:options.field==='terrain'?(px,pz)=>api.sampleTerrainHeight(px,pz):options.nativeConfig?(options.nativeConfig.kind==='dimension'?(px,pz)=>api.sampleDimensionControl(options.nativeConfig.id,seed,options.field,px,pz):options.nativeConfig.kind==='generator'?(px,pz)=>api.sampleGenerator(options.nativeConfig.id,seed,px,pz):(px,pz)=>api.sampleLoadedStyle(options.nativeConfig.id,seed,px,y,pz,dimensions)):options.generator?(px,pz)=>api[options.generator.kind==='layer'?'sampleLayer':'sampleGenerator'](options.generator.root,seed,px,pz):options.configured?(px,pz)=>api.sampleConfigured(options.configured.root,seed,px,y,pz,dimensions):(px,pz)=>api.sampleStyle(options.style,seed,px,y,pz,dimensions);
     const values=new Float64Array(width*height);let min=Infinity,max=-Infinity;
     for(let row=0;row<height;row++){
       for(let column=0;column<width;column++){
-        const px=x-span/2+(column+.5)*span/width,pz=z-depth/2+(row+.5)*depth/height,value=options.field==='regions'?sample(px,pz):decode(sample(px,pz));
+        const px=x-span/2+(column+.5)*span/width,pz=z-depth/2+(row+.5)*depth/height,value=categorical?sample(px,pz):decode(sample(px,pz))+(options.field==='terrain'?terrainInfo.minHeight:0);
         values[row*width+column]=value;min=Math.min(min,value);max=Math.max(max,value);
       }
       if((row&7)===0){self.postMessage({kind:'progress',id,progress:(row+1)/height});await new Promise(resolve=>setTimeout(resolve,0));if(active!==id)return;}
     }
     if(active!==id)return;
-    self.postMessage({kind:'result',id,result:{values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,categories:options.field==='regions'?categories:undefined,style:options.style,configuredPointer:options.configured?.pointer,scope:options.field==='regions'?'iris-region-selection-development':options.nativeConfig?.kind==='dimension'?'iris-dimension-control-development':options.generator||options.nativeConfig?.kind==='generator'?'iris-generator-development':'iris-noise-style-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started}},[values.buffer]);
+    self.postMessage({kind:'result',id,result:{values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,categories:categorical?categories:undefined,terrainInfo,style:options.style,configuredPointer:options.configured?.pointer,scope:['terrain','biomes'].includes(options.field)?'iris-native-terrain-scalar-development':options.field==='regions'?'iris-region-selection-development':options.nativeConfig?.kind==='dimension'?'iris-dimension-control-development':options.generator||options.nativeConfig?.kind==='generator'?'iris-generator-development':'iris-noise-style-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started}},[values.buffer]);
   }catch(error){self.postMessage({id,error:error.message||String(error)});}
 };

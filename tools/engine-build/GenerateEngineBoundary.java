@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+package studio.build;
+
+import art.arcane.iris.generation.runtime.Engine;
+import java.lang.reflect.*;
+import java.nio.file.*;
+import java.util.*;
+
+/** Generate fail-closed declarations for the native engine's platform-facing API. */
+public final class GenerateEngineBoundary {
+    public static void main(String[] args) throws Exception {
+        generate(Engine.class,"EngineBoundary",args[0]);
+        generate(art.arcane.iris.spi.IrisPlatform.class,"PlatformBoundary",args[0]);
+    }
+    private static void generate(Class<?> api,String name,String directory)throws Exception {
+        TreeMap<String,Method> methods=new TreeMap<>();
+        for(Method method:api.getMethods())if(!Modifier.isStatic(method.getModifiers())){
+            String key=method.getName()+Arrays.toString(method.getParameterTypes());
+            Method old=methods.get(key);
+            if(old==null||old.getReturnType().isAssignableFrom(method.getReturnType()))methods.put(key,method);
+        }
+        StringBuilder out=new StringBuilder("// Generated from the pinned native host interface.\npackage studio.engine.terrain;\n@SuppressWarnings({\"rawtypes\",\"unchecked\"})\npublic abstract class "+name+" implements "+api.getCanonicalName()+" {\n");
+        for(Method method:methods.values()){
+            out.append("@Override public ").append(method.getReturnType().getCanonicalName()).append(' ').append(method.getName()).append('(');
+            Class<?>[] parameters=method.getParameterTypes();
+            for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append(parameters[i].getCanonicalName()).append(" p").append(i);}
+            out.append("){throw new UnsupportedOperationException(\"Native engine platform operation is not connected: ").append(method.getName()).append("\");}\n");
+        }
+        out.append("}\n");Path file=Path.of(directory,"studio/engine/terrain/"+name+".java");Files.createDirectories(file.getParent());Files.writeString(file,out);
+    }
+}
