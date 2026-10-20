@@ -16,6 +16,7 @@ public final class ConfigInventory {
             Map.entry("regions","art.arcane.iris.generation.terrain.IrisRegion"),
             Map.entry("biomes","art.arcane.iris.generation.biome.IrisBiome"),
             Map.entry("generators","art.arcane.iris.generation.noise.IrisGenerator"),
+            Map.entry("blocks","art.arcane.iris.generation.block.IrisBlockData"),
             Map.entry("style","art.arcane.iris.generation.noise.IrisGeneratorStyle"),
             Map.entry("generator","art.arcane.iris.generation.noise.IrisNoiseGenerator"),
             Map.entry("expressions","art.arcane.iris.generation.noise.IrisExpression"),

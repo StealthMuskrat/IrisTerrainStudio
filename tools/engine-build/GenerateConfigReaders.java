@@ -102,6 +102,9 @@ public final class GenerateConfigReaders {
             for(var entry:names.entrySet())source.append("case ").append(quote(entry.getKey())).append("->").append(javaName(cls)).append('.').append(entry.getValue()).append(';');
             source.append("default->null;};}\n");
         }
+        source.append("public static art.arcane.iris.pack.loading.IrisRegistrant readRegistrant(Class<?> type,String text)throws IOException{\n");
+        for(Class<?> cls:TYPES.values())if(art.arcane.iris.pack.loading.IrisRegistrant.class.isAssignableFrom(cls))source.append("if(type==").append(javaName(cls)).append(".class)return read").append(cls.getSimpleName()).append("(text);\n");
+        source.append("throw new IllegalArgumentException(\"Native resource type is not linked: \"+type.getName());}\n");
         source.append("}\n");Path target=directory.resolve("studio/engine/config/NativeConfigReader.java");Files.createDirectories(target.getParent());Files.writeString(target,source,StandardCharsets.UTF_8);
         System.out.println("Generated field readers for "+TYPES.size()+" native types; numerical bytecode is unchanged.");
     }

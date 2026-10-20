@@ -10,9 +10,11 @@ public class ConfigReaderSupport {
     private static final Map<String,String> resources=new LinkedHashMap<>();
     private static final Set<String> loading=new HashSet<>();
     private static int depth,nodes,bytes;
+    private static java.util.function.Function<String,String> provider;
     protected static void enter(){if(++depth>100||++nodes>4096)throw new IllegalArgumentException("Configuration exceeds the native reader budget");}
     protected static void leave(){depth--;}
-    public static void clear(){resources.clear();loading.clear();depth=nodes=bytes=0;}
+    public static void clear(){resources.clear();loading.clear();depth=nodes=bytes=0;provider=null;}
+    public static void bindResourceProvider(java.util.function.Function<String,String> source){provider=source;}
     public static void register(String path,String text){
         if(path==null||!path.startsWith("snippet/")||!path.endsWith(".json")||path.length()>1024||path.contains("\\")||path.contains(":")||Arrays.stream(path.split("/",-1)).anyMatch(part->part.isEmpty()||part.equals(".")||part.equals("..")))throw new IllegalArgumentException("Invalid snippet resource path");
         String prior=resources.get(path);int total=bytes+(text.length()-(prior==null?0:prior.length()))*2;
@@ -23,7 +25,7 @@ public class ConfigReaderSupport {
         if(!reference.startsWith("snippet/"))return null;
         String prefix="snippet/"+type+"/",path=(reference.startsWith(prefix)?reference:prefix+reference.substring(8))+".json";
         if(Arrays.stream(path.split("/",-1)).anyMatch(part->part.isEmpty()||part.equals(".")||part.equals("..")))throw new IllegalArgumentException("Snippet reference escapes its pack resource boundary");
-        String text=resources.get(path);if(text==null)throw new IllegalArgumentException("Missing snippet resource: "+path);
+        String text=resources.get(path);if(text==null&&provider!=null){text=provider.apply(path);if(text!=null)register(path,text);}if(text==null)throw new IllegalArgumentException("Missing snippet resource: "+path);
         if(!loading.add(path))throw new IllegalArgumentException("Snippet reference cycle: "+path);
         try(JsonReader reader=new JsonReader(new StringReader(text))){T value=decoder.read(reader);if(reader.peek()!=JsonToken.END_DOCUMENT)throw new IllegalArgumentException("Trailing snippet content: "+path);return value;}finally{loading.remove(path);}
     }

@@ -18,6 +18,10 @@ import art.arcane.volmlib.util.noise.CNG;
 import org.teavm.jso.JSExport;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import studio.engine.pack.MemoryPack;
+import art.arcane.iris.pack.loading.IrisRegistrant;
+import com.google.gson.stream.JsonWriter;
+import java.io.StringWriter;
 
 /** Browser entry points into the actual pinned Iris classes. No terrain replacement algorithms. */
 public final class BrowserEngine {
@@ -30,6 +34,15 @@ public final class BrowserEngine {
     private static final Map<String, IrisNoiseGenerator> layers = new LinkedHashMap<>();
     private static final Map<String, IrisGenerator> composites = new LinkedHashMap<>();
     private static final Map<String, CNG> generators = new LinkedHashMap<>();
+    private static MemoryPack pack=new MemoryPack();
+
+    @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
+    @JSExport public static String openPack(){pack.open();return "{\"resources\":"+pack.resourceCount()+",\"compatibilityReady\":"+pack.compatibilityReady()+"}";}
+    /** Authoring graph inspection; not a terrain preview or compatibility success claim. */
+    @JSExport public static String inspectPackResource(String folder,String name)throws java.io.IOException{
+        pack.open();IrisRegistrant resource=pack.load(folder,name);StringWriter output=new StringWriter();
+        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());}json.endObject();}return output.toString();
+    }
 
     @JSExport
     public static String noiseStyles() {
@@ -255,6 +268,6 @@ public final class BrowserEngine {
     public static String diagnosticRng(String seed) { return studio.probe.RngProbe.sample(seed, false, "0"); }
 
     @JSExport
-    public static void clear() { definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
+    public static void clear() { pack.release();pack=new MemoryPack();definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
     public static void main(String[] args) { }
 }

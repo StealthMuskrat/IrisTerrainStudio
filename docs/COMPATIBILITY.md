@@ -13,6 +13,7 @@ No feature is currently advertised as supported. “Inspected” means source re
 | Surfaces and material selection | Registry/platform boundary identified | None | Not run |
 | Deposits, decorators | Detailed behavior audit pending | None | Not run |
 | Procedural objects and trees | Detailed behavior audit pending | None | Not run |
+| Native pack resources and registries | Actual native IO, compatibility pools and registry exporters inspected | Memory snapshots/loaders and authoring inspection; native predicates/registry metadata; Java compatibility adapter unfinished | Focused four-resource Node Wasm load passes; full parity pending |
 | Pack IO, schema editing, saving, undo | Schema builder and resource loader inspected | Local server/editor, lossless JSON, schema rules, recovery and conflicts implemented | Focused editing/recovery checks pass; final integration pending |
 | WebGPU 2D/3D visualizers | Design boundary recorded | Scalar WebGPU view and block-model renderer modules implemented | GPU verification pending |
 | Resource packs and block models | Required assets absent | Local ZIP stack, models, atlas, animations implemented; remaining client adapters missing | Not run |

@@ -45,6 +45,18 @@ if predicates_path.exists():
         raise ValueError('Native predicate coverage differs from the block-state report')
     (output/'native-predicates.json').write_bytes(encoded)
     files['native-predicates.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}
+platform_path=reports.parent/'native-registries.json'
+if not platform_path.exists():
+    raise ValueError('Native platform registry export is missing')
+encoded=platform_path.read_bytes()
+platform=json.loads(encoded)
+if platform['scope']!='pinned-native-platform-registries' or platform['minecraft']!='26.3' or set(platform['keys']['blocks'])!=set(blocks) or set(platform['blockPropertyGroups'])!=set(blocks):
+    raise ValueError('Native platform registry coverage differs from the reports')
+for key in ('biomes','structures','enchantments'):
+    if not platform['keys'][key] or len(set(platform['keys'][key]))!=len(platform['keys'][key]):
+        raise ValueError('Native dynamic registry is missing or duplicated: '+key)
+(output/'native-registries.json').write_bytes(encoded)
+files['native-registries.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}
 manifest={'formatVersion':1,'scope':'minecraft-development-registry-export','minecraft':version,'source':'Pinned VolmLib v26_3_R1 Paper development bundle; Minecraft data-generator --reports','volmLibCandidate':inputs['volmLibCandidate'],'releaseMatchVerified':False,'registryParityVerified':False,'sourceServerJarSha256':hashlib.sha256(server.read_bytes()).hexdigest(),'blocks':len(blocks),'states':len(ids),'files':files,'limitations':['Occlusion shapes, rendering layers, fluid geometry and biome tint data are not included in this export.','Native report state ids are build-specific; full block identifiers and properties remain authoritative.']}
 (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(f'Packaged {len(blocks)} native blocks and {len(ids)} block states for Minecraft {version["id"]}.')

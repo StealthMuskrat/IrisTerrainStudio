@@ -23,11 +23,14 @@ const bits=new DataView(new ArrayBuffer(8));
 function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris returned invalid double bits.');bits.setBigUint64(0,BigInt('0x'+hex));const value=bits.getFloat64(0);if(!Number.isFinite(value))throw new Error('Iris returned a non-finite value.');return value; }
 self.onmessage=async({data})=>{
   if(data.kind==='cancel'){if(active===data.id)active=0;return;}
-  if(data.kind!=='generate'&&data.kind!=='info')return;
-  const id=data.id; if(data.kind==='generate')active=id;
+  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack')return;
+  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack')active=id;
   try {
     const {api,manifest}=await engine();
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
+    if(data.kind==='inspect-pack'){
+      if(active!==id)return;if(typeof api.registerPackResource!=='function')throw new Error('Rebuild the local Iris engine to enable native pack loading.');api.clear();try{for(const resource of data.snapshot.resources)api.registerPackResource(resource.path,resource.text);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{api.clear();}return;
+    }
     if(active!==id)return;
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;
     const dimensions=options.field==='iris-style3d'?3:2;

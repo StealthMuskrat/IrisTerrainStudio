@@ -7,6 +7,7 @@ import { ResourceCatalog, category, resourceId } from '/packages/iris-resources/
 import { pointerEscape, pointerParts, JSON_LIMIT } from '/packages/shared/paths.mjs';
 import { writeZip } from '/packages/shared/zip.mjs';
 import { nativePackInputs } from '/packages/iris-engine/pack-inputs.mjs';
+import { captureNativePack } from '/packages/iris-engine/pack-snapshot.mjs';
 import { findStyles } from '/packages/iris-engine/style-config.mjs';
 import { GenerationClient } from '/packages/iris-engine/client.mjs';
 import { createGpuDevice, MapRenderer } from '/packages/voxel-renderer/map.mjs';
@@ -118,7 +119,16 @@ function renderInspector() {
   else {holder.append(element('div',{class:'schema-badge',text:state.schema?'Local schema loaded · Unknown fields preserved':state.inventory?'Native field guidance · Structural JSON editing':'Structural JSON editing · Import a pinned Iris schema for field validation'}));renderObject(state.document.root,holder,0);}
   if(state.document && (findStyles(state.document).length||/^snippet\/style\//.test(state.selected?.path)))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview a noise style',onclick:()=>chooseNoiseStyle({resource:true}).catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('generators/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this generator',onclick:()=>{if(!state.document)return;$('field-mode').value='iris-generator';$('noise-style').hidden=true;setView('map');regenerate().catch(errorMessage);}}));
+  if(state.document&&/^(dimensions|regions|biomes|generators|blocks|expressions|imagemaps)\//.test(state.selected.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect native resource loading',onclick:()=>inspectNativeResource().catch(errorMessage)}));
   renderValidation();updateDocumentState();
+}
+async function inspectNativeResource(){
+  if(!state.selected||!state.pack)return;flushHistory();parseDocument();if(!state.document)throw new Error('Correct this JSON before loading its native resource.');
+  cancelPreview();const pack=state.pack,path=state.selected.path,revision=state.revision,request=++previewRequest,current=()=>request===previewRequest&&pack===state.pack&&revision===state.revision&&path===state.selected?.path;
+  message('Loading the native pack snapshot…');
+  const snapshot=await captureNativePack(state.catalog.resources,name=>api.read(pack,name),{current,override:{path,text:state.text}});if(!current())return;
+  const result=await generation.inspectPack(snapshot,path.split('/')[0],resourceId(path));if(!current())return;
+  await ask('Native resource loading',[copy(result.resource.found?`Loaded ${result.resource.type} “${result.resource.key}” from ${result.resources} pack resources.`:'The native resource could not be resolved.'),copy('The current unsaved resource is included. Other resources use their saved contents.'),element('div',{class:'info-box',text:'This checks native object loading and its load-time resource pools. Content compatibility and complete terrain generation remain unfinished.'})],{submit:null,cancel:'Close'});message('Native resource inspection finished.');
 }
 function renderObject(node,holder,depth) {
   if(depth>12){holder.append(element('div',{class:'readonly-note',text:'Use JSON view to edit deeper nested properties.'}));return;}

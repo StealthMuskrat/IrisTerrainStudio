@@ -13,7 +13,29 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
-            if(java.util.Set.of("art.arcane.volmlib.util.cache.AtomicCache","art.arcane.iris.world.entity.IrisAttributeModifier","art.arcane.iris.pack.loading.ResourceLoader","art.arcane.iris.spi.IrisLogging").contains(name)){
+            if(name.equals("art.arcane.iris.pack.loading.IrisData")){
+                int initializers=0,gates=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("hotloaded")||method.getName().equals("hotloadedDatapackCompiler")){delegateInstance(method,"initialize",ValueType.VOID);initializers++;}
+                    if(method.getName().equals("getContentGate")){delegateInstance(method,"contentGate",ValueType.object("art.arcane.iris.pack.validation.ContentGate"));gates++;}
+                }
+                if(initializers!=2||gates!=1)throw new IllegalStateException("Pinned native data IO entry points changed");
+            }
+            if(name.equals("art.arcane.iris.pack.validation.ContentGate")){
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("evaluate")){
+                    Program program=new Program();Variable self=program.createVariable(),resource=program.createVariable(),result=program.createVariable();BasicBlock block=program.createBasicBlock();
+                    InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.pack.MemoryPack","evaluateUnbound",ValueType.object(name),ValueType.object("art.arcane.iris.pack.loading.IrisRegistrant"),ValueType.object("art.arcane.iris.pack.validation.CompatStatus")));call.setArguments(self,resource);call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(program);
+                }
+            }
+            if(name.equals("art.arcane.iris.generation.noise.IrisExpression"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("expression"))unavailable(method,"Native expression bytecode compiler");
+            if(name.equals("art.arcane.iris.structure.object.IrisObjectScale")){
+                int changed=0;
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("resolveCacheMaximumEstimatedBytes")){
+                    Program program=new Program();program.createVariable();Variable value=program.createVariable();BasicBlock block=program.createBasicBlock();LongConstantInstruction size=new LongConstantInstruction();size.setConstant(32L*1024*1024);size.setReceiver(value);block.add(size);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(value);block.add(exit);method.setProgram(program);changed++;
+                }
+                if(changed!=1)throw new IllegalStateException("Pinned object-cache budget entry point changed");
+            }
+            if(java.util.Set.of("art.arcane.volmlib.util.cache.AtomicCache","art.arcane.iris.world.entity.IrisAttributeModifier","art.arcane.iris.pack.loading.ResourceLoader","art.arcane.iris.spi.IrisLogging","art.arcane.iris.pack.validation.ContentGate").contains(name)){
                 int factories=0;
                 for(MethodHolder method:cls.getMethods()){
                     Program program=method.getProgram();if(program==null)continue;
@@ -48,7 +70,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }
                 if(changed!=2)throw new IllegalStateException("Pinned noise offset range calls changed: "+changed);
             }
-            if (name.equals("art.arcane.iris.generation.noise.IrisGenerator$SurfaceCacheStripe")) {
+            if (java.util.Set.of("art.arcane.iris.generation.noise.IrisGenerator$SurfaceCacheStripe","art.arcane.iris.generation.biome.IrisBiomePaletteLayer").contains(name)) {
                 String original="java.util.concurrent.atomic.AtomicReferenceArray",replacement="studio.engine.WorkerReferenceArray";
                 for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
                 int allocations=0;
@@ -61,15 +83,21 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                         if(instruction instanceof PutFieldInstruction put&&put.getFieldType().equals(ValueType.object(original)))put.setFieldType(ValueType.object(replacement));
                     }
                 }
-                if(allocations!=1)throw new IllegalStateException("Pinned surface-cache storage allocation changed");
+                int expected=name.endsWith("IrisBiomePaletteLayer")?2:1;
+                if(allocations!=expected)throw new IllegalStateException("Pinned reference-array allocation changed in "+name+": "+allocations);
             }
             if (name.equals("art.arcane.iris.generation.noise.ImageNoise")) {
                 for (MethodHolder method : cls.getMethods()) if (method.getProgram() != null) unavailable(method, "Image-map resources");
             }
             if (name.equals("art.arcane.iris.pack.loading.ResourceLoader")) {
+                int constructors=0;
                 for (MethodHolder method : cls.getMethods()) {
+                    if(method.getName().equals("<init>")){
+                        Program program=new Program();for(int i=0;i<=method.parameterCount();i++)program.createVariable();program.createBasicBlock().add(new ExitInstruction());method.setProgram(program);constructors++;
+                    }
                     if (method.getName().equals("load")) unavailable(method,"Native resource loading");
                 }
+                if(constructors!=1)throw new IllegalStateException("Pinned native resource IO constructor changed");
             }
             if (name.equals("art.arcane.iris.generation.noise.IrisGeneratorStyle")) {
                 for (MethodHolder method : cls.getMethods()) if (java.util.Set.of("cachePrefix","cacheKey","clearStaleCacheEntries").contains(method.getName())) unavailable(method,"Persistent float noise caches");
@@ -107,6 +135,12 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if (changed != 2) throw new IllegalStateException("Pinned Billow platform entry points changed: " + changed);
             System.out.println("Browser platform: select the original Java Billow branch; no native FFM or substitute noise");
         });
+    }
+    private static void delegateInstance(MethodHolder method,String target,ValueType result){
+        Program program=new Program();Variable self=program.createVariable();BasicBlock block=program.createBasicBlock();
+        InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.pack.MemoryPack",target,ValueType.object("art.arcane.iris.pack.loading.IrisData"),result));call.setArguments(self);
+        Variable value=null;if(result!=ValueType.VOID){value=program.createVariable();call.setReceiver(value);}block.add(call);
+        ExitInstruction exit=new ExitInstruction();if(value!=null)exit.setValueToReturn(value);block.add(exit);method.setProgram(program);
     }
     private static void unavailable(MethodHolder method, String feature) {
         Program program = new Program();for(int i=0;i<=method.parameterCount();i++)program.createVariable();

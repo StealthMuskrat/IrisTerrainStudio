@@ -27,7 +27,8 @@ export class GenerationClient extends EventTarget {
     this.workers.set(kind,worker);return worker;
   }
   info(){const worker=this.worker('iris'),id=++this.sequence;return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject});worker.postMessage({kind:'info',id});});}
-  cancel(){this.revision++;if(this.pending){this.pending.worker.postMessage({kind:'cancel',id:this.pending.id});this.pending.reject(new DOMException('Preview cancelled.','AbortError'));this.pending=null;}}
+  inspectPack(snapshot,folder,name){this.cancel();const worker=this.worker('iris'),id=++this.sequence;return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject,kind:'inspect-pack'});worker.postMessage({kind:'inspect-pack',id,snapshot,folder,name});});}
+  cancel(){this.revision++;if(this.pending){this.pending.worker.postMessage({kind:'cancel',id:this.pending.id});this.pending.reject(new DOMException('Preview cancelled.','AbortError'));this.pending=null;}for(const[id,request]of this.requests)if(request.kind==='inspect-pack'){request.worker.postMessage({kind:'cancel',id});request.reject(new DOMException('Resource inspection cancelled.','AbortError'));this.requests.delete(id);}}
   async generate(request){
     this.cancel();const revision=this.revision;
     if(!laboratory.has(request.field)&&!irisStyles.has(request.field))throw new UnsupportedGenerationError('Pack terrain generation is not yet connected. No approximate terrain is substituted.',request.field);
