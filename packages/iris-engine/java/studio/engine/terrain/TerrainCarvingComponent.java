@@ -16,6 +16,10 @@ public final class TerrainCarvingComponent {
         return paint(engine,x,z,false);
     }
     public static String paint(BrowserTerrainEngine engine,int x,int z,boolean post)throws IOException {
+        return paint(engine,x,z,post,false);
+    }
+    public static String paint(BrowserTerrainEngine engine,int x,int z,boolean post,boolean floating)throws IOException {
+        if(floating&&!post)throw new IllegalArgumentException("Floating solids require the native post-stage prefix");
         if(post&&!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Post-stage preview outside the native Overworld mode");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Carving component window exceeds worker bounds");
         WorkerCaveStorage.requireNoSubterrain(null,x>>4,z>>4,engine.getComplex());
@@ -28,7 +32,8 @@ public final class TerrainCarvingComponent {
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
             new IrisCarveModifier(engine).onModify(cx,cz,blocks,false,context);
             if(post)new art.arcane.iris.generation.stage.IrisPostModifier(engine).onModify(x,z,blocks,false,context);
-            return TerrainPaintStage.serialize(engine,x,z,blocks,post?"native-overworld-post-material-stage-development":"native-carving-component-material-stage-development");
-        } finally {WorkerCaveStorage.clear();}
+            if(floating)new art.arcane.iris.generation.stage.IrisFloatingChildBiomeModifier(engine).onModify(x,z,blocks,false,context);
+            return TerrainPaintStage.serialize(engine,x,z,blocks,floating?"native-overworld-floating-material-stage-development":post?"native-overworld-post-material-stage-development":"native-carving-component-material-stage-development");
+        } finally {if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}
     }
 }

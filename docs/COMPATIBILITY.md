@@ -13,6 +13,7 @@ No feature is currently advertised as supported. “Inspected” means source re
 | Subterrain and remaining cave systems | Upstream systems exist; detailed reachability audit pending | Not connected | Not run |
 | Hydrology | Upstream probe entry points identified | None | Not run |
 | Surfaces and material selection | Actual native terrain painter/layer generator connected | One-chunk terrain-stage voxel output and canonical rendering metadata | 16 native/Node chunks and 1,048,576 exact state comparisons agree; complete option/pipeline qualification pending |
+| Floating-child-biome solids | Unchanged IrisFloatingChildBiomeModifier connected after native post-processing | Native top shapes, bottom palettes, merged entries, carving/local fluid and scoped context overlays | 36 native/Node chunks / 2,490,368 states agree; custom biome registry contracts refuse; full biome-volume/decorator/browser qualification pending |
 | Overworld post-processing | Unchanged IrisPostModifier and native Mantle height queries connected | Cave-component/paint/carve/post prefix with walls, slabs, nib/pothole and waterlogging code retained | 28 native/Node chunks / 1,835,008 block states agree; complete options/foliage/browser qualification pending |
 | Deposits, decorators | Detailed behavior audit pending | None | Not run |
 | Procedural objects and trees | Detailed behavior audit pending | None | Not run |
