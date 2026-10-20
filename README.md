@@ -14,13 +14,15 @@ Checked on 2026-10-20 against upstream's latest non-prerelease release:
 | --- | --- | --- |
 | Iris | 4.3.4, tag `4.3.4-26.1.2-26.3` | Commit `c3a9449a026078c44a87c9776766f54a67779392` pinned |
 | Minecraft | 26.3 | Version verified; registry export pending |
-| Native build toolchain | Java 25 | Java 25.0.4.1+1 runs in CI; full Iris reference build pending |
+| Native build toolchain | Java 25 | Iris core compiles in CI; pinned native noise checksum fails |
 | VolmLib | Release-matching source and binaries | Unresolved; upstream uses mutable snapshot/composite resolution |
 | Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Candidate primitives compile and execute; Iris engine pending |
 
 [upstream.lock.json](upstream.lock.json) records source blob hashes, unresolved inputs, and readiness. Pinning Iris alone does not establish a reproducible engine.
 
-The [primitive portability experiment](tools/portability-probe/README.md) now passes **150,000 exact Java/browser comparisons with zero mismatches** over five real FastNoiseDouble methods on a separately pinned VolmLib candidate. See the [run evidence](docs/evidence/primitive-portability-2026-10-20.json). The candidate is not verified as the release dependency, and this result does not establish Iris noise-wrapper, seed, or terrain compatibility.
+The [portability experiment](tools/portability-probe/README.md) now passes **195,696 exact Java/browser comparisons with zero mismatches** across actual noise primitives and RNG calls on a separately pinned VolmLib candidate. The JDK compatibility adapter is independently checked against native Java. See the [expanded run evidence](docs/evidence/noise-rng-portability-2026-10-20.json).
+
+The actual Iris core build runs, but its unchanged noise/seed suites pass **14 of 15 tests**: the all-style checksum differs from the pinned expectation. The [native audit](docs/research/NATIVE_RNG_AUDIT.md) records the mismatch. The candidate is not a qualified release reference, and Iris seed-manager, browser noise-wrapper and terrain parity remain unproved.
 
 ## Run the foundation checks
 
@@ -49,6 +51,7 @@ The comparator checks provenance, complete capture bounds, exact floating-point 
 - [Current status and next actions](docs/STATUS.md)
 - [Initial source audit and feasibility blockers](docs/research/PHASE_0.md)
 - [Executed primitive portability investigation](docs/research/PORTABILITY_PROBE.md)
+- [Native checksum and RNG compatibility investigation](docs/research/NATIVE_RNG_AUDIT.md)
 - [Architecture and dependency boundaries](docs/ARCHITECTURE.md)
 - [Supported feature matrix](docs/COMPATIBILITY.md)
 - [Third-party code and asset provenance](docs/THIRD_PARTY.md)

@@ -4,7 +4,7 @@ No calendar estimates are assigned before browser feasibility is demonstrated. P
 
 | Phase | Result | Completion gate | Current state |
 | --- | --- | --- | --- |
-| 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | Candidate primitive JVM/Wasm proof passes; full Iris/dependency/schema/registry gates remain open |
+| 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | Candidate primitive/RNG JVM/Wasm proof passes; Iris core compiles, but native checksum fails; dependency/schema/registry gates remain open |
 | 1 | Supported-path generation proof of concept | Exact native/browser noise, seeds, regions, biomes, heights, and minimal voxel output for a stated real-pack subset | Blocked by Phase 0 |
 | 2 | Native pack editor and safe server IO | Schema-driven editing, references, unknown-field preservation, undo/redo, atomic saves, backups and conflict tests | Not started |
 | 3 | WebGPU 2D visualizer | Real engine outputs, navigation, revision-aware workers and invalidation; exact parity remains passing | Not started |
@@ -20,6 +20,8 @@ Track acceptance criteria in GitHub issues. Link each implementation PR to its p
 The first work queue is dependency provenance, schema/registry capture, native reference export, and the TeaVM worker experiment. UI polish, deployment packaging, and new features must not displace that critical path. Asset provenance work can proceed independently without bundling assets.
 
 ## GitHub work queue
+
+Immediate blocker: [#15 — explain the native checksum mismatch](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15). The core compiles and the browser primitive/RNG experiment passes; the pinned native baseline still prevents qualification.
 
 | Priority | Work | Tracking |
 | --- | --- | --- |

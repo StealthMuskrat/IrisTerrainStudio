@@ -67,3 +67,5 @@ Include every voxel, including air and fluids, in the declared bounds. Propertie
 6. Compare actual captures. Keep synthetic tool tests separate. Expand into seed derivation, regions/biomes, heights and voxel content only after the first exact browser path passes.
 
 Native tooling is development-only. No normal application endpoint may serve reference generation results. The initial workspace could not execute the Java toolchain, so the steps above are a reproducibility plan, not completed reference-environment delivery.
+
+Follow-up: `tools/native-reference/` now runs the actual pinned Iris source's native noise/seed suites in CI. Compilation succeeds with the candidate, but one pinned checksum test fails. Inspect `docs/research/NATIVE_RNG_AUDIT.md`; the qualified reference environment is still incomplete. The separate primitive/RNG browser experiment does not bypass that failure.

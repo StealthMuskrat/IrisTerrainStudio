@@ -17,11 +17,14 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 try {
   const native = JSON.parse(await readFile(new URL('native.json', target), 'utf8'));
   const plan = native.cases.map(({ id, seed, x, y, z }) => ({ id, seed, x, y, z }));
+  const rngNative = JSON.parse(await readFile(new URL('rng-native.json', target), 'utf8'));
+  const rngPlan = rngNative.cases.map(({ id, seed, textSeed, signature }) => ({ id, seed, textSeed, signature }));
   const wasm = await readFile(new URL('wasm/probe.wasm', target));
   const runtime = await readFile(new URL('wasm/probe.wasm-runtime.js', target));
   const routes = new Map([
     ['/', ['text/html', '<!doctype html><title>VolmLib portability probe</title>']],
     ['/inputs.json', ['application/json', JSON.stringify(plan)]],
+    ['/rng-inputs.json', ['application/json', JSON.stringify(rngPlan)]],
     ['/probe-worker.js', ['text/javascript', await readFile(new URL('browser/worker.js', here))]],
     ['/probe.wasm', ['application/wasm', wasm]],
     ['/probe.wasm-runtime.js', ['text/javascript', runtime]],
@@ -78,14 +81,18 @@ try {
   const { sessionId } = await command('Target.attachToTarget', { targetId, flatten: true });
   const expression = `(async () => {
     const cases = await (await fetch('${origin}/inputs.json')).json();
-    const run = order => new Promise((resolve, reject) => {
+    const rngCases = await (await fetch('${origin}/rng-inputs.json')).json();
+    const run = (order, kind, inputs) => new Promise((resolve, reject) => {
       const worker = new Worker('${origin}/probe-worker.js');
       const timer = setTimeout(() => { worker.terminate(); reject(new Error('Worker timed out')); }, 120000);
       worker.onmessage = event => { clearTimeout(timer); worker.terminate(); resolve(event.data); };
       worker.onerror = event => { clearTimeout(timer); worker.terminate(); reject(new Error(event.message)); };
-      worker.postMessage({ cases, order });
+      worker.postMessage({ cases: inputs, order, kind });
     });
-    return await Promise.all(['forward', 'reverse', 'shuffle'].map(run));
+    const orders = ['forward', 'reverse', 'shuffle'];
+    const noise = await Promise.all(orders.map(order => run(order, 'noise', cases)));
+    const rng = await Promise.all(orders.map(order => run(order, 'rng', rngCases)));
+    return { noise, rng };
   })()`;
   // Wait until the target has navigated to its local origin before executing fetch/worker code.
   await command('Page.enable', {}, sessionId);
@@ -99,18 +106,24 @@ try {
   const evaluation = await command('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }, sessionId);
   if (evaluation.exceptionDetails) throw new Error(JSON.stringify(evaluation.exceptionDetails));
   const workers = evaluation.result.value;
-  const comparison = compareProbe(native, workers);
+  await writeFile(new URL('browser.json', target), JSON.stringify(workers));
+  const comparison = compareProbe(native, workers.noise);
+  const rngComparison = compareProbe(rngNative, workers.rng);
   const report = {
-    formatVersion: 1, scope: 'volmlib-primitive-portability', releaseMatchVerified: false,
-    irisTerrainParityVerified: false, ...comparison, browser: version,
+    formatVersion: 2, scope: 'volmlib-noise-and-rng-portability', releaseMatchVerified: false,
+    irisTerrainParityVerified: false, equal: comparison.equal && rngComparison.equal,
+    comparisons: comparison.comparisons + rngComparison.comparisons,
+    mismatches: comparison.mismatches + rngComparison.mismatches,
+    noise: comparison, rng: rngComparison, browser: version,
     sourceManifestSha256: hash(await readFile(new URL('source-lock.json', here))),
     wasmSha256: hash(wasm), runtimeSha256: hash(runtime),
     nativeCaptureSha256: hash(await readFile(new URL('native.json', target))),
+    nativeRngCaptureSha256: hash(await readFile(new URL('rng-native.json', target))),
   };
   await writeFile(new URL('browser.json', target), JSON.stringify(workers));
   await writeFile(new URL('report.json', target), JSON.stringify(report, null, 2) + '\n');
   console.log(JSON.stringify(report, null, 2));
-  process.exitCode = comparison.equal ? 0 : 1;
+  process.exitCode = comparison.equal && rngComparison.equal ? 0 : 1;
 } catch (error) {
   console.error(error.stack || error);
   process.exitCode = 1;

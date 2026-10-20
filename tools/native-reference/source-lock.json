@@ -1,0 +1,28 @@
+{
+  "formatVersion": 1,
+  "purpose": "Native Iris source-build audit with explicit experimental VolmLib input",
+  "iris": {
+    "repository": "VolmitSoftware/Iris",
+    "commit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "tree": "95b910b97fa75c29b3e98cd4f32bc2a40276dcb3"
+  },
+  "volmLib": {
+    "repository": "VolmitSoftware/VolmLib",
+    "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "releaseMatchVerified": false
+  },
+  "java": {
+    "setupCoordinate": "25.0.4+1",
+    "requiredRuntimeBuild": "25.0.4.1+1-LTS"
+  },
+  "gradle": {
+    "version": "9.5.1",
+    "distribution": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip",
+    "checksum": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip.sha256",
+    "sha256": "bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f"
+  },
+  "requiredSuites": [
+    "art.arcane.iris.generation.noise.NoiseSeedCohesionTest",
+    "art.arcane.iris.generation.noise.NoiseStyleContractTest"
+  ]
+}

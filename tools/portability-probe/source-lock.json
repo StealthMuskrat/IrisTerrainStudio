@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "purpose": "VolmLib primitive portability experiment; not release compatibility or Iris terrain parity",
+  "purpose": "VolmLib primitive and RNG portability experiment; not release compatibility or Iris terrain parity",
   "repository": "https://github.com/VolmitSoftware/VolmLib",
   "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
   "selection": "Last VolmLib commit returned before Iris release publication; temporal candidate only, not verified release dependency",
@@ -12,6 +12,12 @@
     "backend": "WEBASSEMBLY_GC"
   },
   "nativeJavaMajor": 25,
+  "rngProbe": {
+    "rounds": 16,
+    "outputsPerRound": 7,
+    "cases": 68,
+    "methods": ["nextLong", "imax", "lmax", "d ascending", "d descending", "getSeed", "nextDouble"]
+  },
   "methods": [
     "GetWhiteNoise(double,double)",
     "GetWhiteNoise(double,double,double)",
@@ -87,6 +93,14 @@
     {
       "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple4f.java",
       "gitBlobSha": "650767061535437c1e3d63703f8257b4da85e89f"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/M.java",
+      "gitBlobSha": "089148513f233b47eea39d0554e1355786d5922e"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/RNG.java",
+      "gitBlobSha": "da7e0ec8e39fde9127de19d36caf22e3a5affd67"
     }
   ]
 }

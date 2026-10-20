@@ -1,0 +1,57 @@
+{
+  "formatVersion": 2,
+  "scope": "volmlib-noise-and-rng-portability",
+  "releaseMatchVerified": false,
+  "irisTerrainParityVerified": false,
+  "equal": true,
+  "comparisons": 195696,
+  "mismatches": 0,
+  "noise": {
+    "equal": true,
+    "cases": 5000,
+    "workers": 3,
+    "comparisons": 150000,
+    "mismatches": 0,
+    "diagnostics": [],
+    "diagnosticsTruncated": false
+  },
+  "rng": {
+    "equal": true,
+    "cases": 68,
+    "workers": 3,
+    "comparisons": 45696,
+    "mismatches": 0,
+    "diagnostics": [],
+    "diagnosticsTruncated": false
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.84",
+    "revision": "@5869fe313571d75152b77813cf0a4ee26a4e6df0",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "sourceManifestSha256": "26e39b0612a86e1e323f694d88d5b0fcf004ebe74e4e569cf012d8979d5c0d1f",
+  "wasmSha256": "b9ce8768fa6f7475435342cddfb33ad001ea649cbe356c4fa53ca446c12df4a8",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "nativeCaptureSha256": "4dcfa3b4a306fb1cc94985e8af3557f71f40f97073984230194cc0ed55912bb6",
+  "nativeRngCaptureSha256": "b7a02296ceeec6f641049145e17231690d9a76afdd23b333d11fe85f0744c507",
+  "evidence": {
+    "commit": "d8664bf61e1f0f30cf3c8fc4d571621038fefec5",
+    "workflowRunId": 39435022819,
+    "jobId": 118669658813,
+    "workflowUrl": "https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39435022819",
+    "artifactId": 12268904111,
+    "artifactDigest": "sha256:addfa818686e39682cec90f8f9f0d765b281db7750beeedd73358867dcd16dee",
+    "archiveDigestVerified": true,
+    "captureComparisonRepeatedLocally": true,
+    "retentionDays": 30,
+    "observedAt": "2026-10-20"
+  },
+  "compatibilityChecks": {
+    "nativeUuidCases": 257,
+    "nativeUtf8Cases": 65560,
+    "bytecodeRedirectedUuidCalls": 4,
+    "bytecodeRedirectedUtf8Calls": 2
+  }
+}

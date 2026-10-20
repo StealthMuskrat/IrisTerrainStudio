@@ -1,0 +1,133 @@
+name: Native reference build audit
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/native-reference.yml'
+      - 'tools/native-reference/**'
+      - 'upstream.lock.json'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/native-reference.yml'
+      - 'tools/native-reference/**'
+      - 'upstream.lock.json'
+
+permissions:
+  contents: read
+
+jobs:
+  native-audit:
+    name: Record native build readiness (not a parity gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.reference-output/gradle-cache
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: VolmitSoftware/Iris
+          ref: c3a9449a026078c44a87c9776766f54a67779392
+          path: .upstream/Iris
+          persist-credentials: false
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: VolmitSoftware/VolmLib
+          ref: e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          path: .upstream/VolmLib
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '25.0.4+1'
+      - name: Verify identities, test the reporter, and record the toolchain
+        run: |
+          mkdir -p .reference-output/native-reference
+          test "$(git -C .upstream/Iris rev-parse HEAD)" = c3a9449a026078c44a87c9776766f54a67779392
+          test "$(git -C .upstream/Iris rev-parse 'HEAD^{tree}')" = 95b910b97fa75c29b3e98cd4f32bc2a40276dcb3
+          test "$(git -C .upstream/VolmLib rev-parse HEAD)" = e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          test -z "$(git -C .upstream/Iris status --porcelain)"
+          test -z "$(git -C .upstream/VolmLib status --porcelain)"
+          git -C .upstream/VolmLib rev-parse 'HEAD^{tree}' > .reference-output/native-reference/volmlib-tree.txt
+          java --version > .reference-output/native-reference/java-version.txt 2>&1
+          grep -F 'build 25.0.4.1+1-LTS' .reference-output/native-reference/java-version.txt
+          python3 -m unittest discover -s tools/native-reference -p 'test_*.py'
+          cp tools/native-reference/source-lock.json .reference-output/native-reference/
+      - name: Fetch and verify the pinned Gradle distribution
+        run: |
+          curl --fail --location --max-time 180 --retry 2 https://services.gradle.org/distributions/gradle-9.5.1-bin.zip --output .reference-output/gradle-9.5.1-bin.zip
+          curl --fail --location --max-time 60 --retry 2 https://services.gradle.org/distributions/gradle-9.5.1-bin.zip.sha256 --output .reference-output/native-reference/gradle-9.5.1-bin.zip.sha256
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          checksum = Path('.reference-output/native-reference/gradle-9.5.1-bin.zip.sha256').read_text().strip()
+          import json
+          assert checksum == json.loads(Path('tools/native-reference/source-lock.json').read_text())['gradle']['sha256']
+          assert len(checksum) == 64 and all(c in '0123456789abcdef' for c in checksum)
+          assert hashlib.sha256(Path('.reference-output/gradle-9.5.1-bin.zip').read_bytes()).hexdigest() == checksum
+          PY
+          unzip -q .reference-output/gradle-9.5.1-bin.zip -d .reference-output/
+      - name: Attempt pinned native regressions (actual outcome retained)
+        id: native
+        continue-on-error: true
+        run: |
+          set +e
+          cd .upstream/Iris
+          "$GITHUB_WORKSPACE/.reference-output/gradle-9.5.1/bin/gradle" --no-daemon --max-workers=2 --stacktrace --console=plain \
+            --init-script "$GITHUB_WORKSPACE/tools/native-reference/record-inputs.gradle" \
+            --write-locks \
+            -Dorg.gradle.jvmargs='-Xmx3g -Dfile.encoding=UTF-8' \
+            "-PlocalVolmLibDirectory=$GITHUB_WORKSPACE/.upstream/VolmLib" \
+            :core:test \
+            --tests art.arcane.iris.generation.noise.NoiseSeedCohesionTest \
+            --tests art.arcane.iris.generation.noise.NoiseStyleContractTest \
+            2>&1 | tee "$GITHUB_WORKSPACE/.reference-output/native-reference/gradle.log"
+          native_exit=${PIPESTATUS[0]}
+          printf '%s\n' "$native_exit" > "$GITHUB_WORKSPACE/.reference-output/native-reference/gradle-exit-code.txt"
+          exit "$native_exit"
+      - name: Report native readiness explicitly
+        if: always()
+        run: |
+          mkdir -p .reference-output/native-reference
+          if test -f .reference-output/native-reference/gradle-exit-code.txt; then
+            native_exit=$(cat .reference-output/native-reference/gradle-exit-code.txt)
+          else
+            native_exit=125
+          fi
+          python3 tools/native-reference/report.py --results .upstream/Iris/core/build/test-results/test --exit-code "$native_exit" --output .reference-output/native-reference/report.json
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=json.loads(Path('.reference-output/native-reference/report.json').read_text())
+          status='PASS (native source build only)' if d['nativeRegressionsPassed'] else 'BLOCKED — native regressions did not pass'
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write(f"## Native reference result: {status}\n\n")
+            f.write(f"Actual Gradle exit code: {d['gradleExitCode']}. Missing required suites: {d['missingRequiredSuites']}.\n\n")
+            f.write('This workflow records an audit. Its completion does not certify native tests, release matching, or browser parity. Inspect report.json and gradle.log.\n')
+          PY
+      - name: Retain resolved dependency metadata and digests
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import hashlib, shutil
+          from pathlib import Path
+          out=Path('.reference-output/native-reference')
+          for name in ['Iris','VolmLib']:
+            root=Path('.upstream')/name
+            for p in root.rglob('*'):
+              if p.is_file() and (p.name=='gradle.lockfile' or p.name=='verification-metadata.xml' or p.name.startswith('TEST-') and p.suffix=='.xml'):
+                target=out/'metadata'/name/p.relative_to(root)
+                target.parent.mkdir(parents=True,exist_ok=True)
+                shutil.copyfile(p,target)
+          cache=Path('.reference-output/gradle-cache/caches/modules-2/files-2.1')
+          with (out/'resolved-jars.sha256').open('w') as f:
+            for p in sorted(cache.rglob('*.jar')):
+              f.write(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(cache))+'\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: native-reference-audit
+          path: .reference-output/native-reference/
+          retention-days: 30

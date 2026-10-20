@@ -1,0 +1,70 @@
+{
+  "formatVersion": 1,
+  "scope": "native-iris-source-build-audit",
+  "gradleExitCode": 1,
+  "nativeRegressionsPassed": false,
+  "releaseMatchVerified": false,
+  "irisBrowserParityVerified": false,
+  "suites": {
+    "art.arcane.iris.generation.noise.NoiseSeedCohesionTest": {
+      "tests": 3,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "art.arcane.iris.generation.noise.NoiseStyleContractTest": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "missingRequiredSuites": [],
+  "diagnostics": [],
+  "sourceManifestSha256": "6f4ed71fc11f69c219774f040e278f69f1629252e5a509f41a005b8160f463bf",
+  "inputs": {
+    "formatVersion": 1,
+    "purpose": "Native Iris source-build audit with explicit experimental VolmLib input",
+    "iris": {
+      "repository": "VolmitSoftware/Iris",
+      "commit": "c3a9449a026078c44a87c9776766f54a67779392",
+      "tree": "95b910b97fa75c29b3e98cd4f32bc2a40276dcb3"
+    },
+    "volmLib": {
+      "repository": "VolmitSoftware/VolmLib",
+      "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+      "releaseMatchVerified": false
+    },
+    "java": {
+      "setupCoordinate": "25.0.4+1",
+      "requiredRuntimeBuild": "25.0.4.1+1-LTS"
+    },
+    "gradle": {
+      "version": "9.5.1",
+      "distribution": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip",
+      "checksum": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip.sha256"
+    },
+    "requiredSuites": [
+      "art.arcane.iris.generation.noise.NoiseSeedCohesionTest",
+      "art.arcane.iris.generation.noise.NoiseStyleContractTest"
+    ]
+  },
+  "evidence": {
+    "workflowUrl": "https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39432563151",
+    "workflowRunId": 39432563151,
+    "commit": "6fcd16530ca7e652230980d568c5359f1e0506c1",
+    "artifactId": 12268108765,
+    "artifactSha256": "a380884e9a6fc5061938a70a70b3740fe65f4ec9cf1a958b28b8e57e95e889a5",
+    "archiveDigestVerified": true,
+    "retentionDays": 30
+  },
+  "allStyleChecksum": {
+    "expected": "5059606393854142913",
+    "actual": "3659164368724912644",
+    "case": "allStylesRetainPinnedSamples"
+  },
+  "resolvedJarCount": 353,
+  "resolvedJarManifestSha256": "dc7ac0682c0399c415efd281eef783dff8f996223a3a5a9c1501b28d5bab9eaf",
+  "gradleDistributionSha256": "bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f",
+  "additionalDiagnostic": "Gradle verification-metadata writer independently failed on duplicate timestamped me.lucko:spark-api entries; later audit revisions collect digests independently."
+}

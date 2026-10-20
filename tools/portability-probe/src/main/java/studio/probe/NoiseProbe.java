@@ -39,6 +39,15 @@ public final class NoiseProbe {
         return "0000000000000000".substring(hex.length()) + hex;
     }
 
+    @JSExport
+    public static String sampleRng(String seed, boolean textSeed, String signature) {
+        try {
+            return RngProbe.sample(seed, textSeed, signature);
+        } catch (Throwable error) {
+            return "ERROR: " + error;
+        }
+    }
+
     public static void main(String[] args) {
         System.out.print("{\"formatVersion\":1,\"scope\":\"volmlib-primitive-portability\",\"cases\":[");
         int index = 0;

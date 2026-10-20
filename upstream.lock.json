@@ -106,7 +106,7 @@
     "parityVerified": false,
     "blockers": [
       "Resolve the release's exact VolmLib source and dependency artifact hashes.",
-      "Provision and verify a Java 25 build toolchain.",
+      "Resolve native all-style checksum mismatch: expected 5059606393854142913, observed 3659164368724912644.",
       "Export and hash the matching schemas and Minecraft 26.3 block registry.",
       "Compile and execute an actual Iris/VolmLib generation path in a browser worker.",
       "Produce native/browser reference captures and pass exact comparisons.",
