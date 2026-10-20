@@ -18,7 +18,7 @@ gradle.projectsEvaluated {
         def historicalClasses = new File(output, "${profile.id}/classes")
         def compileHistorical = profile.id in ['current', 'interpreted'] ? null : core.tasks.register("compileStudioCng_${profile.id}", JavaCompile) {
             dependsOn(core.tasks.named('testClasses'))
-            source(new File(output, "${profile.id}/src/CNG.java"))
+            source(core.fileTree(new File(output, "${profile.id}/src")) { include('*.java') })
             classpath = core.sourceSets.test.runtimeClasspath + core.configurations.annotationProcessor
             options.annotationProcessorPath = core.configurations.annotationProcessor
             destinationDirectory.set(historicalClasses)

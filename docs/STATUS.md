@@ -14,12 +14,13 @@ As of 2026-10-20. Current phase: **0 — research and technical feasibility**. G
 - Corrected the Iris root-tree identity using the pinned commit object's tree field.
 - Expanded actual browser verification to VolmLib RNG: 45,696 RNG comparisons plus the 150,000 noise comparisons, all exact. Independently checked missing JDK UUID/UTF-8 compatibility operations. [Evidence](evidence/noise-rng-portability-2026-10-20.json).
 - Compiled the actual Iris core and executed both unchanged native noise/seed suites: 14 tests pass; the pinned all-style checksum fails. Captured Gradle/dependency inputs and a fail-closed native audit report. [Evidence](evidence/native-reference-audit-2026-10-20.json).
+- Executed five native CNG isolation profiles: 186 styles and 16,740 samples each; 66,960 comparisons against current agree exactly and all profiles reproduce the failing checksum. Historical CNG changes and interpreter/JIT mode do not explain this run. [Diagnostics](research/NATIVE_CHECKSUM_DIAGNOSTICS.md).
 
 No application generation feature is implemented. The executable primitive experiment uses real, unmodified VolmLib source on an explicitly separate candidate revision; production compatibility remains unproved. Comparator unit tests still use synthetic data and remain distinct from the executed Java/browser experiment.
 
 ## Immediate work, in order
 
-1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15), qualify the dependency/build inputs, and verify release provenance. The Iris core now compiles; the native reference is not yet qualified.
+1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15): compare the remaining noise source cohort and establish the original fixture/platform inputs, then qualify the dependency/build identity and release provenance. CNG-only history and interpreter/JIT diagnostics reproduce identical outputs; the reference remains unqualified.
 2. Export the Minecraft 26.3 block registry and Iris schemas with content hashes. Choose a real minimal in-scope pack and hash its content.
 3. Build a Java 25 reference harness and capture upstream noise results, including raw IEEE-754 bits. Preserve existing upstream noise/seed tests.
 4. Extend the successful primitive compilation to the actual Iris NoiseStyle/CNG and RNG/SeedManager path, using verified reference inputs and per-coordinate captures.

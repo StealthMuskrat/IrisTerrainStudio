@@ -1,6 +1,6 @@
 {
   "formatVersion": 1,
-  "scope": "CNG-only isolation: all other classes remain the current candidate",
+  "scope": "Native noise isolation; current dependencies except the explicitly listed source overlays",
   "path": "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
   "profiles": [
     {
@@ -29,6 +29,29 @@
       "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b",
       "jvmArgs": [
         "-Xint"
+      ]
+    },
+    {
+      "id": "fixture_noise",
+      "commit": "12bc569151b854946fe15dcda0b15a4cdf43dfc1",
+      "sha256": "d24281559241094c063233e62a4cc1812209fffc020b882914df62dd7f5e643e",
+      "extraSources": [
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/interpolation/IrisInterpolation.java",
+          "sha256": "2bef6ba8d4172aaabad254e680e8eb997bf97011ea8e529d7f385a59da669511"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/interpolation/NoiseBoundsSampleCache2D.java",
+          "sha256": "25940451fcee3ebc5c0e6efc25965e16f86e61723b60cbc35b785fb91be6140a"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/noise/FractalBillowSimplexNoise.java",
+          "sha256": "a57cdfbffdc10336930b2a0b70b4b3b068b5361c8cefb30bf514257fcc1de6c0"
+        },
+        {
+          "path": "shared/src/main/java/art/arcane/volmlib/util/noise/InterpolatedNoise.java",
+          "sha256": "c73a8046173d1ef6f8cfd54f0dc42bbc10322ff0e88a34320038f56d58473f71"
+        }
       ]
     }
   ],

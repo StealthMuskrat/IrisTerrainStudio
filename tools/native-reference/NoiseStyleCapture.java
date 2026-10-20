@@ -57,7 +57,13 @@ public final class NoiseStyleCapture {
             System.out.println("Original upstream checksum assertion: FAIL: " + failure.getMessage());
         }
         System.out.println("Captured aggregate: " + aggregate);
-        System.out.println("Native billow backend: " + FractalBillowSimplexNoise.nativeBackendStatus());
+        String backend;
+        try {
+            backend = (String) FractalBillowSimplexNoise.class.getMethod("nativeBackendStatus").invoke(null);
+        } catch (NoSuchMethodException absent) {
+            backend = "java-only-source (no native backend API)";
+        }
+        System.out.println("Native billow backend: " + backend);
         System.out.println("JVM mode: " + System.getProperty("java.vm.info"));
     }
 }

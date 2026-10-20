@@ -1,0 +1,145 @@
+{
+  "formatVersion": 1,
+  "scope": "native-cng-isolation-diagnostic",
+  "releaseMatchVerified": false,
+  "irisBrowserParityVerified": false,
+  "expectedUpstreamChecksum": "5059606393854142913",
+  "profiles": {
+    "current": {
+      "id": "current",
+      "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b",
+      "cngClassSha256": "a591a6965d69103f73bd1d0e95821ea4a5ed2cabd3eb6a59f4e2ed8494cb25d4",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
+    },
+    "fixture": {
+      "id": "fixture",
+      "commit": "12bc569151b854946fe15dcda0b15a4cdf43dfc1",
+      "sha256": "d24281559241094c063233e62a4cc1812209fffc020b882914df62dd7f5e643e",
+      "cngClassSha256": "12b9621eb5b385fb8e9501108d8d4187b62625c571c765ab61ca3d303116a50b",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
+    },
+    "mutation": {
+      "id": "mutation",
+      "commit": "c2881df4e8b5e40baafacdc65975baf7dd334ef1",
+      "sha256": "9b8e295843fabcf2095f5ce1a3ea53defdc8353b247c64e2302e97dec10a6f55",
+      "cngClassSha256": "f676fa673c515ff2c7e691dc02058ff815dcbb79a354cc34c9c8c5162e1c6d84",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
+    },
+    "memo": {
+      "id": "memo",
+      "commit": "a05cac2b187d6abbec10280327532d10283346d1",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b",
+      "cngClassSha256": "0a47fbe914c1c1a9a5e4457d00c51d299aa3a29785247bde9a5f7afeccbd08e5",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
+    },
+    "interpreted": {
+      "id": "interpreted",
+      "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b",
+      "jvmArgs": [
+        "-Xint"
+      ],
+      "cngClassSha256": "a591a6965d69103f73bd1d0e95821ea4a5ed2cabd3eb6a59f4e2ed8494cb25d4",
+      "aggregate": "3659164368724912644",
+      "matchesUpstreamChecksum": false,
+      "sampleCount": 16740,
+      "differencesFromCurrent": 0,
+      "changedStyles": {},
+      "firstDifference": null
+    }
+  },
+  "styleCount": 186,
+  "capturedOutputCount": 83700,
+  "comparisonsAgainstCurrent": 66960,
+  "inputs": {
+    "formatVersion": 1,
+    "purpose": "Native Iris source-build audit with explicit experimental VolmLib input",
+    "iris": {
+      "repository": "VolmitSoftware/Iris",
+      "commit": "c3a9449a026078c44a87c9776766f54a67779392",
+      "tree": "95b910b97fa75c29b3e98cd4f32bc2a40276dcb3"
+    },
+    "volmLib": {
+      "repository": "VolmitSoftware/VolmLib",
+      "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+      "releaseMatchVerified": false
+    },
+    "java": {
+      "setupCoordinate": "25.0.4+1",
+      "requiredRuntimeBuild": "25.0.4.1+1-LTS"
+    },
+    "gradle": {
+      "version": "9.5.1",
+      "distribution": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip",
+      "checksum": "https://services.gradle.org/distributions/gradle-9.5.1-bin.zip.sha256",
+      "sha256": "bafc141b619ad6350fd975fc903156dd5c151998cc8b058e8c1044ab5f7b031f"
+    },
+    "requiredSuites": [
+      "art.arcane.iris.generation.noise.NoiseSeedCohesionTest",
+      "art.arcane.iris.generation.noise.NoiseStyleContractTest"
+    ]
+  },
+  "nativeRegressionsPassed": false,
+  "nativeTests": {
+    "passed": 14,
+    "failed": 1,
+    "skipped": 0
+  },
+  "runtime": {
+    "billowBackend": "java-native-access-disabled",
+    "currentJvm": "mixed mode, sharing",
+    "interpretedJvm": "interpreted mode, sharing"
+  },
+  "captureSha256": {
+    "current": "91df6d36b459dd910dd7d7773a45ed6c3fa28be8ab568bc9aabbe4d224c4c4bd",
+    "fixture": "1935a27f3a5d7de590b3e02995f5b9c4cb2073edc714e6590ed2bc1088fd8546",
+    "mutation": "e847012b6f8943ac0bebaf19f370516a9f7458c599599b8b02852168d4002a65",
+    "memo": "466324e72be8e0679093239bc668829fe36e1e2bcaf6c7fdf9e91f4389d1af02",
+    "interpreted": "91df6d36b459dd910dd7d7773a45ed6c3fa28be8ab568bc9aabbe4d224c4c4bd"
+  },
+  "sourceFindings": {
+    "noiseStyleUnchangedSinceFixture": true,
+    "noiseStyleSha256": "8db8d4ad7ad047ba42a4a495452d277f47e98be0d982ff49474110fb6d346402",
+    "fixtureIntroductionIrisCommit": "4ef6fc7cc6d4f52829fb5598f242fc1c2a6165d0",
+    "volmLibSeedCohesionCommitCngChange": "Only fastPathStateDirty changed from nonvolatile to volatile.",
+    "changedNoiseMathInterpolationPaths": [
+      "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
+      "shared/src/main/java/art/arcane/volmlib/util/noise/FractalBillowSimplexNoise.java",
+      "shared/src/main/java/art/arcane/volmlib/util/noise/InterpolatedNoise.java",
+      "shared/src/main/java/art/arcane/volmlib/util/interpolation/IrisInterpolation.java",
+      "shared/src/main/java/art/arcane/volmlib/util/interpolation/NoiseBoundsSampleCache2D.java"
+    ]
+  },
+  "evidence": {
+    "workflowUrl": "https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39438966442",
+    "workflowRunId": 39438966442,
+    "commit": "dc31d813a4e17e1a3f7d859e20a2e5ce38605948",
+    "artifactId": 12272524073,
+    "artifactSha256": "ded4a07d0c72ead23327094356b28a64e19a02bbacb3d1c4df05f0383acdc50c",
+    "archiveDigestVerified": true,
+    "capturesIndependentlyCompared": true,
+    "retentionDays": 30
+  },
+  "conclusion": "CNG-only historical overlays and interpreter/JIT mode produced no differing sample in this Linux/Java environment. This does not explain the upstream checksum or exclude other source/platform/fixture differences."
+}

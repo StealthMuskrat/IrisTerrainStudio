@@ -100,11 +100,12 @@ jobs:
           out.mkdir(parents=True,exist_ok=True)
           (out/'manifest.json').write_bytes(manifest.read_bytes())
           for profile in lock['profiles']:
-            data=subprocess.check_output(['git','-C','.upstream/VolmLib','show',profile['commit']+':'+lock['path']])
-            assert hashlib.sha256(data).hexdigest()==profile['sha256'], profile['id']
-            source=out/profile['id']/'src/CNG.java'
-            source.parent.mkdir(parents=True,exist_ok=True)
-            source.write_bytes(data)
+            for item in [{'path':lock['path'],'sha256':profile['sha256']}, *profile.get('extraSources',[])]:
+              data=subprocess.check_output(['git','-C','.upstream/VolmLib','show',profile['commit']+':'+item['path']])
+              assert hashlib.sha256(data).hexdigest()==item['sha256'], (profile['id'],item['path'])
+              source=out/profile['id']/'src'/Path(item['path']).name
+              source.parent.mkdir(parents=True,exist_ok=True)
+              source.write_bytes(data)
           PY
           cd .upstream/Iris
           "$GITHUB_WORKSPACE/.reference-output/gradle-9.5.1/bin/gradle" --no-daemon --max-workers=2 --console=plain \
