@@ -45,7 +45,7 @@ self.onmessage=async({data})=>{
     const dimensions=options.field==='iris-style3d'?3:2;
     if(options.packSnapshot){await registry(api,manifest);if(active!==id)return;}
     api.clear();
-    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,false);}
+    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);}
     if(options.nativeConfig){for(const resource of options.nativeConfig.snippets||[])api.registerSnippet(resource.path,resource.text);api[{generator:'loadGeneratorJson',style:'loadStyleJson',dimension:'loadDimensionJson'}[options.nativeConfig.kind]](options.nativeConfig.id,options.nativeConfig.text);}
     if(options.configured){for(const d of options.configured.definitions)api.defineStyle(d.id,d.style,d.zoom,d.exponent,d.frequency,d.cellularZoom,d.fracture,d.multiplier,d.octaves);}
     if(options.generator){

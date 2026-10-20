@@ -17,6 +17,24 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             // generic type when a field also has runtime annotations. Supply
             // equivalent raw metadata; preserve every actual generic signature.
             if(studio.engine.config.NativeConfigMetadata.TYPES.contains(name))for(FieldHolder field:cls.getFields())if(field.getGenericType()==null)field.setGenericType(rawGeneric(field.getType()));
+            if(name.equals("art.arcane.iris.generation.biome.IrisBiome")){
+                int writes=0,reads=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("withInferredTypeSlow")){Program program=method.getProgram();for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("com.google.gson.Gson")){
+                    if(call.getMethod().getName().equals("toJson")&&call.getMethod().parameterCount()==1){call.setInstance(null);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.config.NativeConfigWriter","toJson",ValueType.object("java.lang.Object"),ValueType.object("java.lang.String")));writes++;}
+                    else if(call.getMethod().getName().equals("fromJson")&&call.getMethod().parameterCount()==2){call.setInstance(null);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.config.NativeConfigWriter","fromJson",ValueType.object("java.lang.String"),ValueType.object("java.lang.Class"),ValueType.object("java.lang.Object")));reads++;}
+                }}if(writes!=1||reads!=1)throw new IllegalStateException("Pinned inferred-biome copy calls changed");
+            }
+            if(name.equals("art.arcane.iris.generation.terrain.IrisDimension")){
+                int uuids=0,encodings=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("resolveFocusRegion")){Program program=method.getProgram();for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                    if(call.getMethod().getClassName().equals("java.util.UUID")&&call.getMethod().getName().equals("nameUUIDFromBytes")){call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class));uuids++;}
+                    else if(call.getMethod().equals(new MethodReference(String.class,"getBytes",java.nio.charset.Charset.class,byte[].class))){Variable self=call.getInstance(),charset=call.getArguments().get(0);call.setInstance(null);call.setArguments(self,charset);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"utf8",String.class,java.nio.charset.Charset.class,byte[].class));encodings++;}
+                }}if(uuids!=1||encodings!=1)throw new IllegalStateException("Pinned focus-region UUID calls changed");
+            }
+            if(name.equals("art.arcane.volmlib.util.collection.KSet")){
+                int changed=0,iterators=0;for(MethodHolder method:cls.getMethods()){Program program=method.getProgram();if(program==null)continue;for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                    if(call.getMethod().getClassName().equals("java.util.concurrent.ConcurrentHashMap")&&call.getMethod().getName().equals("keySet")){Variable map=call.getInstance();call.setInstance(null);call.setArguments(map);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(WorkerCollections.class,"keys",java.util.Map.class,java.util.Set.class));changed++;}
+                    else if(call.getMethod().getClassName().equals("java.util.concurrent.ConcurrentHashMap$KeySetView")&&call.getMethod().getName().equals("iterator")){call.setMethod(new MethodReference(java.util.Set.class,"iterator",java.util.Iterator.class));iterators++;}
+                }}if(changed!=1||iterators!=1)throw new IllegalStateException("Pinned collection key-view calls changed");
+            }
             if(name.equals("art.arcane.iris.pack.loading.IrisData")){
                 int initializers=0,gates=0;
                 for(MethodHolder method:cls.getMethods()){

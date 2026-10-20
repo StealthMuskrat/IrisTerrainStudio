@@ -23,6 +23,7 @@ import art.arcane.iris.pack.loading.IrisRegistrant;
 import com.google.gson.stream.JsonWriter;
 import java.io.StringWriter;
 import studio.engine.registry.BrowserRegistries;
+import studio.engine.config.NativeConfigWriter;
 import art.arcane.iris.generation.terrain.RegionSelection;
 import art.arcane.iris.generation.terrain.IrisRegion;
 
@@ -43,9 +44,12 @@ public final class BrowserEngine {
 
     @JSExport public static void prepareRegionSelection(String dimensionKey,String decimalWorldSeed,boolean buffet){
         pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",dimensionKey);if(!(resource instanceof IrisDimension dimension))throw new IllegalArgumentException("The selected native dimension could not be loaded");if(dimension.isCompatExcluded())throw new IllegalArgumentException("The native compatibility gate excluded this dimension: "+String.join("; ",pack.open().getCompatReport().detailLines()));
-        if(buffet||dimension.getFocus()!=null&&!dimension.getFocus().isBlank()||dimension.getFocusRegion()!=null&&!dimension.getFocusRegion().isBlank())throw UnsupportedPlatform.unavailable("Focused and buffet region selection");
-        supportedStyle(dimension.getRegionStyle(),0);long complexSeed=new SeedManager(Long.parseLong(decimalWorldSeed)).getComplex();selectedRegions=RegionSelection.select(new RegionSelection.Options(dimension,pack.open(),dimension.getRegionStyle().create(new RNG(complexSeed).nextParallelRNG(883),pack.open()).stream().zoom(dimension.getRegionZoom()),art.arcane.iris.generation.image.IrisImageMapRuntime.compile(pack.open(),dimension,dimension.getMinHeight()),null));
+        supportedStyle(dimension.getRegionStyle(),0);long complexSeed=new SeedManager(Long.parseLong(decimalWorldSeed)).getComplex();selectedRegions=RegionSelection.restore(new RegionSelection.Snapshot(dimension,pack.open(),complexSeed,buffet));
     }
+    @JSExport public static String biomeVariant(String key,String inferredType)throws java.io.IOException{
+        pack.open();IrisRegistrant resource=pack.load("biomes",key);if(!(resource instanceof art.arcane.iris.generation.biome.IrisBiome biome))throw new IllegalArgumentException("Missing biome resource");var variant=biome.withInferredType(art.arcane.iris.generation.terrain.InferredType.valueOf(inferredType));java.io.StringWriter output=new java.io.StringWriter();try(JsonWriter writer=new JsonWriter(output)){writer.beginObject();writer.name("type").value(variant.getInferredType().name());writer.name("key").value(variant.getLoadKey());writer.name("config").jsonValue(NativeConfigWriter.toJson(variant));writer.endObject();}return output.toString();
+    }
+    @JSExport public static String roundTripNativeConfig(String type,String text)throws java.io.IOException{return NativeConfigWriter.toJson(NativeConfigReader.readConfig(type,text));}
     @JSExport public static String sampleRegion(double x,double z){if(selectedRegions==null)throw new IllegalStateException("Prepare the native region selection first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Region coordinates must be finite");IrisRegion region=selectedRegions.get(x,z);if(region==null)throw new IllegalStateException("The native region pool returned no region");return region.getLoadKey();}
 
     @JSExport public static String installRegistry(String text)throws java.io.IOException{

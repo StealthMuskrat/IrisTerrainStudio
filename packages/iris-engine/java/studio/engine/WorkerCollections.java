@@ -6,4 +6,5 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class WorkerCollections {
     private WorkerCollections() {}
     public static <T> Set<T> newKeySet() { return Collections.newSetFromMap(new ConcurrentHashMap<T,Boolean>()); }
+    public static <T> Set<T> keys(Map<T,?> map){return map.keySet();}
 }
