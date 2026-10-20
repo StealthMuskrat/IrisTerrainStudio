@@ -2,7 +2,7 @@
 
 A planned self-hosted editor for real Iris dimension packs, with generation entirely in browser workers and WebGPU visualization.
 
-**Status: Phase 0, feasibility investigation. There is no terrain engine, editor, renderer, or deployable application yet. No native/browser parity has been demonstrated.**
+**Status: Phase 0, feasibility investigation. There is no terrain engine, editor, renderer, or deployable application yet. Iris terrain parity remains unproved.**
 
 The [implementation specification](docs/SPECIFICATION.md) is the project brief. Work proceeds through its gates: prove browser execution and deterministic parity before building the editor.
 
@@ -14,11 +14,13 @@ Checked on 2026-10-20 against upstream's latest non-prerelease release:
 | --- | --- | --- |
 | Iris | 4.3.4, tag `4.3.4-26.1.2-26.3` | Commit `c3a9449a026078c44a87c9776766f54a67779392` pinned |
 | Minecraft | 26.3 | Version verified; registry export pending |
-| Native build toolchain | Java 25 | Required; not available in the initial workspace |
+| Native build toolchain | Java 25 | Java 25.0.4.1+1 runs in CI; full Iris reference build pending |
 | VolmLib | Release-matching source and binaries | Unresolved; upstream uses mutable snapshot/composite resolution |
-| Browser compiler | TeaVM Wasm GC first | Candidate; compilation not attempted successfully |
+| Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Candidate primitives compile and execute; Iris engine pending |
 
 [upstream.lock.json](upstream.lock.json) records source blob hashes, unresolved inputs, and readiness. Pinning Iris alone does not establish a reproducible engine.
+
+The [primitive portability experiment](tools/portability-probe/README.md) now passes **150,000 exact Java/browser comparisons with zero mismatches** over five real FastNoiseDouble methods on a separately pinned VolmLib candidate. See the [run evidence](docs/evidence/primitive-portability-2026-10-20.json). The candidate is not verified as the release dependency, and this result does not establish Iris noise-wrapper, seed, or terrain compatibility.
 
 ## Run the foundation checks
 
@@ -46,6 +48,7 @@ The comparator checks provenance, complete capture bounds, exact floating-point 
 - [Roadmap and milestone gates](docs/ROADMAP.md)
 - [Current status and next actions](docs/STATUS.md)
 - [Initial source audit and feasibility blockers](docs/research/PHASE_0.md)
+- [Executed primitive portability investigation](docs/research/PORTABILITY_PROBE.md)
 - [Architecture and dependency boundaries](docs/ARCHITECTURE.md)
 - [Supported feature matrix](docs/COMPATIBILITY.md)
 - [Third-party code and asset provenance](docs/THIRD_PARTY.md)

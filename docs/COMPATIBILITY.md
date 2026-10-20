@@ -6,7 +6,7 @@ No feature is currently advertised as supported. “Inspected” means source re
 
 | Feature | Source investigation | Browser implementation | Native/browser parity |
 | --- | --- | --- | --- |
-| Noise and seed derivation | NoiseStyle and SeedManager inspected; RNG/CNG external to Iris | None | Not run |
+| Noise and seed derivation | NoiseStyle/SeedManager inspected; actual FastNoiseDouble candidate primitive experiment executed | Experimental primitive Wasm only; no Iris wrapper/seed implementation | 150,000 primitive comparisons pass on the candidate; target Iris parity not run |
 | Dimensions, regions, biomes, heights | Source locations inventoried | None | Not run |
 | Volumetric terrain, caves, subterrain | Upstream systems exist; detailed reachability audit pending | None | Not run |
 | Hydrology | Upstream probe entry points identified | None | Not run |

@@ -4,6 +4,7 @@ node_modules/
 .reference-output/
 coverage/
 dist/
+target/
 *.log
 *.jar
 *.zip

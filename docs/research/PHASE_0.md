@@ -2,6 +2,8 @@
 
 Audit date: 2026-10-20. Outcome: **feasibility unproved; exact blockers identified**. This is a source inspection, not a successful compilation experiment.
 
+Follow-up: [the executed primitive portability investigation](PORTABILITY_PROBE.md) records successful candidate VolmLib JVM/Wasm testing and the root-tree hash correction. The initial audit below predates that experiment; full Iris feasibility remains open.
+
 ## Release and immutable identity
 
 GitHub's [latest stable release endpoint](https://api.github.com/repos/VolmitSoftware/Iris/releases/latest) returned tag `4.3.4-26.1.2-26.3`, published 2026-10-18, with prerelease/draft both false. The [tag ref](https://api.github.com/repos/VolmitSoftware/Iris/git/ref/tags/4.3.4-26.1.2-26.3) resolves directly to commit `c3a9449a026078c44a87c9776766f54a67779392`. The pinned [gradle.properties](https://github.com/VolmitSoftware/Iris/blob/c3a9449a026078c44a87c9776766f54a67779392/gradle.properties) declares Iris 4.3.4 and Minecraft 26.3. The release notes and core toolchain configuration specify Java 25. The upstream recursive Git tree was complete (4,156 entries).
