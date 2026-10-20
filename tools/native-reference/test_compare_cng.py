@@ -43,6 +43,11 @@ class CaptureValidationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.compare(capture(), changed)
 
+    def test_rejects_missing_whole_styles_in_both_captures(self):
+        with self.assertRaises(ValueError):
+            module.compare(capture(), capture(), ['TEST', 'MISSING'])
+        self.assertEqual(module.compare(capture(), capture(), ['TEST'])['sampleCount'], 90)
+
 
 if __name__ == '__main__':
     unittest.main()

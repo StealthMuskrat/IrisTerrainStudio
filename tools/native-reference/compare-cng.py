@@ -39,9 +39,12 @@ def validate(capture):
     return keys
 
 
-def compare(current, historical):
-    if validate(current) != validate(historical):
+def compare(current, historical, expected_styles=None):
+    current_keys = validate(current)
+    if current_keys != validate(historical):
         raise ValueError('Style/seed coverage differs')
+    if expected_styles is not None and current_keys != [(style, seed) for style in expected_styles for seed in SEEDS]:
+        raise ValueError('Coverage differs from pinned NoiseStyle enum')
     changed = {}
     first = None
     for now, before in zip(current['styles'], historical['styles']):
@@ -67,7 +70,7 @@ def main():
               'irisBrowserParityVerified': False, 'expectedUpstreamChecksum': EXPECTED, 'profiles': {}}
     for profile in manifest['profiles']:
         capture = json.loads((root / (profile['id'] + '.json')).read_text())
-        report['profiles'][profile['id']] = {**profile, **compare(current, capture)}
+        report['profiles'][profile['id']] = {**profile, **compare(current, capture, manifest['expectedStyleOrder'])}
     (root / 'comparison.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
 

@@ -90,6 +90,7 @@ jobs:
       - name: Capture per-style CNG history isolation
         if: always() && steps.native.outcome != 'skipped'
         run: |
+          set -euo pipefail
           python3 - <<'PY'
           import hashlib, json, subprocess
           from pathlib import Path

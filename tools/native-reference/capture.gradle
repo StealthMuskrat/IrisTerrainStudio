@@ -1,6 +1,7 @@
 // Adds separate diagnostic tasks; never edits upstream sources or test expectations.
 gradle.projectsEvaluated {
-    def core = gradle.rootProject.project(':core')
+    def core = gradle.rootProject.findProject(':core')
+    if (core == null) return // Init scripts also run in buildSrc and included builds.
     def studio = new File(System.getenv('GITHUB_WORKSPACE'))
     def output = new File(studio, '.reference-output/native-reference/cng-isolation')
     def diagnosticClasses = new File(output, 'harness-classes')
@@ -15,7 +16,7 @@ gradle.projectsEvaluated {
     def captures = []
     manifest.profiles.each { profile ->
         def historicalClasses = new File(output, "${profile.id}/classes")
-        def compileHistorical = profile.id == 'current' ? null : core.tasks.register("compileStudioCng_${profile.id}", JavaCompile) {
+        def compileHistorical = profile.id in ['current', 'interpreted'] ? null : core.tasks.register("compileStudioCng_${profile.id}", JavaCompile) {
             dependsOn(core.tasks.named('testClasses'))
             source(new File(output, "${profile.id}/src/CNG.java"))
             classpath = core.sourceSets.test.runtimeClasspath
@@ -30,6 +31,7 @@ gradle.projectsEvaluated {
             mainClass.set('studio.reference.NoiseStyleCapture')
             classpath = core.files(historicalClasses, diagnosticClasses) + core.sourceSets.test.runtimeClasspath
             jvmArgs('--add-modules', 'jdk.incubator.vector')
+            if (profile.jvmArgs) jvmArgs(profile.jvmArgs)
             args(new File(output, "${profile.id}.json").absolutePath)
         })
     }
