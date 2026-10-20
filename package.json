@@ -19,6 +19,7 @@
     "reference:preflight": "node tools/reference-tests/preflight.mjs",
     "release:check": "node tools/check-project.mjs --release",
     "engine:setup": "node tools/engine-build/setup.mjs",
-    "engine:registry": "node tools/engine-build/registry.mjs"
+    "engine:registry": "node tools/engine-build/registry.mjs",
+    "engine:schemas": "node tools/engine-build/schemas.mjs"
   }
 }

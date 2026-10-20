@@ -1,4 +1,4 @@
-const categories=['blocks','biomes','structures','items','entities','enchantments','potionEffects'];
+const categories=['blocks','biomes','structures','items','entities','enchantments','potionEffects','lootTables'];
 
 /** Actual neutral registry metadata exported by NativeRegistryAccess. */
 export class NativePlatformMetadata {

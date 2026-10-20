@@ -1,0 +1,445 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-pack-schema-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "minecraft": "26.3",
+  "releaseMatchVerified": false,
+  "schemaParityVerified": false,
+  "terrainParityVerified": false,
+  "schemaManifestSha256": "ab4c5569f5170a460e67c8eba67fc83e5188e29ee3c77e1adac7b5a75894d7c4",
+  "nativeCoreJarSha256": "ddcc21f2f13beeb0e634a3cfc4d1ac2e318270bf50ae9ab8621753dbca3be732",
+  "sourceServerJarSha256": "841f58fe2a961c24705720054db0cc671bc7760db1e0e6992ed463b19cb8aa89",
+  "packFiles": {
+    "biomes/ledges.json": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90",
+    "dimensions/terrain3d.json": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba",
+    "generators/flat.json": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10",
+    "regions/ledges.json": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+  },
+  "schemaFiles": {
+    "biomes.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiome",
+      "sha256": "768736f5c634363b5f7613fcb69a943febc832ad8931bd4e7fd82f1f1b296fdd",
+      "bytes": 1568606
+    },
+    "blocks.schema.json": {
+      "javaType": "art.arcane.iris.generation.block.IrisBlockData",
+      "sha256": "f2fa0f278c03832a1d6f1693ba438926f231bbc07951fa9b78e408011aa1c274",
+      "bytes": 610556
+    },
+    "dimensions.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisDimension",
+      "sha256": "dbd3c0d96e602377774bd5106f2e9e2c958f21f8a1008cd16e91d774a6acd7f2",
+      "bytes": 1172996
+    },
+    "expressions.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisExpression",
+      "sha256": "95ea21b6105ab4b32cb76442d09c94e29a2ba4d062112f273b34520ffa9ebe48",
+      "bytes": 71324
+    },
+    "generators.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisGenerator",
+      "sha256": "0a665b2c76b21fef0b101d8d91d56011e2a5699d1f6dc1807abdbaeaef7dc4cc",
+      "bytes": 84599
+    },
+    "imagemaps.schema.json": {
+      "javaType": "art.arcane.iris.generation.image.IrisImageMap",
+      "sha256": "29869bd28b0d737c1eef5eadb1e29b3c3f854f720408645e86bff7c0fd1dde05",
+      "bytes": 18946
+    },
+    "regions.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisRegion",
+      "sha256": "6bd985658ad6ccfda76c2db3c803672ac85dc61b0eb0a6feec1bfbfe05071a39",
+      "bytes": 1395299
+    },
+    "snippet/attribute-modifier.schema.json": {
+      "javaType": "art.arcane.iris.world.entity.IrisAttributeModifier",
+      "sha256": "72073c4f996efd5e6724e986e396fd749a8e8bbd97cdb9230430bc58c431ebf7",
+      "bytes": 5796
+    },
+    "snippet/axis-rotation.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisAxisRotationClamp",
+      "sha256": "1a3e4a4946c052d7a0a5d50ca441df8f0894e3423d9879ebc1f245cd642f0273",
+      "bytes": 4622
+    },
+    "snippet/biome-palette.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiomePaletteLayer",
+      "sha256": "5cb5162edce90fc6b5a6288fa79fc99811e12250882dbeafddb299b098306b6a",
+      "bytes": 535059
+    },
+    "snippet/block-drops.schema.json": {
+      "javaType": "art.arcane.iris.world.loot.IrisBlockDrops",
+      "sha256": "e84f1f6d0ca9efe9abc829a65f9ead215549438567e66c95c7b01a3f75b9bb5b",
+      "bytes": 538024
+    },
+    "snippet/cave-field-module.schema.json": {
+      "javaType": "art.arcane.iris.generation.cave.IrisCaveFieldModule",
+      "sha256": "a35e9d57f88b436e8c82df64246b6ffe560d80656c2d6ed1d8ef06868d75829f",
+      "bytes": 62637
+    },
+    "snippet/cave-profile.schema.json": {
+      "javaType": "art.arcane.iris.generation.cave.IrisCaveProfile",
+      "sha256": "5496c72cf0393c9e691bd44af7958552512141aea0af62f7e0ed26f0b87701b2",
+      "bytes": 113427
+    },
+    "snippet/command.schema.json": {
+      "javaType": "art.arcane.iris.command.IrisCommand",
+      "sha256": "64fc03db34f8d44483360157d1f24adcf8ef8583aa1bb0e1d6164e6e924396a7",
+      "bytes": 10243
+    },
+    "snippet/command-registry.schema.json": {
+      "javaType": "art.arcane.iris.command.IrisCommandRegistry",
+      "sha256": "89e9f293d11036970d33af0f457866728ccf9a8a2c4104609170b990455afa4a",
+      "bytes": 15458
+    },
+    "snippet/coral.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.coral.IrisCoral",
+      "sha256": "38e4e52843336a8e0f4fb924853ca3de71caadc370ae04325b6a6c93a058bdf6",
+      "bytes": 622717
+    },
+    "snippet/crystal.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.crystal.IrisCrystal",
+      "sha256": "ac9f901e020792e3549d1b22abe52feae9c6d0cd66383d6715098738848ef6b0",
+      "bytes": 622251
+    },
+    "snippet/custom-biome.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiomeCustom",
+      "sha256": "6d00073bc3aae1fb17eac2fcf9d3170f56eefd8abaa77a626a3ca641b1a1418f",
+      "bytes": 26762
+    },
+    "snippet/custom-biome-particle.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiomeCustomParticle",
+      "sha256": "b8404cfe2db28c415b1e18945665bf44ad215e4c976eb59de9feb20e2d1667f9",
+      "bytes": 1675
+    },
+    "snippet/custom-biome-spawn.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiomeCustomSpawn",
+      "sha256": "4656db667b8baa08fc5847239fdc7898bdc859aee0432bb3bfa1a38b6d2e4dba",
+      "bytes": 9478
+    },
+    "snippet/decorator.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisDecorator",
+      "sha256": "22e23aa91ff8be9a862a13996b403581d3f971ef5e70d862544d31c3ccf46d5d",
+      "bytes": 549246
+    },
+    "snippet/deposit.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisDepositGenerator",
+      "sha256": "f421cd1ee3aa9d5d480d5727ee4d66b41d7080beae6b20f7af56f4dec12260f9",
+      "bytes": 489617
+    },
+    "snippet/deposit-variant.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisDepositVariant",
+      "sha256": "003cb84013bb02d7ada024de301ed4f3cadf057524ce703c90a1996282c41364",
+      "bytes": 4763
+    },
+    "snippet/dimension-carving-entry.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisDimensionCarvingEntry",
+      "sha256": "e13be8a4b29d430ee6877c31cb0aac2f83b786f984ffeb36ae9634c602741379",
+      "bytes": 64403
+    },
+    "snippet/dimension-mode.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisDimensionMode",
+      "sha256": "cbbbfd7b1158ad5f272e7d2481e3b40bad4e092cbbf7285c737b763513b2145e",
+      "bytes": 2600
+    },
+    "snippet/effect.schema.json": {
+      "javaType": "art.arcane.iris.world.entity.IrisEffect",
+      "sha256": "3cabb2c5d30b527df315279d5b42b2a15be97ea7b90eea69aad9e95662530a26",
+      "bytes": 31852
+    },
+    "snippet/enchantment.schema.json": {
+      "javaType": "art.arcane.iris.world.entity.IrisEnchantment",
+      "sha256": "5737fdc213fd027f325bab2febb6659423113b9798607580d00550bea7c68ccd",
+      "bytes": 4830
+    },
+    "snippet/expression-function.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisExpressionFunction",
+      "sha256": "ea76cb94b7f9e8c66d726ef10a145c942899c5e345f021d1fe474a53e47f5d7f",
+      "bytes": 62023
+    },
+    "snippet/expression-load.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisExpressionLoad",
+      "sha256": "952bc92c248cfcf0926cafc4b1d7dddc95ff9b2ce53de008b7a984f1d8b143c1",
+      "bytes": 64136
+    },
+    "snippet/floating-child-biome.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisFloatingChildBiomes",
+      "sha256": "d0dc2d7adc6ab18707bc1efdd970ee8210a1508bd11a063fa8a84cd615ec7666",
+      "bytes": 801865
+    },
+    "snippet/formation.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.formation.IrisFormation",
+      "sha256": "27f7a5c1e589ddb8817dae3578e335e0c19e5b3a56ae77ce706915382d3d1609",
+      "bytes": 632428
+    },
+    "snippet/fungus.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.fungus.IrisFungus",
+      "sha256": "fd89f3ef1c4452231d85429bf941009bcbc7d31af7c826f930595c244796f75e",
+      "bytes": 623794
+    },
+    "snippet/generator.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisNoiseGenerator",
+      "sha256": "22c931cb427f9d58c5b13a3aba0bcb70b967e15b61f45fb938a201e23f41140b",
+      "bytes": 71284
+    },
+    "snippet/generator-layer.schema.json": {
+      "javaType": "art.arcane.iris.generation.biome.IrisBiomeGeneratorLink",
+      "sha256": "e73ba937243fc5eed93c8b97232b2c2e252062accaca597651337bf403f4b1fb",
+      "bytes": 2566
+    },
+    "snippet/loot.schema.json": {
+      "javaType": "art.arcane.iris.world.loot.IrisLoot",
+      "sha256": "d8489c0f9c730bfc86f59c3fd804da3836f5486a5bff4f72792a73bbc31bebbb",
+      "bytes": 63482
+    },
+    "snippet/loot-registry.schema.json": {
+      "javaType": "art.arcane.iris.world.loot.IrisLootReference",
+      "sha256": "a5ad59de727fb0188fc06a14d4bc5845350f01e560b75a493cdcca55897467d7",
+      "bytes": 4630
+    },
+    "snippet/object-block-replacer.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectReplace",
+      "sha256": "7420edf9edc58ea5837111fa0e625e031138ed8f2c85c3d2674ea60f829f0f87",
+      "bytes": 533420
+    },
+    "snippet/object-limit.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectLimit",
+      "sha256": "f967f6d1d28626eda78eea492e2fce0746ae60f1267515367053cfb14ba08265",
+      "bytes": 2109
+    },
+    "snippet/object-loot.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectLoot",
+      "sha256": "75ed827a1982f637cbcb30c4c05a434813a14ddd2dd6d2c0d98875e7c7785c9f",
+      "bytes": 473141
+    },
+    "snippet/object-marker.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectMarker",
+      "sha256": "6b960e716132b01c92d8ffb1be883032c081ddf3dc8be26da6991bec2f1b4b4a",
+      "bytes": 473284
+    },
+    "snippet/object-placer.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectPlacement",
+      "sha256": "fe3d03106a1a6d6d343428554b55a1a8b874a071d39fa0a70a7550f3c816fc30",
+      "bytes": 726886
+    },
+    "snippet/object-rotator.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectRotation",
+      "sha256": "05eb4bef6b2a0465ef31a1b60268155f31eedf21b19f70fc8189025edfad639c",
+      "bytes": 15784
+    },
+    "snippet/object-scale.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectScale",
+      "sha256": "f44841c1e9d67527a8b4e8aa6446d0abc1dfd8df8da211fb253264be35ca0ae8",
+      "bytes": 6158
+    },
+    "snippet/object-translator.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectTranslate",
+      "sha256": "ffcdcf49359254258cca344ebb34c7d682bf0bdb07c07350f26bb2654d7bffba",
+      "bytes": 2689
+    },
+    "snippet/object-vanilla-loot.schema.json": {
+      "javaType": "art.arcane.iris.structure.object.IrisObjectVanillaLoot",
+      "sha256": "51a297d4cbffef9922c15088109f80b5c2d04491c064984c417873fab43004c9",
+      "bytes": 535263
+    },
+    "snippet/palette.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisMaterialPalette",
+      "sha256": "36c2c5a71cf0b540d8548511fcd41fc00649394e92a4117bc6e80e5814575ce3",
+      "bytes": 528446
+    },
+    "snippet/position-3d.schema.json": {
+      "javaType": "art.arcane.iris.pack.value.IrisPosition",
+      "sha256": "0195390a4e2ce4ca1adecbb21a18d90fda7271f7189b0c10708c7de08f8be7b6",
+      "bytes": 1567
+    },
+    "snippet/procedural-objects.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisProceduralObjects",
+      "sha256": "9f9628a29dcb2bce3632f2af5ee33b574b64cd8cb5469f808629a74fdc67bfad",
+      "bytes": 951551
+    },
+    "snippet/procedural-tree.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisProceduralTree",
+      "sha256": "c12bbf1b7c8bd67540778b1459c9aa571fa5ba2700eb9782591d587f4cbff912",
+      "bytes": 695929
+    },
+    "snippet/range.schema.json": {
+      "javaType": "art.arcane.iris.pack.value.IrisRange",
+      "sha256": "5beb7baec4f6ec87101122521e842b9b3969d9234bb880b79c16a83993d7ef15",
+      "bytes": 1300
+    },
+    "snippet/ruin.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.ruin.IrisRuin",
+      "sha256": "75da42b1b7c78ac4aafd485cf35cca9d35b80602df4e3b81c79926b85a9e6ee5",
+      "bytes": 630421
+    },
+    "snippet/ruin-decorator.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.ruin.IrisRuinDecorator",
+      "sha256": "2116ad5fe356f39206640b2c145caea649779988ee32d334c878fe4987e8cc70",
+      "bytes": 537598
+    },
+    "snippet/shaped-style.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisShapedGeneratorStyle",
+      "sha256": "289d312ac455f739c02c0f5b940a33c572b23a4b1de8414726b7e3bbd117f8d2",
+      "bytes": 58091
+    },
+    "snippet/slope-clip.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisSlopeClip",
+      "sha256": "c5dbb2c70ef3a7ddd9425014fe4f9f545f781ed498453a1e83d7413eaaba67eb",
+      "bytes": 1979
+    },
+    "snippet/stilt-settings.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisStiltSettings",
+      "sha256": "217be40533560945298cca314fda05223d8a1f20a90e33d0bc28a363a6ecb048",
+      "bytes": 537070
+    },
+    "snippet/style.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisGeneratorStyle",
+      "sha256": "4261db10c69c53e34e6d3bb2d917fe079c9673594daae8e1dfe3069478c37c9a",
+      "bytes": 61300
+    },
+    "snippet/style-range.schema.json": {
+      "javaType": "art.arcane.iris.generation.noise.IrisStyledRange",
+      "sha256": "f61ec1e4543a50e81f84666d4731ee90ecdc9afc247b85d908d1e2ca6ffe63fc",
+      "bytes": 57674
+    },
+    "snippet/subterrain-feature.schema.json": {
+      "javaType": "art.arcane.iris.generation.subterrain.IrisSubterrainFeature",
+      "sha256": "003d24b57ee01b486154c23435ec6c1a56981d3d5bf1f6b73bd02a5a86981377",
+      "bytes": 15702
+    },
+    "snippet/terrain-3d.schema.json": {
+      "javaType": "art.arcane.iris.generation.terrain.IrisTerrain3D",
+      "sha256": "bd3dd7d0854fa4b724795ed0f1bcf8a4b619ba0858219712f01748ed94a981d6",
+      "bytes": 67367
+    },
+    "snippet/time-block.schema.json": {
+      "javaType": "art.arcane.iris.world.IrisTimeBlock",
+      "sha256": "1e65795af8b7dff04fdcf640510bd009e0cf443feb3971520caee9b199d1b316",
+      "bytes": 2555
+    },
+    "snippet/tree.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTree",
+      "sha256": "76966c2800d55a16551dfe37f1f31b22341579c243250399af1d216460be7359",
+      "bytes": 3885
+    },
+    "snippet/tree-branches.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeBranches",
+      "sha256": "1cccdad384457d7ea4852a5b90c898d79557268254a7f3b14374c067a3eb7744",
+      "bytes": 32937
+    },
+    "snippet/tree-canopy.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeCanopy",
+      "sha256": "fa9708fce00440ae7b7595787f56e6d70794c71aa98b35b04f0f2fa23e97f267",
+      "bytes": 45489
+    },
+    "snippet/tree-decorator.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeDecorator",
+      "sha256": "9d0a69853263ae11e15dcfb5bd1b63f4731a8fc92ee5ce8ca31a66410c3b472d",
+      "bytes": 537866
+    },
+    "snippet/tree-layer.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeLayer",
+      "sha256": "b1735bfd17c40b4a3411e7cc8b701d302319f94f89c23cba3eae3f3d16b07f4c",
+      "bytes": 2287
+    },
+    "snippet/tree-secondary-leaf.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeSecondaryLeaf",
+      "sha256": "37aa4ccf945c53e385a1593742f153e74dcb5f039c251445b9ce93c240c3e9a1",
+      "bytes": 48502
+    },
+    "snippet/tree-settings.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeSettings",
+      "sha256": "049d3cf4ad4b1d2b976950ddfec31d8720bcc9c37fbefe5e00bdc88ba88389a0",
+      "bytes": 2501
+    },
+    "snippet/tree-size.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeSize",
+      "sha256": "03aab8df9032a2b127c4baf55aa893e9a85fefef5cf5e2b159afedbaaec1ac2e",
+      "bytes": 1557
+    },
+    "snippet/tree-sub-branches.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.tree.IrisTreeSubBranches",
+      "sha256": "14d0cf868fbfc53ea77c27b49a7fa9297231a2583d423c0f855361ba2a63dc4c",
+      "bytes": 7411
+    },
+    "snippet/vacuum-settings.schema.json": {
+      "javaType": "art.arcane.iris.generation.decoration.IrisVacuumSettings",
+      "sha256": "bda96176cbb62f1c6b9f6b2c8d469bd82c3001bd1e06f022ac36595d1d19ae9c",
+      "bytes": 5360
+    }
+  },
+  "schemaCount": 70,
+  "totalSchemaBytes": 18569073,
+  "warnings": [
+    "IrisDimension: Missing @Description on IrisSubterrainFamily in  NOSRC",
+    "IrisDimension: Undefined array type for field allowedRegions (KList) in class IrisSubterrainFeature",
+    "IrisDimension: Missing @Description on IrisSubterrainFluid in  NOSRC",
+    "IrisSubterrainFeature: Missing @Description on IrisSubterrainFamily in  NOSRC",
+    "IrisSubterrainFeature: Undefined array type for field allowedRegions (KList) in class IrisSubterrainFeature",
+    "IrisSubterrainFeature: Missing @Description on IrisSubterrainFluid in  NOSRC"
+  ],
+  "registry": {
+    "manifestSha256": "e2429a31efcda6f5fb401238a48a7a6a2f0b182355458213acd4d5a457233f1d",
+    "files": {
+      "blocks.json": {
+        "sha256": "f0dc818bc1dc0547feccbb0c7707bcdcb2cba699f09859aa3286068e3a236d54",
+        "sourceReportSha256": "7a0de8aaf7b04d00c40b8ffdc4cfe75184cff2e821d336a020573201867105a4",
+        "bytes": 3753935
+      },
+      "registries.json": {
+        "sha256": "9bf25314dd593ee4e48a79c88af57dc749b8320d43653512de87a52ca748e947",
+        "sourceReportSha256": "6516af3f795065942317b87fc7ee005bfa5a65bfe560eb5053edc9b414ad3711",
+        "bytes": 357890
+      },
+      "native-predicates.json": {
+        "sha256": "cb4ea6a0dfca404276a80fb17b2ec9d84c7e3332d78a6794b0317185b1c4312f",
+        "bytes": 636871
+      },
+      "native-registries.json": {
+        "sha256": "9652a3d07d2ade8efc505e8cfc170b8252e57fc237cb41ddf2eb90f1914365c1",
+        "bytes": 215160
+      }
+    },
+    "keyCounts": {
+      "blocks": 1286,
+      "biomes": 67,
+      "structures": 52,
+      "items": 1658,
+      "entities": 161,
+      "enchantments": 43,
+      "potionEffects": 40,
+      "lootTables": 1447
+    },
+    "lootTablesExported": true
+  },
+  "focusedCheck": {
+    "command": "node tools/checks/native-schema-link.mjs",
+    "result": "pass",
+    "coverage": [
+      "All four unchanged terrain3d fixture files load matching hashed native schemas with zero reported validation issues",
+      "Changed saved content and resource-set mismatch reject bundle attachment",
+      "Normal and percent-encoded pack-specific schema URLs require the configured token",
+      "Native reloadable loot-table catalog metadata is available"
+    ],
+    "excluded": [
+      "No full application or browser UI verification",
+      "No comprehensive JSON Schema conformance suite",
+      "No terrain generation or parity qualification"
+    ]
+  },
+  "implementation": [
+    "Unchanged native SchemaBuilder, actual native loader construction, world registries and reloadable registry codec loading",
+    "Development platform only provides actual requested registry catalogs; unexpected operations fail export",
+    "Snapshot copy leaves the source pack untouched; symbolic links, world-file paths and excess storage are rejected",
+    "Pack-specific schemas are only attached after saved file-list and ETag hash checks",
+    "Schema downloads are authenticated and checked against their exported byte counts and hashes"
+  ],
+  "limitations": [
+    "Vanilla world/reloadable registry scope; plugin, mod and custom biome contributions are not exported",
+    "Upstream metadata warnings remain present",
+    "Host-dependent font catalog and production dependency provenance remain unqualified",
+    "Native Java compatibility walker and complete browser terrain composition remain unfinished"
+  ],
+  "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+}

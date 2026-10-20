@@ -65,6 +65,9 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
       else if (url.pathname.startsWith('/packages/')) filename = path.join(repository, resourcePath(decodeURIComponent(url.pathname.slice(1))));
       else if (url.pathname.startsWith('/app/')) filename = path.join(repository, 'apps/web', resourcePath(decodeURIComponent(url.pathname.slice(5))));
       else throw new StoreError(404, 'Application asset not found.');
+      // Pack-specific schema bundles contain private resource names and hashes.
+      // Check the decoded path so encoded URL segments cannot bypass auth.
+      if(filename.startsWith(path.join(repository,'apps/web/engine/schema-generated')+path.sep)&&!authenticated(request,token))throw new StoreError(401,'Enter the server access token to load native pack schemas.');
       const extension = path.extname(filename).toLowerCase(); if (!MIME[extension]) throw new StoreError(404, 'Application asset not found.');
       const data = await fs.readFile(filename).catch(error => { if (error.code === 'ENOENT' || error.code === 'EISDIR') throw new StoreError(404, 'Application asset not found.'); throw error; });
       response.writeHead(200, { 'Content-Type': MIME[extension], 'Content-Length': data.length, 'Cache-Control': 'no-cache' }); response.end(method === 'HEAD' ? undefined : data);

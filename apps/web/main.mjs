@@ -3,6 +3,7 @@ import { localGet, localSet, localKeys } from './lib/local-store.mjs';
 import { JsonDocument, JsonNumber, EditHistory, stringify } from '/packages/iris-config/document.mjs';
 import { loadFieldInventory, fieldHint } from '/packages/iris-config/inventory.mjs';
 import { validateSchema, propertySchema } from '/packages/iris-config/schema.mjs';
+import { loadNativePackSchema } from '/packages/iris-config/native-schema.mjs';
 import { ResourceCatalog, category, resourceId } from '/packages/iris-resources/catalog.mjs';
 import { pointerEscape, pointerParts, JSON_LIMIT } from '/packages/shared/paths.mjs';
 import { writeZip } from '/packages/shared/zip.mjs';
@@ -120,7 +121,14 @@ function renderInspector() {
   if(state.document && (findStyles(state.document).length||/^snippet\/style\//.test(state.selected?.path)))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview a noise style',onclick:()=>chooseNoiseStyle({resource:true}).catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('generators/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this generator',onclick:()=>{if(!state.document)return;$('field-mode').value='iris-generator';$('noise-style').hidden=true;setView('map');regenerate().catch(errorMessage);}}));
   if(state.document&&/^(dimensions|regions|biomes|generators|blocks|expressions|imagemaps)\//.test(state.selected.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect native resource loading',onclick:()=>inspectNativeResource().catch(errorMessage)}));
+  if(state.document&&editable())holder.prepend(element('button',{class:'quiet-button compact',text:'Load matching native schema',onclick:()=>loadMatchingNativeSchema().catch(errorMessage)}));
   renderValidation();updateDocumentState();
+}
+async function loadMatchingNativeSchema(){
+  const pack=state.pack,path=state.selected?.path,revision=state.revision;if(!pack||!path)return;const current=()=>pack===state.pack&&path===state.selected?.path&&revision===state.revision;
+  message('Checking the native schema against the saved pack…');
+  const {schema,manifest}=await loadNativePackSchema(path,state.catalog.resources,async name=>{const response=await api.request('resource',{method:'HEAD',query:{pack,path:name},raw:true});return response.headers.get('etag');},{current,headers:api.token?{Authorization:'Bearer '+api.token}:{}});if(!current())return;
+  state.schema=schema;parseDocument();renderInspector();toast(`Loaded native schema for the matching saved pack${manifest.warningCount?' · '+manifest.warningCount+' native metadata warnings':''}.`);
 }
 async function inspectNativeResource(){
   if(!state.selected||!state.pack)return;flushHistory();parseDocument();if(!state.document)throw new Error('Correct this JSON before loading its native resource.');

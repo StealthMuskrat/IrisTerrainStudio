@@ -18,3 +18,5 @@ __pycache__/
 /apps/web/engine/iris-generated/
 
 /apps/web/engine/registry-generated/
+
+/apps/web/engine/schema-generated/

@@ -18,7 +18,7 @@ api.clear();assert.throws(()=>api.registerPackResource('generators/../escape.jso
 const directory=path.join(root,'apps/web/engine/registry-generated'),read=async name=>JSON.parse(await fs.readFile(path.join(directory,name),'utf8'));
 const catalog=new NativeStateCatalog(new BlockRegistry(await read('blocks.json'),await read('manifest.json')),await read('native-predicates.json'),await read('native-registries.json'));
 assert.equal(catalog.platform.has('biomes','minecraft:plains'),true);assert.equal(catalog.platform.blockProperties('minecraft:oak_log').find(property=>property.name==='axis').defaultValue,'y');
-assert.throws(()=>catalog.platform.keys('lootTables'));
+assert.equal(catalog.platform.has('lootTables','minecraft:blocks/stone'),true);
 const wildcard=catalog.parse('minecraft:oak_log'),horizontal=catalog.parse('minecraft:oak_log[axis=x]');assert.equal(horizontal.matches(wildcard),true);assert.equal(wildcard.matches(horizontal),false);
 const stone=catalog.parse('minecraft:stone'),deep=catalog.parse('minecraft:deepslate'),ore=catalog.parse('minecraft:diamond_ore');assert.equal(stone.isSolid(),true);assert.equal(catalog.deepSlateOre(deep,ore).id,'minecraft:deepslate_diamond_ore');assert.equal(catalog.deepSlateOre(stone,catalog.deepSlateOre(deep,ore)).id,'minecraft:diamond_ore');assert.equal(catalog.air().isAir(),true);
 console.log('Focused memory pack linkage passed: the four actual upstream terrain3d fixture resources load through native objects in Node Wasm; missing/dotted names and path guards work. Native exported predicates and partial-property matching pass focused checks. This does not qualify terrain or browser parity.');

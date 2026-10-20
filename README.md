@@ -27,11 +27,13 @@ Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager, nati
 
 ```sh
 npm run engine:setup
-npm run engine:registry
 npm run engine:build
+npm run engine:registry
 ```
 
 The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Raw dimension continent/region control fields are also available; full region/biome selection and terrain are still unfinished. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
+
+Native resources can be inspected through the worker memory loader. To export schemas for a specific saved pack, run `npm run engine:schemas -- /path/to/your/pack`, then select **Load matching native schema** in the inspector. With no path, the exporter uses the pinned upstream terrain fixture. The editor verifies the saved pack snapshot before attaching a schema; exported metadata warnings are retained. The bundle currently uses vanilla registries and is not production-qualified.
 
 ## Native noise laboratory
 
