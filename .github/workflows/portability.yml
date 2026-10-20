@@ -1,0 +1,62 @@
+name: Experimental primitive portability
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  native-and-wasm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: VolmitSoftware/VolmLib
+          ref: e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          path: .upstream/VolmLib
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Verify candidate source and record toolchain
+        run: |
+          test "$(git -C .upstream/VolmLib rev-parse HEAD)" = e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          node tools/portability-probe/prepare.mjs .upstream/VolmLib
+          java --version > tools/portability-probe/target/provenance/java-version.txt 2>&1
+          mvn --version > tools/portability-probe/target/provenance/maven-version.txt
+          google-chrome --version > tools/portability-probe/target/provenance/chrome-version.txt
+      - name: Compile the same unmodified source for the JVM and Wasm GC
+        run: mvn --batch-mode --no-transfer-progress --file tools/portability-probe/pom.xml process-classes
+      - name: Capture native primitive outputs
+        run: java -cp tools/portability-probe/target/classes studio.probe.NoiseProbe > tools/portability-probe/target/native.json
+      - name: Compare actual browser workers against native results
+        run: node tools/portability-probe/run-browser.mjs
+      - name: Record compiler inputs and resolved artifact digests
+        if: always()
+        run: |
+          mkdir -p tools/portability-probe/target/provenance
+          find tools/portability-probe/target/classes -type f -name '*.class' -print0 | sort -z | xargs -0 -r sha256sum > tools/portability-probe/target/provenance/native-classes.sha256
+          find "$HOME/.m2/repository" -type f -name '*.jar' -print0 | sort -z | xargs -0 -r sha256sum > tools/portability-probe/target/provenance/resolved-jars.sha256
+          cp tools/portability-probe/src/main/java/studio/probe/NoiseProbe.java tools/portability-probe/target/provenance/
+          cp tools/portability-probe/pom.xml tools/portability-probe/target/provenance/
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: experimental-portability-evidence
+          path: |
+            tools/portability-probe/target/native.json
+            tools/portability-probe/target/browser.json
+            tools/portability-probe/target/report.json
+            tools/portability-probe/target/provenance/
+            tools/portability-probe/target/generated-sources/
+            tools/portability-probe/target/wasm/
+          retention-days: 30

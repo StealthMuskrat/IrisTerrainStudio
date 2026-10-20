@@ -1,0 +1,68 @@
+{
+  "formatVersion": 1,
+  "purpose": "VolmLib primitive portability experiment; not release compatibility or Iris terrain parity",
+  "repository": "https://github.com/VolmitSoftware/VolmLib",
+  "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "selection": "Last VolmLib commit returned before Iris release publication; temporal candidate only, not verified release dependency",
+  "releaseMatchVerified": false,
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "sourceCommit": "e87d452e4bd70c77b9e19314a46c3d6971c148b6",
+    "backend": "WEBASSEMBLY_GC"
+  },
+  "nativeJavaMajor": 25,
+  "methods": [
+    "GetWhiteNoise(double,double)",
+    "GetWhiteNoise(double,double,double)",
+    "GetWhiteNoise(double,double,double,double)",
+    "GetPerlin(double,double)",
+    "GetPerlin(double,double,double)"
+  ],
+  "sources": [
+    {
+      "path": "LICENSE",
+      "gitBlobSha": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple2d.java",
+      "gitBlobSha": "2737105417a91a41217ec679dd1625e9ee37fda2"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple2f.java",
+      "gitBlobSha": "fd61dd5c1f9b1c7827619efcad5d7bc9ca148466"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple3d.java",
+      "gitBlobSha": "8cd17a5c1c8e621ecf0dce10788ecd6e450fa17f"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple3f.java",
+      "gitBlobSha": "9ebe1c40a95554b6751542413875c7f5d106d48a"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/VecMathUtil.java",
+      "gitBlobSha": "d2786a019eaa621f874044e46746c6f6beea0eaf"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Vector2d.java",
+      "gitBlobSha": "547fa9022f5dad6312708380e75c17d2e36d19b9"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Vector2f.java",
+      "gitBlobSha": "d734b7567ce904358ca746f2f98a35e9371aabbc"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Vector3d.java",
+      "gitBlobSha": "bc7c59cc1c3275a1fc79797eaa8973546bfdec11"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Vector3f.java",
+      "gitBlobSha": "605be5b162e3104ebdebb034f63592cacbcd3f94"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/noise/FastNoiseDouble.java",
+      "gitBlobSha": "b663ec59fd7217f636f76e5a51bc3fbe80509c13"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>studio.iris.experimental</groupId>
+  <artifactId>volmlib-portability-probe</artifactId>
+  <version>0.0.0</version>
+  <properties>
+    <maven.compiler.release>25</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <teavm.version>0.16.0</teavm.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.teavm</groupId><artifactId>teavm-jso</artifactId><version>${teavm.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version>
+        <executions><execution><id>verified-upstream-sources</id><phase>generate-sources</phase>
+          <goals><goal>add-source</goal></goals>
+          <configuration><sources><source>${project.build.directory}/generated-sources/upstream</source></sources></configuration>
+        </execution></executions>
+      </plugin>
+      <plugin>
+        <groupId>org.teavm</groupId><artifactId>teavm-maven-plugin</artifactId><version>${teavm.version}</version>
+        <executions><execution><id>wasm-gc</id><phase>process-classes</phase>
+          <goals><goal>compile</goal><goal>copy-webassembly-gc-runtime</goal></goals>
+          <configuration>
+            <mainClass>studio.probe.NoiseProbe</mainClass>
+            <targetType>WEBASSEMBLY_GC</targetType>
+            <targetDirectory>${project.build.directory}/wasm</targetDirectory>
+            <targetFileName>probe.wasm</targetFileName>
+            <runtimeFileName>probe.wasm-runtime.js</runtimeFileName>
+            <optimizationLevel>ADVANCED</optimizationLevel>
+            <strict>true</strict>
+          </configuration>
+        </execution></executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
