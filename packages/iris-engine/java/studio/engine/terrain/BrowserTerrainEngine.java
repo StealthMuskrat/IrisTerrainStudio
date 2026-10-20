@@ -12,6 +12,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final IrisData data;
     private final SeedManager seeds;
     private final EngineMetrics metrics=new EngineMetrics(16);
+    private final WorkerCarvingMantle mantle=new WorkerCarvingMantle(this);
     private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
     public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
@@ -29,6 +30,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public int getMaxHeight(){return dimension.getMaxHeight();}
     @Override public int getHeight(){return getMaxHeight()-getMinHeight();}
     @Override public EngineMetrics getMetrics(){return metrics;}
+    @Override public art.arcane.iris.generation.mantle.EngineMantle getMantle(){return mantle;}
     @Override public art.arcane.iris.world.IrisWorld getWorld(){return world;}
     @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
     @Override public boolean isStudio(){return false;}

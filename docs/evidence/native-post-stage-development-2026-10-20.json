@@ -1,0 +1,275 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-overworld-post-material-stage-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "ef668bbd6c2e3edf0cc145608d0f78981405f96137c919522912f5395b3c78ff",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "24e41b19d47b32cfcc5cc7125cb041377832d881c12181609d44ba0d486fda47",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "379e0c6e9d713c5216e727f78c9dc58108ac12774dfc59cfcaeee794887b3d0a",
+  "focusedCheck": {
+    "command": "node tools/checks/native-post-stage-link.mjs",
+    "result": "pass",
+    "chunks": 28,
+    "exactBlockStateComparisons": 1835008,
+    "worldSeeds": [
+      "0",
+      "9223372036854775807"
+    ],
+    "chunkOrigins": [
+      [
+        0,
+        0
+      ],
+      [
+        -16,
+        32
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "flat",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 283,
+            "sha256": "b98006e196b97141d804fe449a854093f6c2462f0ece6a5aeed1726f8a75db5f"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 405,
+            "sha256": "c881a6d38a2d15c4f5c885d252c5bca5c7ded93f48aadcf16af1f67dc740a5bd"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 119,
+            "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+          }
+        ]
+      },
+      {
+        "name": "walls",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 282,
+            "sha256": "2476ecc786c9f1837341cbdaa9fb493b5a90f2758c4b1d66dc1923b0d4197b0d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 403,
+            "sha256": "845daa830745d7a7878129a410962d1797f2c54eaf7f7ed15430af045f975afc"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      },
+      {
+        "name": "slabs",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 282,
+            "sha256": "ef110abb8dbf23862212ad79f2ab8cca12827316d8ec7f020863106477136c1d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 403,
+            "sha256": "845daa830745d7a7878129a410962d1797f2c54eaf7f7ed15430af045f975afc"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      },
+      {
+        "name": "combined-caves",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 281,
+            "sha256": "c760fb187256c8f768da1bef513559855205b4d8c41a47139d39933698fc2468"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 510,
+            "sha256": "be7d6fa7362192ea24b0ada29e320370942f1a0e073202ff53a0bfedd7db75c0"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      },
+      {
+        "name": "waterlogged",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 284,
+            "sha256": "6726a20e08036cdf0e00b2bcbb1ea70434f6b54ec3c8b3929be1001425b2513d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 453,
+            "sha256": "2590847f107a93b697aede4a74141dcd5a0149a00e12e5dab20948bcb7a67e3d"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      },
+      {
+        "name": "snow",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 282,
+            "sha256": "ef110abb8dbf23862212ad79f2ab8cca12827316d8ec7f020863106477136c1d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 372,
+            "sha256": "07dc27a79306115c40c719b5b29c66bee508ed71e79f69b837aee7fd094e2f33"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      },
+      {
+        "name": "flags-disabled",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 283,
+            "sha256": "b98006e196b97141d804fe449a854093f6c2462f0ece6a5aeed1726f8a75db5f"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 403,
+            "sha256": "845daa830745d7a7878129a410962d1797f2c54eaf7f7ed15430af045f975afc"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 130,
+            "sha256": "98f68b3e92247a585ff654f540c3ddb8c0fcdc8b4046a861ae1841ea787e6640"
+          }
+        ]
+      }
+    ],
+    "statesExercised": [
+      "minecraft:air",
+      "minecraft:bedrock",
+      "minecraft:granite",
+      "minecraft:lava[level=0]",
+      "minecraft:oak_slab[type=bottom,waterlogged=false]",
+      "minecraft:oak_slab[type=bottom,waterlogged=true]",
+      "minecraft:snow[layers=1]",
+      "minecraft:stone",
+      "minecraft:stone_slab[type=bottom,waterlogged=false]",
+      "minecraft:water[level=0]"
+    ],
+    "guards": [
+      "Flat terrain with empty post palettes remains equal to the cave-component stage",
+      "Non-Overworld mode refuses the post-stage preview",
+      "Unaligned origin refuses generation",
+      "Valid generation succeeds after refusal"
+    ],
+    "reference": "Java 25 executes the native five-chunk MantleCarvingComponent, terrain painter, carve modifier and IrisPostModifier in the Overworld prefix order. The owned EngineMantle host invokes the actual trueHeight default. No world region is loaded or saved."
+  },
+  "workerCheck": {
+    "command": "node tools/checks/native-post-stage-worker.mjs",
+    "result": "pass",
+    "runtime": "Actual worker script and Wasm hosted in Node, not a browser",
+    "volumeCells": 98304,
+    "minWorldY": -64,
+    "origin": [
+      16,
+      -64,
+      -16
+    ],
+    "clientCacheBytes": 393216,
+    "checks": [
+      "Exact native-export cells and canonical palette",
+      "Cave-air rendering metadata and world-Y bedrock inspection",
+      "Overworld/post-processing and five-chunk source metadata",
+      "No-profile path",
+      "Non-Overworld refusal",
+      "Cancellation suppresses result",
+      "GenerationClient typed transfer and cache reuse with a completion timeout"
+    ]
+  },
+  "harnesses": {
+    "tools/checks/native-post-stage-link.mjs": "2c40a115e8af77e7323ccbc70ad8d286e99e01c90f448272dd8946756b862824",
+    "tools/checks/NativeTerrainLinkCheck.java": "977803e02db79894ae280a049170ccbeb5d061209bfa288318a73affabc81490",
+    "tools/checks/native-post-stage-worker.mjs": "3ad98aa60327a05ef3c570f74926be5f57b0379ab499b90ef5947bca172afa78",
+    "apps/web/workers/iris-worker.js": "b8055d2cf7645f9bcc6d26abdd2aa764d8ea3b5a615c7f6e8de588bc12de0689",
+    "packages/iris-engine/client.mjs": "9f29388c36cd8afbce9ead67f0b266d7ea84ccbcc9f9ada4436f5b27b0441881"
+  },
+  "boundaries": [
+    "IrisPostModifier code is unchanged; native height/river planes, nib and pothole logic, wall/slab selection, waterlogging and foliage handling remain native",
+    "The owned EngineMantle host delegates the original trueHeight default to the native rounded-height stream; other unconnected services fail closed",
+    "The API runs the connected Overworld prefix through post-modification and marks completePipeline false",
+    "Earlier terrain-only, dimension-only and carving-component diagnostics remain separate"
+  ],
+  "limitations": [
+    "This is an Overworld prefix, not the full mode pipeline; floating-child-biome solids, cave decoration, deposits, content insertion, decorators, perfection and custom modification remain unfinished",
+    "Subterrain, hydrology, transitions, transforms, upper/stacked dimensions and terrain buffet remain unsupported",
+    "Complete post-option coverage, foliage cases, browser/GPU/GC and final application verification remain unqualified",
+    "Real asset inputs, native checksum mismatch and release dependency provenance remain release gates",
+    "No comprehensive application suite or GitHub workflow was run"
+  ]
+}

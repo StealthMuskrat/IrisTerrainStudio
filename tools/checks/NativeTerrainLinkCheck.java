@@ -45,8 +45,9 @@ public final class NativeTerrainLinkCheck {
                             JsonObject painted=new JsonObject();painted.addProperty("scope","native-terrain-paint-stage-development");painted.addProperty("x",bx);painted.addProperty("z",bz);painted.addProperty("minY",dimension.getMinHeight());painted.addProperty("height",localHeight);LinkedHashMap<String,Integer> palette=new LinkedHashMap<>();JsonArray cells=new JsonArray();for(int y=0;y<localHeight;y++)for(int localZ=0;localZ<16;localZ++)for(int localX=0;localX<16;localX++){String key=blocksOut.getRaw(localX,y,localZ).key();Integer index=palette.get(key);if(index==null){index=palette.size();palette.put(key,index);}cells.add(index);}painted.add("palette",gson.toJsonTree(palette.keySet()));painted.add("cells",cells);sample.add("painted",painted);
                         }
                         if(request.has("caves")&&request.get("caves").getAsBoolean())sample.add("caves",caves(engine,(int)x,(int)z,gson,directory));
-                        if(request.has("caveMaterials")&&request.get("caveMaterials").getAsBoolean())sample.add("caveMaterials",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,false));
-                        if(request.has("carvingComponent")&&request.get("carvingComponent").getAsBoolean())sample.add("carvingComponent",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true));
+                        if(request.has("caveMaterials")&&request.get("caveMaterials").getAsBoolean())sample.add("caveMaterials",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,false,false));
+                        if(request.has("carvingComponent")&&request.get("carvingComponent").getAsBoolean())sample.add("carvingComponent",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true,false));
+                        if(request.has("postMaterials")&&request.get("postMaterials").getAsBoolean())sample.add("postMaterials",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true,true));
                         samples.add(sample);}pack.add(samples);
                 }result.add(pack);
             }
@@ -72,7 +73,7 @@ public final class NativeTerrainLinkCheck {
         result.add("palette",gson.toJsonTree(palette.keySet()));result.add("cells",cells);return result;
     }
 
-    private static JsonObject caveMaterials(Engine engine,int x,int z,Gson gson,Path directory,PlatformRegistries registries,boolean component)throws Exception {
+    private static JsonObject caveMaterials(Engine engine,int x,int z,Gson gson,Path directory,PlatformRegistries registries,boolean component,boolean post)throws Exception {
         int height=engine.getHeight(),cx=x>>4,cz=z>>4;
         var adapter=(art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter<art.arcane.volmlib.util.matter.Matter>)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter.class},(self,method,args)->switch(method.getName()){
             case "createSection"->new art.arcane.volmlib.util.matter.IrisMatter(16,16,16);
@@ -80,7 +81,7 @@ public final class NativeTerrainLinkCheck {
             default->throw new UnsupportedOperationException(method.toString());
         });
         var mantle=new MemoryCaveMantle(directory,height,adapter);
-        var host=(art.arcane.iris.generation.mantle.EngineMantle)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.iris.generation.mantle.EngineMantle.class},(self,method,args)->switch(method.getName()){case "getEngine"->engine;case "getComplex"->engine.getComplex();case "getData"->engine.getData();case "getMantle"->mantle;default->throw new UnsupportedOperationException(method.toString());});
+        var host=(art.arcane.iris.generation.mantle.EngineMantle)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.iris.generation.mantle.EngineMantle.class},(self,method,args)->switch(method.getName()){case "getEngine"->engine;case "getComplex"->engine.getComplex();case "getData"->engine.getData();case "getMantle"->mantle;case "trueHeight"->InvocationHandler.invokeDefault(self,method,args);default->throw new UnsupportedOperationException(method.toString());});
         Method create=art.arcane.iris.generation.mantle.MantleWriter.class.getDeclaredMethod("forChunk",art.arcane.iris.generation.mantle.EngineMantle.class,art.arcane.volmlib.util.mantle.runtime.Mantle.class,art.arcane.volmlib.util.mantle.runtime.MantleChunk.class,int.class,int.class);create.setAccessible(true);
         var carver=component?null:new art.arcane.iris.generation.mantle.IrisCaveCarver3D(engine,engine.getDimension().getCaveProfile());
         var carving=component?new art.arcane.iris.generation.mantle.MantleCarvingComponent(host):null;
@@ -93,8 +94,8 @@ public final class NativeTerrainLinkCheck {
         }
         var blocks=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBlockState>(16,height,16);blocks.fill(registries.air());var context=new art.arcane.iris.generation.context.ChunkContext(x,z,engine.getComplex(),false);
         new art.arcane.iris.generation.stage.IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
-        caveHost=host;try{new art.arcane.iris.generation.stage.IrisCarveModifier(engine).onModify(cx,cz,blocks,false,context);}finally{caveHost=null;}
-        JsonObject result=new JsonObject();result.addProperty("scope",component?"native-carving-component-material-stage-development":"native-dimension-cave-material-stage-development");result.addProperty("x",x);result.addProperty("z",z);result.addProperty("minY",engine.getMinHeight());result.addProperty("height",height);LinkedHashMap<String,Integer> palette=new LinkedHashMap<>();JsonArray cells=new JsonArray();for(int y=0;y<height;y++)for(int lz=0;lz<16;lz++)for(int lx=0;lx<16;lx++){String key=blocks.getRaw(lx,y,lz).key();Integer index=palette.get(key);if(index==null){index=palette.size();palette.put(key,index);}cells.add(index);}result.add("palette",gson.toJsonTree(palette.keySet()));result.add("cells",cells);return result;
+        caveHost=host;try{new art.arcane.iris.generation.stage.IrisCarveModifier(engine).onModify(cx,cz,blocks,false,context);if(post)new art.arcane.iris.generation.stage.IrisPostModifier(engine).onModify(x,z,blocks,false,context);}finally{caveHost=null;}
+        JsonObject result=new JsonObject();result.addProperty("scope",post?"native-overworld-post-material-stage-development":component?"native-carving-component-material-stage-development":"native-dimension-cave-material-stage-development");result.addProperty("x",x);result.addProperty("z",z);result.addProperty("minY",engine.getMinHeight());result.addProperty("height",height);LinkedHashMap<String,Integer> palette=new LinkedHashMap<>();JsonArray cells=new JsonArray();for(int y=0;y<height;y++)for(int lz=0;lz<16;lz++)for(int lx=0;lx<16;lx++){String key=blocks.getRaw(lx,y,lz).key();Integer index=palette.get(key);if(index==null){index=palette.size();palette.put(key,index);}cells.add(index);}result.add("palette",gson.toJsonTree(palette.keySet()));result.add("cells",cells);return result;
     }
     private static final class MemoryCaveMantle extends art.arcane.volmlib.util.mantle.runtime.Mantle<art.arcane.volmlib.util.matter.Matter>{
         private final Map<Long,art.arcane.volmlib.util.mantle.runtime.TectonicPlate<art.arcane.volmlib.util.matter.Matter>> plates=new HashMap<>();
