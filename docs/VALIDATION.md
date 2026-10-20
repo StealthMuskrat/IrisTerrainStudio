@@ -34,3 +34,12 @@ Methods tested: white noise in 2D/3D/4D and Perlin in 2D/3D. Seeds include both 
 The VolmLib commit is a temporal candidate, not a verified shipping dependency. Iris CNG/NoiseStyle, RNG/SeedManager, schemas, registries, heights, block states and terrain remain untested. No production parity or release readiness is claimed. Full evidence artifacts contain captures, compiler outputs, exact sources/license and toolchain/dependency digests and have 30-day retention; the compact report is committed for durable tracking.
 
 The evidence ZIP was also downloaded and verified against its published SHA-256 digest; its native/browser captures were independently compared again locally with the same zero-mismatch result.
+
+## Native Iris and expanded RNG investigation, 2026-10-20
+
+- Current foundation validation: **22 Node tests and 9 Python native-report tests pass**.
+- Actual Iris core compiled with the candidate dependency. Unchanged native suites ran 15 tests: **14 passed, 1 failed**. `allStylesRetainPinnedSamples` expected `5059606393854142913` and observed `3659164368724912644`. Gradle exited 1; the audit correctly records native readiness as false. [Verified report](evidence/native-reference-audit-2026-10-20.json).
+- The expanded [browser report](evidence/noise-rng-portability-2026-10-20.json) records **195,696 exact comparisons, zero mismatches**: 150,000 noise comparisons and 45,696 RNG comparisons. Its archive hash and captured output pairs were independently rechecked locally.
+- Missing JDK operations were handled by an explicit six-call compiler compatibility adapter without changing RNG/M source. Native Java independently validated 257 UUID cases and 65,560 UTF-8 cases; the malformed-surrogate browser failure remains in the regression inputs and now passes.
+
+The native build audit's successful workflow completion means its diagnostics were recorded, **not that native regressions passed**. The report's `nativeRegressionsPassed` field and `--require-pass` command enforce that distinction. Full Iris/browser terrain parity and release qualification remain blocked by the unresolved native checksum and other recorded prerequisites.

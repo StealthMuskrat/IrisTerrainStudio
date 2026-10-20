@@ -12,12 +12,14 @@ As of 2026-10-20. Current phase: **0 — research and technical feasibility**. G
 - Foundation CI and contribution/issue/PR templates.
 - Actual Java 25.0.4.1+1 / TeaVM 0.16.0 Wasm GC primitive execution: 5,000 cases across three Chrome workers and fresh/reused instances; 150,000 exact comparisons, zero mismatches. [Evidence](evidence/primitive-portability-2026-10-20.json).
 - Corrected the Iris root-tree identity using the pinned commit object's tree field.
+- Expanded actual browser verification to VolmLib RNG: 45,696 RNG comparisons plus the 150,000 noise comparisons, all exact. Independently checked missing JDK UUID/UTF-8 compatibility operations. [Evidence](evidence/noise-rng-portability-2026-10-20.json).
+- Compiled the actual Iris core and executed both unchanged native noise/seed suites: 14 tests pass; the pinned all-style checksum fails. Captured Gradle/dependency inputs and a fail-closed native audit report. [Evidence](evidence/native-reference-audit-2026-10-20.json).
 
 No application generation feature is implemented. The executable primitive experiment uses real, unmodified VolmLib source on an explicitly separate candidate revision; production compatibility remains unproved. Comparator unit tests still use synthetic data and remain distinct from the executed Java/browser experiment.
 
 ## Immediate work, in order
 
-1. Recover/verify the VolmLib dependency provenance for the tagged Iris release. Lock all generation-affecting dependencies and verify the full native reference build; Java 25 is now available in CI.
+1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15), qualify the dependency/build inputs, and verify release provenance. The Iris core now compiles; the native reference is not yet qualified.
 2. Export the Minecraft 26.3 block registry and Iris schemas with content hashes. Choose a real minimal in-scope pack and hash its content.
 3. Build a Java 25 reference harness and capture upstream noise results, including raw IEEE-754 bits. Preserve existing upstream noise/seed tests.
 4. Extend the successful primitive compilation to the actual Iris NoiseStyle/CNG and RNG/SeedManager path, using verified reference inputs and per-coordinate captures.
@@ -26,6 +28,6 @@ No application generation feature is implemented. The executable primitive exper
 
 ## Evidence and limitations
 
-The local workspace has Node 24.19.0 and a Java 17 runtime without javac. Its launcher can run with the correct library path, but it is not a Java 25 JDK. The new development workflow provisions Java 25.0.4.1+1, Maven/TeaVM and real Chrome workers, and has successfully executed the primitive experiment. A full native Iris build, Iris browser generation, GPU test and native/browser terrain comparison have not run.
+The local workspace has Node 24.19.0 and a Java 17 runtime without javac. CI provisions Java 25.0.4.1+1 and now compiles the actual Iris core. Of 15 native noise/seed tests, one fails: expected checksum `5059606393854142913`, actual `3659164368724912644`. The candidate is therefore not a qualified reference. Browser primitive/RNG experiments pass; Iris SeedManager/browser CNG integration, GPU visualization and terrain comparison remain unproved.
 
 No production-reference capture or Iris browser exporter exists yet. Experimental primitive captures and compiler/toolchain provenance are available in [the successful CI run](https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39430229610); the committed summary preserves hashes and results, while full run artifacts have 30-day retention. The production lock still has explicit nulls for unresolved dependencies, schemas, registries and assets. Release prerequisites remain blocked.
