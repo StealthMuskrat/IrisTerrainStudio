@@ -5,7 +5,7 @@ export function resourceId(path) { return path.replace(/^[^/]+\//, '').replace(/
 export class ResourceCatalog {
   constructor(resources = []) {
     this.resources = resources; this.byPath = new Map(resources.map(row => [row.path, row])); this.byId = new Map();
-    for (const row of resources) { const id = resourceId(row.path); const entries = this.byId.get(id) || []; entries.push(row); this.byId.set(id, entries); }
+    for (const row of resources) for (const id of new Set([resourceId(row.path),row.path,row.path.replace(/\.json$/i,'')])) { const entries=this.byId.get(id)||[];entries.push(row);this.byId.set(id,entries); }
   }
   groups(query = '') { const result = new Map(); for (const row of this.resources) { if (query && !row.path.toLowerCase().includes(query.toLowerCase())) continue; const group = category(row.path); if (!result.has(group.id)) result.set(group.id, { ...group, resources: [] }); result.get(group.id).resources.push(row); } return [...result.values()].sort((a, b) => a.label.localeCompare(b.label)); }
   candidates(value, folder) { return (this.byId.get(value) || []).filter(row => !folder || row.path.startsWith(folder + '/')); }

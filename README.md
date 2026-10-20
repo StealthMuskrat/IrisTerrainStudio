@@ -23,7 +23,7 @@ Implemented editing includes resource search, field/JSON views, undo/redo, local
 
 ## Iris noise development module
 
-Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager and standalone generator bridge locally:
+Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager, native configuration reader and standalone generator bridge locally:
 
 ```sh
 npm run engine:setup
@@ -31,7 +31,7 @@ npm run engine:registry
 npm run engine:build
 ```
 
-The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
+The registry command exports actual Minecraft 26.3 development data locally; the engine build adds native field guidance to the inspector. The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Raw dimension continent/region control fields are also available; full region/biome selection and terrain are still unfinished. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
 
 ## Native noise laboratory
 

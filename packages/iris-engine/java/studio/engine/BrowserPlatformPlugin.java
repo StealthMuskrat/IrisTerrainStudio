@@ -13,6 +13,16 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(java.util.Set.of("art.arcane.volmlib.util.cache.AtomicCache","art.arcane.iris.world.entity.IrisAttributeModifier","art.arcane.iris.pack.loading.ResourceLoader","art.arcane.iris.spi.IrisLogging").contains(name)){
+                int factories=0;
+                for(MethodHolder method:cls.getMethods()){
+                    Program program=method.getProgram();if(program==null)continue;
+                    for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
+                        if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.util.concurrent.ConcurrentHashMap")&&call.getMethod().getName().equals("newKeySet")&&call.getMethod().parameterCount()==0){call.setMethod(new MethodReference(WorkerCollections.class,"newKeySet",java.util.Set.class));factories++;}
+                    }
+                }
+                if(factories!=1)throw new IllegalStateException("Pinned diagnostic set factory changed in "+name);
+            }
             if (name.startsWith("art.arcane.volmlib.util.noise.") && java.util.Set.of("MarbleNoise", "GaborNoise", "QuasicrystalNoise", "GyroidNoise", "StrataNoise").contains(name.substring(name.lastIndexOf('.') + 1))) {
                 int allocations = 0;
                 for (MethodHolder method : cls.getMethods()) {
@@ -58,8 +68,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             }
             if (name.equals("art.arcane.iris.pack.loading.ResourceLoader")) {
                 for (MethodHolder method : cls.getMethods()) {
-                    if (method.getName().equals("<clinit>")) { Program program = new Program();program.createVariable();program.createBasicBlock().add(new ExitInstruction());method.setProgram(program); }
-                    else if (method.getName().equals("load")) unavailable(method,"Native resource loading");
+                    if (method.getName().equals("load")) unavailable(method,"Native resource loading");
                 }
             }
             if (name.equals("art.arcane.iris.generation.noise.IrisGeneratorStyle")) {

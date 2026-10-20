@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package studio.engine;
 
+import studio.engine.config.NativeConfigReader;
 import art.arcane.iris.generation.noise.NoiseStyle;
 import art.arcane.iris.generation.noise.IrisNoiseGenerator;
 import art.arcane.iris.generation.noise.IrisGenerator;
 import art.arcane.iris.generation.noise.IrisInterpolator;
+import art.arcane.iris.generation.terrain.IrisDimension;
+import art.arcane.iris.generation.terrain.ContinentGenerator;
+import art.arcane.volmlib.util.stream.ProceduralStream;
 import art.arcane.volmlib.util.interpolation.InterpolationMethod;
 import art.arcane.volmlib.util.collection.KList;
 import art.arcane.iris.generation.noise.IrisGeneratorStyle;
@@ -20,6 +24,9 @@ public final class BrowserEngine {
     private record Definition(String style, double zoom, double exponent, double frequency,
                               double cellularZoom, String fracture, double multiplier, int octaves) {}
     private static final Map<String, Definition> definitions = new LinkedHashMap<>();
+    private static final Map<String, IrisDimension> dimensions = new LinkedHashMap<>();
+    private static final Map<String, ProceduralStream<Double>> controls = new LinkedHashMap<>();
+    private static final Map<String, IrisGeneratorStyle> loadedStyles = new LinkedHashMap<>();
     private static final Map<String, IrisNoiseGenerator> layers = new LinkedHashMap<>();
     private static final Map<String, IrisGenerator> composites = new LinkedHashMap<>();
     private static final Map<String, CNG> generators = new LinkedHashMap<>();
@@ -84,6 +91,71 @@ public final class BrowserEngine {
             return configured(id, "", 0).createForLayer(new RNG(seed), null, source.octaves());
         });
         return bits(sample(generator, x, y, z, dimensions));
+    }
+
+    @JSExport
+    public static void loadDimensionJson(String id, String text) throws java.io.IOException {
+        if (dimensions.size() >= 16 && !dimensions.containsKey(id)) throw new IllegalArgumentException("Too many dimensions");
+        IrisDimension dimension = NativeConfigReader.readIrisDimension(text);
+        if (dimension == null) throw new IllegalArgumentException("Invalid dimension resource");
+        supportedStyle(dimension.getContinentalStyle(), 0); supportedStyle(dimension.getRegionStyle(), 0);
+        dimension.setLoadKey(id); dimensions.put(id, dimension); controls.clear();
+    }
+    @JSExport
+    public static String sampleDimensionControl(String id, String decimalWorldSeed, String field, double x, double z) {
+        IrisDimension dimension = dimensions.get(id); if (dimension == null) throw new IllegalArgumentException("Missing dimension");
+        String key = id + ":" + decimalWorldSeed + ":" + field;
+        ProceduralStream<Double> stream = controls.get(key);
+        if (stream == null) {
+            if (controls.size() >= 32) controls.remove(controls.keySet().iterator().next());
+            SeedManager seeds = new SeedManager(Long.parseLong(decimalWorldSeed)); RNG complex = new RNG(seeds.getComplex());
+            stream = switch (field) {
+                case "iris-continent" -> ContinentGenerator.create(dimension, complex, null).stream();
+                case "iris-region-control" -> dimension.getRegionStyle().create(complex.nextParallelRNG(883), null).stream().zoom(dimension.getRegionZoom());
+                default -> throw new IllegalArgumentException("Unsupported dimension control field");
+            };
+            controls.put(key, stream);
+        }
+        return bits(stream.getDouble(x,z));
+    }
+
+    @JSExport
+    public static void registerSnippet(String path, String text) { NativeConfigReader.register(path, text); }
+
+    private static void supportedStyle(IrisGeneratorStyle style, int depth) {
+        if (depth > 32) throw new IllegalArgumentException("Style fracture exceeds the supported loading budget");
+        if (style == null) return;
+        if (style.getExpression() != null || style.getImageMap() != null || style.getCacheSize() != 0)
+            throw UnsupportedPlatform.unavailable("Resource expressions, image maps and persistent float caches");
+        supportedStyle(style.getFracture(), depth + 1);
+    }
+    private static void supportedLayer(IrisNoiseGenerator layer, int depth) {
+        if (layer == null || depth > 32) throw new IllegalArgumentException("Invalid or excessively nested noise layer");
+        supportedStyle(layer.getStyle(), 0);
+        if (layer.getFracture() == null) throw new IllegalArgumentException("Layer fracture must be an array");
+        for (IrisNoiseGenerator child : layer.getFracture()) supportedLayer(child, depth + 1);
+    }
+    @JSExport
+    public static void loadGeneratorJson(String id, String text) throws java.io.IOException {
+        if (composites.size() >= 64 && !composites.containsKey(id)) throw new IllegalArgumentException("Too many generators");
+        IrisGenerator generator = NativeConfigReader.readIrisGenerator(text);
+        if (generator == null || generator.getComposite() == null) throw new IllegalArgumentException("Invalid generator resource");
+        for (IrisNoiseGenerator layer : generator.getComposite()) supportedLayer(layer, 0);
+        supportedLayer(generator.getCliffHeightGenerator(), 0);
+        generator.setLoadKey(id); composites.put(id, generator);
+    }
+    @JSExport
+    public static void loadStyleJson(String id, String text) throws java.io.IOException {
+        if (loadedStyles.size() >= 256 && !loadedStyles.containsKey(id)) throw new IllegalArgumentException("Too many styles");
+        IrisGeneratorStyle style = NativeConfigReader.readIrisGeneratorStyle(text);
+        if (style == null) throw new IllegalArgumentException("Invalid style or missing snippet");
+        supportedStyle(style, 0); loadedStyles.put(id, style); generators.clear();
+    }
+    @JSExport
+    public static String sampleLoadedStyle(String id, String decimalSeed, double x, double y, double z, int dimensions) {
+        IrisGeneratorStyle style = loadedStyles.get(id); if (style == null) throw new IllegalArgumentException("Missing loaded style");
+        long seed = Long.parseLong(decimalSeed);
+        return bits(sample(cached("loaded:" + id + ":" + decimalSeed, () -> style.createForLayer(new RNG(seed), null, 1)), x, y, z, dimensions));
     }
 
     @JSExport
@@ -183,6 +255,6 @@ public final class BrowserEngine {
     public static String diagnosticRng(String seed) { return studio.probe.RngProbe.sample(seed, false, "0"); }
 
     @JSExport
-    public static void clear() { definitions.clear(); generators.clear(); layers.clear(); composites.clear(); }
+    public static void clear() { definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
     public static void main(String[] args) { }
 }

@@ -37,6 +37,14 @@ for name in ('blocks.json','registries.json'):
     encoded=(json.dumps(json.loads(source),ensure_ascii=False,separators=(',',':'))+'\n').encode()
     (output/name).write_bytes(encoded)
     files[name]={'sha256':hashlib.sha256(encoded).hexdigest(),'sourceReportSha256':hashlib.sha256(source).hexdigest(),'bytes':len(encoded)}
-manifest={'formatVersion':1,'scope':'minecraft-development-registry-export','minecraft':version,'source':'Pinned VolmLib v26_3_R1 Paper development bundle; Minecraft data-generator --reports','volmLibCandidate':inputs['volmLibCandidate'],'releaseMatchVerified':False,'registryParityVerified':False,'sourceServerJarSha256':hashlib.sha256(server.read_bytes()).hexdigest(),'blocks':len(blocks),'states':len(ids),'files':files,'limitations':['Native occlusion shapes, rendering layers, fluid geometry and biome tint data are not exported by these data reports.','Native report state ids are build-specific; full block identifiers and properties remain authoritative.']}
+predicates_path=reports.parent/'native-predicates.json'
+if predicates_path.exists():
+    encoded=predicates_path.read_bytes()
+    predicates=json.loads(encoded)
+    if len(predicates['stateFlags'])!=len(ids) or len(predicates['stateTypes'])!=len(ids) or len(predicates['blockTypes'])!=len(blocks):
+        raise ValueError('Native predicate coverage differs from the block-state report')
+    (output/'native-predicates.json').write_bytes(encoded)
+    files['native-predicates.json']={'sha256':hashlib.sha256(encoded).hexdigest(),'bytes':len(encoded)}
+manifest={'formatVersion':1,'scope':'minecraft-development-registry-export','minecraft':version,'source':'Pinned VolmLib v26_3_R1 Paper development bundle; Minecraft data-generator --reports','volmLibCandidate':inputs['volmLibCandidate'],'releaseMatchVerified':False,'registryParityVerified':False,'sourceServerJarSha256':hashlib.sha256(server.read_bytes()).hexdigest(),'blocks':len(blocks),'states':len(ids),'files':files,'limitations':['Occlusion shapes, rendering layers, fluid geometry and biome tint data are not included in this export.','Native report state ids are build-specific; full block identifiers and properties remain authoritative.']}
 (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(f'Packaged {len(blocks)} native blocks and {len(ids)} block states for Minecraft {version["id"]}.')

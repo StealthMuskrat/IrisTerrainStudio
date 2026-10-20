@@ -20,6 +20,8 @@ A [local native-input export](evidence/native-input-development-2026-10-20.json)
 
 A local pack-management server, browser editor, lossless JSON document model, WebGPU field visualizer, optional native-noise laboratory and resource-pack/voxel rendering modules are now implemented. [Implementation notes](DEVELOPMENT.md) describe behavior, the focused editing check and remaining work. The full Iris terrain engine is not connected. The actual Iris NoiseStyle/CNG, configured-style, SeedManager, noise-layer and composite-generator bridge now compiles locally to Wasm GC; a focused native Java/Node export check passes. [Local development evidence](evidence/local-engine-development-2026-10-20.json) records its limited scope. The primitive module uses real, unmodified VolmLib source on a separate candidate revision; production compatibility remains unproved.
 
+[Native configuration development](evidence/native-config-development-2026-10-20.json) records the generated field reader and exact native block-predicate export. Native pack IO/resource lookup and complete terrain composition are the next implementation step.
+
 ## Remaining engine and application work
 
 1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15): establish the original fixture, full dependency and platform inputs, then qualify the dependency/build identity and release provenance. The tested noise source history and interpreter/JIT diagnostics reproduce identical outputs; the reference remains unqualified.
