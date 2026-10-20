@@ -1,0 +1,240 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-dimension-cave-markers-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "5869bc63ce2993ec748584b49167872c18de70dfc5ee29aff710efaf28e29d57",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "57ccd762b06951458ca25ec8d9c20755eef7a57c5cbfc9b65ea3a8068a15a75e",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "0b78c87a7a5a87ce924f668ee4246a04b8251ca32ff20981c9d327ecbf8e1186",
+  "focusedCheck": {
+    "command": "node tools/checks/native-cave-link.mjs",
+    "result": "pass",
+    "chunks": 24,
+    "exactMarkerCellComparisons": 1703936,
+    "worldSeeds": [
+      "0",
+      "9223372036854775807"
+    ],
+    "chunkOrigins": [
+      [
+        0,
+        0
+      ],
+      [
+        -16,
+        32
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "exact",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 286,
+            "sha256": "b2fc3f8650715be5c04f0c183f307622067e0d232cf750e6ca6b6bc3415fa970"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "adaptive",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 261,
+            "sha256": "6039225494ecc78e7b09870b1438459571be5a95dac5849df98e61842087b369"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "coarse",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 276,
+            "sha256": "239a1b33345ff61a497f09ed03f556dd81996c26895f66ff1dfb0008a6a25011"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "modules",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 450,
+            "sha256": "ce18103eff1418d227542e7d4accc09da41a4ea4fac1f861b1360210561e1fdb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "aquifer",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 350,
+            "sha256": "1d3c603b962b7938b57afc1995b9e0285aa00da61d2135f7c2b8caba4c5be2c5"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "name": "negative-minimum",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 301,
+            "sha256": "6501251c566e55dd424d32eda7b479572e06057803e806000537ed2cb8909869"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "nativeLiquidCodesExercised": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "guards": [
+      "Disabled dimension cave profile refuses generation",
+      "Unaligned chunk origin refuses generation",
+      "Persistent float-cache request aborts cave generation",
+      "A valid request succeeds after refusal"
+    ],
+    "reference": "Actual native IrisComplex naturalTrueHeight inputs and IrisCaveCarver3D using native MantleWriter.forChunk, native MantleChunk, IrisMatter and CavernMatter on Java 25. The reference constructs an ephemeral Mantle container without loading or saving a region."
+  },
+  "workerCheck": {
+    "command": "node tools/checks/native-cave-worker.mjs",
+    "result": "pass",
+    "runtime": "Node-hosted actual worker script and Wasm, not a browser",
+    "sliceSamples": 256,
+    "minWorldY": -64,
+    "sliceWorldY": -32,
+    "clientCacheBytes": 2048,
+    "checks": [
+      "Native marker IDs and legend",
+      "Chunk-aligned coordinates and world-Y offset",
+      "Outside-height slice contains no markers",
+      "Disabled-profile error",
+      "Cancellation suppresses result",
+      "GenerationClient Float64Array transfer and cache reuse"
+    ]
+  },
+  "harnesses": {
+    "tools/checks/native-cave-link.mjs": "41a82b29c4e7bbacc9892be1008efed998d1a894b264ac0d1a9567ed43794dd5",
+    "tools/checks/NativeTerrainLinkCheck.java": "ba69fdfd47ee2894e5a6ca408bb2b4d6dd122e1058b28b067d7cdfd5785fa3ac",
+    "tools/checks/native-cave-worker.mjs": "2c5c48108179bc2b785aad505ecd8839c2bf49b5301705fba024ee05d430473b",
+    "apps/web/workers/iris-worker.js": "d082f1ed92ac69a7235c5a711770dc82d73de8303cef8102903d09301e5e1a7b",
+    "packages/iris-engine/client.mjs": "64843a38739e8c8c3685d1e9351d4f69e893c996bf826b5a03d9242e280e6476"
+  },
+  "boundaries": [
+    "Native cave density, exact/adaptive/coarse classification, module/warp contributions, fluid support and palette encoding retained",
+    "Single-worker dispatch returns typed null parallel-work arrays through an opaque JS host boundary to avoid TeaVM null-only array GC inference defect",
+    "Only the carver storage calls are redirected to one ephemeral native MantleChunk; CavernMatter is constructed directly instead of reflective slice discovery",
+    "Single-worker private reference/long/boolean/double arrays, locks, permits and diagnostic metrics replace unsupported JVM concurrency primitives",
+    "Input surface heights come from the native naturalTrueHeight stream through the carver public precomputed-height argument"
+  ],
+  "limitations": [
+    "Only the dimension cave profile is sampled; biome-profile weighting, legacy caves, ravines, subterrain and full Mantle component ordering are not connected",
+    "Markers are not applied to the material preview; native cave block resolution, decoration and the full mode pipeline remain unfinished",
+    "Hydrology, transforms, saved-world transitions, upper/stacked dimensions, terrain buffet, image maps, expressions and persistent float caches remain explicit unsupported paths",
+    "Browser/GPU and complete application verification deferred; no comprehensive suite or GitHub workflow run",
+    "Production dependency provenance and the native all-style checksum mismatch remain unresolved"
+  ]
+}

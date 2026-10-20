@@ -11,10 +11,13 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final IrisDimension dimension;
     private final IrisData data;
     private final SeedManager seeds;
+    private final EngineMetrics metrics=new EngineMetrics(16);
+    private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
     public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
         if(dimension.hasUpperDimension()||dimension.hasDimensionStack())throw new UnsupportedOperationException("Upper dimensions and dimension stacks are not connected in the worker terrain runtime");
         this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
+        world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(seed).build();
         WorkerTerrainPlatform.install(registry);
         complex=new IrisComplex(this);
     }
@@ -25,6 +28,8 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public int getMinHeight(){return dimension.getMinHeight();}
     @Override public int getMaxHeight(){return dimension.getMaxHeight();}
     @Override public int getHeight(){return getMaxHeight()-getMinHeight();}
+    @Override public EngineMetrics getMetrics(){return metrics;}
+    @Override public art.arcane.iris.world.IrisWorld getWorld(){return world;}
     @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
     @Override public boolean isStudio(){return false;}
     @Override public boolean isClosed(){return false;}

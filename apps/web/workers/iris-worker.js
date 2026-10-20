@@ -46,7 +46,17 @@ self.onmessage=async({data})=>{
     if(options.packSnapshot){await registry(api,manifest);if(active!==id)return;}
     api.clear();
     let terrainInfo;
-    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}}
+    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}}
+    if(options.field==='caves'){
+      const chunk=JSON.parse(api.carveDimensionChunk(Math.floor(x/16)*16,Math.floor(z/16)*16));
+      if(chunk.scope!=='native-dimension-cave-markers-development'||!Number.isInteger(chunk.height)||chunk.height<1||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>65536||chunk.palette[0]!==null||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height)throw new Error('Native cave marker output is incomplete.');
+      const categories=['No cave marker','Air marker','Fluid palette marker','Lava marker','Forced air marker'],ids=chunk.palette.map(marker=>{if(marker===null)return 0;if(marker.cavern!==true||marker.customBiome!==''||!Number.isInteger(marker.liquid)||marker.liquid<0||marker.liquid>3)throw new Error('Unsupported native cave marker.');return marker.liquid+1;});
+      for(const cell of chunk.cells)if(!Number.isInteger(cell)||cell<0||cell>=ids.length)throw new Error('Native cave marker referenced a missing palette value.');
+      const values=new Float64Array(256),localY=Math.floor(y)-chunk.minY;let min=Infinity,max=-Infinity;
+      for(let index=0;index<256;index++){const value=localY<0||localY>=chunk.height?0:ids[chunk.cells[localY*256+index]];values[index]=value;min=Math.min(min,value);max=Math.max(max,value);}
+      await new Promise(resolve=>setTimeout(resolve,0));if(active!==id)return;
+      self.postMessage({kind:'result',id,result:{values:values.buffer,width:16,height:16,x:chunk.x+8,y:Math.floor(y),z:chunk.z+8,span:16,depth:16,seed,min,max,field:options.field,categories,terrainInfo,scope:'iris-dimension-cave-markers-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started,carved:chunk.carved,completePipeline:false}},[values.buffer]);return;
+    }
     if(options.field==='terrain-stage'){
       const chunk=JSON.parse(api.paintTerrainChunk(Math.floor(x/16)*16,Math.floor(z/16)*16));
       if(chunk.scope!=='native-terrain-paint-stage-development'||!Number.isInteger(chunk.height)||chunk.height<1||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>65536||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height)throw new Error('Native terrain stage output is incomplete.');

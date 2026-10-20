@@ -29,9 +29,9 @@ public final class NativeTerrainLinkCheck {
                 Field gateField=IrisData.class.getDeclaredField("contentGate");gateField.setAccessible(true);gateField.set(data,new ContentGate(registries,()->ContentGate.readBlockFallbacks(directory.toFile()),data.getCompatReport(),key->blocks.load(key,false)));
                 IrisDimension dimension=data.getDimensionLoader().load("terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
                 JsonArray pack=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
-                    SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};
+                    SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};EngineMetrics metrics=new EngineMetrics(16);var world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(Long.parseLong(seed.getAsString())).build();
                     Engine engine=(Engine)Proxy.newProxyInstance(Engine.class.getClassLoader(),new Class<?>[]{Engine.class},(self,method,values)->switch(method.getName()){
-                        case"getDimension"->dimension;case"getData"->data;case"getSeedManager"->seeds;case"getMinHeight"->dimension.getMinHeight();case"getMaxHeight"->dimension.getMaxHeight();case"getHeight"->{if(values!=null&&values.length!=0)throw new UnsupportedOperationException(method.toString());yield dimension.getMaxHeight()-dimension.getMinHeight();}case"getCacheID"->System.identityHashCode(self);case"getUpperContext"->null;case"getPlatformHooks"->new EnginePlatformHooks(){};case"getComplex"->runtime[0];case"isStudio","isClosed"->false;
+                        case"getWorld"->world;case"getMetrics"->metrics;case"getDimension"->dimension;case"getData"->data;case"getSeedManager"->seeds;case"getMinHeight"->dimension.getMinHeight();case"getMaxHeight"->dimension.getMaxHeight();case"getHeight"->{if(values!=null&&values.length!=0)throw new UnsupportedOperationException(method.toString());yield dimension.getMaxHeight()-dimension.getMinHeight();}case"getCacheID"->System.identityHashCode(self);case"getUpperContext"->null;case"getPlatformHooks"->new EnginePlatformHooks(){};case"getComplex"->runtime[0];case"isStudio","isClosed"->false;
                         case"getFocus"->{String key=dimension.getFocus();var biome=key==null||key.isBlank()?null:data.getBiomeLoader().load(key);yield biome==null||biome.isCompatExcluded()?null:biome;}
                         case"getFocusRegion"->{String key=dimension.getFocusRegion();var region=key==null||key.isBlank()?null:data.getRegionLoader().load(key);yield region==null||region.isCompatExcluded()?null:region;}
                         default->throw new UnsupportedOperationException(method.toString());
@@ -42,10 +42,30 @@ public final class NativeTerrainLinkCheck {
                             int bx=(int)x,bz=(int)z,localHeight=dimension.getMaxHeight()-dimension.getMinHeight();var blocksOut=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBlockState>(16,localHeight,16);blocksOut.fill(registries.air());new art.arcane.iris.generation.stage.IrisTerrainNormalActuator(engine).paint(bx,bz,blocksOut,new art.arcane.iris.generation.context.ChunkContext(bx,bz,runtime[0],false));
                             JsonObject painted=new JsonObject();painted.addProperty("scope","native-terrain-paint-stage-development");painted.addProperty("x",bx);painted.addProperty("z",bz);painted.addProperty("minY",dimension.getMinHeight());painted.addProperty("height",localHeight);LinkedHashMap<String,Integer> palette=new LinkedHashMap<>();JsonArray cells=new JsonArray();for(int y=0;y<localHeight;y++)for(int localZ=0;localZ<16;localZ++)for(int localX=0;localX<16;localX++){String key=blocksOut.getRaw(localX,y,localZ).key();Integer index=palette.get(key);if(index==null){index=palette.size();palette.put(key,index);}cells.add(index);}painted.add("palette",gson.toJsonTree(palette.keySet()));painted.add("cells",cells);sample.add("painted",painted);
                         }
+                        if(request.has("caves")&&request.get("caves").getAsBoolean())sample.add("caves",caves(engine,(int)x,(int)z,gson,directory));
                         samples.add(sample);}pack.add(samples);
                 }result.add(pack);
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
         Files.writeString(Path.of(args[1]),gson.toJson(result));
     }
+    private static JsonObject caves(Engine engine,int x,int z,Gson gson,Path directory)throws Exception {
+        int height=engine.getHeight(),cx=x>>4,cz=z>>4;
+        var adapter=(art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter<art.arcane.volmlib.util.matter.Matter>)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter.class},(self,method,args)->switch(method.getName()){
+            case "createSection"->new art.arcane.volmlib.util.matter.IrisMatter(16,16,16);
+            case "get"->{var section=(art.arcane.volmlib.util.matter.Matter)args[0];var slice=section.getSlice((Class<?>)args[4]);yield slice==null?null:slice.get((int)args[1],(int)args[2],(int)args[3]);}
+            default->throw new UnsupportedOperationException(method.toString());
+        });
+        var chunk=new art.arcane.volmlib.util.mantle.runtime.MantleChunk<art.arcane.volmlib.util.matter.Matter>((height+15)/16,cx,cz,adapter,art.arcane.volmlib.util.mantle.runtime.MantleHooks.NONE);
+        var mantle=new art.arcane.volmlib.util.mantle.runtime.Mantle<art.arcane.volmlib.util.matter.Matter>(directory.resolve("unused-cave-storage").toFile(),height,1,null,null,null,adapter,art.arcane.volmlib.util.mantle.runtime.MantleHooks.NONE);
+        var host=(art.arcane.iris.generation.mantle.EngineMantle)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.iris.generation.mantle.EngineMantle.class},(self,method,args)->switch(method.getName()){case "getEngine"->engine;case "getComplex"->engine.getComplex();default->throw new UnsupportedOperationException(method.toString());});
+        Method create=art.arcane.iris.generation.mantle.MantleWriter.class.getDeclaredMethod("forChunk",art.arcane.iris.generation.mantle.EngineMantle.class,art.arcane.volmlib.util.mantle.runtime.Mantle.class,art.arcane.volmlib.util.mantle.runtime.MantleChunk.class,int.class,int.class);create.setAccessible(true);
+        int[] surface=new int[256];for(int lx=0;lx<16;lx++)for(int lz=0;lz<16;lz++)surface[(lx<<4)|lz]=engine.getComplex().naturalTrueHeight(x+lx,z+lz);
+        int carved;try(var writer=(art.arcane.iris.generation.mantle.MantleWriter)create.invoke(null,host,mantle,chunk,cx,cz)){carved=new art.arcane.iris.generation.mantle.IrisCaveCarver3D(engine,engine.getDimension().getCaveProfile()).carve(writer,cx,cz,null,0D,0D,null,surface);}
+        JsonObject result=new JsonObject();result.addProperty("scope","native-dimension-cave-markers-development");result.addProperty("x",x);result.addProperty("z",z);result.addProperty("minY",engine.getMinHeight());result.addProperty("height",height);result.addProperty("carved",carved);
+        LinkedHashMap<art.arcane.volmlib.util.matter.MatterCavern,Integer> palette=new LinkedHashMap<>();palette.put(null,0);JsonArray cells=new JsonArray();
+        for(int y=0;y<height;y++)for(int lz=0;lz<16;lz++)for(int lx=0;lx<16;lx++){var value=chunk.get(lx,y,lz,art.arcane.volmlib.util.matter.MatterCavern.class);Integer index=palette.get(value);if(index==null){index=palette.size();palette.put(value,index);}cells.add(index);}
+        result.add("palette",gson.toJsonTree(palette.keySet()));result.add("cells",cells);return result;
+    }
+
 }

@@ -2,7 +2,13 @@
 package studio.engine.terrain;
 /** VarHandle operations on a single worker's private arrays. */
 public final class WorkerArrayAccess{
-    public static WorkerArrayAccess arrayElementVarHandle(Class<?> type){if(type!=int[].class&&type!=long[].class)throw new UnsupportedOperationException("Unlinked worker array type");return new WorkerArrayAccess();}
+    public static WorkerArrayAccess arrayElementVarHandle(Class<?> type){if(type!=int[].class&&type!=long[].class&&type!=double[].class&&type!=boolean[].class)throw new UnsupportedOperationException("Unlinked worker array type");return new WorkerArrayAccess();}
+    public double getOpaque(double[] array,int index){return array[index];}
+    public void setOpaque(double[] array,int index,double value){array[index]=value;}
+    public boolean getVolatile(boolean[] array,int index){return array[index];}
+    public void setVolatile(boolean[] array,int index,boolean value){array[index]=value;}
+    public boolean getAndSet(boolean[] array,int index,boolean value){boolean old=array[index];array[index]=value;return old;}
+    public boolean compareAndSet(boolean[] array,int index,boolean expected,boolean value){if(array[index]!=expected)return false;array[index]=value;return true;}
     public int getAcquire(int[] array,int index){return array[index];}
     public long getAcquire(long[] array,int index){return array[index];}
     public void setRelease(int[] array,int index,int value){array[index]=value;}

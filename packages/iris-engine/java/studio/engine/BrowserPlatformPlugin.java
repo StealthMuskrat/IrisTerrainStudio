@@ -13,6 +13,45 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+
+            if(java.util.Set.of("art.arcane.volmlib.util.hunk.bits.HashPalette","art.arcane.volmlib.util.hunk.bits.LinearPalette").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
+            if(java.util.Set.of("art.arcane.volmlib.util.hunk.bits.DataContainer","art.arcane.volmlib.util.hunk.bits.DataBits").contains(name)){
+                replaceClass(cls,"java.util.concurrent.atomic.AtomicLongArray","studio.engine.WorkerLongArray");
+                replaceDeclarations(cls,"java.util.concurrent.atomic.AtomicLongArray","studio.engine.WorkerLongArray");
+            }
+            if(name.equals("art.arcane.volmlib.util.hunk.bits.DataContainer")){
+                replaceClass(cls,"java.util.concurrent.locks.Lock","studio.engine.terrain.WorkerLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock","studio.engine.terrain.WorkerReadWriteLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock","studio.engine.terrain.WorkerReadWriteLock$ReadLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock","studio.engine.terrain.WorkerReadWriteLock$WriteLock");
+            }
+            if(name.equals("art.arcane.iris.generation.mantle.IrisCaveCarver3D")){
+                int mantle=0,chunks=0,heights=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(java.util.Set.of("classifyPassParallel","sampleLatticeParallel").contains(method.getName())){unavailable(method,"Parallel cave dispatch in a single worker");continue;}
+                    if(method.getName().equals("runDensityTasks")){unavailable(method,"ForkJoin cave work dispatch in one browser worker");continue;}
+                    Program p=method.getProgram();if(p==null)continue;
+                    // An opaque nullable-array host boundary avoids TeaVM's null-only
+                    // primitive-array GC local inference defect. Native fallback logic remains.
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals(name)&&java.util.Set.of("classifyPassParallel","sampleLatticeParallel").contains(call.getMethod().getName())){call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveDispatch",call.getMethod().getName().equals("classifyPassParallel")?"classification":"lattice",call.getMethod().getReturnType()));call.setInstance(null);call.setArguments();call.setType(InvocationType.SPECIAL);}instruction=next;}
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.mantle.MantleWriter")&&ref.getName().equals("getMantle")){target="getMantle";mantle++;}
+                        else if(ref.getClassName().equals("art.arcane.iris.generation.mantle.MantleWriter")&&ref.getName().equals("acquireChunk")){target="acquireChunk";chunks++;}
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("getWorldHeight")){target="getWorldHeight";heights++;}
+                        if(target!=null){java.util.List<Variable> args=new java.util.ArrayList<>();args.add(call.getInstance());args.addAll(call.getArguments());ValueType[] old=ref.getDescriptor().getSignature(),signature=new ValueType[old.length+1];signature[0]=ValueType.object(ref.getClassName());System.arraycopy(old,0,signature,1,old.length);call.setInstance(null);call.setArguments(args.toArray(Variable[]::new));call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage",new MethodDescriptor(target,signature)));}
+                    }
+                }if(mantle!=1||chunks!=2||heights!=1)throw new IllegalStateException("Pinned cave storage call sites changed: "+mantle+","+chunks+","+heights);
+            }
+            if(name.equals("art.arcane.volmlib.util.mantle.MantleChunkSupport")){
+                replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
+                replaceClass(cls,"java.util.concurrent.Semaphore","studio.engine.terrain.WorkerSemaphore");
+            }
+            if(name.equals("art.arcane.iris.generation.mantle.CaveDensityGrid$Column"))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
+            if(java.util.Set.of("art.arcane.volmlib.util.atomics.AtomicAverage","art.arcane.volmlib.util.atomics.AtomicRollingSequence").contains(name)){
+                replaceClass(cls,"com.google.common.util.concurrent.AtomicDoubleArray","studio.engine.terrain.WorkerDoubleArray");
+                replaceClass(cls,"java.util.concurrent.atomic.DoubleAdder","studio.engine.terrain.WorkerDoubleAdder");
+            }
             if(name.equals("art.arcane.iris.generation.context.ChunkContext")){
                 replaceClass(cls,"java.util.concurrent.CompletableFuture","studio.engine.terrain.WorkerFuture");
                 for(MethodHolder method:cls.getMethods()){
@@ -39,7 +78,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if(java.util.Set.of("art.arcane.iris.generation.terrain.Terrain3DFragmentFilter$DensityColumn","art.arcane.iris.generation.terrain.Terrain3DFragmentFilter$Traversal").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicIntegerArray","studio.engine.WorkerIntegerArray");
             if(name.equals("art.arcane.iris.generation.stream.CachedStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2D","studio.engine.terrain.WorkerWorldCache");
             if(name.equals("art.arcane.iris.generation.stream.CachedDoubleStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2DDouble","studio.engine.terrain.WorkerWorldDoubleCache");
-            if(name.equals("art.arcane.iris.generation.runtime.SharedCornerBounds")){
+            if(java.util.Set.of("art.arcane.iris.generation.runtime.SharedCornerBounds","art.arcane.iris.generation.mantle.CaveDensityGrid","art.arcane.iris.generation.mantle.CaveDensityGrid$Column","art.arcane.volmlib.util.parallel.AtomicBooleanArray").contains(name)){
                 replaceClass(cls,"java.lang.invoke.VarHandle","studio.engine.terrain.WorkerArrayAccess");
                 for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.invoke.MethodHandles"))call.setMethod(new MethodReference("studio.engine.terrain.WorkerArrayAccess",call.getMethod().getDescriptor()));}
             }
@@ -204,6 +243,12 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
         });
     }
     private static ValueType replaced(ValueType type,String original,String replacement){return type.equals(ValueType.object(original))?ValueType.object(replacement):type;}
+    private static void replaceDeclarations(ClassHolder cls,String original,String replacement){
+        for(MethodHolder old:new java.util.ArrayList<>(cls.getMethods())){
+            ValueType[] signature=old.getDescriptor().getSignature();boolean changed=false;for(int i=0;i<signature.length;i++){ValueType next=replaced(signature[i],original,replacement);changed|=!next.equals(signature[i]);signature[i]=next;}if(!changed)continue;
+            MethodHolder method=new MethodHolder(new MethodDescriptor(old.getName(),signature));method.setLevel(old.getLevel());method.getModifiers().addAll(old.getModifiers());method.setProgram(old.getProgram());method.setThrownTypes(old.getThrownTypes());method.setAnnotationDefault(old.getAnnotationDefault());org.teavm.model.util.ModelUtils.copyAnnotations(old.getAnnotations(),method.getAnnotations());for(int i=0;i<old.parameterCount();i++)org.teavm.model.util.ModelUtils.copyAnnotations(old.parameterAnnotation(i),method.parameterAnnotation(i));cls.removeMethod(old);cls.addMethod(method);
+        }
+    }
     private static void replaceClass(ClassHolder cls,String original,String replacement){
         for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
         for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
