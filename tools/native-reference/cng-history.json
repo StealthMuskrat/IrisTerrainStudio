@@ -1,0 +1,27 @@
+{
+  "formatVersion": 1,
+  "scope": "CNG-only isolation: all other classes remain the current candidate",
+  "path": "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
+  "profiles": [
+    {
+      "id": "current",
+      "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b"
+    },
+    {
+      "id": "fixture",
+      "commit": "12bc569151b854946fe15dcda0b15a4cdf43dfc1",
+      "sha256": "d24281559241094c063233e62a4cc1812209fffc020b882914df62dd7f5e643e"
+    },
+    {
+      "id": "mutation",
+      "commit": "c2881df4e8b5e40baafacdc65975baf7dd334ef1",
+      "sha256": "9b8e295843fabcf2095f5ce1a3ea53defdc8353b247c64e2302e97dec10a6f55"
+    },
+    {
+      "id": "memo",
+      "commit": "a05cac2b187d6abbec10280327532d10283346d1",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b"
+    }
+  ]
+}

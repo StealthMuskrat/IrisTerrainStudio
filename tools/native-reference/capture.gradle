@@ -1,0 +1,37 @@
+// Adds separate diagnostic tasks; never edits upstream sources or test expectations.
+gradle.projectsEvaluated {
+    def core = gradle.rootProject.project(':core')
+    def studio = new File(System.getenv('GITHUB_WORKSPACE'))
+    def output = new File(studio, '.reference-output/native-reference/cng-isolation')
+    def diagnosticClasses = new File(output, 'harness-classes')
+    def compileHarness = core.tasks.register('compileStudioCapture', JavaCompile) {
+        dependsOn(core.tasks.named('testClasses'))
+        source(new File(studio, 'tools/native-reference/NoiseStyleCapture.java'))
+        classpath = core.sourceSets.test.runtimeClasspath
+        destinationDirectory.set(diagnosticClasses)
+        options.release.set(25)
+    }
+    def manifest = new groovy.json.JsonSlurper().parse(new File(studio, 'tools/native-reference/cng-history.json'))
+    def captures = []
+    manifest.profiles.each { profile ->
+        def historicalClasses = new File(output, "${profile.id}/classes")
+        def compileHistorical = profile.id == 'current' ? null : core.tasks.register("compileStudioCng_${profile.id}", JavaCompile) {
+            dependsOn(core.tasks.named('testClasses'))
+            source(new File(output, "${profile.id}/src/CNG.java"))
+            classpath = core.sourceSets.test.runtimeClasspath
+            options.annotationProcessorPath = core.configurations.annotationProcessor
+            destinationDirectory.set(historicalClasses)
+            options.release.set(25)
+            options.encoding = 'UTF-8'
+        }
+        captures.add(core.tasks.register("captureStudio_${profile.id}", JavaExec) {
+            dependsOn(compileHarness)
+            if (compileHistorical != null) dependsOn(compileHistorical)
+            mainClass.set('studio.reference.NoiseStyleCapture')
+            classpath = core.files(historicalClasses, diagnosticClasses) + core.sourceSets.test.runtimeClasspath
+            jvmArgs('--add-modules', 'jdk.incubator.vector')
+            args(new File(output, "${profile.id}.json").absolutePath)
+        })
+    }
+    core.tasks.register('captureStudioCngHistory') { dependsOn(captures) }
+}
