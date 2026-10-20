@@ -5,19 +5,19 @@ No calendar estimates are assigned before browser feasibility is demonstrated. P
 | Phase | Result | Completion gate | Current state |
 | --- | --- | --- | --- |
 | 0 | Immutable dependency inventory, architecture, native reference setup, browser feasibility report, asset provenance | Real Iris functionality runs in a browser-compatible environment, or exact blockers are demonstrated and resolved before implementation advances | Candidate primitive/RNG JVM/Wasm proof passes; Iris core compiles, but native checksum fails; dependency/schema/registry gates remain open |
-| 1 | Supported-path generation proof of concept | Exact native/browser noise, seeds, regions, biomes, heights, and minimal voxel output for a stated real-pack subset | Blocked by Phase 0 |
-| 2 | Native pack editor and safe server IO | Schema-driven editing, references, unknown-field preservation, undo/redo, atomic saves, backups and conflict tests | Not started |
-| 3 | WebGPU 2D visualizer | Real engine outputs, navigation, revision-aware workers and invalidation; exact parity remains passing | Not started |
-| 4 | WebGPU 3D voxel renderer | Actual voxel chunks, correct block models/states, clipping and inspection; measured rendering behavior | Not started |
-| 5 | Remaining in-scope terrain systems | Feature-by-feature native/browser regression evidence across volumetric, cave, subterrain, river, material, ore, decorator, object and tree systems | Not started |
-| 6 | Resource-pack system | Authorized F8thful/default baseline, local ZIP imports, dependency resolution and non-cube models; switches preserve voxels | Not started |
-| 7 | Performance, deployment and release | Measured budgets, full applicable parity/security/integration tests, Docker/persistence checks and documentation | Not started |
+| 1 | Supported-path generation proof of concept | Exact native/browser noise, seeds, regions, biomes, heights, and minimal voxel output for a stated real-pack subset | Local Iris style/configured-style/seed/layer/generator module compiles; full pack path and qualification pending |
+| 2 | Native pack editor and safe server IO | Schema-driven editing, references, unknown-field preservation, undo/redo, atomic saves, backups and conflict tests | Local server/editor implemented; pinned schemas and final integration pending |
+| 3 | WebGPU 2D visualizer | Real engine outputs, navigation, revision-aware workers and invalidation; exact parity remains passing | WebGPU scalar view implemented; final browser verification pending |
+| 4 | WebGPU 3D voxel renderer | Actual voxel chunks, correct block models/states, clipping and inspection; measured rendering behavior | Voxel/model/meshing/inspection modules implemented; actual chunks and rendering completion pending |
+| 5 | Remaining in-scope terrain systems | Feature-by-feature native/browser regression evidence across volumetric, cave, subterrain, river, material, ore, decorator, object and tree systems | Remaining terrain engine systems not connected |
+| 6 | Resource-pack system | Authorized F8thful/default baseline, local ZIP imports, dependency resolution and non-cube models; switches preserve voxels | Local resource-pack stack/model/atlas implemented; baseline and remaining adapters pending |
+| 7 | Performance, deployment and release | Measured budgets, full applicable parity/security/integration tests, Docker/persistence checks and documentation | Development packaging implemented; comprehensive release checks deferred until completion |
 
 ## Working process
 
 Track acceptance criteria in GitHub issues. Link each implementation PR to its phase and prerequisite issues. Keep PRs small enough to review against the pinned source. Record test commands, failed/unavailable checks, and remaining blockers. Close issues only when the acceptance evidence is present. Native execution and browser execution are separate results; foundation CI does not certify either.
 
-The first work queue is dependency provenance, schema/registry capture, native reference export, and the TeaVM worker experiment. UI polish, deployment packaging, and new features must not displace that critical path. Asset provenance work can proceed independently without bundling assets.
+Development proceeds locally in coherent implementation batches under the user's 2026-10-20 instruction. GitHub pushes are checkpoints and workflows are manual. Use focused local checks to resolve specific problems; reserve comprehensive program verification for the completed implementation. Dependency provenance, native schema/registry capture and full browser terrain generation remain required for release. Asset provenance work can proceed independently without bundling assets.
 
 ## GitHub work queue
 

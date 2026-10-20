@@ -14,3 +14,5 @@ __pycache__/
 !.env.example
 /packs/
 /apps/web/engine/generated/
+/.local-tools/
+/apps/web/engine/iris-generated/

@@ -21,6 +21,17 @@ Implemented editing includes resource search, field/JSON views, undo/redo, local
 
 `npm run build` creates a standalone development copy in `dist/`. Docker configuration is in `docker/`; remote binding requires a server access token of at least 32 characters. Use HTTPS when accessing WebGPU remotely.
 
+## Iris noise development module
+
+Build the actual pinned Iris NoiseStyle/CNG, configured-style, SeedManager and standalone generator bridge locally:
+
+```sh
+npm run engine:setup
+npm run engine:build
+```
+
+The automatic tool setup supports Linux x64. Select **Iris noise style** or open a generator resource and use **Preview this generator**. Standalone generator seeds are native `superSeed` inputs; dimension seed derivation and biome blending are not applied to this view. The module compiles and its focused Node/native export check passes; complete browser/native qualification remains outstanding. Unsupported resource-dependent paths fail explicitly.
+
 ## Native noise laboratory
 
 The optional noise laboratory uses the previously executed, hash-verified TeaVM Wasm GC module. Install its recorded evidence archive locally:
@@ -41,9 +52,9 @@ Checked on 2026-10-20 against upstream's latest non-prerelease release:
 | --- | --- | --- |
 | Iris | 4.3.4, tag `4.3.4-26.1.2-26.3` | Commit `c3a9449a026078c44a87c9776766f54a67779392` pinned |
 | Minecraft | 26.3 | Version verified; registry export pending |
-| Native build toolchain | Java 25 | Iris core compiles in CI; pinned native noise checksum fails |
+| Native build toolchain | Java 25 | Iris core compiles locally and in CI; pinned native noise checksum fails |
 | VolmLib | Release-matching source and binaries | Unresolved; upstream uses mutable snapshot/composite resolution |
-| Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Candidate primitives compile and execute; Iris engine pending |
+| Browser compiler | TeaVM 0.16.0 Wasm GC experiment | Iris styles, configured styles, seeds and standalone generators compile; full terrain pending |
 
 [upstream.lock.json](upstream.lock.json) records source blob hashes, unresolved inputs, and readiness. Pinning Iris alone does not establish a reproducible engine.
 

@@ -10,7 +10,7 @@ const repository = fileURLToPath(new URL('../../', import.meta.url));
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.wasm': 'application/wasm', '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mcmeta': 'application/json; charset=utf-8', '.zip': 'application/zip', '.txt': 'text/plain; charset=utf-8' };
 function headers(response) {
   response.setHeader('X-Content-Type-Options', 'nosniff'); response.setHeader('Referrer-Policy', 'same-origin'); response.setHeader('Cross-Origin-Opener-Policy', 'same-origin'); response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
-  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+  response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' blob: 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
 }
 function json(response, status, value) { response.writeHead(status, { 'Content-Type': MIME['.json'], 'Cache-Control': 'no-store' }); response.end(JSON.stringify(value)); }
 async function body(request, limit = JSON_LIMIT) {
@@ -35,8 +35,8 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
         if (!authenticated(request, token)) throw new StoreError(401, 'Enter the server access token to open packs.');
         const pack = url.searchParams.get('pack'), relative = url.searchParams.get('path');
         if (method === 'GET' && url.pathname === '/api/status') {
-          let engine; try { engine = JSON.parse(await fs.readFile(path.join(repository, 'apps/web/engine/manifest.json'), 'utf8')); } catch { engine = { available: false, reason: 'The Iris browser generation engine is not installed.' }; }
-          return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine, authenticated: !!token });
+          let engine; try { engine = JSON.parse(await fs.readFile(path.join(repository, 'apps/web/engine/iris-generated/manifest.json'), 'utf8')); } catch { engine = { available: false, reason: 'The Iris browser generation engine is not installed.' }; }
+          return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine: {...engine, available:!!engine.wasmSha256, terrainAvailable:false}, authenticated: !!token });
         }
         if (method === 'GET' && url.pathname === '/api/packs') return json(response, 200, { packs: await store.packs() });
         if (method === 'POST' && url.pathname === '/api/packs') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 201, await store.create(data.id)); }
@@ -54,7 +54,7 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
         if (method === 'GET' && url.pathname === '/api/references') return json(response, 200, { references: await store.references(pack, relative) });
         if (method === 'POST' && url.pathname === '/api/operation') return json(response, 200, await store.operation(pack, JSON.parse((await body(request)).toString('utf8'))));
         if (method === 'GET' && url.pathname === '/api/backups') return json(response, 200, { backups: await store.backups(pack, relative) });
-        if (method === 'POST' && url.pathname === '/api/restore') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 200, await store.restore(pack, relative, data.id, request.headers['if-match'])); }
+        if (method === 'POST' && url.pathname === '/api/restore') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 200, await store.restore(pack, relative, data.id, request.headers['if-none-match']==='*'?'*':request.headers['if-match'])); }
         if (method === 'GET' && url.pathname === '/api/export') { const archive = await store.export(pack); response.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Disposition': `attachment; filename="${pack}.zip"`, 'Content-Length': archive.length, 'Cache-Control': 'no-store' }); return response.end(archive); }
         if (method === 'POST' && url.pathname === '/api/import') return json(response, 201, await store.import(pack, await body(request, ARCHIVE_LIMIT), { stripRoot: url.searchParams.get('stripRoot') === 'true' }));
         throw new StoreError(404, 'Pack operation not found.');

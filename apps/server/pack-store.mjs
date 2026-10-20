@@ -107,15 +107,41 @@ export class PackStore {
     throw new StoreError(400, 'Unknown resource operation.');
   }
   async backups(pack, relative) {
-    resourcePath(relative); const directory = await this.internal(pack, ['backups', createHash('sha256').update(relative).digest('hex')]); if (!directory) return [];
+    if (!relative) {
+      const base = await this.internal(pack, ['backups']); if (!base) return [];
+      const result = [];
+      for (const entry of await fs.readdir(base, { withFileTypes: true })) {
+        if (!entry.isDirectory() || !/^[a-f0-9]{64}$/.test(entry.name)) continue;
+        result.push(...await this.backupRecords(await this.internal(pack, ['backups', entry.name])));
+        if (result.length > 50000) throw new StoreError(413, 'Pack history exceeds the listing budget.');
+      }
+      return result.sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+    }
+    jsonPath(relative); const directory = await this.internal(pack, ['backups', createHash('sha256').update(relative).digest('hex')]); if (!directory) return [];
+    return (await this.backupRecords(directory)).filter(row=>row.path===relative).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  }
+  async backupRecords(directory) {
     const files = await fs.readdir(directory).catch(error => { if (error.code === 'ENOENT') return []; throw error; }); const result = [];
-    for (const file of files.filter(name => name.endsWith('.json'))) result.push(JSON.parse(await fs.readFile(path.join(directory, file), 'utf8')));
-    return result.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    for (const file of files.filter(name => /^\d+-[a-f0-9-]{36}\.json$/.test(name))) {
+      const handle = await fs.open(path.join(directory,file),constants.O_RDONLY|(constants.O_NOFOLLOW||0));
+      try {
+        const stat=await handle.stat();if(!stat.isFile()||stat.size>8192)throw new StoreError(422,'Invalid backup metadata.');
+        const row=JSON.parse(await handle.readFile('utf8'));jsonPath(row.path);
+        if(file!==row.id+'.json'||!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>JSON_LIMIT||!/^"[a-f0-9]{64}"$/.test(row.etag)||!Number.isFinite(Date.parse(row.createdAt)))throw new StoreError(422,'Invalid backup metadata.');
+        result.push({id:row.id,path:row.path,bytes:row.bytes,createdAt:row.createdAt,etag:row.etag});
+      } finally { await handle.close(); }
+    }
+    return result;
   }
   async restore(pack, relative, id, expected) {
     const backup = (await this.backups(pack, relative)).find(row => row.id === id); if (!backup) throw new StoreError(404, 'Backup not found.');
     const directory = await this.internal(pack, ['backups', createHash('sha256').update(relative).digest('hex')]);
-    return this.save(pack, relative, await fs.readFile(path.join(directory, id + '.data'), 'utf8'), expected);
+    const handle=await fs.open(path.join(directory,id+'.data'),constants.O_RDONLY|(constants.O_NOFOLLOW||0));
+    try {
+      const stat=await handle.stat();if(!stat.isFile()||stat.size!==backup.bytes||stat.size>JSON_LIMIT)throw new StoreError(422,'Invalid backup data.');
+      const data=await handle.readFile();if(digest(data)!==backup.etag)throw new StoreError(422,'Backup data differs from its saved checksum.');
+      return this.save(pack,relative,data.toString('utf8'),expected,expected==='*');
+    } finally { await handle.close(); }
   }
   async export(pack) { const entries = new Map(); for (const row of (await this.resources(pack)).resources) { if (row.readOnly) throw new StoreError(422, 'Pack export does not follow symbolic links.'); entries.set(resourcePath(row.path), (await this.read(pack, row.path)).data); } return writeZip(entries); }
   async import(id, archive, { stripRoot = false } = {}) {

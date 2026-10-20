@@ -4,16 +4,20 @@
   "private": true,
   "type": "module",
   "description": "Local Iris pack editor, browser generation workspace and WebGPU visualizers",
-  "engines": { "node": ">=24 <25" },
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env apps/server/index.mjs",
     "dev": "node --env-file-if-exists=.env --watch apps/server/index.mjs",
     "build": "node tools/build-app.mjs",
     "engine:install": "node tools/install-noise-engine.mjs",
+    "engine:build": "node tools/engine-build/build.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "node tools/check-project.mjs",
     "parity:compare": "node tools/reference-tests/compare.mjs",
     "reference:preflight": "node tools/reference-tests/preflight.mjs",
-    "release:check": "node tools/check-project.mjs --release"
+    "release:check": "node tools/check-project.mjs --release",
+    "engine:setup": "node tools/engine-build/setup.mjs"
   }
 }

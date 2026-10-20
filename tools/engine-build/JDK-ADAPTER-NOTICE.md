@@ -1,0 +1,9 @@
+# Seeded SplittableRandom browser adapter
+
+TeaVM 0.16.0 does not supply `java.util.SplittableRandom`. The five pinned VolmLib pattern-noise classes use its seeded constructor, `nextLong()` and bounded `nextDouble` overloads. The browser transformer redirects only those allocations/calls to `SplittableCompat`. The adapter preserves the corresponding operations and evaluation order from the Temurin 25.0.4.1+1 source archive identified in `toolchain.lock.json`. It does not replace a noise algorithm or introduce a different random generator.
+
+The restricted adapter derives from `java.base/java/util/SplittableRandom.java`, `java.base/java/util/random/RandomGenerator.java` and `java.base/jdk/internal/util/random/RandomSupport.java`. These OpenJDK files carry Oracle copyright notices and the GNU General Public License version 2 with the Classpath exception. The build source bundle retains those exact files and the JDK's GPL and Classpath-exception notices. Additional SplittableRandom operations are not supported by this restricted adapter.
+
+The adapter still needs browser/native qualification as part of the completed engine. Native Java builds continue to use the real JDK class. Image maps, resource-dependent expressions and persistent float caches remain explicitly unsupported in the development browser bridge; its client preflight rejects them, and platform entry points throw if reached.
+
+`RandomRangeCompat` also preserves the pinned JDK range-check and bounded-integer rejection algorithm for `Random.nextInt(origin,bound)`. TeaVM supplies this method but its behavior differs from the pinned native JDK at Iris noise-offset calls. The transformer redirects exactly the two calls in `OffsetNoiseGenerator`, retaining the native sequence consumption. The ordinary `nextInt(bound)` method is not redirected.
