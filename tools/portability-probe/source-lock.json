@@ -63,6 +63,30 @@
     {
       "path": "shared/src/main/java/art/arcane/volmlib/util/noise/FastNoiseDouble.java",
       "gitBlobSha": "b663ec59fd7217f636f76e5a51bc3fbe80509c13"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Point3d.java",
+      "gitBlobSha": "b3a7c42bf9d5593695914685445846e123b559d0"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Point3f.java",
+      "gitBlobSha": "594178c05ebd8f4b52a3bbe4f5f725b54b94ab18"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Point4d.java",
+      "gitBlobSha": "9ccfb74b97ad5d73ee3d9e70c61e7991112016a6"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Point4f.java",
+      "gitBlobSha": "a4686b137116f01b1978ec4bbc267c4f03976c38"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple4d.java",
+      "gitBlobSha": "4da67882813dd8c58afe33fa3a314d95d173f695"
+    },
+    {
+      "path": "shared/src/main/java/art/arcane/volmlib/util/math/Tuple4f.java",
+      "gitBlobSha": "650767061535437c1e3d63703f8257b4da85e89f"
     }
   ]
 }

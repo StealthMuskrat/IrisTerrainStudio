@@ -6,7 +6,7 @@ The candidate commit is `e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac`. It was selec
 
 ## What executes
 
-- Ten upstream Java source files plus the upstream GPL license are pinned by Git blob digest in `source-lock.json` and copied only after all inputs verify.
+- Sixteen upstream Java source files plus the upstream GPL license are pinned by Git blob digest in `source-lock.json` and copied only after all inputs verify.
 - The harness calls five actual primitive methods: white noise in 2D/3D/4D and Perlin in 2D/3D.
 - Five signed 64-bit seeds, including both limits, and ten values on each x/y/z axis produce 5,000 input cases. Coordinates include fractions, negatives, chunk boundaries and large world coordinates.
 - A native JVM first verifies fresh and reused instance outputs agree and exports exact binary64 bit strings.
