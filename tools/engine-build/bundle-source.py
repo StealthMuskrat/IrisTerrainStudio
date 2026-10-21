@@ -15,7 +15,7 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
     def add(name, data):
         records[name] = hashlib.sha256(data).hexdigest()
         bundle.writestr(name, data)
-    for project in ('Iris', 'VolmLib'):
+    for project in ('Iris', 'VolmLib', 'Paralithic'):
         directory = root / '.upstream' / project
         tracked = subprocess.check_output(['git', '-C', str(directory), 'ls-files', '-z']).decode().split('\0')
         for relative in sorted(filter(None, tracked)):
@@ -28,11 +28,13 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add(str(filename.relative_to(root)), filename.read_bytes())
     for filename in sorted((root/'.local-tools/rotation-sources').rglob('*.java')):
         add('generated/rotation/'+str(filename.relative_to(root/'.local-tools/rotation-sources')),filename.read_bytes())
-    for name in ('rotation-inputs.json','rotation-properties.json','noise-cache-identity.json'):
+    for name in ('rotation-inputs.json','rotation-properties.json','noise-cache-identity.json','expression-math-inputs.json'):
         add('platform-inputs/'+name,(root/'.local-tools'/name).read_bytes())
     with zipfile.ZipFile(root/'.local-tools/engine-jars/native-rotation.jar') as rotation:
         for name in ('net/minecraft/world/level/block/state/properties/RotationSegment.class','net/minecraft/util/SegmentedAnglePrecision.class'):
             add('platform-inputs/minecraft/'+name,rotation.read(name))
+    for filename in sorted((root/'.local-tools/config-reader-sources/studio/engine/expression').glob('*.java')):
+        add('generated/expression/'+filename.name,filename.read_bytes())
     add('package.json', (root / 'package.json').read_bytes())
     add('native-inputs.json', (root / '.local-tools/iris-inputs.json').read_bytes())
     dependency_lock=json.loads((root/'tools/engine-build/dependencies.lock.json').read_text())['brigadier']
@@ -45,7 +47,7 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add('upstream/Brigadier/'+name,source.read(name))
     add('upstream/Brigadier/LICENSE.txt',(root/'tools/engine-build/BRIGADIER-LICENSE.txt').read_bytes())
     with zipfile.ZipFile(jdk / 'lib/src.zip') as source:
-        for name in ('java.base/java/util/SplittableRandom.java', 'java.base/java/util/random/RandomGenerator.java', 'java.base/jdk/internal/util/random/RandomSupport.java'):
+        for name in ('java.base/java/lang/Math.java','java.base/java/util/SplittableRandom.java', 'java.base/java/util/random/RandomGenerator.java', 'java.base/jdk/internal/util/random/RandomSupport.java'):
             add('upstream/OpenJDK/' + name, source.read(name))
     for filename in sorted((jdk / 'legal/java.base').glob('*')):
         if filename.is_file():
@@ -53,5 +55,5 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
     add('BUILD-INSTRUCTIONS.txt', b'Iris Terrain Studio development browser engine.\nUse Node 24+, Python 3, git, curl and tar. Run npm run engine:setup then npm run engine:build in the repository root.\nThe setup uses checksummed development tools and pinned Iris/VolmLib source commits. Java source is unmodified; browser-only bytecode platform adapters are retained with the sources.\nThis is not a qualified release build. Noise-style native/browser qualification and full terrain implementation remain outstanding.\n')
     add('SOURCE-SHA256.json', (json.dumps(records, indent=2, sort_keys=True) + '\n').encode())
 (output / 'LICENSE.txt').write_bytes((root / '.upstream/Iris/LICENSE.md').read_bytes())
-(output / 'THIRD-PARTY-NOTICES.txt').write_text('Iris and VolmLib: GPL-3.0-or-later. Full corresponding upstream and adapter source is in source.zip.\nOpenJDK restricted SplittableRandom adapter: GPL-2.0-only WITH Classpath-exception-2.0. Full source files and license notices are in source.zip.\nBrigadier 1.3.10: Copyright (c) Microsoft Corporation. All rights reserved. MIT License; complete pinned sources and license are in source.zip.\nTeaVM 0.16.0: Apache-2.0. Runtime source and license: https://github.com/konsoletyper/teavm/tree/0.16.0 .\n')
+(output / 'THIRD-PARTY-NOTICES.txt').write_text('Iris and VolmLib: GPL-3.0-or-later. Full corresponding upstream and adapter source is in source.zip.\nOpenJDK restricted SplittableRandom and Math.round adapters: GPL-2.0-only WITH Classpath-exception-2.0. Full source files and license notices are in source.zip.\nBrigadier 1.3.10: Copyright (c) Microsoft Corporation. All rights reserved. MIT License; complete pinned sources and license are in source.zip.\nParalithic 0.8.1: MIT, dfsek; candidate source and original license retained under upstream/Paralithic in source.zip. Native resolved JAR provenance remains unqualified.\nTeaVM 0.16.0: Apache-2.0. Runtime source and license: https://github.com/konsoletyper/teavm/tree/0.16.0 .\n')
 print(f'Retained {len(records)} source/build files and license notices.')

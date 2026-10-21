@@ -37,6 +37,7 @@ public final class NativeTerrainLinkCheck {
             for(JsonElement entry:request.getAsJsonArray("packs")){
                 Path directory=Path.of(entry.getAsString());IrisData data=IrisData.openDatapackCompiler(directory.toFile());Method register=IrisData.class.getDeclaredMethod("registerLoader",Class.class,art.arcane.volmlib.util.collection.KMap.class);register.setAccessible(true);@SuppressWarnings("unchecked") ResourceLoader<IrisBlockData> blocks=(ResourceLoader<IrisBlockData>)register.invoke(data,IrisBlockData.class,data.getLoaders());data.setBlockLoader(blocks);
                 Field gateField=IrisData.class.getDeclaredField("contentGate");gateField.setAccessible(true);gateField.set(data,new ContentGate(registries,()->ContentGate.readBlockFallbacks(directory.toFile()),data.getCompatReport(),key->blocks.load(key,false)));
+                if(request.has("expressionChecks"))result.add(expressionChecks(data,request.getAsJsonArray("expressionChecks")));
                 if(request.has("cacheStyles"))result.add(cacheStyleChecks(data,request.getAsJsonArray("cacheStyles"),gson));
                 if(request.has("imageSamples"))result.add(imageMapChecks(data,request,gson));
                 IrisDimension dimension=data.getDimensionLoader().load("terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
@@ -48,7 +49,9 @@ public final class NativeTerrainLinkCheck {
                         case"getFocusRegion"->{String key=dimension.getFocusRegion();var region=key==null||key.isBlank()?null:data.getRegionLoader().load(key);yield region==null||region.isCompatExcluded()?null:region;}
                         default->{if(method.isDefault()&&NATIVE_DEFAULTS.contains(method.getName()))yield InvocationHandler.invokeDefault(self,method,values==null?new Object[0]:values);throw new UnsupportedOperationException(method.toString());}
                     });runtime[0]=new IrisComplex(engine);
-                    if(request.has("subterrainCheck")){pack.add(subterrainCheck(engine,directory,registries,gson,request.get("subterrainCheck").getAsBoolean()));continue;}
+                    data.registerEngine(engine);
+                    if(request.has("subterrainCheck")){try{pack.add(subterrainCheck(engine,directory,registries,gson,request.get("subterrainCheck").getAsBoolean()));}finally{data.unregisterEngine(engine);}continue;}
+                    if(request.has("engineExpressionChecks"))pack.add(expressionChecks(data,request.getAsJsonArray("engineExpressionChecks")));
                     JsonArray samples=new JsonArray();for(JsonElement point:request.getAsJsonArray("points")){JsonArray coordinates=point.getAsJsonArray();double x=coordinates.get(0).getAsDouble(),z=coordinates.get(1).getAsDouble();JsonObject sample=new JsonObject();sample.addProperty("height",Long.toUnsignedString(Double.doubleToRawLongBits(runtime[0].getHeightStream().getDouble(x,z)),16));sample.addProperty("biome",runtime[0].getTrueBiomeStream().get(x,z).getLoadKey());if(request.has("columns")&&request.get("columns").getAsBoolean()){
                         var column=runtime[0].naturalTerrainColumn((int)Math.floor(x),(int)Math.floor(z));if(column==null)sample.add("column",JsonNull.INSTANCE);else{JsonObject value=new JsonObject();value.addProperty("baseHeight",String.format("%016x",Double.doubleToRawLongBits(column.baseHeight())));value.addProperty("minY",column.minY());value.addProperty("topY",column.topY());value.addProperty("shaped",column.shaped());JsonArray spans=new JsonArray();for(int i=0;i<column.spanCount();i++){JsonArray span=new JsonArray();span.add(column.ceiling(i));span.add(column.floor(i));spans.add(span);}value.add("spans",spans);StringBuilder occupancy=new StringBuilder();for(int y=0;y<dimension.getMaxHeight()-dimension.getMinHeight();y++)occupancy.append(column.isSolid(y)?'1':'0');value.addProperty("occupancy",occupancy.toString());sample.add("column",value);}}
                         if(request.has("paint")&&request.get("paint").getAsBoolean()){
@@ -64,7 +67,7 @@ public final class NativeTerrainLinkCheck {
                         if(request.has("depositMaterials")&&request.get("depositMaterials").getAsBoolean())sample.add("depositMaterials",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true,true,true,true,true,false));
                         if(request.has("materialFinish")&&request.get("materialFinish").getAsBoolean())sample.add("materialFinish",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true,true,true,true,true,true));
                         if(singlePlacement!=null)sample.add("singlePlacement",caveMaterials(engine,(int)x,(int)z,gson,directory,registries,true,true,true,true,true,true));
-                        samples.add(sample);}pack.add(samples);
+                        samples.add(sample);}pack.add(samples);data.unregisterEngine(engine);
                 }result.add(pack);
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
@@ -84,6 +87,11 @@ public final class NativeTerrainLinkCheck {
         JsonArray outside=new JsonArray();outside.add(0);outside.add(0);outside.add(0);controls.add(outside);diagnostics.add(subterrainCell(engine,bx,engine.getMinHeight(),bz));
         materialSampling=new JsonObject();materialSampling.add("controls",controls);materialSampling.add("materials",new JsonArray());materialSampling.add("ys",new JsonArray());materialSampling.addProperty("limit",1);
         var output=caveMaterials(engine,bx,bz,gson,directory,registries,true,finish,finish,finish,finish,finish);output.add("diagnostics",diagnostics);output.addProperty("finish",finish);return output;
+    }
+    private static JsonArray expressionChecks(IrisData data,JsonArray checks){
+        JsonArray output=new JsonArray();for(JsonElement entry:checks){var row=entry.getAsJsonObject();var expression=data.getExpressionLoader().load(row.get("key").getAsString());JsonArray samples=new JsonArray();
+            for(JsonElement point:row.getAsJsonArray("points")){var p=point.getAsJsonArray();var rng=new art.arcane.volmlib.util.math.RNG(p.get(4).getAsLong());double x=p.get(0).getAsDouble(),y=p.get(1).getAsDouble(),z=p.get(2).getAsDouble();samples.add(imageBits(p.get(3).getAsInt()==2?expression.evaluate(rng,x,z):expression.evaluate(rng,x,y,z)));}output.add(samples);
+        }return output;
     }
     private static JsonObject cacheStyleChecks(IrisData data,JsonArray styles,Gson gson)throws Exception{
         JsonObject output=new JsonObject();JsonArray values=new JsonArray();

@@ -28,7 +28,7 @@ final class MemoryResourceLoader<T extends IrisRegistrant> extends ResourceLoade
         try{
             T resource=(T)NativeConfigReader.readRegistrant(type,pack.text(path));
             if(resource==null)throw new IllegalArgumentException("Native resource must contain an object: "+path);
-            resource.setLoadKey(name);resource.setLoadFile(new File("/iris-memory-pack/"+path));resource.setLoader(data);
+            resource.setLoadKey(name);resource.setLoadFile(new MemoryResourceFile(pack,path));resource.setLoader(data);
             // Native evaluateCompat overrides retain their pool cascades. With
             // the unbound gate this is authoring data, never qualified terrain.
             resource.setCompat(resource.evaluateCompat(pack.contentGate(data)));

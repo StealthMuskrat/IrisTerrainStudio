@@ -344,7 +344,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     Variable type=call.getInstance();call.setInstance(null);call.setArguments(type);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.config.NativeConfigMetadata","isRecord",ValueType.object("java.lang.Class"),ValueType.BOOLEAN));changed++;
                 }}if(changed!=1)throw new IllegalStateException("Pinned compatibility record metadata call changed");
             }
-            if(name.equals("art.arcane.iris.generation.noise.IrisExpression"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("expression"))unavailable(method,"Native expression bytecode compiler");
             if(name.equals("art.arcane.iris.structure.object.IrisObjectScale")){
                 int changed=0;
                 for(MethodHolder method:cls.getMethods())if(method.getName().equals("resolveCacheMaximumEstimatedBytes")){
