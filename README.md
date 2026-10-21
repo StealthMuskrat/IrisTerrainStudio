@@ -102,3 +102,6 @@ No F8thful archive or Minecraft assets were supplied with the specification. Ass
 
 
 Native `.iob` object resources can now be inspected from the explorer using the original Iris binary reader in the browser worker. The inspector shows dimensions and a bounded block sample. Binary bytes are preserved, and changed object content invalidates cached previews. Object/structure placement and tile-entity payload support remain unfinished; see [development details](docs/DEVELOPMENT.md#native-binary-object-resources).
+
+
+For an isolated procedural tree or natural-object preview, open a biome or region and choose **Preview procedural object or tree**. Select its native entry and baked variant index; the configured entry seed is preserved exactly. The preview uses local object coordinates and matching local block assets. Terrain placement and collision rules remain unfinished. See [development details](docs/DEVELOPMENT.md#isolated-native-procedural-variants).
