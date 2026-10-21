@@ -130,3 +130,5 @@ Native edit-state merging now runs the pinned platform merger with owned propert
 
 
 The native source-plan cache platform boundary now has an isolated JVM/Node-Wasm development check using controlled plan fixtures. Terrain previews remain uncached until real source-plan integration is qualified. See [cache scope and the current native build dependency blocker](docs/DEVELOPMENT.md#isolated-native-source-plan-cache-boundary).
+
+Texture rendering now classifies alpha across referenced animation frames, refreshes a one-pixel atlas gutter on every uploaded frame, and bounds owned bitmap decoding (including pending loads). Pack replacement pauses the previous atlas before closing its image sources. Interpolated animation, verified Minecraft UV-lock/weighted selection, fluid/tint adapters and real browser/GPU qualification remain pending.

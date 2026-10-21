@@ -27,6 +27,7 @@ export class WorldRenderer{
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
   cancelMesh(){this.job=(this.job||0)+1;this.worker?.terminate();this.worker=null;this.meshReject?.(new DOMException('Voxel meshing cancelled.','AbortError'));this.meshReject=null;}
+  suspendTextures(){this.cancelMesh();this.atlas.pause();}
   async setVolume(input,stack,{clip}={}){
     const volume=input instanceof VoxelVolume?input:new VoxelVolume(input);this.cancelMesh();const id=this.job,atlas=new TextureAtlas(this.gpu.device),models=[],diagnostics=[];
     try{

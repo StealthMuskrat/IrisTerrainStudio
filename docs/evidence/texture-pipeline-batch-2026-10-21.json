@@ -1,0 +1,93 @@
+{
+  "scope": "texture-rendering-resource-lifecycle-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "implementation": [
+    "Referenced-frame alpha classification is fixed before mesh construction; unreferenced frames are excluded.",
+    "Every uploaded frame refreshes one-pixel edge/corner gutters; transparent pixels erase prior borders.",
+    "Bounded animation metadata/timing plan rejects invalid frames/durations and unsupported interpolation.",
+    "Concurrent atlas adds share a promise; failed additions do not consume shelf space.",
+    "PNG header admission bounds input/pixel dimensions before asynchronous decoding; pending/retained decoded bitmap charges share 64 MiB per stack.",
+    "Failed decode/metadata requests evict promise state and release admission; disposal closes late decodes and rejects new work.",
+    "Resource-pack replacement pauses old atlas source uploads and ignores superseded asynchronous handoffs without altering voxel contents."
+  ],
+  "limits": {
+    "pngInputBytes": 8388608,
+    "texturePixels": 4194304,
+    "textureWidth": 4096,
+    "textureHeight": 16384,
+    "decodedRgbaBytesPerStack": 67108864,
+    "animationFrames": 4096,
+    "defaultAtlasSide": 2048,
+    "atlasGutterPixels": 1,
+    "bitmapAccounting": "RGBA byte admission including pending decodes; excludes browser overhead and separate atlas canvas/GPU allocations"
+  },
+  "focusedCheck": {
+    "scope": "texture-rendering-resource-lifecycle-development-targeted",
+    "result": "pass",
+    "controlledFixtures": {
+      "animationPixels": 8,
+      "staticPixels": 1,
+      "gutterExtent": [
+        4,
+        4
+      ],
+      "meshQuads": 1,
+      "budgetHeaderAdmissions": 5,
+      "largePixelArraysAllocated": false
+    },
+    "checks": [
+      "Explicit animation timing, repeated frames, exact boundary and cycle wrap",
+      "Malformed metadata/frame/duration/budget and interpolation boundaries",
+      "All referenced frames classify alpha; unreferenced alpha excluded",
+      "Each upload includes copied one-pixel edges/corners and preserves neighboring atlas entries",
+      "Later animated partial alpha reaches the mesh blend buffer",
+      "Concurrent atlas adds deduplicate; failed allocation does not consume space; disposed atlas rejects delayed add",
+      "Bitmap header admission precedes decoding; owned pending decodes share the 64 MiB budget",
+      "Decode/metadata failures evict cached promises and free admission; retries work",
+      "Bitmap disposal is idempotent and closes delayed decodes exactly once",
+      "Renderer texture-source handoff pauses old uploads before bitmap disposal"
+    ],
+    "workspaceSha256": {
+      "packages/resource-packs/atlas.mjs": "84cc97c301ecb604da48cfb3a3a0be0e4235a9afb5d854d1b4a451480f5257a8",
+      "packages/resource-packs/pack.mjs": "b93722a3a89f16e9ebb1d16abe880c6eb5f7ebd62f95e49373b546ef5f71a390",
+      "packages/resource-packs/texture-animation.mjs": "9434fcbf8733b3bd618c35cdf10109c6ebcfd211b882c47a6e3fc86e153957a6",
+      "packages/voxel-renderer/world.mjs": "c914175f9d69757de82a180e6adb9ab2d330f2f507cb6c8dfcabdfab42619402",
+      "apps/web/main.mjs": "76bd8b41ecfd0faf68fefce427868f8c3933ed3e102b63d091bcbf60149dfed3",
+      "tools/checks/texture-pipeline-smoke.mjs": "2fcbdc737ae2108499af96f73aee5038068ec25898efa7a049c1cb3246b2201d"
+    },
+    "realCanvasVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "minecraftClientParityVerified": false,
+    "terrainParityVerified": false,
+    "source": "controlled canvas/device/bitmap doubles; no production assets"
+  },
+  "validationNotes": [
+    "Initial focused harness cycle-wrap expectation was corrected to account for a repeated frame inheriting default duration. Runtime behavior did not change for that correction.",
+    "Checks use controlled canvas/device/bitmap doubles; budget fixtures are headers only, not large actual texture decodes.",
+    "JavaScript syntax and git diff --check passed."
+  ],
+  "engineRebuilt": false,
+  "engineArtifactsChanged": false,
+  "inheritedDevelopmentEngine": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "wasmSha256": "9476df8b496ec38e839a134ad2743cde1dbadbd03f3560149677889de9951c50",
+    "sourceSha256": "d6e3e04be51a317ff23909c097ad1f63d4073349c62afbc59c153e1ff65b3e81"
+  },
+  "limitations": [
+    "Real canvas/WebGPU/browser visual and memory behavior remains unqualified.",
+    "No Minecraft client rendering parity claim; complete frame-layout/options semantics remain unqualified.",
+    "No mipmap generation; animation interpolation/UV-lock/weighted selection/fluid/tint adapters remain unfinished.",
+    "Authorized production F8thful and vanilla asset inputs remain absent.",
+    "Full engine/application qualification and unresolved dependency/registry/release gates remain pending."
+  ],
+  "broadSuiteRun": false,
+  "terrainOrRegistrySweepRun": false,
+  "githubWorkflowRun": false,
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "minecraftClientParityVerified": false,
+  "releaseMatchVerified": false
+}
