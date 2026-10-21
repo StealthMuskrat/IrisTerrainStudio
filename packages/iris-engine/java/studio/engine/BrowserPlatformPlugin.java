@@ -402,10 +402,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 int expected=name.endsWith("IrisBiomePaletteLayer")?2:1;
                 if(allocations!=expected)throw new IllegalStateException("Pinned reference-array allocation changed in "+name+": "+allocations);
             }
-            if (name.equals("art.arcane.iris.generation.noise.ImageNoise")) {
-                for (MethodHolder method : cls.getMethods()) if (method.getProgram() != null) unavailable(method, "Image-map resources");
-            }
-            if(name.equals("art.arcane.iris.generation.image.IrisImageMapRuntime"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("compileBinding"))unavailable(method,"Native image-map resource binding");
             if (name.equals("art.arcane.iris.pack.loading.ResourceLoader")) {
                 int constructors=0;
                 for (MethodHolder method : cls.getMethods()) {

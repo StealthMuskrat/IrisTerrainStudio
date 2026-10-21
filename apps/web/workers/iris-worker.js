@@ -30,18 +30,20 @@ async function registry(api,engineManifest){
     const installed=JSON.parse(api.installRegistry(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));if(installed.blocks!==manifest.blocks||installed.states!==manifest.states)throw new Error('Native registry state coverage differs from the export manifest.');return installed;
   })().catch(error=>{registryRuntime=null;throw error;});return registryRuntime;
 }
-function registerSnapshot(api,snapshot){
+async function registerSnapshot(api,snapshot,isCurrent=()=>true){
   if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
   const paths=new Set();let budget=0;
   for(const resource of snapshot.resources){
+    if(!isCurrent())return false;
     if(paths.has(resource.path))throw new Error('Duplicate native pack resource.');paths.add(resource.path);
     if(resource.bytes!==undefined){
-      const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native object transport exceeds its byte budget.');
-      const parts=[];for(let i=0;i<bytes.length;i+=16384)parts.push(String.fromCharCode(...bytes.subarray(i,i+16384)));api.registerPackObject(resource.path,parts.join(''));
+      const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');
+      let payload=bytes,image;if(/^images\/.+\.png$/.test(resource.path)){const{decodeNativePng}=await import('/packages/iris-engine/png.mjs');image=await decodeNativePng(bytes);if(!isCurrent())return false;payload=image.samples;}
+      const parts=[];for(let i=0;i<payload.length;i+=16384)parts.push(String.fromCharCode(...payload.subarray(i,i+16384)));if(image)api.registerPackImage(resource.path,image.width,image.height,image.channels,image.bitDepth,parts.join(''));else api.registerPackObject(resource.path,parts.join(''));
     }else{
       if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
     }
-  }
+  }return true;
 }
 // Hash bounded resources separately so an unchanged snapshot can retain one native terrain context.
 async function terrainContextKey(options,manifest){
@@ -49,7 +51,7 @@ async function terrainContextKey(options,manifest){
   const resources=[],paths=new Set();let budget=0;
   for(const resource of snapshot.resources){
     if(typeof resource.path!=='string'||paths.has(resource.path))throw new Error('Invalid or duplicate native pack resource.');paths.add(resource.path);
-    if(resource.bytes!==undefined){const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native object transport exceeds its byte budget.');resources.push([resource.path,'bytes',bytes.byteLength,await digest(bytes)]);}
+    if(resource.bytes!==undefined){const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');resources.push([resource.path,'bytes',bytes.byteLength,await digest(bytes)]);}
     else{if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');resources.push([resource.path,'text',await digest(new TextEncoder().encode(resource.text))]);}
   }
   return digest(new TextEncoder().encode(JSON.stringify([manifest.wasmSha256,options.dimensionKey,options.seed,options.buffet===true,resources])));
@@ -66,7 +68,7 @@ self.onmessage=async({data})=>{
     const {api,manifest}=await engine();apiForCleanup=api;
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
     if(data.kind==='inspect-pack'){
-      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;clearContext(api);try{registerSnapshot(api,data.snapshot);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{clearContext(api);}return;
+      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;clearContext(api);try{if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{if(active===id)clearContext(api);}return;
     }
     if(active!==id)return;
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;
@@ -76,7 +78,7 @@ self.onmessage=async({data})=>{
     if(active!==id)return;const contextReused=retain&&terrainContext?.key===contextKey;
     let terrainInfo=contextReused?terrainContext.info:undefined;
     if(!contextReused)clearContext(api);
-    if(options.packSnapshot&&!contextReused){registerSnapshot(api,options.packSnapshot);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
+    if(options.packSnapshot&&!contextReused){if(!await registerSnapshot(api,options.packSnapshot,()=>active===id))return;api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
     if(['procedural-placement','procedural-source','procedural-neighborhood'].includes(options.field)){
       const neighbors=options.field==='procedural-neighborhood',scatter=neighbors||options.field==='procedural-source',p=options.procedural;let chunk;try{chunk=JSON.parse(neighbors?api.paintProceduralNeighborhoodChunk(Math.floor(x/16)*16,Math.floor(z/16)*16):scatter?api.paintProceduralSourceChunk(Math.floor(x/16)*16,Math.floor(z/16)*16):api.paintProceduralPlacementChunk(Math.floor(x/16)*16,Math.floor(z/16)*16,p.folder,p.key,p.family,p.index,p.variant,seed));}finally{if(!neighbors)clearContext(api);}
       if(chunk.scope!==(neighbors?'native-procedural-neighborhood-development':scatter?'native-procedural-source-scatter-development':'native-procedural-placement-development')||!Number.isInteger(chunk.height)||chunk.height<16||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>65536||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height||chunk.cells.some(value=>!Number.isInteger(value)||value<0||value>=chunk.palette.length)||(!neighbors&&!Number.isInteger(chunk.placedY))||(!scatter&&(!chunk.placement||chunk.placement.automaticScatter!==false||chunk.placement.crossSourceCollisionReplay!==false)))throw new Error('Native procedural placement output is incomplete.');

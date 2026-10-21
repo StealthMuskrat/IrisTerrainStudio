@@ -24,8 +24,12 @@ public final class MemoryPack {
     private final Map<String,String> resources=new LinkedHashMap<>();
     private final Map<String,byte[]> objects=new LinkedHashMap<>();
     private MemoryObjectLoader objectLoader;
+    private MemoryImageLoader imageLoader;
+    private final Map<String,studio.engine.image.WorkerImagePixels> images=new LinkedHashMap<>();
+    private final Map<String,Integer> imageSizes=new LinkedHashMap<>();
     private final Map<String,MemoryResourceLoader<?>> loaders=new LinkedHashMap<>();
-    private int bytes;
+    private int bytes;private long imageCompileWorkBytes;
+    private final Map<String,art.arcane.iris.generation.image.CompiledIrisImageMap> compiledImages=new LinkedHashMap<>();
     private IrisData data;
     private ContentGate gate;
     private final PlatformRegistries registries;
@@ -48,6 +52,30 @@ public final class MemoryPack {
         if((resourceCount()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
         byte[] value=new byte[binary.length()];for(int i=0;i<value.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Object transport must contain bytes");value[i]=(byte)c;}
         objects.put(path,value);bytes=total;
+    }
+    public void registerImage(String path,int width,int height,int channels,int depth,String binary){
+        if(data!=null)throw new IllegalStateException("The native pack snapshot is sealed");validateImagePath(path);
+        if(binary==null||binary.length()>16*1024*1024)throw new IllegalArgumentException("Decoded image exceeds 16 MiB");
+        int total=bytes+binary.length()-imageSizes.getOrDefault(path,0);if((resourceCount()>=4096&&!images.containsKey(path))||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        byte[] samples=new byte[binary.length()];for(int i=0;i<samples.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Image transport must contain bytes");samples[i]=(byte)c;}
+        var pixels=new studio.engine.image.WorkerImagePixels(width,height,channels,depth,samples);images.put(path,pixels);imageSizes.put(path,binary.length());bytes=total;
+    }
+    static void validateImagePath(String path){if(path==null||!path.startsWith("images/")||!path.endsWith(".png"))throw new IllegalArgumentException("Invalid native image path");validatePath(path.substring(0,path.length()-4)+".json");}
+    String imagePath(String name){
+        if(name.contains(":"))return null;String exact="images/"+name+".png";validateImagePath(exact);if(images.containsKey(exact))return exact;if(name.contains("/"))return null;String selected=null;
+        for(String path:images.keySet()){String file=path.substring(7);if(file.contains("/"))continue;int dot=file.indexOf('.');if(dot>=0&&file.substring(0,dot).equals(name)&&(selected==null||path.compareTo(selected)<0))selected=path;}return selected;
+    }
+    studio.engine.image.WorkerImagePixels image(String name){String path=imagePath(name);return path==null?null:images.get(path);}
+    String[] imageKeys(){return images.keySet().stream().map(path->path.substring(7,path.length()-4)).toArray(String[]::new);}
+    public static void reserveImageCompile(art.arcane.iris.generation.image.IrisImageMap definition,art.arcane.iris.generation.image.IrisImage image){
+        if(definition==null||image==null)return;MemoryPack pack=owner(image.getLoader());long charge=4096L+4L*image.getWidth()*image.getHeight()*(definition.getSmoothingRadius()>0?2:1);
+        if(charge>64L*1024*1024-pack.imageCompileWorkBytes)throw studio.engine.UnsupportedPlatform.unavailable("Native image-map compilation exceeds the snapshot work budget");pack.imageCompileWorkBytes+=charge;
+    }
+    public art.arcane.iris.generation.image.CompiledIrisImageMap compiledImage(String name){
+        open();var prior=compiledImages.get(name);if(prior!=null)return prior;if(compiledImages.size()>=32)throw studio.engine.UnsupportedPlatform.unavailable("Native image-map diagnostic cache exceeds 32 entries");
+        var resource=load("image-maps",name);if(!(resource instanceof art.arcane.iris.generation.image.IrisImageMap definition))throw new IllegalArgumentException("Missing native image-map resource: "+name);
+        var image=imageLoader.load(definition.getSource());if(image==null)throw new IllegalArgumentException("Missing PNG for native image map: "+name);
+        try{var result=art.arcane.iris.generation.image.CompiledIrisImageMap.compile(definition,image);compiledImages.put(name,result);return result;}finally{imageLoader.unload(definition.getSource());}
     }
     static void validateObjectPath(String path){
         if(path==null||!path.startsWith("objects/")||!path.endsWith(".iob"))throw new IllegalArgumentException("Invalid native object path");
@@ -75,6 +103,7 @@ public final class MemoryPack {
         data.setBlockLoader(pack.loader(new IrisBlockData(),IrisBlockData.class));
         data.setExpressionLoader(pack.loader(new IrisExpression(),IrisExpression.class));
         data.setImageMapLoader(pack.loader(new IrisImageMap(),IrisImageMap.class));
+        pack.imageLoader=new MemoryImageLoader(pack,data);data.setImageLoader(pack.imageLoader);data.getLoaders().put(art.arcane.iris.generation.image.IrisImage.class,pack.imageLoader);
         pack.objectLoader=new MemoryObjectLoader(pack,data);data.setObjectLoader(pack.objectLoader);data.getLoaders().put(art.arcane.iris.structure.object.IrisObject.class,pack.objectLoader);
         pack.gate=new ContentGate(pack.registries,pack::fallbacks,data.getCompatReport(),key->data.getBlockLoader().load(key,false));
         if(pack.registries==null)data.getCompatReport().markIncomplete("Browser native registry is not installed");
@@ -84,11 +113,11 @@ public final class MemoryPack {
     }
     public static ContentGate contentGate(IrisData data){return owner(data).gate;}
     public static MemoryPack owner(IrisData data){MemoryPack pack=OWNERS.get(data);if(pack==null)throw new IllegalStateException("No worker snapshot owns this native data instance");return pack;}
-    public IrisRegistrant load(String folder,String name){if(data==null)throw new IllegalStateException("Open the pack snapshot first");if(folder.equals("objects"))return objectLoader.load(name);MemoryResourceLoader<?> loader=loaders.get(folder);if(loader==null)throw new IllegalArgumentException("Native resource folder is not linked: "+folder);return loader.load(name);}
-    public int resourceCount(){return resources.size()+objects.size();}
+    public IrisRegistrant load(String folder,String name){if(data==null)throw new IllegalStateException("Open the pack snapshot first");if(folder.equals("objects"))return objectLoader.load(name);if(folder.equals("images"))return imageLoader.load(name);MemoryResourceLoader<?> loader=loaders.get(folder);if(loader==null)throw new IllegalArgumentException("Native resource folder is not linked: "+folder);return loader.load(name);}
+    public int resourceCount(){return resources.size()+objects.size()+images.size();}
     public boolean compatibilityReady(){return gate!=null&&gate.ready()&&!data.getCompatReport().isIncomplete();}
     public void requireGenerationReady(){if(!compatibilityReady())throw new IllegalStateException("Native pack compatibility is incomplete; terrain generation is unavailable");}
-    public void release(){if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
+    public void release(){if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;if(imageLoader!=null)imageLoader.clearCache();imageLoader=null;images.clear();imageSizes.clear();compiledImages.clear();imageCompileWorkBytes=0;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
     boolean isOpen(){return data!=null&&OWNERS.get(data)==this;}
     String objectFilePath(String name){return objectRoot+"/"+objectPath(name);}
     byte[] objectBytes(String name){return objects.get(objectPath(name));}

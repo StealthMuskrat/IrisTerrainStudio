@@ -1,7 +1,7 @@
-const labels = { dimensions: 'Dimensions', regions: 'Regions', biomes: 'Biomes', generators: 'Noise & Generators', caves: 'Caves & Carving', deposits: 'Deposits & Ores', trees: 'Procedural Trees', objects: 'Objects', snippet: 'Reusable Snippets', snippets: 'Reusable Snippets', images: 'Image Maps' };
+const labels = { dimensions: 'Dimensions', regions: 'Regions', biomes: 'Biomes', generators: 'Noise & Generators', caves: 'Caves & Carving', deposits: 'Deposits & Ores', trees: 'Procedural Trees', objects: 'Objects', snippet: 'Reusable Snippets', snippets: 'Reusable Snippets', 'image-maps': 'Image Maps', images: 'Source Images' };
 const excluded = new Set(['entities','spawners','loot','loot-tables','items','jigsaw','structures','schematics','mods','scripts']);
 export function category(path) { const folder = path.split('/')[0]; return { id: folder, label: labels[folder] || folder.replaceAll('-', ' ').replace(/^./, c => c.toUpperCase()), excluded: excluded.has(folder) }; }
-export function resourceId(path) { return path.replace(/^[^/]+\//, '').replace(/\.json$/i, ''); }
+export function resourceId(path) { return path.replace(/^[^/]+\//, '').replace(/\.(json|png|iob)$/i, ''); }
 export class ResourceCatalog {
   constructor(resources = []) {
     this.resources = resources; this.byPath = new Map(resources.map(row => [row.path, row])); this.byId = new Map();

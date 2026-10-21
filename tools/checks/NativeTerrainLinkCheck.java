@@ -37,6 +37,7 @@ public final class NativeTerrainLinkCheck {
             for(JsonElement entry:request.getAsJsonArray("packs")){
                 Path directory=Path.of(entry.getAsString());IrisData data=IrisData.openDatapackCompiler(directory.toFile());Method register=IrisData.class.getDeclaredMethod("registerLoader",Class.class,art.arcane.volmlib.util.collection.KMap.class);register.setAccessible(true);@SuppressWarnings("unchecked") ResourceLoader<IrisBlockData> blocks=(ResourceLoader<IrisBlockData>)register.invoke(data,IrisBlockData.class,data.getLoaders());data.setBlockLoader(blocks);
                 Field gateField=IrisData.class.getDeclaredField("contentGate");gateField.setAccessible(true);gateField.set(data,new ContentGate(registries,()->ContentGate.readBlockFallbacks(directory.toFile()),data.getCompatReport(),key->blocks.load(key,false)));
+                if(request.has("imageSamples"))result.add(imageMapChecks(data,request,gson));
                 IrisDimension dimension=data.getDimensionLoader().load("terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
                 JsonArray pack=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
                     SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};EngineMetrics metrics=new EngineMetrics(16);var world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(Long.parseLong(seed.getAsString())).build();
@@ -66,6 +67,19 @@ public final class NativeTerrainLinkCheck {
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
         Files.writeString(Path.of(args[1]),gson.toJson(result));
+    }
+    private static String imageBits(double value){return String.format("%016x",Double.doubleToRawLongBits(value));}
+    private static JsonObject imageMapChecks(IrisData data,JsonObject request,Gson gson){
+        JsonObject output=new JsonObject();JsonArray maps=new JsonArray();
+        for(JsonElement entry:request.getAsJsonArray("imageSamples")){
+            JsonObject row=entry.getAsJsonObject();String key=row.get("key").getAsString();var definition=data.getImageMapLoader().load(key);var image=data.getImageLoader().load(definition.getSource());var compiled=art.arcane.iris.generation.image.CompiledIrisImageMap.compile(definition,image);JsonObject value=new JsonObject();value.addProperty("key",key);JsonArray bands=new JsonArray();
+            if(image.getWidth()*image.getHeight()>1024)throw new IllegalArgumentException("Image check fixture exceeds 1024 pixels");for(int z=0;z<image.getHeight();z++)for(int x=0;x<image.getWidth();x++)for(int band=0;band<image.getChannelCount();band++)bands.add(image.getBandSample(x,z,band));value.add("bands",bands);
+            JsonArray samples=new JsonArray();for(JsonElement point:row.getAsJsonArray("points")){var coordinates=point.getAsJsonArray();double x=coordinates.get(0).getAsDouble(),z=coordinates.get(1).getAsDouble();JsonObject sample=new JsonObject();sample.addProperty("type",compiled.getType().name());sample.addProperty("contentHash",compiled.getContentHash());sample.addProperty("sourceHash",compiled.getSourceMetadata().decodedContentHash());sample.addProperty("width",compiled.getSourceWidth());sample.addProperty("height",compiled.getSourceHeight());
+                if(compiled.getType()==art.arcane.iris.generation.image.IrisImageMapType.COLOR_MAP)sample.addProperty("target",compiled.sampleTarget(x,z));else{sample.addProperty("normalized",imageBits(compiled.sampleNormalized(x,z)));if(compiled.getType()==art.arcane.iris.generation.image.IrisImageMapType.GRAYSCALE_HEIGHT||compiled.getType()==art.arcane.iris.generation.image.IrisImageMapType.RGB_HEIGHT)sample.addProperty("worldHeight",imageBits(compiled.sampleHeight(x,z)));}samples.add(sample);
+            }value.add("samples",samples);maps.add(value);data.getImageLoader().unload(definition.getSource());
+        }output.add("maps",maps);JsonArray styles=new JsonArray();
+        for(JsonElement entry:request.getAsJsonArray("imageStyles")){var row=entry.getAsJsonObject();var style=gson.fromJson(row.get("style"),art.arcane.iris.generation.noise.IrisGeneratorStyle.class);var cng=style.createForLayer(new art.arcane.volmlib.util.math.RNG(1),data,1);JsonArray values=new JsonArray();for(JsonElement point:row.getAsJsonArray("points")){var c=point.getAsJsonArray();values.add(imageBits(cng.noise(c.get(0).getAsDouble(),c.get(1).getAsDouble(),c.get(2).getAsDouble())));}styles.add(values);
+        }output.add("styles",styles);return output;
     }
     private static JsonObject caves(Engine engine,int x,int z,Gson gson,Path directory)throws Exception {
         int height=engine.getHeight(),cx=x>>4,cz=z>>4;

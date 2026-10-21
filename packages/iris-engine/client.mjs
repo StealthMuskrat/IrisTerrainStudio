@@ -59,7 +59,7 @@ export class GenerationClient extends EventTarget {
       const resources=[];let budget=0;
       for(const resource of options.packSnapshot.resources){
         if(resource.bytes!==undefined){
-          if(!(resource.bytes instanceof Uint8Array)||resource.bytes.byteLength>8*1024*1024||(budget+=resource.bytes.byteLength)>64*1024*1024)throw new Error('Native object exceeds its snapshot byte budget.');
+          if(!(resource.bytes instanceof Uint8Array)||resource.bytes.byteLength>8*1024*1024||(budget+=resource.bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset exceeds its snapshot byte budget.');
           // Own the input throughout hashing and worker dispatch, even if a caller edits its buffer.
           const bytes=resource.bytes.slice();resources.push({path:resource.path,bytes,sha256:[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('')});
         }else{if(typeof resource.text!=='string'||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack exceeds its text budget.');resources.push({...resource});}

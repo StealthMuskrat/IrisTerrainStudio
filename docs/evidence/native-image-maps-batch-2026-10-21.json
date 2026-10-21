@@ -1,0 +1,532 @@
+{
+  "scope": "native-image-map-resources-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "f380d6ab37810342be954433aeef47449edb2e9164efa695facd213a46cb4775",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "69f056de32a8e09dbc713ac2894dcf7b6d0e1d8acc7186ae2b7a7223a777c854",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "nativeAlgorithmSources": [
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImage.java",
+      "sha256": "c2301fc8b8f01e02e27e57a479821f9b8f933a4ca1f12ad468187d34f06b2e53"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapCompiler.java",
+      "sha256": "47e276197b277630f10921e099ba84735bc5c21b243bb80ad3499df25c0f30bf"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/image/CompiledIrisImageMap.java",
+      "sha256": "c7f62e4935b67cf7ec5dfed815724062797cadf2f23bdc39997351e4e54eff42"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapRuntime.java",
+      "sha256": "13b095390d855ba21f08b44db6f77b61d322af2c88c2400199876c5231c43c93"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapMaskSampler.java",
+      "sha256": "3c814eed968ad82463c541cf20f1a993d36d0390f795f7556930f698c4023c45"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/ImageNoise.java",
+      "sha256": "0f56071dcd3048c024be7113d4ee6fb73d5c786143f60f59b89678272e311950"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/pack/loading/ImageResourceLoader.java",
+      "sha256": "1c653ff22608519bb7ea0f980aaa3e178f08b068818754973976eb4054fe0af8"
+    }
+  ],
+  "implemented": [
+    "Actual image-maps folder and owned PNG snapshot capture, source catalog lookup and inspection",
+    "Raw non-interlaced PNG grayscale8/16 and RGB/RGBA8, exact filter reconstruction, CRC/bounds and explicit unsupported-mode refusal",
+    "Original IrisImage and native image-map compiler/sampling algorithms through owned pixel, SHA-256 and hex platform services",
+    "Original ImageNoise/CNG and dimension image-map runtime, including height/mask binding",
+    "Native data owner plumbing for standalone styles/generators/dimension controls when a snapshot is present",
+    "Request-identity guards around async decode and suppression of stale inspection cleanup",
+    "Exact-first/native dotted-root image lookup; bounded native image wrappers and map compilation work"
+  ],
+  "budgets": {
+    "compressedBinaryFileBytes": 8388608,
+    "decodedImageBytes": 16777216,
+    "imagePixels": 4194304,
+    "nativeSnapshotBytes": 67108864,
+    "estimatedCumulativeCompileWorkBytes": 67108864,
+    "diagnosticCompiledMaps": 32,
+    "imageLoaderWrappers": 8,
+    "note": "Compile-work admission is an estimate including scalar/smoothing arrays and fixed overhead; not measured heap use. Failed compiles keep the charge until snapshot release."
+  },
+  "focusedChecks": {
+    "nativeJavaAndNodeWasm": {
+      "scope": "native-image-maps-development-targeted",
+      "result": "pass",
+      "images": [
+        {
+          "name": "gray16",
+          "width": 3,
+          "height": 2,
+          "channels": 1,
+          "bitDepth": 16,
+          "pngSha256": "507b27c10fb3ddab52a6827b1517025963ec12e26c9791fa3ddc442de45b8b79"
+        },
+        {
+          "name": "gray8",
+          "width": 3,
+          "height": 5,
+          "channels": 1,
+          "bitDepth": 8,
+          "pngSha256": "2f2331f4c748928ae72a31627304dd180dc581f7fbae3c68caa18aac81abee9e"
+        },
+        {
+          "name": "rgb",
+          "width": 2,
+          "height": 2,
+          "channels": 3,
+          "bitDepth": 8,
+          "pngSha256": "91fc817fd82d1da2ee7fecbbf9c3fc2bf7caa23bf9874aca888e1bef94893a36"
+        },
+        {
+          "name": "rgba",
+          "width": 3,
+          "height": 5,
+          "channels": 4,
+          "bitDepth": 8,
+          "pngSha256": "2746e13667eb1394fe6b592f5c00d4489be32c53c958151e6bb5fa6aac7e5934"
+        },
+        {
+          "name": "alias.a",
+          "width": 1,
+          "height": 1,
+          "channels": 1,
+          "bitDepth": 8,
+          "pngSha256": "dc7e4111a4005b441f6bbdeef3e3ac6f2388861e903cd48980d8fd468bec3a59"
+        },
+        {
+          "name": "alias.b",
+          "width": 1,
+          "height": 1,
+          "channels": 1,
+          "bitDepth": 8,
+          "pngSha256": "cfc34e2e03ef15581a2d8106e53335c34c2f94325a343f9fee71a2016c777d78"
+        }
+      ],
+      "nativeBandSamples": 95,
+      "mapSamples": [
+        {
+          "key": "height",
+          "samples": [
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "1ceefda9b095baea2ce6d9eba6c9a99395e105e08bfc8739185c87c911e184b9",
+              "sourceHash": "08dc131dad538df3127bf1f9c354fbcceb3366f15d005b0ec1fb75e9b67763c6",
+              "width": 3,
+              "height": 2,
+              "normalized": "0000000000000000",
+              "worldHeight": "4020000000000000"
+            },
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "1ceefda9b095baea2ce6d9eba6c9a99395e105e08bfc8739185c87c911e184b9",
+              "sourceHash": "08dc131dad538df3127bf1f9c354fbcceb3366f15d005b0ec1fb75e9b67763c6",
+              "width": 3,
+              "height": 2,
+              "normalized": "3fe8351030000000",
+              "worldHeight": "4043212a1e000000"
+            },
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "1ceefda9b095baea2ce6d9eba6c9a99395e105e08bfc8739185c87c911e184b9",
+              "sourceHash": "08dc131dad538df3127bf1f9c354fbcceb3366f15d005b0ec1fb75e9b67763c6",
+              "width": 3,
+              "height": 2,
+              "normalized": "3ff0000000000000",
+              "worldHeight": "4048000000000000"
+            },
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "1ceefda9b095baea2ce6d9eba6c9a99395e105e08bfc8739185c87c911e184b9",
+              "sourceHash": "08dc131dad538df3127bf1f9c354fbcceb3366f15d005b0ec1fb75e9b67763c6",
+              "width": 3,
+              "height": 2,
+              "normalized": "3fed4c1d40000000",
+              "worldHeight": "40464f9248000000"
+            }
+          ]
+        },
+        {
+          "key": "smooth",
+          "samples": [
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "63b275d435656485cb8a940b243bb555fe800be3ca174937710e9706ac6170a5",
+              "sourceHash": "cd94a6f3039820886fae717e7468558c047bf5e97623407a7797fe5cf6e96938",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fe596b7c0000000",
+              "worldHeight": "40686213a0000000"
+            },
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "63b275d435656485cb8a940b243bb555fe800be3ca174937710e9706ac6170a5",
+              "sourceHash": "cd94a6f3039820886fae717e7468558c047bf5e97623407a7797fe5cf6e96938",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fdc7853463a0000",
+              "worldHeight": "405ab47ce9570000"
+            },
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "63b275d435656485cb8a940b243bb555fe800be3ca174937710e9706ac6170a5",
+              "sourceHash": "cd94a6f3039820886fae717e7468558c047bf5e97623407a7797fe5cf6e96938",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fe0703679a00000",
+              "worldHeight": "4060a851b6700000"
+            }
+          ]
+        },
+        {
+          "key": "rgb",
+          "samples": [
+            {
+              "type": "RGB_HEIGHT",
+              "contentHash": "a007f4a4493626fc8daff5f9623cf31e605b198c1675a0ef5a54991634391b78",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "normalized": "3f6fe00020000000",
+              "worldHeight": "4010df2000e00000"
+            },
+            {
+              "type": "RGB_HEIGHT",
+              "contentHash": "a007f4a4493626fc8daff5f9623cf31e605b198c1675a0ef5a54991634391b78",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "normalized": "3fe0000000080800",
+              "worldHeight": "4040000000070700"
+            }
+          ]
+        },
+        {
+          "key": "alpha",
+          "samples": [
+            {
+              "type": "ALPHA_MASK",
+              "contentHash": "db52d193819a78453e6f19bb9ff60bf2c4aaa5afb7bf16f46921fea7ce2ff590",
+              "sourceHash": "28e347d87b01afacdee1ba554d3166d170e76843a88eaae7d9d608c6216536a8",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fd69696a0000000"
+            },
+            {
+              "type": "ALPHA_MASK",
+              "contentHash": "db52d193819a78453e6f19bb9ff60bf2c4aaa5afb7bf16f46921fea7ce2ff590",
+              "sourceHash": "28e347d87b01afacdee1ba554d3166d170e76843a88eaae7d9d608c6216536a8",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fe6565660000000"
+            },
+            {
+              "type": "ALPHA_MASK",
+              "contentHash": "db52d193819a78453e6f19bb9ff60bf2c4aaa5afb7bf16f46921fea7ce2ff590",
+              "sourceHash": "28e347d87b01afacdee1ba554d3166d170e76843a88eaae7d9d608c6216536a8",
+              "width": 3,
+              "height": 5,
+              "normalized": "3fe5c66a4a3d70a4"
+            }
+          ]
+        },
+        {
+          "key": "colors",
+          "samples": [
+            {
+              "type": "COLOR_MAP",
+              "contentHash": "00a2cbf2c272418b13bd8f2aa95ffff1142e2b58efdcaf3251c77282e8a67767",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "target": "minecraft:stone"
+            },
+            {
+              "type": "COLOR_MAP",
+              "contentHash": "00a2cbf2c272418b13bd8f2aa95ffff1142e2b58efdcaf3251c77282e8a67767",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "target": "minecraft:dirt"
+            },
+            {
+              "type": "COLOR_MAP",
+              "contentHash": "00a2cbf2c272418b13bd8f2aa95ffff1142e2b58efdcaf3251c77282e8a67767",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "target": "minecraft:stone"
+            },
+            {
+              "type": "COLOR_MAP",
+              "contentHash": "00a2cbf2c272418b13bd8f2aa95ffff1142e2b58efdcaf3251c77282e8a67767",
+              "sourceHash": "ecc061a0c3efe6b1868665063f54de872bfc1c161e80fb99873b45214ca8f950",
+              "width": 2,
+              "height": 2,
+              "target": "minecraft:stone"
+            }
+          ]
+        },
+        {
+          "key": "alias",
+          "samples": [
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "8f7a1c85d0cbeb9efc5a4a1df56e572a74aba62df1308c2b89356f365a756b8d",
+              "sourceHash": "69bdcd9931c17d323737f8a6916726ee578b86350aad2eab0400f961de9989de",
+              "width": 1,
+              "height": 1,
+              "normalized": "3fb1111120000000",
+              "worldHeight": "3fb1111120000000"
+            }
+          ]
+        },
+        {
+          "key": "alias-b",
+          "samples": [
+            {
+              "type": "GRAYSCALE_HEIGHT",
+              "contentHash": "10503ee138cf18086e9a1d8b7dbd88ed17c63ed1d292499a1027179aed50e201",
+              "sourceHash": "f73068f8288f7b08907ac3da307ede9a76f79a3be394e9bde2e71700ed35a8d8",
+              "width": 1,
+              "height": 1,
+              "normalized": "3fecfcfd00000000",
+              "worldHeight": "3fecfcfd00000000"
+            }
+          ]
+        }
+      ],
+      "styleBits": [
+        "0000000000000000",
+        "3fc7ae63b3f91db7",
+        "3fe50df09ab863aa"
+      ],
+      "dimensionHeightBits": [
+        "4037878784000000",
+        "404008bcbca122ec",
+        "4043e90550244ab8",
+        "4047d7d7d8000000"
+      ],
+      "filters": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "nativeDottedImageFallback": true,
+      "badCrcRefused": true,
+      "interlaceRefused": true,
+      "wasmSha256": "f380d6ab37810342be954433aeef47449edb2e9164efa695facd213a46cb4775",
+      "sourceSha256": "69f056de32a8e09dbc713ac2894dcf7b6d0e1d8acc7186ae2b7a7223a777c854",
+      "browserVerified": false,
+      "fullTerrainParityVerified": false
+    },
+    "snapshotAndAsyncWorkerContract": {
+      "scope": "native-image-snapshot-worker-contract-mocked-api",
+      "result": "pass",
+      "nativeFolderCaptured": true,
+      "imageOnlyStyleDiscoverable": true,
+      "nativeImageReferenceResolved": true,
+      "unknownJsonNumberTextPreserved": true,
+      "ownedPngBytes": true,
+      "escapedPropertyRouting": true,
+      "staleAsyncImageRegistrationSuppressed": true,
+      "staleInspectionDoesNotClearNewerContext": true,
+      "pngRegisteredWithRawBands": true,
+      "workerSha256": "594a68227b99a1d70f7dd32a4dc8623d5eac73024b195719ffaefa448a4c2262",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    },
+    "existingTerrainContextContract": {
+      "scope": "worker-terrain-context-contract-mocked-api",
+      "result": "pass",
+      "successfulRequests": 8,
+      "failedRequests": 1,
+      "trace": [
+        {
+          "id": 1,
+          "prepare": 1,
+          "reused": false
+        },
+        {
+          "id": 2,
+          "prepare": 1,
+          "reused": true
+        },
+        {
+          "id": 3,
+          "prepare": 2,
+          "reused": false
+        },
+        {
+          "id": 4,
+          "prepare": 3,
+          "reused": false
+        },
+        {
+          "id": 5,
+          "prepare": 4,
+          "reused": false
+        },
+        {
+          "id": 6,
+          "prepare": 5,
+          "reused": false
+        },
+        {
+          "id": 7,
+          "prepare": 6,
+          "reused": false
+        },
+        {
+          "id": 9,
+          "prepare": 7,
+          "reused": false
+        }
+      ],
+      "counts": {
+        "prepare": 7,
+        "clear": 9,
+        "registered": 14
+      },
+      "idleInvalidationReleasesContext": true,
+      "mismatchedServerInputsRefused": true,
+      "workerSha256": "594a68227b99a1d70f7dd32a4dc8623d5eac73024b195719ffaefa448a4c2262",
+      "clientSha256": "e99bdd7d34e039746960a0127d4a2ff4a7b705ac7ca99b35716334b5ed68eb83",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    }
+  },
+  "executionIdentityNote": "The final native image-map check executed the recorded Wasm and final corresponding source hash. The archive was refreshed for JavaScript image-only style discovery without changing Wasm, before that final focused execution. Mock worker contracts use the recorded final worker hash and do not claim native generation.",
+  "pngSpecification": "https://www.w3.org/TR/2025/REC-png-3-20250624/",
+  "limitedScope": [
+    "Six tiny images, 95 unique native band values, seven maps, 18 map samples, three style samples and four masked dimension height samples; no terrain volume comparisons",
+    "Unsupported PNG modes: indexed, grayscale-alpha, RGB16, interlaced, tRNS, APNG and unconnected profile/HDR semantics",
+    "Grayscale AWT preview RGB conversion remains unavailable; inspection reports metadata and native map sampling",
+    "Full categorical dimension region/biome/surface-block application outcomes and remaining options are not qualified",
+    "Expressions, persistent float caches and other terrain/state/resource adapters remain incomplete",
+    "Full production registry not regenerated; existing separate 20-type/252-state/400-pair native fixture reused",
+    "Fresh mapped server-JAR provenance, default-full-profile Eco dependency failure and native checksum mismatch remain unresolved",
+    "No real-browser/GPU or release qualification"
+  ],
+  "sourceInputs": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "7c5d7846092ede72df82dc7f9c56e6039831929d5739c950a3ac244b5fe6d4f5"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "594a68227b99a1d70f7dd32a4dc8623d5eac73024b195719ffaefa448a4c2262"
+    },
+    {
+      "path": "packages/iris-engine/client.mjs",
+      "sha256": "e99bdd7d34e039746960a0127d4a2ff4a7b705ac7ca99b35716334b5ed68eb83"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "5aa69ae97c88492b6a35bb217d608badf89ba5cfa2eb8fcf6e776e5e97ce1786"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "0bdbae112bcefb94ea10b3cd2fc350951673f69e81343499fcf2004c99067b16"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/pack/MemoryPack.java",
+      "sha256": "e589d35d9d3b88de8594cd18ef186b0468ec067dc3a460e084711d8e6936c0e4"
+    },
+    {
+      "path": "packages/iris-engine/pack-inputs.mjs",
+      "sha256": "418360ed6558069ad4b1c26ee412d3cfc8a2298d7995c1752d7f505dfe35d788"
+    },
+    {
+      "path": "packages/iris-engine/pack-snapshot.mjs",
+      "sha256": "91c4653e68cf117aa9bd096755643a724e0ec4062daa719c8ebd37967a20c3ba"
+    },
+    {
+      "path": "packages/iris-engine/resources/META-INF/services/org.teavm.vm.spi.TeaVMPlugin",
+      "sha256": "d739d48fb784661ac7090b61f6f380e3b907b9be5d08d8aa267ac691adcada3c"
+    },
+    {
+      "path": "packages/iris-engine/style-config.mjs",
+      "sha256": "6852208c9b7146b9ac7940483fcca0807f4c4257c915652eaae148d363c03c40"
+    },
+    {
+      "path": "packages/iris-resources/catalog.mjs",
+      "sha256": "d04e7ad6245790c267c4b1be6751ef6399daf3c01ff5b9a03ce296bca7844e20"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "6ad59fbd61619ef6ac1de1d4e576907b9c242a65c4ca7a43a801cf1e78422b2a"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "c36334bd91fba99166ab44334ab86376055b55f71483f9102bafceee95964d74"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/image/ImagePlatformPlugin.java",
+      "sha256": "a98eb61e9870a3ace54142f6d10f355bc45d80f9407df29c3e1c5e9df0794e93"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/image/WorkerImageDigest.java",
+      "sha256": "144abe605249b3c5b17d0e5306e5794aafe03dcad569240c9834e9f77c9892d0"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/image/WorkerImageFactory.java",
+      "sha256": "5143469d36267f0cd589dfdc58f02f5255c10842999aeb044b92b6e68f52e21b"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/image/WorkerImageHex.java",
+      "sha256": "0e34217bb891cafadc4b3d93eceee8142402cfa23ce795c4267e659f737f19a0"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/image/WorkerImagePixels.java",
+      "sha256": "5c8ae95420db115049fbf0b8731b9bd7dcd7e7ec24b8c9f823d5c5f744247d9e"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/pack/MemoryImageLoader.java",
+      "sha256": "d2f73b699596f7c4c8c87e629670f2f4a970e1e0f8942c80a0ef557178f0b459"
+    },
+    {
+      "path": "packages/iris-engine/png.mjs",
+      "sha256": "e1379b143a919097ec570a5ea9c0a11c8c1dc9e6ca152ef0a3583e0f8c73c6b0"
+    },
+    {
+      "path": "tools/checks/image-snapshot-worker-smoke.mjs",
+      "sha256": "2b44bcdd8dfff9763aee4478ebfbaab276a2916017fc3fb927b254df7e186b0f"
+    },
+    {
+      "path": "tools/checks/native-image-maps-smoke.mjs",
+      "sha256": "44aad4845d7513de9d58dc345030459e8b1476e7323ba43d46713f9a06375114"
+    }
+  ],
+  "fullRegistryExportExecuted": false,
+  "broadSuiteExecuted": false,
+  "githubTestWorkflowInvoked": false,
+  "browserVerified": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "completePipeline": false
+}

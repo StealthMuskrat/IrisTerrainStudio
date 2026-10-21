@@ -36,6 +36,8 @@ Native resources can be inspected through the worker memory loader. To export sc
 
 Procedural neighborhood previews now run the original native object-layer entry point with snapshot-owned plan caching. Native vine and multiface attachment correction uses prepared matter and chunk neighbors. These remain bounded development previews; full terrain generation and browser qualification are unfinished.
 
+Native image maps now load owned PNG samples from `images/` and definitions from `image-maps/`. Generator-style and dimension height/mask bindings use the original native compiler and samplers. Source-image and map inspection shows metadata and native hashes. The current PNG subset is non-interlaced grayscale 8/16-bit and RGB/RGBA 8-bit, with explicit input and memory limits; unsupported modes refuse.
+
 ## Native noise laboratory
 
 The optional noise laboratory uses the previously executed, hash-verified TeaVM Wasm GC module. Install its recorded evidence archive locally:

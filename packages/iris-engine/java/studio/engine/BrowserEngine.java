@@ -101,6 +101,13 @@ public final class BrowserEngine {
     @JSExport public static boolean registryMatches(String first,String other){if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.decodeBlockState(first).matches(registry.decodeBlockState(other));}
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
+    @JSExport public static String samplePackImageMap(String key,double x,double z)throws java.io.IOException{
+        if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Image-map coordinates must be finite");var map=pack.compiledImage(key);StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){
+            writer.beginObject();writer.name("type").value(map.getType().name());writer.name("contentHash").value(map.getContentHash());writer.name("sourceHash").value(map.getSourceMetadata().decodedContentHash());writer.name("width").value(map.getSourceWidth());writer.name("height").value(map.getSourceHeight());
+            if(map.getType()==art.arcane.iris.generation.image.IrisImageMapType.COLOR_MAP)writer.name("target").value(map.sampleTarget(x,z));else{writer.name("normalized").value(bits(map.sampleNormalized(x,z)));if(map.getType()==art.arcane.iris.generation.image.IrisImageMapType.GRAYSCALE_HEIGHT||map.getType()==art.arcane.iris.generation.image.IrisImageMapType.RGB_HEIGHT)writer.name("worldHeight").value(bits(map.sampleHeight(x,z)));}writer.endObject();
+        }return output.toString();
+    }
+    @JSExport public static void registerPackImage(String path,int width,int height,int channels,int depth,String samples){pack.registerImage(path,width,height,channels,depth,samples);}
     @JSExport public static void registerPackObject(String path,String bytes){pack.registerObject(path,bytes);}
     /** An explicit native placement rule for development caller checks; it does not alter procedural entry settings. */
     @JSExport public static String diagnosticProceduralPlacementEdit(int x,int z,String folder,String key,String family,int index,int variant,String decimalPlacementSeed,String editJson)throws java.io.IOException{
@@ -114,7 +121,7 @@ public final class BrowserEngine {
     /** Authoring graph inspection; not a terrain preview or compatibility success claim. */
     @JSExport public static String inspectPackResource(String folder,String name)throws java.io.IOException{
         pack.open();IrisRegistrant resource=pack.load(folder,name);StringWriter output=new StringWriter();
-        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());json.name("excluded").value(resource.isCompatExcluded());studio.engine.terrain.ProceduralPreview.describe(resource,json);if(resource instanceof art.arcane.iris.structure.object.IrisObject object){json.name("dimensions").beginArray().value(object.getW()).value(object.getH()).value(object.getD()).endArray();json.name("blockCount").value(object.getBlocks().size());var palette=art.arcane.iris.structure.object.IrisObjectIO.readPaletteKeysCached(object.getLoadFile());json.name("paletteCount").value(palette.size());json.name("paletteKeys").beginArray();for(int i=0;i<Math.min(32,palette.size());i++)json.value(palette.get(i));json.endArray();json.name("blocks").beginArray();int sampled=0;for(var entry:object.getBlocks()){if(sampled++>=32)break;var point=entry.getKey();json.beginArray().value(point.getBlockX()).value(point.getBlockY()).value(point.getBlockZ()).value(entry.getValue().key()).endArray();}json.endArray();json.name("placementConnected").value(false);json.name("tileEntitiesSupported").value(false);}}json.name("findings").beginArray();for(String line:pack.open().getCompatReport().detailLines())json.value(line);json.endArray();json.endObject();}return output.toString();
+        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());json.name("excluded").value(resource.isCompatExcluded());studio.engine.terrain.ProceduralPreview.describe(resource,json);if(resource instanceof art.arcane.iris.generation.image.IrisImage image){json.name("width").value(image.getWidth());json.name("height").value(image.getHeight());json.name("colorMode").value(image.getColorMode().name());json.name("bitDepth").value(image.getBitDepth());json.name("channels").value(image.getChannelCount());json.name("hasAlpha").value(image.hasAlpha());}if(resource instanceof art.arcane.iris.generation.image.IrisImageMap){var map=pack.compiledImage(name);json.name("contentHash").value(map.getContentHash());json.name("sourceHash").value(map.getSourceMetadata().decodedContentHash());json.name("sourceWidth").value(map.getSourceWidth());json.name("sourceHeight").value(map.getSourceHeight());}if(resource instanceof art.arcane.iris.structure.object.IrisObject object){json.name("dimensions").beginArray().value(object.getW()).value(object.getH()).value(object.getD()).endArray();json.name("blockCount").value(object.getBlocks().size());var palette=art.arcane.iris.structure.object.IrisObjectIO.readPaletteKeysCached(object.getLoadFile());json.name("paletteCount").value(palette.size());json.name("paletteKeys").beginArray();for(int i=0;i<Math.min(32,palette.size());i++)json.value(palette.get(i));json.endArray();json.name("blocks").beginArray();int sampled=0;for(var entry:object.getBlocks()){if(sampled++>=32)break;var point=entry.getKey();json.beginArray().value(point.getBlockX()).value(point.getBlockY()).value(point.getBlockZ()).value(entry.getValue().key()).endArray();}json.endArray();json.name("placementConnected").value(false);json.name("tileEntitiesSupported").value(false);}}json.name("findings").beginArray();for(String line:pack.open().getCompatReport().detailLines())json.value(line);json.endArray();json.endObject();}return output.toString();
     }
 
     @JSExport
@@ -196,8 +203,8 @@ public final class BrowserEngine {
             if (controls.size() >= 32) controls.remove(controls.keySet().iterator().next());
             SeedManager seeds = new SeedManager(Long.parseLong(decimalWorldSeed)); RNG complex = new RNG(seeds.getComplex());
             stream = switch (field) {
-                case "iris-continent" -> ContinentGenerator.create(dimension, complex, null).stream();
-                case "iris-region-control" -> dimension.getRegionStyle().create(complex.nextParallelRNG(883), null).stream().zoom(dimension.getRegionZoom());
+                case "iris-continent" -> ContinentGenerator.create(dimension, complex, pack.resourceCount()==0?null:pack.open()).stream();
+                case "iris-region-control" -> dimension.getRegionStyle().create(complex.nextParallelRNG(883), pack.resourceCount()==0?null:pack.open()).stream().zoom(dimension.getRegionZoom());
                 default -> throw new IllegalArgumentException("Unsupported dimension control field");
             };
             controls.put(key, stream);
@@ -211,8 +218,8 @@ public final class BrowserEngine {
     private static void supportedStyle(IrisGeneratorStyle style, int depth) {
         if (depth > 32) throw new IllegalArgumentException("Style fracture exceeds the supported loading budget");
         if (style == null) return;
-        if (style.getExpression() != null || style.getImageMap() != null || style.getCacheSize() != 0)
-            throw UnsupportedPlatform.unavailable("Resource expressions, image maps and persistent float caches");
+        if (style.getExpression() != null || style.getCacheSize() != 0)
+            throw UnsupportedPlatform.unavailable("Resource expressions and persistent float caches");
         supportedStyle(style.getFracture(), depth + 1);
     }
     private static void supportedLayer(IrisNoiseGenerator layer, int depth) {
@@ -228,7 +235,7 @@ public final class BrowserEngine {
         if (generator == null || generator.getComposite() == null) throw new IllegalArgumentException("Invalid generator resource");
         for (IrisNoiseGenerator layer : generator.getComposite()) supportedLayer(layer, 0);
         supportedLayer(generator.getCliffHeightGenerator(), 0);
-        generator.setLoadKey(id); composites.put(id, generator);
+        generator.setLoadKey(id);if(pack.resourceCount()>0)generator.setLoader(pack.open()); composites.put(id, generator);
     }
     @JSExport
     public static void loadStyleJson(String id, String text) throws java.io.IOException {
@@ -241,7 +248,7 @@ public final class BrowserEngine {
     public static String sampleLoadedStyle(String id, String decimalSeed, double x, double y, double z, int dimensions) {
         IrisGeneratorStyle style = loadedStyles.get(id); if (style == null) throw new IllegalArgumentException("Missing loaded style");
         long seed = Long.parseLong(decimalSeed);
-        return bits(sample(cached("loaded:" + id + ":" + decimalSeed, () -> style.createForLayer(new RNG(seed), null, 1)), x, y, z, dimensions));
+        return bits(sample(cached("loaded:" + id + ":" + decimalSeed, () -> style.createForLayer(new RNG(seed), pack.resourceCount()==0?null:pack.open(), 1)), x, y, z, dimensions));
     }
 
     @JSExport

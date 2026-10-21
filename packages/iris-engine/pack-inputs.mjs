@@ -50,3 +50,6 @@ export async function nativePackInputs(kind,text,read,{current=()=>true,inventor
   else await visit(kind==='generator'?'resource':'style',parse(text));alive();
   return [...resources].map(([path,text])=>({path,text}));
 }
+
+/** Routing only: inspect decoded property names; the original JSON text remains the native input. */
+export function referencesNativeImageMap(text){let found=false;JSON.parse(text,(key,value)=>{if(key==='imageMap'&&typeof value==='string'&&value.length)found=true;return value;});return found;}
