@@ -33,7 +33,7 @@ export class IndexedDbNoiseCache {
   });
  }
  get(key){return this.transaction('readonly',(tx,result)=>{const request=tx.objectStore('tiles').get(key);request.onsuccess=()=>result(request.result);});}
- remove(key){return this.transaction('readwrite',tx=>{tx.objectStore('tiles').delete(key);tx.objectStore('index').delete(key);});}
+ remove(key,isCurrent=()=>true){return this.transaction('readwrite',tx=>{if(!isCurrent()){tx.abort();return;}tx.objectStore('tiles').delete(key);tx.objectStore('index').delete(key);},isCurrent);}
  clear(){return this.transaction('readwrite',tx=>{tx.objectStore('tiles').clear();tx.objectStore('index').clear();});}
  save(record,limits=NOISE_CACHE_LIMITS,isCurrent=()=>true){return this.transaction('readwrite',tx=>{
   const tiles=tx.objectStore('tiles'),index=tx.objectStore('index'),request=index.getAll();request.onsuccess=()=>{
@@ -66,7 +66,7 @@ export class NoiseTilePersistence {
     if(!isCurrent())return {status:'stale'};
     try{for(const file of files)api.restoreNoiseCacheTile(file.name,binaryString(file.bytes));}catch(error){api.discardRestoredNoiseCache();throw error;}
     return {status:'restored',restoredFiles:files.length,restoredBytes:bytes};
-   }catch(error){if(!isCurrent())return {status:'stale'};await this.backend.remove(key);return {status:'discarded',restoredFiles:0};}
+   }catch(error){if(!isCurrent())return {status:'stale'};await this.backend.remove(key,isCurrent);return isCurrent()?{status:'discarded',restoredFiles:0}:{status:'stale'};}
   }catch(error){return {status:'unavailable',restoredFiles:0};}
  }
  async save(api,key,isCurrent=()=>true){
@@ -88,9 +88,9 @@ export class NoiseTilePersistence {
  clear(){return this.backend.clear();}
 }
 
-const scalarFields=new Set(['iris-style2d','iris-style3d','iris-generator','iris-continent','iris-region-control','regions','terrain','biomes','density']);
+const previewFields=new Set(['iris-style2d','iris-style3d','iris-generator','iris-continent','iris-region-control','regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','procedural-object','caves']);
 export function usesPersistentNoiseCache(options,manifest){
- if(!scalarFields.has(options.field)||!validKey(manifest.wasmSha256)||typeof globalThis.indexedDB==='undefined')return false;
+ if(!previewFields.has(options.field)||!validKey(manifest.wasmSha256)||typeof globalThis.indexedDB==='undefined')return false;
  const texts=[options.nativeConfig?.text,...(options.nativeConfig?.snippets||[]).map(row=>row.text),...(options.packSnapshot?.resources||[]).map(row=>row.text)];
  return texts.some(text=>typeof text==='string'&&/"cacheSize"\s*:\s*[1-9]\d*/.test(text));
 }

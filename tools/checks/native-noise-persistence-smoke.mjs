@@ -1,16 +1,10 @@
 // One 3x3 CNM tile, four native scalar probes and bounded storage/ownership behavior.
 import fs from 'node:fs/promises';import path from 'node:path';import vm from 'node:vm';import assert from 'node:assert/strict';import {spawn} from 'node:child_process';import {createHash,webcrypto} from 'node:crypto';import {fileURLToPath,pathToFileURL} from 'node:url';
-import {GenerationClient} from '../../packages/iris-engine/client.mjs';import {IndexedDbNoiseCache,NoiseTilePersistence,noiseCacheNamespace,usesPersistentNoiseCache} from '../../packages/iris-engine/noise-cache-store.mjs';
+import {GenerationClient} from '../../packages/iris-engine/client.mjs';import {NoiseTilePersistence,noiseCacheNamespace,usesPersistentNoiseCache} from '../../packages/iris-engine/noise-cache-store.mjs';
+import {ControlledStorage} from './controlled-noise-storage.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url)),local=path.join(root,'.local-tools'),java=path.join(local,'jdk-25.0.4.1+1'),temporary=await fs.mkdtemp(path.join(local,'noise-persistence-smoke-')),previousWorker=globalThis.Worker,previousIndexedDB=globalThis.indexedDB;let client;
 // Execute production transaction actions with tiny controlled request/store objects. This is not a browser IndexedDB qualification.
-class ControlledStorage extends IndexedDbNoiseCache {
- constructor(){super();this.maps={tiles:new Map(),index:new Map()};this.fail=false;}
- transaction(mode,action){return new Promise((resolve,reject)=>{
-  const working=structuredClone(this.maps);let result,pending=0,ended=false;const finish=()=>{if(ended||pending)return;ended=true;if(this.fail){reject(new Error('Controlled quota failure'));return;}if(mode==='readwrite')this.maps=working;resolve(result);};
-  const tx={abort:()=>{ended=true;reject(new Error('Controlled abort'));},objectStore:name=>({get:key=>request(()=>working[name].get(key)),getAll:()=>request(()=>[...working[name].values()]),put:(value,key)=>working[name].set(key,structuredClone(value)),delete:key=>working[name].delete(key),clear:()=>working[name].clear()})};
-  const request=read=>{pending++;const r={};queueMicrotask(()=>{if(ended)return;try{r.result=structuredClone(read());r.onsuccess?.();pending--;finish();}catch(error){ended=true;reject(error);}});return r;};try{action(tx,value=>{result=value;});queueMicrotask(finish);}catch(error){ended=true;reject(error);}
- });}
-}
+
 try{
  globalThis.indexedDB={};const backend=new ControlledStorage(),persistence=new NoiseTilePersistence(backend),fixture=path.join(root,'.upstream/Iris/probe/src/test/resources/terrain3d-pack'),names=['dimensions/terrain3d.json','regions/ledges.json','biomes/ledges.json','generators/flat.json'],resources=await Promise.all(names.map(async name=>({path:name,text:await fs.readFile(path.join(fixture,name),'utf8')}))),pack=path.join(temporary,'pack');for(const resource of resources){const target=path.join(pack,resource.path);await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,resource.text);}
  const style={style:'SIMPLEX',cacheSize:3,exponent:1.5},points=[[0.5,0,0.5,2],[1.5,0,0.5,2],[0.5,0,1.5,2],[1.5,0,1.5,2]],input=path.join(temporary,'request.json'),output=path.join(temporary,'reference.json');await fs.writeFile(input,JSON.stringify({packs:[pack],seeds:['1'],points:[],cacheStyles:[{style,points}]}));

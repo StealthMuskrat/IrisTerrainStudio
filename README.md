@@ -38,6 +38,8 @@ Procedural neighborhood previews now run the original native object-layer entry 
 
 **Native Overworld · terrain and content** now executes the original registered mode entry, including native matter scheduling, guarded procedural contributions, deposits, insertion, decoration, cleanup and final subterrain preservation. The terrain-only view remains separate. These are bounded development paths: imported structures/objects, active custom-block contributions, hydrology, history/REAL/world lifecycle, complete options and real browser qualification remain unfinished. Matching local registry/assets are still required. Repeated previews reuse their immutable terrain context with separate caches for registered mode generation and standalone procedural diagnostics.
 
+Native noise tiles can now be reused from browser-local storage for scalar, voxel, registered-mode and procedural previews. The cache is limited to 32 MiB globally and 8 MiB per snapshot; clear it in Workspace settings. Retained previews reuse their current tiles, and temporary previews save before releasing their native snapshot. Real browser storage durability remains unqualified.
+
 Native image maps now load owned PNG samples from `images/` and definitions from `image-maps/`. Generator-style and dimension height/mask bindings use the original native compiler and samplers. Source-image and map inspection shows metadata and native hashes. The current PNG subset is grayscale 8/16-bit and RGB/RGBA 8-bit, including Adam7 interlace and RGB transparency keys, with explicit input and memory limits; unsupported modes refuse.
 
 ## Native noise laboratory

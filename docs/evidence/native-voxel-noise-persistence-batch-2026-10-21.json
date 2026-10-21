@@ -1,0 +1,318 @@
+{
+  "scope": "native-voxel-noise-persistence-and-request-ownership-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "14c8c2a2a93a5a0989b9e8f49a2fae643e622ed2a6950109329c2d32c07c5e02",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "5c09b21f0e22ad83c39cfc0ca386e833da5285badc44343c67d9d05a6fa6d836",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeModule": {
+    "reused": true,
+    "unchangedSinceCommit": "f6d61173ad09ab9dbb2beabad889e5f3396fac54",
+    "javaSourcesChanged": false,
+    "recompiledThisBatch": false,
+    "sourceBundleCommand": "python tools/engine-build/bundle-source.py apps/web/engine/iris-generated .local-tools/jdk-25.0.4.1+1",
+    "sourceBundleRefreshedAfterFocusedChecks": true,
+    "execution": "Original native algorithms in the existing hash-verified module; checks load the changed worker/cache JavaScript directly from this workspace."
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b"
+    },
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/cache/FloatCache.java",
+      "sha256": "5774fb4b0082b4f8d2ccf66958aac9df6cadf3eebe22f0c69ee0518862cb22ff"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisGeneratorStyle.java",
+      "sha256": "a8f6ce1cd16104d3fb14275449ef951d464627866bd395b077edd742fc7e10fe"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/noise-cache-store.mjs",
+    "packages/iris-engine/java/studio/engine/noise/MemoryNoiseStore.java",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendAndCheckSources": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "38bd0980d1cb5cfa3ddac77131d4398fa57af93372b03f2854da73934f8c7e87"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "6fb3e52f76889dd5922a5976217f21ba056ea9dcb4a0bd7199262cc6dcc1bbf3"
+    },
+    {
+      "path": "packages/iris-engine/noise-cache-store.mjs",
+      "sha256": "c8b52103e65ec1d04ee2a8d1301c8faef70e27ea68f7a0d946c579ef57c29f73"
+    },
+    {
+      "path": "tools/checks/native-voxel-noise-persistence-smoke.mjs",
+      "sha256": "263394d32af1a4eddace6311b2c5ffd050cc2a15e5a7b712b2af6d928d49adec"
+    },
+    {
+      "path": "tools/checks/controlled-noise-storage.mjs",
+      "sha256": "29753751540e897f444a537854aad5787027c4cd1d5ea8d0dbf44b7fcc818117"
+    },
+    {
+      "path": "tools/checks/native-noise-persistence-smoke.mjs",
+      "sha256": "a063bbcd19ca16f2c174e45610addec8a93ef086162acb3df88386e39d70c121"
+    },
+    {
+      "path": "tools/checks/noise-persistence-stale-save.mjs",
+      "sha256": "0fe397b9966b9ae3e110dd724d9a0a21dced1fc7786cb667917e62cf468cdc08"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-voxel-noise-persistence-development-targeted",
+    "fixtures": 1,
+    "nativeTileSize": 3,
+    "nativeTileBytes": 44,
+    "blockProbesCompared": 12,
+    "biomeProbesCompared": 12,
+    "uniqueProbeCoordinates": 4,
+    "scalarHeightSamples": 1,
+    "reference": {
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          4,
+          16,
+          4,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          8,
+          32,
+          8,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          15,
+          63,
+          15,
+          "minecraft:air",
+          "minecraft:plains"
+        ]
+      ],
+      "heightBits": "403d01af50000000",
+      "files": [
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-3804793386-seed-3729164822364879010-eng-2924990618-oct-1-sz-3-src-0.cnm",
+          "bytes": 44,
+          "sha256": "5770756603fa18fb3bcef0553bc2be82abdeb1ce8f015e82c5da471603be111c"
+        }
+      ]
+    },
+    "rows": [
+      {
+        "phase": "cold",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 0,
+          "writes": 1,
+          "atomicMoves": 1,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 0,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "miss",
+            "restoredFiles": 0,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      },
+      {
+        "phase": "restored",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 1,
+          "writes": 0,
+          "atomicMoves": 0,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 1,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "restored",
+            "restoredFiles": 1,
+            "restoredBytes": 44,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      },
+      {
+        "phase": "corrupt",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 0,
+          "writes": 1,
+          "atomicMoves": 1,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 0,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "discarded",
+            "restoredFiles": 0,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      }
+    ],
+    "contextReuseSkipsRestore": {
+      "scope": "worker-pack-snapshot",
+      "files": 1,
+      "bytes": 44,
+      "byteLimit": 8388608,
+      "allocationWorkCharged": 4240,
+      "workLimit": 67108864,
+      "reads": 0,
+      "writes": 1,
+      "atomicMoves": 1,
+      "deletes": 0,
+      "prefixes": 1,
+      "maxTileSize": 1024,
+      "restoredFiles": 0,
+      "durablePersistence": true,
+      "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+      "persistence": {
+        "status": "context-reused",
+        "restoredFiles": 0,
+        "saveStatus": "saved",
+        "savedFiles": 1,
+        "savedBytes": 44
+      }
+    },
+    "temporaryPreviewSavesBeforeRelease": true,
+    "scalarPublisherPreserved": true,
+    "viewportAndPreviewTypeReuseNamespace": true,
+    "changedGeneratorIsolated": true,
+    "checksumCorruptionRecovers": true,
+    "actualWasmWorkerClient": true,
+    "indexedDbAdapter": "production actions over controlled request/store objects; real browser open/durability not qualified",
+    "registryInput": "existing-20-type-fixture-only",
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "c91641c3c0f782053a25c59922f99ce21fab64b4b8d158c8b604cbc3b1adad0f"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "86ccfb73dfaf58857a8cb26713bb2fd1bc4bdc2fd04c9e729ae9af096a9ef47c"
+      }
+    ],
+    "wasmSha256": "14c8c2a2a93a5a0989b9e8f49a2fae643e622ed2a6950109329c2d32c07c5e02",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false,
+    "sourceBundleAtExecution": "47bd89a3d4d844d2fd4a33a3360fd68613f0eb9b83ba41ec9bd1398125bddd04",
+    "deliverySourceSha256": "5c09b21f0e22ad83c39cfc0ca386e833da5285badc44343c67d9d05a6fa6d836",
+    "sourceBundleRefreshedAfterCheck": true
+  },
+  "ownershipCheck": {
+    "result": "pass",
+    "staleBeforeTransactionCreatesNoTransaction": true,
+    "staleBeforePutAbortsTransaction": true,
+    "staleWriteCount": 0,
+    "staleCorruptionCleanupCreatesNoTransaction": true,
+    "staleCorruptionCleanupPreservesNewerNamespace": true,
+    "staleDeleteCount": 0,
+    "delayedContextReleasePreservesNewActiveRequest": true,
+    "currentIdleReleaseStillClears": true
+  },
+  "implemented": [
+    "Bounded native CNM browser-local persistence enabled for connected voxel/material/mode/procedural/cave previews as well as existing scalar fields.",
+    "Shared result publication captures native diagnostics and transport before async storage; returns cache metadata on result and voxel metadata.",
+    "Temporary procedural source/placement/object snapshots save before successful release; errors retain native context cleanup.",
+    "Retained contexts skip restore after native style construction and report context-reused; normal save still captures any new tiles.",
+    "Current-request guards protect corrupt-record removal through storage opening/transaction entry. Delayed context release cannot clear a newly active request.",
+    "Settings documentation covers voxel/registered-mode tile storage; existing limits, native cache identities, corruption recovery and clear action are preserved."
+  ],
+  "limits": {
+    "namespaces": 8,
+    "totalEncodedBytes": 33554432,
+    "filesPerSnapshot": 64,
+    "encodedBytesPerSnapshot": 8388608,
+    "maximumNativeTileSize": 1024
+  },
+  "limitations": [
+    "One 3x3 tile/44 bytes, one 64-high authored fixture and four selected coordinates across three cache phases: 12 blocks/12 biomes, plus one scalar height. No whole-volume comparison or large tile fill.",
+    "Actual Wasm and original JVM reference; production persistence actions use controlled request/store callbacks. Real browser IndexedDB opening/durability/quota, DOM/GPU/cancellation remain unqualified.",
+    "Preview eligibility detects literal cacheSize configuration in captured text; complete native options and all resource/snippet shapes remain unqualified.",
+    "Native filesystem caching, full IrisEngine/REAL/world/history lifecycle, hydrology/transforms/stacks, active custom blocks and collision qualification remain unfinished.",
+    "Existing 20-type fixture registry only; native checksum issue #15, dependency/server/release identity, production registry/schema and authorized assets remain unresolved."
+  ],
+  "nextMilestone": "Continue remaining native resource/options and host-service gaps in larger local batches; reserve complete application/browser verification for completed implementation.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Broad application/native suites",
+    "Registry state or placement-pair sweeps/exports",
+    "Whole-volume output comparisons",
+    "Large cache fills",
+    "GitHub test workflows"
+  ]
+}
