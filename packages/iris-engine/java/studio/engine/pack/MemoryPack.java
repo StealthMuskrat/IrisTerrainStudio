@@ -21,6 +21,8 @@ public final class MemoryPack {
     private static MemoryPack opening;
     private static long snapshotSequence;
     private final String objectRoot="/iris-memory-objects/"+(++snapshotSequence);
+    private final studio.engine.noise.MemoryNoiseStore noiseCache=new studio.engine.noise.MemoryNoiseStore(this,objectRoot+"/noise");
+    public studio.engine.noise.MemoryNoiseStore noiseCache(){return noiseCache;}
     private final Map<String,String> resources=new LinkedHashMap<>();
     private final Map<String,byte[]> objects=new LinkedHashMap<>();
     private MemoryObjectLoader objectLoader;
@@ -117,8 +119,8 @@ public final class MemoryPack {
     public int resourceCount(){return resources.size()+objects.size()+images.size();}
     public boolean compatibilityReady(){return gate!=null&&gate.ready()&&!data.getCompatReport().isIncomplete();}
     public void requireGenerationReady(){if(!compatibilityReady())throw new IllegalStateException("Native pack compatibility is incomplete; terrain generation is unavailable");}
-    public void release(){if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;if(imageLoader!=null)imageLoader.clearCache();imageLoader=null;images.clear();imageSizes.clear();compiledImages.clear();imageCompileWorkBytes=0;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
-    boolean isOpen(){return data!=null&&OWNERS.get(data)==this;}
+    public void release(){noiseCache.release();if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;if(imageLoader!=null)imageLoader.clearCache();imageLoader=null;images.clear();imageSizes.clear();compiledImages.clear();imageCompileWorkBytes=0;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
+    public boolean isOpen(){return data!=null&&OWNERS.get(data)==this;}
     String objectFilePath(String name){return objectRoot+"/"+objectPath(name);}
     byte[] objectBytes(String name){return objects.get(objectPath(name));}
     String objectPath(String name){String path="objects/"+name+".iob";validateObjectPath(path);return path;}

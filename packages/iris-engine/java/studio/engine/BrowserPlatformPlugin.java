@@ -413,12 +413,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }
                 if(constructors!=1)throw new IllegalStateException("Pinned native resource IO constructor changed");
             }
-            if (name.equals("art.arcane.iris.generation.noise.IrisGeneratorStyle")) {
-                for (MethodHolder method : cls.getMethods()) if (java.util.Set.of("cachePrefix","cacheKey","clearStaleCacheEntries").contains(method.getName())) unavailable(method,"Persistent float noise caches");
-            }
-            if (name.equals("art.arcane.volmlib.util.noise.CNG")) {
-                for (MethodHolder method : cls.getMethods()) if (method.getName().equals("cached")) unavailable(method,"Persistent float noise caches");
-            }
             if (!name.equals(OWNER)) return;
             int changed = 0;
             for (MethodHolder method : cls.getMethods()) {

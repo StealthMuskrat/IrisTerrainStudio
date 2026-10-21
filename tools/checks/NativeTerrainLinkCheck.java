@@ -37,6 +37,7 @@ public final class NativeTerrainLinkCheck {
             for(JsonElement entry:request.getAsJsonArray("packs")){
                 Path directory=Path.of(entry.getAsString());IrisData data=IrisData.openDatapackCompiler(directory.toFile());Method register=IrisData.class.getDeclaredMethod("registerLoader",Class.class,art.arcane.volmlib.util.collection.KMap.class);register.setAccessible(true);@SuppressWarnings("unchecked") ResourceLoader<IrisBlockData> blocks=(ResourceLoader<IrisBlockData>)register.invoke(data,IrisBlockData.class,data.getLoaders());data.setBlockLoader(blocks);
                 Field gateField=IrisData.class.getDeclaredField("contentGate");gateField.setAccessible(true);gateField.set(data,new ContentGate(registries,()->ContentGate.readBlockFallbacks(directory.toFile()),data.getCompatReport(),key->blocks.load(key,false)));
+                if(request.has("cacheStyles"))result.add(cacheStyleChecks(data,request.getAsJsonArray("cacheStyles"),gson));
                 if(request.has("imageSamples"))result.add(imageMapChecks(data,request,gson));
                 IrisDimension dimension=data.getDimensionLoader().load("terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
                 JsonArray pack=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
@@ -83,6 +84,12 @@ public final class NativeTerrainLinkCheck {
         JsonArray outside=new JsonArray();outside.add(0);outside.add(0);outside.add(0);controls.add(outside);diagnostics.add(subterrainCell(engine,bx,engine.getMinHeight(),bz));
         materialSampling=new JsonObject();materialSampling.add("controls",controls);materialSampling.add("materials",new JsonArray());materialSampling.add("ys",new JsonArray());materialSampling.addProperty("limit",1);
         var output=caveMaterials(engine,bx,bz,gson,directory,registries,true,finish,finish,finish,finish,finish);output.add("diagnostics",diagnostics);output.addProperty("finish",finish);return output;
+    }
+    private static JsonObject cacheStyleChecks(IrisData data,JsonArray styles,Gson gson)throws Exception{
+        JsonObject output=new JsonObject();JsonArray values=new JsonArray();
+        for(JsonElement entry:styles){var row=entry.getAsJsonObject();var style=gson.fromJson(row.get("style"),art.arcane.iris.generation.noise.IrisGeneratorStyle.class);var cng=style.createForLayer(new art.arcane.volmlib.util.math.RNG(1),data,1);JsonArray samples=new JsonArray();
+            for(JsonElement point:row.getAsJsonArray("points")){var c=point.getAsJsonArray();double x=c.get(0).getAsDouble(),y=c.get(1).getAsDouble(),z=c.get(2).getAsDouble();int dimensions=c.get(3).getAsInt();samples.add(imageBits(dimensions==1?cng.noise(x):dimensions==2?cng.noise(x,z):cng.noise(x,y,z)));}values.add(samples);
+        }output.add("samples",values);JsonArray files=new JsonArray();try(var paths=Files.list(data.getDataFolder().toPath().resolve(".cache"))){for(Path file:paths.filter(path->path.toString().endsWith(".cnm")).sorted().toList()){byte[] bytes=Files.readAllBytes(file);if(bytes.length>1024)throw new IllegalArgumentException("Cache check tile exceeds tiny fixture budget");JsonObject row=new JsonObject();row.addProperty("name",file.getFileName().toString());row.addProperty("bytes",bytes.length);row.addProperty("sha256",HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(bytes)));files.add(row);}}output.add("files",files);return output;
     }
     private static String imageBits(double value){return String.format("%016x",Double.doubleToRawLongBits(value));}
     private static JsonObject imageMapChecks(IrisData data,JsonObject request,Gson gson){

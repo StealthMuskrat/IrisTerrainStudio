@@ -53,3 +53,6 @@ export async function nativePackInputs(kind,text,read,{current=()=>true,inventor
 
 /** Routing only: inspect decoded property names; the original JSON text remains the native input. */
 export function referencesNativeImageMap(text){let found=false;JSON.parse(text,(key,value)=>{if(key==='imageMap'&&typeof value==='string'&&value.length)found=true;return value;});return found;}
+
+/** Snapshot routing for native resource-backed/cached styles, including snippet content. */
+export function referencesNativePackResources(text){let found=false;JSON.parse(text,(key,value)=>{if(((key==='imageMap'||key==='expression')&&typeof value==='string'&&value.length)||(key==='cacheSize'&&typeof value==='number'&&value>0))found=true;return value;});return found;}

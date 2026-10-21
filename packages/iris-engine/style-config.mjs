@@ -17,7 +17,7 @@ export function compileStyle(value, { pointer = '', octaves = 1 } = {}) {
     for (const key of Object.keys(source)) if (!supported.has(key)) throw new Error(`The browser style bridge does not yet support ${path}/${pointerEscape(key)}. The resource is preserved.`);
     if (source.expression != null) throw new Error(`${path}/expression requires the native expression loader, which is not connected yet.`);
     if (source.imageMap != null) throw new Error(`${path}/imageMap requires the native pack-snapshot preview path.`);
-    if (number(source.cacheSize, 0, `${path}/cacheSize`) !== 0) throw new Error(`${path}/cacheSize requires Iris's float-cache semantics, which are not connected yet.`);
+    if (number(source.cacheSize, 0, `${path}/cacheSize`) !== 0) throw new Error(`${path}/cacheSize requires the native pack-snapshot preview path.`);
     const style = source.style ?? 'FLAT';
     if (typeof style !== 'string' || !/^[A-Z][A-Z0-9_]*$/.test(style)) throw new Error(`${path}/style must be an Iris NoiseStyle enum name.`);
     const id = `style-${definitions.length}`, definition = {
@@ -39,9 +39,9 @@ export function findStyles(document) {
   for (const node of document.nodes.values()) {
     if (node.type !== 'object') continue;
     const source = node.value;
-    if (((typeof source.style === 'string' && /^[A-Z][A-Z0-9_]*$/.test(source.style)) || (typeof source.imageMap === 'string' && source.imageMap.length>0)) &&
+    if (((typeof source.style === 'string' && /^[A-Z][A-Z0-9_]*$/.test(source.style)) || (typeof source.imageMap === 'string' && source.imageMap.length>0) || Number(source.cacheSize)>0) &&
         !Object.hasOwn(source,'opacity') && !Object.hasOwn(source,'octaves') && !Object.hasOwn(source,'enabled')) {
-      output.push({ pointer:node.pointer, style:typeof source.imageMap==='string'&&source.imageMap.length?`Image map: ${source.imageMap}`:source.style, value:source });
+      output.push({ pointer:node.pointer, style:typeof source.imageMap==='string'&&source.imageMap.length?`Image map: ${source.imageMap}`:source.style??'FLAT', value:source });
     }
   }
   return output.sort((a,b)=>a.pointer.localeCompare(b.pointer));

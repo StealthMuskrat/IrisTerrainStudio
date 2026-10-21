@@ -217,11 +217,14 @@ public final class BrowserEngine {
     @JSExport
     public static void registerSnippet(String path, String text) { NativeConfigReader.register(path, text); }
 
+    @JSExport public static String inspectNoiseCache()throws java.io.IOException{pack.open();return pack.noiseCache().inspect();}
+    @JSExport public static String noiseCacheStatistics(){pack.open();return pack.noiseCache().statistics();}
+    private static boolean requiresCache(IrisGeneratorStyle style){return style!=null&&(style.getCacheSize()>0||requiresCache(style.getFracture()));}
     private static void supportedStyle(IrisGeneratorStyle style, int depth) {
         if (depth > 32) throw new IllegalArgumentException("Style fracture exceeds the supported loading budget");
         if (style == null) return;
-        if (style.getExpression() != null || style.getCacheSize() != 0)
-            throw UnsupportedPlatform.unavailable("Resource expressions and persistent float caches");
+        if (style.getExpression() != null) throw UnsupportedPlatform.unavailable("Resource expressions");
+        if(style.getCacheSize()>1024)throw new IllegalArgumentException("Noise cache tile exceeds 1024 by 1024");
         supportedStyle(style.getFracture(), depth + 1);
     }
     private static void supportedLayer(IrisNoiseGenerator layer, int depth) {
@@ -250,7 +253,7 @@ public final class BrowserEngine {
     public static String sampleLoadedStyle(String id, String decimalSeed, double x, double y, double z, int dimensions) {
         IrisGeneratorStyle style = loadedStyles.get(id); if (style == null) throw new IllegalArgumentException("Missing loaded style");
         long seed = Long.parseLong(decimalSeed);
-        return bits(sample(cached("loaded:" + id + ":" + decimalSeed, () -> style.createForLayer(new RNG(seed), pack.resourceCount()==0?null:pack.open(), 1)), x, y, z, dimensions));
+        return bits(sample(cached("loaded:" + id + ":" + decimalSeed, () -> style.createForLayer(new RNG(seed), (pack.resourceCount()==0&&!requiresCache(style))?null:pack.open(), 1)), x, y, z, dimensions));
     }
 
     @JSExport

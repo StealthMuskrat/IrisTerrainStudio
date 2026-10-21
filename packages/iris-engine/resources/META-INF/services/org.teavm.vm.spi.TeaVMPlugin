@@ -3,3 +3,4 @@ studio.engine.BrowserPlatformPlugin
 studio.engine.cache.SourcePlanCachePlugin
 studio.engine.matter.SourceMatterPlugin
 studio.engine.image.ImagePlatformPlugin
+studio.engine.noise.NoiseCachePlatformPlugin

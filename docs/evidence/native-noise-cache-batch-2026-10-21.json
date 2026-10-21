@@ -1,0 +1,323 @@
+{
+  "scope": "native-noise-float-cache-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "noiseCacheIdentity": {
+      "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+      "releaseMatchVerified": false,
+      "revisionResource": "/META-INF/iris/generation-kernels/abi-1.revision",
+      "rngVersion": 1,
+      "generatorAbi": 1,
+      "revisionResourceSha256": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+      "seedDerivationVersion": 1
+    },
+    "wasmSha256": "3ed94e20793c31f589dbe757588cae45e89db2b8fdc2a099e86cca934fc93f7d",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "3fc7318b0d66bf78fca7036534198756fba740c3d6b65a55b492a1eefd919773",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "nativeAlgorithmSources": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisGeneratorStyle.java",
+      "sha256": "a8f6ce1cd16104d3fb14275449ef951d464627866bd395b077edd742fc7e10fe"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/world/history/GenerationKernelRegistry.java",
+      "sha256": "5fcd7350852dc7707a95c5495c773fe2b1f703e991ee0fe0dbd5c384c9f5ef78"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/world/history/GenerationBuildRevision.java",
+      "sha256": "503ce0f230a384e15244f059b33f0d175ba0715d58f52189ca30ffc95d5fd6e3"
+    },
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b"
+    },
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/cache/FloatCache.java",
+      "sha256": "5774fb4b0082b4f8d2ccf66958aac9df6cadf3eebe22f0c69ee0518862cb22ff"
+    },
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/cache/ArrayCache.java",
+      "sha256": "17bc030e23d542202aafa0734d6e04291f5aa1aeee63f4de98fd35989993d40a"
+    }
+  ],
+  "implementation": [
+    "Original IrisGeneratorStyle hash/prefix/source stamp/stale-pruning control flow executes; active-prefix metadata is owned by the snapshot.",
+    "Build-time original GenerationKernelRegistry current kernel identity is captured and checked against the actual revision-resource SHA-256. Browser cache fingerprint initialization uses that captured string; this does not qualify the native build or enable saved-world history.",
+    "Original CNG.cached numerical fill loop, float casts, FloatCache input/output codecs, coordinate bounds and uncached/1D/3D behavior remain unchanged.",
+    "Only File allocation, streams, directory listing/deletion and atomic move calls in the native cache paths bind to a snapshot-owned memory store. No files are persisted, imported from .cache or written to packs/worlds.",
+    "Per snapshot: maximum 1024-square tiles, 8 MiB stored serialized bytes, 64 serialized files, 128 prefix keys/admitted tile keys and 64 MiB cumulative estimated allocation work. Admission charges 4096+16*size*size on every CNG cache invocation, including disk-equivalent reloads. This is not a measured heap guarantee.",
+    "Cached styles and nested snippets trigger native pack-snapshot capture; cache-only styles are discoverable with the native FLAT default. Legacy non-native lowering refuses cached styles with the native-path guidance.",
+    "noiseCacheStatistics and inspectNoiseCache expose counts/budgets/reload activity and encoded tile names/lengths/SHA-256. Scalar worker results include cache statistics and captured native identity. Snapshot clear/release removes serialized tiles, admission and prefix metadata.",
+    "Cache bounds, expired-owner and IO boundary failures retain an Error cause; original GenerationFailures classifies them as engine failures so caught content loops must abort rather than silently omit a cache-backed layer."
+  ],
+  "checks": {
+    "nativeStyles": {
+      "result": "pass",
+      "scope": "native-float-cache-development-targeted",
+      "cachedStyles": 3,
+      "styleSamples": 21,
+      "nativeCnmFilesCompared": 4,
+      "encodedBytesCompared": 184,
+      "dimensionHeightSamples": 4,
+      "styles": [
+        {
+          "style": "SIMPLEX",
+          "cacheSize": 3,
+          "exponent": 1.5
+        },
+        {
+          "style": "PERLIN",
+          "cacheSize": 3,
+          "zoom": 2,
+          "fracture": {
+            "style": "SIMPLEX",
+            "cacheSize": 2,
+            "multiplier": 3
+          }
+        },
+        {
+          "imageMap": "tiny",
+          "cacheSize": 4
+        }
+      ],
+      "points": [
+        [
+          0,
+          0,
+          0,
+          2
+        ],
+        [
+          1,
+          0,
+          1,
+          2
+        ],
+        [
+          0.5,
+          0,
+          1.25,
+          2
+        ],
+        [
+          -1,
+          0,
+          0,
+          2
+        ],
+        [
+          4,
+          0,
+          3,
+          2
+        ],
+        [
+          1,
+          2,
+          1,
+          3
+        ],
+        [
+          1,
+          0,
+          0,
+          1
+        ]
+      ],
+      "samples": [
+        [
+          "3fd22c81c0000000",
+          "3fd1e51260000000",
+          "3fd21a7f366423f3",
+          "3fd2b5c3001dc48e",
+          "3fd200220cc00082",
+          "3fc291ea5655cf90",
+          "3fdbec609af03b3c"
+        ],
+        [
+          "3fd21f0e40000000",
+          "3fd20702c0000000",
+          "3fd218b3edc7a548",
+          "3fd2421047cc30aa",
+          "3fd1d78c8fbb314b",
+          "3fe126f124a8fae2",
+          "3fe0ce52fdd274be"
+        ],
+        [
+          "0000000000000000",
+          "3ff0000000000000",
+          "3fe5555560000000",
+          "3fd5555560000000",
+          "3fe5555560000000",
+          "3ff0000000000000",
+          "3fd5555560000000"
+        ]
+      ],
+      "files": [
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-2814413354-seed-1-eng-0-oct-1-sz-3-src-0.cnm",
+          "bytes": 44,
+          "sha256": "866079ae62909fdeebbf86f1056ff86ad79ed3a9d081fe8c38fe458b259aaa01"
+        },
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-3583073086-seed-1-eng-0-oct-1-sz-4-src-1582514090.cnm",
+          "bytes": 72,
+          "sha256": "9e88c0db712aa5f0c1a0a6a0195aa2af21ebf71e4effa6b8c06a62d085e25e9a"
+        },
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-3591863681-seed-1-eng-0-oct-1-sz-3-src-0.cnm",
+          "bytes": 44,
+          "sha256": "6a51d468edc27674832d71aff54bd4f956098efaf3736f50df36d2c73087d3e5"
+        },
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-396522153-seed-2935-eng-0-oct-1-sz-2-src-0.cnm",
+          "bytes": 24,
+          "sha256": "a64ed540d806af3f7f83314d5c92caebfcb11c1fbf43253f330fbf4bd25982f3"
+        }
+      ],
+      "heightBits": [
+        "403d01af50000000",
+        "403de1c190000000",
+        "403d01af50000000",
+        "403e30ef651acd2b"
+      ],
+      "cacheReloadDecoded": true,
+      "oversizeTileRefused": true,
+      "snapshotReleaseClearsCache": true,
+      "beforeReload": {
+        "scope": "worker-pack-snapshot",
+        "files": 4,
+        "bytes": 184,
+        "byteLimit": 8388608,
+        "allocationWorkCharged": 16992,
+        "workLimit": 67108864,
+        "reads": 0,
+        "writes": 4,
+        "atomicMoves": 4,
+        "deletes": 0,
+        "prefixes": 4,
+        "maxTileSize": 1024,
+        "durablePersistence": false
+      },
+      "afterReload": {
+        "scope": "worker-pack-snapshot",
+        "files": 4,
+        "bytes": 184,
+        "byteLimit": 8388608,
+        "allocationWorkCharged": 21232,
+        "workLimit": 67108864,
+        "reads": 1,
+        "writes": 4,
+        "atomicMoves": 4,
+        "deletes": 0,
+        "prefixes": 4,
+        "maxTileSize": 1024,
+        "durablePersistence": false
+      },
+      "finalStats": {
+        "scope": "worker-pack-snapshot",
+        "files": 5,
+        "bytes": 228,
+        "byteLimit": 8388608,
+        "allocationWorkCharged": 25472,
+        "workLimit": 67108864,
+        "reads": 1,
+        "writes": 5,
+        "atomicMoves": 5,
+        "deletes": 0,
+        "prefixes": 5,
+        "maxTileSize": 1024,
+        "durablePersistence": false
+      },
+      "nativeIdentity": {
+        "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+        "releaseMatchVerified": false,
+        "revisionResource": "/META-INF/iris/generation-kernels/abi-1.revision",
+        "rngVersion": 1,
+        "generatorAbi": 1,
+        "revisionResourceSha256": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+        "seedDerivationVersion": 1
+      },
+      "wasmSha256": "3ed94e20793c31f589dbe757588cae45e89db2b8fdc2a099e86cca934fc93f7d",
+      "sourceSha256": "3fc7318b0d66bf78fca7036534198756fba740c3d6b65a55b492a1eefd919773",
+      "browserVerified": false,
+      "fullTerrainParityVerified": false
+    },
+    "controlledHostIo": {
+      "result": "pass",
+      "scope": "noise-cache-host-io-controlled-owner",
+      "assertions": 21,
+      "codecCells": 4,
+      "nativeEngineFailureClassification": true,
+      "largeTileAdmissionsOnly": true,
+      "noiseTileFillRun": false,
+      "browserVerified": false
+    },
+    "snapshotWorkerContract": {
+      "scope": "native-image-snapshot-worker-contract-mocked-api",
+      "result": "pass",
+      "nativeFolderCaptured": true,
+      "imageOnlyStyleDiscoverable": true,
+      "nativeImageReferenceResolved": true,
+      "unknownJsonNumberTextPreserved": true,
+      "ownedPngBytes": true,
+      "escapedPropertyRouting": true,
+      "staleAsyncImageRegistrationSuppressed": true,
+      "staleInspectionDoesNotClearNewerContext": true,
+      "pngRegisteredWithRawBands": true,
+      "cachedStyleSnapshotRouting": true,
+      "cacheOnlyStyleDiscoverable": true,
+      "cacheStatisticsTransported": true,
+      "workerSha256": "9bf1c92e45ccf3bc0c5622fed6c93ec2223a535fe01cebfbdbf5ecb2161db5f5",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    }
+  },
+  "checkCommands": [
+    "node tools/checks/native-noise-cache-smoke.mjs",
+    "node --experimental-vm-modules tools/checks/image-snapshot-worker-smoke.mjs"
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "largeNoiseTileBuildRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "Three tiny cached style definitions, one seed, 21 scalar samples, four files/184 encoded bytes and four dimension height samples are targeted development evidence only.",
+    "The IO check uses a controlled live-owner supplier in the actual host service classes on JVM, with four original native codec values. Its three maximum-size reservations allocate no large tiles and run no noise fill.",
+    "Worker metadata/routing checks use a mocked native API and do not verify native generation in a browser.",
+    "Imported/durable .cnm persistence, tile sizes above 1024 and budgets above the stated snapshot limits remain unavailable; source/resource hot reload is represented by a new sealed snapshot.",
+    "Expressions, complete image/terrain/subterrain options, hydrology, transitions, upper/stacked modes, full Mantle/REAL ordering, assets/browser/GPU and native/release qualification remain unfinished."
+  ],
+  "nextMilestone": "Connect original expression parser/evaluation through a browser execution boundary and remaining native platform/stage adapters; qualify full mode ordering after implementation.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}
