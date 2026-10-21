@@ -123,6 +123,22 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     Program p=method.getProgram();InvokeInstruction guard=new InvokeInstruction();guard.setType(InvocationType.SPECIAL);guard.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage","admitSubterrain",ValueType.object("art.arcane.iris.generation.subterrain.SubterrainPlanner"),ValueType.INTEGER,ValueType.INTEGER,ValueType.VOID));guard.setArguments(p.variableAt(1),p.variableAt(2),p.variableAt(3));p.basicBlockAt(0).getFirstInstruction().insertPrevious(guard);guards++;
                 }if(guards!=1)throw new IllegalStateException("Pinned subterrain rasterizer entry changed");
             }
+            if(name.equals("art.arcane.iris.generation.runtime.EngineMode")){
+                int pools=0,dispatch=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("burstAround")||method.getName().startsWith("lambda$burstAround$")){unavailable(method,"Parallel/matter mode dispatch outside terrain-only previews");continue;}
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();
+                        if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();
+                            if(ref.getClassName().equals(name)&&ref.getName().equals("burst")&&ref.parameterCount()==0){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(call.getReceiver());instruction.replace(empty);pools++;}
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.concurrent.MultiBurst")&&ref.getName().equals("burst")&&ref.parameterCount()==1){call.setInstance(null);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerModeDispatch","burst",ValueType.INTEGER,ValueType.object("studio.engine.terrain.WorkerModeDispatch")));dispatch++;}
+                        }instruction=next;
+                    }
+                }
+                if(pools!=1||dispatch!=1)throw new IllegalStateException("Pinned EngineMode inline burst boundary changed: "+pools+","+dispatch);
+                replaceClass(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerModeDispatch");
+                replaceDeclarations(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerModeDispatch");
+            }
             if(name.equals("art.arcane.iris.generation.stage.IrisDepositModifier")){
                 int storage=0,dispatch=0;
                 for(MethodHolder method:cls.getMethods())if(method.getName().equals("generateDeposits")){

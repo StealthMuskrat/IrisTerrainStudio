@@ -51,6 +51,7 @@ public final class NativeTerrainLinkCheck {
                         default->{if(method.isDefault()&&NATIVE_DEFAULTS.contains(method.getName()))yield InvocationHandler.invokeDefault(self,method,values==null?new Object[0]:values);throw new UnsupportedOperationException(method.toString());}
                     });runtime[0]=new IrisComplex(engine);
                     data.registerEngine(engine);
+                    if(request.has("terrainModeCheck"))pack.add(terrainModeCheck(engine,request.getAsJsonObject("terrainModeCheck"),registries));
                     if(request.has("physicalBiomeChecks"))pack.add(physicalBiomeChecks(engine,request.getAsJsonArray("physicalBiomeChecks")));
                     if(request.has("subterrainCheck")){try{pack.add(subterrainCheck(engine,directory,registries,gson,request.get("subterrainCheck").getAsBoolean()));}finally{data.unregisterEngine(engine);}continue;}
                     if(request.has("engineExpressionChecks"))pack.add(expressionChecks(data,request.getAsJsonArray("engineExpressionChecks")));
@@ -74,6 +75,17 @@ public final class NativeTerrainLinkCheck {
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
         Files.writeString(Path.of(args[1]),gson.toJson(result));
+    }
+    private static JsonObject terrainModeCheck(Engine engine,JsonObject request,PlatformRegistries registries){
+        int x=request.get("x").getAsInt(),z=request.get("z").getAsInt();
+        var blocks=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBlockState>(16,engine.getHeight(),16);blocks.fill(registries.air());
+        var biomes=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBiome>(16,engine.getHeight(),16);
+        var context=new art.arcane.iris.generation.context.ChunkContext(x,z,engine.getComplex(),false);var mode=engine.getDimension().getMode().create(engine);JsonObject output=new JsonObject();
+        try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine,engine.getGenerationSessionId(),context)){
+            mode.generateTerrain(x,z,blocks,biomes,false,context);
+            JsonArray probes=new JsonArray();for(JsonElement value:request.getAsJsonArray("controls")){var xyz=value.getAsJsonArray();int lx=xyz.get(0).getAsInt(),y=xyz.get(1).getAsInt(),lz=xyz.get(2).getAsInt();var row=xyz.deepCopy();row.add(blocks.getRaw(lx,y,lz).key());var biome=biomes.getRaw(lx,y,lz);if(biome==null)throw new IllegalStateException("Native mode biome unresolved");row.add(biome.key());probes.add(row);}output.add("probes",probes);
+            output.addProperty("mode",engine.getDimension().getMode().getType().name());output.addProperty("terrainStages",mode.getTerrainStages().size());output.addProperty("contentStages",mode.getStages().size());return output;
+        }finally{mode.close();}
     }
     private static JsonArray physicalBiomeChecks(Engine engine,JsonArray checks){
         var chunks=new HashMap<Long,art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBiome>>();JsonArray output=new JsonArray();
