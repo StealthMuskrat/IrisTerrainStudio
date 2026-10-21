@@ -18,7 +18,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     Variable callback=p.createVariable();InvokeInstruction factory=new InvokeInstruction();factory.setType(InvocationType.SPECIAL);factory.setMethod(new MethodReference("studio.engine.registry.RotationFailures","instance",ValueType.object("java.util.function.Consumer")));factory.setReceiver(callback);call.insertPrevious(factory);Variable[] arguments=call.getArguments().toArray(Variable[]::new);arguments[2]=callback;call.setArguments(arguments);callbacks++;
                 }}if(callbacks!=1)throw new IllegalStateException("Pinned native rotation failure callback changed");
             }
-            if(java.util.Set.of("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger","art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator","net.minecraft.world.level.block.state.properties.RotationSegment","net.minecraft.util.SegmentedAnglePrecision").contains(name)){
+            if(java.util.Set.of("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger","art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockFaces","art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator","net.minecraft.world.level.block.state.properties.RotationSegment","net.minecraft.util.SegmentedAnglePrecision").contains(name)){
                 String[][] mappings={
                     {"art.arcane.volmlib.nativelib.minecraft26_2.modded.ModdedBlockState","studio.engine.registry.BrowserBlockState"},
                     {"art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockResolver","studio.engine.registry.MergeResolver"},
@@ -45,6 +45,29 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     }}
                 }
             }
+            if(name.equals("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockFaces")){
+                int handles=0,predicates=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("isFaceSturdy")){
+                        Program p=new Program();p.createVariable();Variable state=p.createVariable(),face=p.createVariable(),result=p.createVariable();BasicBlock b=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.registry.WorkerStateFaces",method.getDescriptor()));call.setArguments(state,face);call.setReceiver(result);b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);predicates++;continue;
+                    }
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference("art.arcane.volmlib.nativelib.terrain.NativeBlockState","nativeHandle",ValueType.object("java.lang.Object")))){
+                        Variable state=call.getInstance();call.setInstance(null);call.setArguments(state);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.registry.WorkerStateFaces","handle",ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"),ValueType.object("java.lang.Object")));handles++;
+                    }
+                }if(handles!=3||predicates!=1)throw new IllegalStateException("Pinned native face handle boundary changed");
+            }
+            if(name.equals("art.arcane.iris.modded.ModdedDecoratorHooks$Neighbors")){
+                int storage=0;
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("primary")){
+                    Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle"))target="getMantle";
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("get"))target="get";
+                        if(target!=null){redirectHostCall(call,target);storage++;}
+                    }
+                }if(storage!=2)throw new IllegalStateException("Pinned decorator neighbor storage calls changed");
+            }
             if(name.equals("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger")){
                 int masks=0,handles=0;for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("studio.engine.registry.BrowserBlockState")){
                     String target=call.getMethod().getName();if(target.equals("parsedProperties")){target="mergeProperties";masks++;}else if(target.equals("withHandle")){target="withMergedHandle";handles++;}else continue;
@@ -58,9 +81,14 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }if(hooks!=1)throw new IllegalStateException("Native state-merger constructor boundary changed");
             }
             if(name.equals("art.arcane.iris.generation.mantle.MantleObjectComponent")){
-                replaceClass(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
-                replaceDeclarations(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
-                for(MethodHolder method:cls.getMethods())if(java.util.Set.of("generateLayer","loadObjectSize","logSourcePlanStats","placeObject","placeCaveObject","placeUpperObjects","placeContainedCaveObject","findCavePlacementAnchor").contains(method.getName()))unavailable(method,"Automatic neighboring source scheduling/cache, imported objects or cave anchors");
+                replaceClass(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","art.arcane.iris.generation.mantle.WorkerNativeSourcePlans");
+                replaceDeclarations(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","art.arcane.iris.generation.mantle.WorkerNativeSourcePlans");
+                int hosts=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("<init>")){
+                    Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("art.arcane.iris.generation.mantle.WorkerNativeSourcePlans")&&call.getMethod().getName().equals("<init>")){
+                        call.setArguments(p.variableAt(1));call.setMethod(new MethodReference("art.arcane.iris.generation.mantle.WorkerNativeSourcePlans","<init>",ValueType.object("art.arcane.iris.generation.mantle.EngineMantle"),ValueType.VOID));hosts++;
+                    }
+                }if(hosts!=1)throw new IllegalStateException("Pinned object cache ownership constructor changed");
+                for(MethodHolder method:cls.getMethods())if(java.util.Set.of("loadObjectSize","placeObject","placeCaveObject","placeUpperObjects","placeContainedCaveObject","findCavePlacementAnchor").contains(method.getName()))unavailable(method,"Imported object lookup/placement or cave anchors outside guarded procedural previews");
             }
             if(name.equals("art.arcane.iris.generation.mantle.ObjectSourcePlan")){
                 int mantles=0,heights=0;
@@ -142,9 +170,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 int hooks=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("rotate")&&method.parameterCount()==4&&method.parameterType(0).equals(ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"))){Program p=new Program();Variable self=p.createVariable(),state=p.createVariable(),x=p.createVariable(),y=p.createVariable(),z=p.createVariable(),result=p.createVariable();BasicBlock b=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerObjectStateHooks","rotate",ValueType.object(name),ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"),ValueType.INTEGER,ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState")));call.setArguments(self,state,x,y,z);call.setReceiver(result);b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);hooks++;}if(hooks!=1)throw new IllegalStateException("Pinned object state-rotation boundary changed");
             }
             if(name.equals("art.arcane.iris.generation.mantle.WorkerObjectTransactions")){
-                int builders=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("buildPlan")){
-                    Program p=new Program();p.createVariable();Variable component=p.createVariable(),writer=p.createVariable(),x=p.createVariable(),z=p.createVariable(),contextVar=p.createVariable(),result=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setInstance(component);call.setArguments(writer,x,z,contextVar);call.setMethod(new MethodReference("art.arcane.iris.generation.mantle.MantleObjectComponent","buildSourcePlan",ValueType.object("art.arcane.iris.generation.mantle.MantleWriter"),ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.iris.generation.context.ChunkContext"),ValueType.object("art.arcane.iris.generation.mantle.ObjectSourcePlan")));call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);builders++;
-                }if(builders!=1)throw new IllegalStateException("Worker native source-plan bridge changed");
                 int factories=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("createWriter")){
                     Program p=new Program();p.createVariable();Variable engine=p.createVariable(),mantle=p.createVariable(),x=p.createVariable(),z=p.createVariable(),radius=p.createVariable(),result=p.createVariable();BasicBlock b=p.createBasicBlock();ConstructInstruction construct=new ConstructInstruction();construct.setType("art.arcane.iris.generation.mantle.MantleWriter");construct.setReceiver(result);b.add(construct);InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setInstance(result);call.setArguments(engine,mantle,x,z,radius);call.setMethod(new MethodReference("art.arcane.iris.generation.mantle.MantleWriter","<init>",ValueType.object("art.arcane.iris.generation.mantle.EngineMantle"),ValueType.object("art.arcane.volmlib.util.mantle.runtime.Mantle"),ValueType.INTEGER,ValueType.INTEGER,ValueType.INTEGER,ValueType.VOID));b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);factories++;
                 }if(factories!=1)throw new IllegalStateException("Worker native writer factory changed");
@@ -363,7 +388,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             }
             if (java.util.Set.of("art.arcane.iris.generation.noise.IrisGenerator$SurfaceCacheStripe","art.arcane.iris.generation.biome.IrisBiomePaletteLayer","art.arcane.iris.generation.terrain.ProceduralTerrainHeightSampler").contains(name)) {
                 String original="java.util.concurrent.atomic.AtomicReferenceArray",replacement="studio.engine.WorkerReferenceArray";
-                for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
+                for(FieldHolder field:cls.getFields()){ValueType mapped=replaced(field.getType(),original,replacement);if(!mapped.equals(field.getType())){field.setType(mapped);field.setGenericType(null);}}
                 int allocations=0;
                 for(MethodHolder method:cls.getMethods()){
                     Program program=method.getProgram();if(program==null)continue;
@@ -428,7 +453,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             System.out.println("Browser platform: select the original Java Billow branch; no native FFM or substitute noise");
         });
     }
-    private static ValueType replaced(ValueType type,String original,String replacement){return type.equals(ValueType.object(original))?ValueType.object(replacement):type;}
+    private static ValueType replaced(ValueType type,String original,String replacement){if(type instanceof ValueType.Array array)return ValueType.arrayOf(replaced(array.getItemType(),original,replacement));return type.equals(ValueType.object(original))?ValueType.object(replacement):type;}
     private static void redirectHostCall(InvokeInstruction call,String target){MethodReference ref=call.getMethod();java.util.List<Variable> args=new java.util.ArrayList<>();args.add(call.getInstance());args.addAll(call.getArguments());ValueType[] old=ref.getSignature(),signature=new ValueType[old.length+1];signature[0]=ValueType.object(ref.getClassName());System.arraycopy(old,0,signature,1,old.length);call.setInstance(null);call.setArguments(args.toArray(Variable[]::new));call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage",new MethodDescriptor(target,signature)));}
     private static void replaceDeclarations(ClassHolder cls,String original,String replacement){
         for(MethodHolder old:new java.util.ArrayList<>(cls.getMethods())){
@@ -437,9 +462,10 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
         }
     }
     private static void replaceClass(ClassHolder cls,String original,String replacement){
-        for(FieldHolder field:cls.getFields())if(field.getType().equals(ValueType.object(original))){field.setType(ValueType.object(replacement));field.setGenericType(null);}
+        for(FieldHolder field:cls.getFields()){ValueType mapped=replaced(field.getType(),original,replacement);if(!mapped.equals(field.getType())){field.setType(mapped);field.setGenericType(null);}}
         for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
             if(instruction instanceof ConstructInstruction construct&&construct.getType().equals(original))construct.setType(replacement);
+            if(instruction instanceof ConstructArrayInstruction array)array.setItemType(replaced(array.getItemType(),original,replacement));
             if(instruction instanceof GetFieldInstruction get)get.setFieldType(replaced(get.getFieldType(),original,replacement));
             if(instruction instanceof PutFieldInstruction put)put.setFieldType(replaced(put.getFieldType(),original,replacement));
             if(instruction instanceof CastInstruction cast)cast.setTargetType(replaced(cast.getTargetType(),original,replacement));

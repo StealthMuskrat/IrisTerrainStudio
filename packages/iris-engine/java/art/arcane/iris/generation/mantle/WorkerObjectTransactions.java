@@ -13,7 +13,6 @@ public final class WorkerObjectTransactions {
     public record Result(int placedY,int sourcePlanDestinations,int replayedDestinations,int retainedBytes,NeighborhoodStats neighborhood){
         public Result(int y,int destinations,int replayed,int bytes){this(y,destinations,replayed,bytes,null);}
     }
-    public static ObjectSourcePlan buildPlan(MantleObjectComponent component,MantleWriter writer,int sourceX,int sourceZ,art.arcane.iris.generation.context.ChunkContext context){throw new UnsupportedOperationException("Native private source-plan builder requires its pinned compiler bridge");}
     public static Neighborhood prepareNeighborhood(EngineMantle engine){
         var component=new MantleObjectComponent(engine);int radius=component.getRadius(),input=Math.ceilDiv(component.getInputRadius(),16),sources=MantleObjectComponent.sourceChunkRadius(radius);
         if(input>3||sources>1)throw studio.engine.UnsupportedPlatform.unavailable("Procedural neighborhood exceeds 49 prepared chunks or nine source chunks");
@@ -48,16 +47,9 @@ public final class WorkerObjectTransactions {
     }
     public static Result neighborhood(EngineMantle engine,int cx,int cz,art.arcane.iris.generation.context.ChunkContext context,Neighborhood neighborhood){
         try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine.getEngine(),engine.getEngine().getGenerationSessionId(),context);MantleWriter writer=createWriter(engine,null,cx,cz,neighborhood.inputChunkRadius())){
-            ObjectDestinationTransaction destination=new ObjectDestinationTransaction(writer,cx,cz);
-            int[] sources={0,0};long before=neighborhood.session().builtBytes(engine.getEngine());
-            writer.withComponentPriority(2,()->{
-                MantleObjectComponent.replaySourceChunks(cx,cz,neighborhood.placementRadius(),(sx,sz)->{
-                    ObjectSourcePlan plan=neighborhood.session().acquire(engine.getEngine(),sx,sz,cx,cz,neighborhood.sourceChunkRadius(),()->buildPlan(neighborhood.component(),writer,sx,sz,context));sources[0]++;
-                    if(plan!=null){sources[1]++;destination.apply(plan);plan.persistContinuations(writer,sx,sz,cx,cz);}
-                });
-                destination.commit();
-            });
-            return new Result(-1,0,0,0,new NeighborhoodStats(sources[0],sources[1],neighborhood.placementRadius(),neighborhood.inputChunkRadius(),neighborhood.sourceChunkRadius(),neighborhood.session().builtBytes(engine.getEngine())-before));
+            var session=neighborhood.session();var owner=engine.getEngine();long before=session.builtBytes(owner),requests=session.requests(owner),contributions=session.contributions(owner);
+            writer.withComponentPriority(2,()->neighborhood.component().generateLayer(writer,cx,cz,context));
+            return new Result(-1,0,0,0,new NeighborhoodStats(Math.toIntExact(session.requests(owner)-requests),Math.toIntExact(session.contributions(owner)-contributions),neighborhood.placementRadius(),neighborhood.inputChunkRadius(),neighborhood.sourceChunkRadius(),session.builtBytes(owner)-before));
         }
     }
     private static Result replay(MantleWriter writer,ObjectSourcePlan plan,int cx,int cz,int placedY){

@@ -34,6 +34,8 @@ A cold engine build prepares only Minecraft 26.3 class inputs and property metad
 
 Native resources can be inspected through the worker memory loader. To export schemas for a specific saved pack, run `npm run engine:schemas -- /path/to/your/pack`, then select **Load matching native schema** in the inspector. With no path, the exporter uses the pinned upstream terrain fixture. The editor verifies the saved pack snapshot before attaching a schema; exported metadata warnings are retained. The bundle currently uses vanilla registries and is not production-qualified.
 
+Procedural neighborhood previews now run the original native object-layer entry point with snapshot-owned plan caching. Native vine and multiface attachment correction uses prepared matter and chunk neighbors. These remain bounded development previews; full terrain generation and browser qualification are unfinished.
+
 ## Native noise laboratory
 
 The optional noise laboratory uses the previously executed, hash-verified TeaVM Wasm GC module. Install its recorded evidence archive locally:

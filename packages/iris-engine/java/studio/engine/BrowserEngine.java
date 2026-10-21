@@ -55,6 +55,10 @@ public final class BrowserEngine {
     @JSExport public static String paintFloatingChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,true,true);}
     @JSExport public static String paintCaveDecorationChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,true,true,true);}
     @JSExport public static String paintDepositChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,studio.engine.terrain.TerrainCarvingComponent.Stage.DEPOSITS);}
+    @JSExport public static String diagnosticDecoratorFaces(String key,String neighbors)throws java.io.IOException{
+        if(registry==null)throw new IllegalStateException("Install native registry first");
+        return studio.engine.terrain.DecoratorFaceDiagnostic.run(registry,key,neighbors);
+    }
     @JSExport public static String diagnosticStateMerge(String base,String update,boolean normalizeUpdate){
         if(registry==null)throw new IllegalStateException("Install native registry first");
         var original=registry.decodeBlockState(base);var changed=registry.decodeBlockState(update);
