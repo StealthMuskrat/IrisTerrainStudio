@@ -20,14 +20,14 @@ for(const bad of[{axis:'y',position:1.5},{axis:'nope',position:0},{axis:'y',posi
 // Actual renderer remesh method, with actual worker body hosted in an isolated VM.
 const workers=[];let held=false;globalThis.Worker=class{
  constructor(){this.terminated=false;this.messages=[];workers.push(this);const owner=this;this.context=vm.createContext({self:{postMessage(value){if(!owner.terminated)owner.onmessage?.({data:value});}},Float32Array,setTimeout,localClip,emptyClip});vm.runInContext(workerCode,this.context);}
- postMessage(data){this.messages.push(data);if(held)this.waiting=data;else this.run(data);}
+ postMessage(data){this.messages.push(data);if(held&&data.kind!=='cancel')this.waiting=data;else this.run(data);}
  async run(data){try{await this.context.self.onmessage({data});}catch(error){this.onerror?.({message:error.message});}}
  terminate(){this.terminated=true;}
 };
 const uploads=[],renderer=Object.assign(Object.create(WorldRenderer.prototype),{volume,models,meshPalette:volume.palette,clip:null,job:0,camera:{yaw:.4,pitch:.6,distance:120,target:[0,0,0]},upload(name,data){uploads.push({name,bytes:data.byteLength});},uploadMesh(mesh){this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.ranges=mesh.ranges;},draw(){}}),camera=renderer.camera;
 await renderer.setClip(xSection);assert.equal(renderer.models,models);assert.equal(renderer.volume,volume);assert.equal(renderer.camera,camera);assert.deepEqual(renderer.clip,xSection);assert.equal(renderer.faces,16);assert.equal(workers.at(-1).messages[0].models,models);assert.equal(workers.at(-1).messages[0].blocks,volume.blocks);assert.equal(workers.at(-1).messages[0].palette,renderer.meshPalette);
 renderer.reset();assert.deepEqual(renderer.camera.target,[.5,0,0]);renderer.focus([-14.5,-31.5,-47.5]);assert.deepEqual(renderer.camera.target,[.5,-.5,-.5]);assert.throws(()=>renderer.focus([-15.5,-31.5,-47.5]),/visible/);assert.throws(()=>renderer.focus([Infinity,0,0]),/visible/);
-held=true;const old=renderer.setClip(lone),oldRejected=assert.rejects(old,e=>e.name==='AbortError'),oldWorker=workers.at(-1),oldUploads=uploads.length;held=false;await renderer.setClip(null);await oldRejected;assert.equal(oldWorker.terminated,true);await oldWorker.run(oldWorker.waiting);assert.equal(renderer.clip,null);assert.equal(renderer.faces,24);assert.equal(uploads.length,oldUploads+2);
+held=true;const old=renderer.setClip(lone),oldRejected=assert.rejects(old,e=>e.name==='AbortError'),oldWorker=workers.at(-1),oldUploads=uploads.length;held=false;await renderer.setClip(null);await oldRejected;assert.equal(oldWorker.terminated,false);await oldWorker.run(oldWorker.waiting);assert.equal(renderer.clip,null);assert.equal(renderer.faces,24);assert.equal(uploads.length,oldUploads+2);
 held=true;const clearPending=renderer.setClip(lone),clearRejected=assert.rejects(clearPending,e=>e.name==='AbortError');renderer.clear();await clearRejected;assert.equal(renderer.models,null);assert.equal(renderer.volume,null);delete globalThis.Worker;
 assert.deepEqual(volume.blocks,originalBlocks);assert.deepEqual(volume.biomes.cells,originalBiomes);
 // Run actual UI section/focus/inspection functions with small DOM/service doubles.

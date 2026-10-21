@@ -22,32 +22,68 @@ class PickRecords {
     const quads=new Float32Array(this.count*21),owners=new Uint32Array(this.count);for(let i=0;i<this.pages.length;i++){const count=Math.min(1024,this.count-i*1024);quads.set(this.pages[i].subarray(0,count*21),i*1024*21);owners.set(this.ownerPages[i].subarray(0,count),i*1024);}this.pages=[];this.ownerPages=[];return{quads:quads.buffer,owners:owners.buffer};
   }
 }
-let revision=0;
+// Cache only one immutable voxel/model/atlas snapshot. A one-cell clip halo is part of
+// each key: removing an adjacent section must expose the newly visible boundary faces.
+const CACHE_BYTES=64*1024*1024,CACHE_ENTRIES=4096;
+class SectionCache {
+  constructor(limit=CACHE_BYTES){if(!Number.isSafeInteger(limit)||limit<0||limit>CACHE_BYTES)throw new Error('Invalid section mesh cache budget.');this.limit=limit;this.entries=new Map();this.bytes=0;}
+  get(key){const entry=this.entries.get(key);if(entry){this.entries.delete(key);this.entries.set(key,entry);}return entry;}
+  put(key,mesh){
+    const bytes=256+mesh.opaque.byteLength+mesh.transparent.byteLength+Object.values(mesh.picking).reduce((sum,pick)=>sum+pick.quads.byteLength+pick.owners.byteLength,0);
+    if(bytes>this.limit)return;
+    while(this.entries.size&&(this.bytes+bytes>this.limit||this.entries.size>=CACHE_ENTRIES)){const oldest=this.entries.keys().next().value;this.bytes-=this.entries.get(oldest).bytes;this.entries.delete(oldest);}
+    this.entries.set(key,{mesh,bytes});this.bytes+=bytes;
+  }
+}
+let revision=0,snapshot=null,sectionCache=null;
 self.onmessage=async({data})=>{
   if(data.kind==='cancel'){revision++;return;}const job=++revision;
   try{
-    const{width,height,depth,blocks,palette,models,id}=data,clip=localClip(data,data.clip),opaque=new Vertices(),transparent=new Vertices(),center=[width/2,height/2,depth/2],origin=data.origin??[0,0,0],ranges=[],pickOpaque=new PickRecords(),pickTransparent=new PickRecords();let faces=0;
-    if(!Array.isArray(origin)||origin.length!==3||!origin.every(Number.isSafeInteger))throw new Error('Mesh origin requires three exact world coordinates.');
-    const inside=(x,y,z)=>x>=0&&y>=0&&z>=0&&x<width&&y<height&&z<depth&&(!clip||x>=clip.min[0]&&y>=clip.min[1]&&z>=clip.min[2]&&x<clip.max[0]&&y<clip.max[1]&&z<clip.max[2]);
+    if(data.blocks){
+      const origin=data.origin??[0,0,0];
+      if(!Array.isArray(origin)||origin.length!==3||!origin.every(Number.isSafeInteger))throw new Error('Mesh origin requires three exact world coordinates.');
+      const nextCache=new SectionCache(data.cacheByteLimit);snapshot={width:data.width,height:data.height,depth:data.depth,blocks:data.blocks,palette:data.palette,models:data.models,origin};sectionCache=nextCache;
+    }
+    if(!snapshot)throw new Error('Initialize a stored voxel snapshot before meshing sections.');
+    const input=snapshot,cache=sectionCache,{width,height,depth,blocks,palette,models,origin}=input,{id}=data,clip=localClip(input,data.clip),center=[width/2,height/2,depth/2],parts=[];
     const minimum=clip?.min??[0,0,0],maximum=clip?.max??[width,height,depth],start=minimum.map((value,axis)=>Math.floor((value+origin[axis])/16)*16-origin[axis]);
-    const sectionTotal=start.reduce((total,value,axis)=>total*Math.ceil((maximum[axis]-value)/16),1);let sections=0;
-    const range=first=>({first,count:0,min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
+    const inside=(x,y,z)=>x>=minimum[0]&&y>=minimum[1]&&z>=minimum[2]&&x<maximum[0]&&y<maximum[1]&&z<maximum[2];
+    const sectionTotal=start.reduce((total,value,axis)=>total*Math.ceil((maximum[axis]-value)/16),1),stats={reused:0,rebuilt:0,cells:0};let sections=0,faces=0;
+    const range=()=>({first:0,count:0,min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
     if(!emptyClip(clip))for(let sy=start[1];sy<maximum[1];sy+=16)for(let sz=start[2];sz<maximum[2];sz+=16)for(let sx=start[0];sx<maximum[0];sx+=16){
-      const section={section:[sx,sy,sz].map((value,axis)=>(value+origin[axis])/16),opaque:range(opaque.length/12),transparent:range(transparent.length/12)};
-      for(let y=Math.max(sy,minimum[1]);y<Math.min(sy+16,maximum[1]);y++)for(let z=Math.max(sz,minimum[2]);z<Math.min(sz+16,maximum[2]);z++)for(let x=Math.max(sx,minimum[0]);x<Math.min(sx+16,maximum[0]);x++){
-        const index=blocks[x+width*(z+depth*y)],block=palette[index];if(!models[index]?.length)continue;
-        for(const quad of models[index]){
-          if(quad.cull){const d=directions[quad.cull],nx=x+d[0],ny=y+d[1],nz=z+d[2];if(inside(nx,ny,nz)){const neighbor=palette[blocks[nx+width*(nz+depth*ny)]];if(neighbor.solid===true||block.cullSameMaterial===true&&neighbor.id===block.id)continue;}}
-          if(++faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');
-          const blend=quad.transparency==='blend',target=blend?transparent:opaque,bounds=blend?section.transparent:section.opaque,offset=[x-center[0],y-center[1],z-center[2]];bounds.count+=6;
-          for(const point of quad.positions)for(let axis=0;axis<3;axis++){const value=Math.fround(point[axis]+offset[axis]);if(!Number.isFinite(value))throw new Error('Model mesh contains a nonfinite vertex.');bounds.min[axis]=Math.min(bounds.min[axis],value);bounds.max[axis]=Math.max(bounds.max[axis],value);}
-          (blend?pickTransparent:pickOpaque).write(quad,x+width*(z+depth*y),offset);
-          for(const vertex of[0,1,2,0,2,3])target.write(quad.positions[vertex],quad.normal,quad.color,quad.uv[vertex],...offset);
+      const base=[sx,sy,sz],haloMin=base.map((value,axis)=>Math.max(value-1,minimum[axis])),haloMax=base.map((value,axis)=>Math.min(value+17,maximum[axis]));
+      const key=[...base,...haloMin,...haloMax].join(','),cached=cache.get(key);let part=cached?.mesh;
+      if(part)stats.reused++;
+      else{
+        stats.rebuilt++;
+        const opaque=new Vertices(),transparent=new Vertices(),pickOpaque=new PickRecords(),pickTransparent=new PickRecords(),section={section:base.map((value,axis)=>(value+origin[axis])/16),opaque:range(),transparent:range()};let count=0;
+        for(let y=Math.max(sy,minimum[1]);y<Math.min(sy+16,maximum[1]);y++)for(let z=Math.max(sz,minimum[2]);z<Math.min(sz+16,maximum[2]);z++)for(let x=Math.max(sx,minimum[0]);x<Math.min(sx+16,maximum[0]);x++){
+          stats.cells++;const index=blocks[x+width*(z+depth*y)],block=palette[index];if(!models[index]?.length)continue;
+          for(const quad of models[index]){
+            if(quad.cull){const d=directions[quad.cull],nx=x+d[0],ny=y+d[1],nz=z+d[2];if(inside(nx,ny,nz)){const neighbor=palette[blocks[nx+width*(nz+depth*ny)]];if(neighbor.solid===true||block.cullSameMaterial===true&&neighbor.id===block.id)continue;}}
+            if(++count+faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');
+            const blend=quad.transparency==='blend',target=blend?transparent:opaque,bounds=blend?section.transparent:section.opaque,offset=[x-center[0],y-center[1],z-center[2]];bounds.count+=6;
+            for(const point of quad.positions)for(let axis=0;axis<3;axis++){const value=Math.fround(point[axis]+offset[axis]);if(!Number.isFinite(value))throw new Error('Model mesh contains a nonfinite vertex.');bounds.min[axis]=Math.min(bounds.min[axis],value);bounds.max[axis]=Math.max(bounds.max[axis],value);}
+            (blend?pickTransparent:pickOpaque).write(quad,x+width*(z+depth*y),offset);
+            for(const vertex of[0,1,2,0,2,3])target.write(quad.positions[vertex],quad.normal,quad.color,quad.uv[vertex],...offset);
+          }
         }
+        part={section,faces:count,opaque:opaque.finish(),transparent:transparent.finish(),picking:{opaque:pickOpaque.finish(),transparent:pickTransparent.finish()}};cache.put(key,part);
       }
-      if(section.opaque.count||section.transparent.count)ranges.push(section);
+      faces+=part.faces;if(faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');parts.push(part);
       if((++sections&7)===0){self.postMessage({kind:'progress',id,progress:sections/Math.max(1,sectionTotal)});await new Promise(resolve=>setTimeout(resolve,0));if(job!==revision)return;}
     }
-    const a=opaque.finish(),b=transparent.finish(),picking={opaque:pickOpaque.finish(),transparent:pickTransparent.finish()};self.postMessage({kind:'mesh',id,opaque:a.buffer,transparent:b.buffer,faces,ranges,picking},[a.buffer,b.buffer,picking.opaque.quads,picking.opaque.owners,picking.transparent.quads,picking.transparent.owners]);
-  }catch(error){self.postMessage({id:data.id,error:error.message||String(error)});}
+    if(job!==revision)return;
+    // Flatten for the existing GPU/picker ABI. Cached section buffers remain owned by
+    // this worker; only fresh combined buffers are transferred to the renderer.
+    const output={kind:'mesh',id,faces,ranges:[],picking:{},stats:{...stats,entries:cache.entries.size,bytes:cache.bytes,byteLimit:cache.limit}};
+    for(const kind of['opaque','transparent']){
+      const count=parts.reduce((sum,part)=>sum+part.section[kind].count,0),vertices=new Float32Array(count*12),quads=new Float32Array(count/6*21),owners=new Uint32Array(count/6);let first=0;
+      for(const part of parts){vertices.set(part[kind],first*12);quads.set(new Float32Array(part.picking[kind].quads),first/6*21);owners.set(new Uint32Array(part.picking[kind].owners),first/6);first+=part.section[kind].count;}
+      output[kind]=vertices.buffer;output.picking[kind]={quads:quads.buffer,owners:owners.buffer};
+    }
+    let opaqueFirst=0,transparentFirst=0;
+    for(const part of parts){if(part.faces)output.ranges.push({section:part.section.section,opaque:{...part.section.opaque,first:opaqueFirst},transparent:{...part.section.transparent,first:transparentFirst}});opaqueFirst+=part.section.opaque.count;transparentFirst+=part.section.transparent.count;}
+    self.postMessage(output,[output.opaque,output.transparent,output.picking.opaque.quads,output.picking.opaque.owners,output.picking.transparent.quads,output.picking.transparent.owners]);
+  }catch(error){if(job===revision)self.postMessage({id:data.id,error:error.message||String(error)});}
 };

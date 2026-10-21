@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-21",
+  "scope": "bounded section mesh cache, persistent snapshot worker, partial CPU remeshing and appearance camera retention",
+  "fixture": {
+    "storedCells": 50,
+    "occupiedCells": 5,
+    "generatedTerrainCells": 0,
+    "sourcePixels": 1
+  },
+  "checks": [
+    "unchanged sections reused; boundary halo rebuilt and compared byte-for-byte with uncached geometry/picking",
+    "negative/unaligned origins, opaque/blended ranges and overhangs preserved",
+    "actual transferable output leaves worker cache reusable; snapshot sent only once",
+    "slices/empty views, bounded LRU eviction and oversized section bypass preserve output",
+    "cancelled jobs and invalid clips cannot commit; fatal worker errors recreate the snapshot",
+    "renderer reuses sessions across clips, skips equivalent bounds and preserves appearance camera",
+    "same committed input reuses validated volume; new atlas gets a fresh geometry cache",
+    "failed staged upload retains committed session/picker/atlas; clear disposes pending work"
+  ],
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "performanceMeasured": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "full": {
+    "faces": 26,
+    "reused": 0,
+    "rebuilt": 5,
+    "cells": 50,
+    "entries": 5,
+    "bytes": 11056,
+    "byteLimit": 67108864
+  },
+  "cutaway": {
+    "faces": 16,
+    "reused": 2,
+    "rebuilt": 1,
+    "cells": 16,
+    "entries": 6,
+    "bytes": 15448,
+    "byteLimit": 67108864
+  },
+  "returnToFull": {
+    "faces": 26,
+    "reused": 5,
+    "rebuilt": 0,
+    "cells": 0,
+    "entries": 6,
+    "bytes": 15448,
+    "byteLimit": 67108864
+  },
+  "limits": "Focused Node worker transfers and controlled renderer canvas/device only. CPU section reuse still flattens/transfers/uploads the complete visible mesh. Cache budget covers payload bytes plus per-entry allowance, not total browser/driver memory; staged snapshots can coexist. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. Real browser/GPU and performance qualification remain pending.",
+  "workspaceSha256": {
+    "packages/voxel-renderer/mesh-worker.mjs": "bd78a10288eda0ff0c94047875839d488967f17dd879f24cfe92ad27ff84ac57",
+    "packages/voxel-renderer/mesh-session.mjs": "6a820cbcb8f1e8443a0bccc1c1ef6c4fb3103fb4db5aca5d411a30768ec7699e",
+    "packages/voxel-renderer/world.mjs": "46c8b75f3ce9b95c5f6c922296f3d3a111780c906fc547697609ed962c9cd1d2",
+    "tools/checks/section-cache-smoke.mjs": "23730199d2157d745f408504487b27eecd89bdb0179df730b51da689d444f646"
+  }
+}

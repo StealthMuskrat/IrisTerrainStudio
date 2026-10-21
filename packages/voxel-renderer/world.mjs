@@ -6,6 +6,7 @@ import{TextureAtlas}from'../resource-packs/atlas.mjs';
 import{visibleMeshRanges}from'./frustum.mjs';
 import{MeshBufferStore}from'./mesh-buffers.mjs';
 import{MeshPicker}from'./picking.mjs';
+import{MeshSession}from'./mesh-session.mjs';
 import{createSelectionPipeline}from'./selection.mjs';
 const source=`
 struct Camera{matrix:mat4x4f,eye:vec4f};@group(0) @binding(0)var<uniform> camera:Camera;@group(0) @binding(1)var atlas:texture_2d<f32>;@group(0) @binding(2)var nearest:sampler;
@@ -24,6 +25,7 @@ function opaqueUnitCube(quads){
     }
   }return covered.size===6;
 }
+function sameVoxelData(a,b){return !!a&&!!b&&a.blocks===b.blocks&&a.palette===b.palette&&a.width===b.width&&a.height===b.height&&a.depth===b.depth&&Array.isArray(b.origin)&&b.origin.length===3&&a.origin.every((value,axis)=>value===b.origin[axis]);}
 export class WorldRenderer{
   constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
@@ -32,10 +34,13 @@ export class WorldRenderer{
     this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume&&this.atlas.update(time))this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
-  cancelMesh(){this.job=(this.job||0)+1;this.worker?.terminate();this.worker=null;this.meshReject?.(new DOMException('Voxel meshing cancelled.','AbortError'));this.meshReject=null;}
+  cancelMesh(){this.job=(this.job||0)+1;this.meshSession?.cancel();this.pendingMesh?.dispose();this.pendingMesh=null;}
   suspendTextures(){this.cancelMesh();this.atlas.pause();}
   async setVolume(input,stack,{clip}={}){
-    const volume=input instanceof VoxelVolume?input:new VoxelVolume(input);clip=localClip(volume,clip);this.cancelMesh();const id=this.job,atlas=new TextureAtlas(this.gpu.device),models=[],diagnostics=[];
+    // Generated inputs are immutable. Reusing the exact committed input avoids another
+    // complete block/biome validation scan during an appearance-only replacement.
+    const reuse=input===this.volumeInput&&sameVoxelData(this.volume,input)&&this.volume.biomes===(input.biomes||null)&&this.volume.metadata===input.metadata;
+    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);this.cancelMesh();const id=this.job,atlas=new TextureAtlas(this.gpu.device),models=[],diagnostics=[];let session;
     try{
       for(let i=0;i<volume.palette.length;i++){
         try{if(volume.palette[i].air===true){models[i]=[];continue;}models[i]=await bakeBlock(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
@@ -43,28 +48,25 @@ export class WorldRenderer{
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
       const meshPalette=volume.palette.map((block,index)=>({...block,solid:opaqueUnitCube(models[index])}));
-      const mesh=await this.buildMesh(volume,models,clip,id,meshPalette);
+      session=this.pendingMesh=new MeshSession(volume,models,meshPalette,{onProgress:progress=>this.onProgress?.(progress)});
+      const mesh=await session.build(clip,id);
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;
-      this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.models=models;this.meshPalette=meshPalette;this.clip=clip;this.diagnostics=diagnostics;
-      this.faces=mesh.faces;this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
-    }catch(error){atlas.dispose();if(this.job===id){this.worker?.terminate();this.worker=null;this.meshReject=null;}throw error;}
-  }
-  async buildMesh(volume,models,clip,id,palette){
-    const worker=this.worker=new Worker('/packages/voxel-renderer/mesh-worker.mjs',{type:'module'});let rejectMesh;
-    try{return await new Promise((resolve,reject)=>{
-      rejectMesh=reject;this.meshReject=reject;
-      worker.onmessage=({data})=>{if(id!==this.job||data.id!==id)return;if(data.error){reject(new Error(data.error));return;}if(data.kind==='progress'){this.onProgress?.(data.progress);return;}if(data.kind==='mesh')resolve(data);};
-      worker.onerror=event=>reject(new Error(event.message));
-      worker.postMessage({id,width:volume.width,height:volume.height,depth:volume.depth,blocks:volume.blocks,palette,models,clip,origin:volume.origin});
-    });}finally{worker.terminate();if(this.worker===worker)this.worker=null;if(this.meshReject===rejectMesh)this.meshReject=null;}
+      const sameVolume=sameVoxelData(this.volume,volume);
+      this.meshSession?.dispose();this.meshSession=session;this.pendingMesh=null;
+      this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.volumeInput=input;this.models=models;this.meshPalette=meshPalette;this.clip=clip;this.diagnostics=diagnostics;
+      this.faces=mesh.faces;this.meshStats=mesh.stats;if(sameVolume)this.draw();else this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
+    }catch(error){atlas.dispose();session?.dispose();if(this.pendingMesh===session)this.pendingMesh=null;throw error;}
   }
   async setClip(input){
     if(!this.volume||!this.models)throw new Error('Generate a stored voxel volume before selecting a cross-section.');
-    const volume=this.volume,models=this.models,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
-    const mesh=await this.buildMesh(volume,models,clip,id,this.meshPalette);
+    const volume=this.volume,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
+    const before=clipBounds(volume,this.clip),after=clipBounds(volume,clip);
+    if(before.min.every((value,axis)=>value===after.min[axis]&&before.max[axis]===after.max[axis]))return this.faces;
+    const session=this.meshSession??=new MeshSession(volume,this.models,this.meshPalette,{onProgress:progress=>this.onProgress?.(progress)});
+    const mesh=await session.build(clip,id);
     if(this.job!==id||this.disposed||this.volume!==volume)throw new DOMException('Voxel meshing cancelled.','AbortError');
-    const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.clip=clip;this.draw();return mesh.faces;
+    const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.meshStats=mesh.stats;this.clip=clip;this.draw();return mesh.faces;
   }
   focus(world){
     if(!this.volume)throw new Error('Generate a stored voxel volume before focusing the camera.');
@@ -72,7 +74,7 @@ export class WorldRenderer{
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){this.cancelMesh();this.volume=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   uploadMesh(mesh){
     this.buffers??=new MeshBufferStore(this.gpu.device);
     this.buffers.reserveMany([{name:'opaque',bytes:mesh.opaque.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparent',bytes:mesh.transparent.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparentIndices',bytes:mesh.transparent.byteLength/12,usage:GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST}]);
@@ -153,5 +155,5 @@ export class WorldRenderer{
     this.canvas.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.selection){event.preventDefault();event.stopPropagation();this.clearSelection();}});
     this.canvas.addEventListener('contextmenu',event=>event.preventDefault());
   }
-  dispose(){this.disposed=true;this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
+  dispose(){this.disposed=true;this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
 }
