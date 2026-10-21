@@ -125,6 +125,7 @@ function renderInspector() {
   if(state.document && (findStyles(state.document).length||/^snippet\/style\//.test(state.selected?.path)))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview a noise style',onclick:()=>chooseNoiseStyle({resource:true}).catch(errorMessage)}));
   if(state.document&&/^(biomes|regions)\//.test(state.selected.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview procedural object or tree',onclick:()=>chooseProceduralPreview().catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('expressions/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this expression',onclick:()=>{state.styleSelection={pack:state.pack,path:state.selected.path,expressionResource:true};state.noiseStyle=`Expression: ${resourceId(state.selected.path)}`;$('field-mode').value='iris-style2d';$('noise-style').hidden=false;$('noise-style').textContent=state.noiseStyle;setView('map');regenerate().catch(errorMessage);}}));
+  if(state.document&&state.selected?.path.startsWith('dimensions/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect dimension image bindings',onclick:()=>sampleDimensionBindings().catch(errorMessage)}));
   if(state.document&&/^image-maps\//.test(state.selected?.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Sample this image map',onclick:()=>sampleNativeImageMap().catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('generators/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this generator',onclick:()=>{if(!state.document)return;$('field-mode').value='iris-generator';$('noise-style').hidden=true;setView('map');regenerate().catch(errorMessage);}}));
   if(state.document&&/^(dimensions|regions|biomes|generators|blocks|expressions|image-maps|imagemaps)\//.test(state.selected.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect native resource loading',onclick:()=>inspectNativeResource().catch(errorMessage)}));
@@ -140,6 +141,26 @@ async function loadMatchingNativeSchema(){
 function imageMapDetails(resource){
   if(!resource.mapType)return[];
   return[copy(`${resource.mapType} · ${resource.sampling} · outside: ${resource.outOfBounds} · alpha: ${resource.alphaPolicy}`),copy(`${resource.sourceColorMode} source · ${resource.sourceBitDepth}-bit · ${resource.sourceChannels} channels · alpha ${resource.minimumAlpha}–${resource.maximumAlpha}`),copy(`${resource.clippedPixelCount} clipped pixels · ${resource.unknownColorPixelCount} unknown-color pixels`)];
+}
+async function sampleDimensionBindings(){
+  if(!state.pack||!state.selected?.path.startsWith('dimensions/'))return;
+  flushHistory();parseDocument();if(!state.document)throw new Error('Correct this JSON before inspecting its dimension bindings.');
+  cancelPreview();const pack=state.pack,path=state.selected.path,revision=state.revision,request=++previewRequest,current=()=>request===previewRequest&&pack===state.pack&&revision===state.revision&&path===state.selected?.path;
+  const input=element('textarea',{'aria-label':'Binding world coordinates',rows:5,spellcheck:'false'});input.value='0, 0';
+  const points=await ask('Sample dimension image bindings',[copy('Enter up to sixteen world X, Z pairs, one per line. The current unsaved dimension and saved pack resources are used.'),field('World X, Z',input)],{submit:'Inspect',read:()=>{
+    const lines=input.value.trim().split(/\r?\n/);if(lines.length>16)throw new Error('Use at most sixteen coordinate pairs.');
+    return lines.map(line=>{const parts=line.trim().split(/[,\s]+/);if(parts.length!==2||parts.some(part=>!part||!Number.isFinite(Number(part))))throw new Error('Each line needs two finite numbers: X, Z.');return parts.map(Number);});
+  }});if(!points||!current())return;
+  message('Resolving native dimension image bindings…');
+  const snapshot=await captureNativePack(state.catalog.resources,name=>api.read(pack,name),{readBinary:name=>api.readBinary(pack,name),current,override:{path,text:state.text}});if(!current())return;
+  const result=await generation.sampleDimensionImageMaps(snapshot,resourceId(path),points);if(!current())return;
+  const bindings=result.dimension.bindings.map(binding=>`${binding.key}: ${binding.application} ← ${binding.map} (${binding.sourceWidth} × ${binding.sourceHeight})\n  ${binding.sampling} · ${binding.outOfBounds} · ${binding.masks.length} masks`);
+  const samples=result.samples.map(sample=>{
+    if(sample.error)return`${sample.x}, ${sample.z}: ${sample.error}`;
+    const values=sample.bindings.map(binding=>{const value=binding.sample,raw=value.type==='COLOR_MAP'?`target ${value.target??'(none)'}`:`normalized ${value.normalized}${value.worldHeight===undefined?'':` · mapped world Y ${value.worldHeight}`}`;return`  ${binding.key}: mask ${binding.maskWeight}${binding.categoricalSelected===undefined?'':` · selected ${binding.categoricalSelected?'yes':'no'}`} · ${raw}`;});
+    return`${sample.x}, ${sample.z}:\n  Region override: ${sample.regionOverride??'(none)'}\n  Biome override: ${sample.biomeOverride??'(none)'}\n  Surface block override: ${sample.surfaceBlockOverride??'(none)'}\n${values.join('\n')}`;
+  });
+  await ask('Native dimension image bindings',[copy(`${result.dimension.bindings.length} bindings · minimum world Y ${result.dimension.minimumWorldY}`),element('pre',{class:'modal-copy',text:bindings.length?bindings.join('\n\n'):'This dimension declares no image bindings.'}),element('pre',{class:'modal-copy',text:samples.join('\n\n')}),copy('Overrides show native binding results. Procedural fallback and later terrain stages are not evaluated here. Mapped heights are raw map heights before terrain blending.')],{submit:null,cancel:'Close'});if(current())message('Native dimension image binding inspection finished.');
 }
 async function sampleNativeImageMap(){
   if(!state.pack||!state.selected?.path.startsWith('image-maps/'))return;

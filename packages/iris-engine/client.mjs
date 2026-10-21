@@ -34,6 +34,11 @@ export class GenerationClient extends EventTarget {
     this.cancel();const worker=this.worker('iris'),id=++this.sequence;
     return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject,kind:'sample-image-map'});worker.postMessage({kind:'sample-image-map',id,snapshot,name,points});});
   }
+  sampleDimensionImageMaps(snapshot,name,points){
+    if(typeof name!=='string'||!name||!Array.isArray(points)||points.length<1||points.length>16||points.some(point=>!Array.isArray(point)||point.length!==2||!point.every(Number.isFinite)))return Promise.reject(new Error('Supply one to sixteen finite X, Z coordinate pairs.'));
+    this.cancel();const worker=this.worker('iris'),id=++this.sequence;
+    return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject,kind:'sample-dimension-image-maps'});worker.postMessage({kind:'sample-dimension-image-maps',id,snapshot,name,points});});
+  }
   cancel(){
     this.revision++;
     if(this.pending){
@@ -45,7 +50,7 @@ export class GenerationClient extends EventTarget {
       }else pending.worker.postMessage({kind:'cancel',id:pending.id});
       pending.reject(error);
     }
-    for(const[id,request]of this.requests)if(request.kind==='inspect-pack'||request.kind==='sample-image-map'){request.worker.postMessage({kind:'cancel',id});request.reject(new DOMException('Resource inspection cancelled.','AbortError'));this.requests.delete(id);}
+    for(const[id,request]of this.requests)if(request.kind==='inspect-pack'||request.kind==='sample-image-map'||request.kind==='sample-dimension-image-maps'){request.worker.postMessage({kind:'cancel',id});request.reject(new DOMException('Resource inspection cancelled.','AbortError'));this.requests.delete(id);}
   }
   async generate(request){
     this.cancel();const revision=this.revision;

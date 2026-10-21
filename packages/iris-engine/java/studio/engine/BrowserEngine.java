@@ -119,6 +119,8 @@ public final class BrowserEngine {
             if(map.getType()==art.arcane.iris.generation.image.IrisImageMapType.COLOR_MAP)writer.name("target").value(map.sampleTarget(x,z));else{writer.name("normalized").value(bits(map.sampleNormalized(x,z)));if(map.getType()==art.arcane.iris.generation.image.IrisImageMapType.GRAYSCALE_HEIGHT||map.getType()==art.arcane.iris.generation.image.IrisImageMapType.RGB_HEIGHT)writer.name("worldHeight").value(bits(map.sampleHeight(x,z)));}writer.endObject();
         }return output.toString();
     }
+    @JSExport public static String inspectDimensionImageMaps(String key)throws java.io.IOException{return pack.dimensionImageMaps(key).describe();}
+    @JSExport public static String sampleDimensionImageMaps(String key,double x,double z)throws java.io.IOException{return pack.dimensionImageMaps(key).sample(x,z);}
     @JSExport public static String inspectPackImageMapSample(String key,double x,double z)throws java.io.IOException{return studio.engine.image.ImageMapInspection.sample(pack.compiledImage(key),x,z);}
     @JSExport public static void registerPackIndexedImage(String path,int width,int height,int depth,String samples,String palette){pack.registerIndexedImage(path,width,height,depth,samples,palette);}
     @JSExport public static void registerPackImage(String path,int width,int height,int channels,int depth,String samples){pack.registerImage(path,width,height,channels,depth,samples);}

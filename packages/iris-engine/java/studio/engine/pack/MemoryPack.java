@@ -34,6 +34,7 @@ public final class MemoryPack {
     public String expressionStatistics(){return "{\"execution\":\"native-emitted-instructions\",\"compiledExpressions\":"+expressionCount+",\"compileWorkCharged\":"+expressionCompileWork+",\"compileWorkLimit\":4194304,\"maxExpressions\":64,\"instructionLimit\":2048,\"evaluationDepthLimit\":32,\"evaluationStepLimit\":65536}";}
     public void reserveExpression(long work){if(++expressionCount>64||work>4L*1024*1024-expressionCompileWork)throw studio.engine.expression.WorkerExpressions.failure("Expression compilation exceeds its snapshot budget");expressionCompileWork+=work;}
     private final Map<String,art.arcane.iris.generation.image.CompiledIrisImageMap> compiledImages=new LinkedHashMap<>();
+    private final Map<String,studio.engine.image.DimensionImageMaps> dimensionImageMaps=new LinkedHashMap<>();
     private IrisData data;
     private ContentGate gate;
     private final PlatformRegistries registries;
@@ -84,6 +85,12 @@ public final class MemoryPack {
         var image=imageLoader.load(definition.getSource());if(image==null)throw new IllegalArgumentException("Missing PNG for native image map: "+name);
         try{var result=art.arcane.iris.generation.image.CompiledIrisImageMap.compile(definition,image);compiledImages.put(name,result);return result;}finally{imageLoader.unload(definition.getSource());}
     }
+    public studio.engine.image.DimensionImageMaps dimensionImageMaps(String key){
+        open();requireGenerationReady();var prior=dimensionImageMaps.get(key);if(prior!=null)return prior;
+        if(dimensionImageMaps.size()>=16)throw studio.engine.UnsupportedPlatform.unavailable("Dimension image-map inspection exceeds 16 cached dimensions");
+        var resource=load("dimensions",key);if(!(resource instanceof IrisDimension dimension)||dimension.isCompatExcluded())throw new IllegalArgumentException("Native dimension is missing or excluded");
+        var result=new studio.engine.image.DimensionImageMaps(data,dimension);dimensionImageMaps.put(key,result);return result;
+    }
     static void validateObjectPath(String path){
         if(path==null||!path.startsWith("objects/")||!path.endsWith(".iob"))throw new IllegalArgumentException("Invalid native object path");
         validatePath(path.substring(0,path.length()-4)+".json");
@@ -124,7 +131,7 @@ public final class MemoryPack {
     public int resourceCount(){return resources.size()+objects.size()+images.size();}
     public boolean compatibilityReady(){return gate!=null&&gate.ready()&&!data.getCompatReport().isIncomplete();}
     public void requireGenerationReady(){if(!compatibilityReady())throw new IllegalStateException("Native pack compatibility is incomplete; terrain generation is unavailable");}
-    public void release(){noiseCache.release();if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;if(imageLoader!=null)imageLoader.clearCache();imageLoader=null;images.clear();imageSizes.clear();compiledImages.clear();imageCompileWorkBytes=0;expressionCompileWork=0;expressionCount=0;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
+    public void release(){noiseCache.release();if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;if(imageLoader!=null)imageLoader.clearCache();imageLoader=null;images.clear();imageSizes.clear();compiledImages.clear();dimensionImageMaps.clear();imageCompileWorkBytes=0;expressionCompileWork=0;expressionCount=0;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
     public boolean isOpen(){return data!=null&&OWNERS.get(data)==this;}
     String objectFilePath(String name){return objectRoot+"/"+objectPath(name);}
     byte[] objectBytes(String name){return objects.get(objectPath(name));}

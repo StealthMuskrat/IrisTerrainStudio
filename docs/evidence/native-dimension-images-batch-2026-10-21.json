@@ -1,0 +1,568 @@
+{
+  "scope": "native-dimension-image-binding-authoring-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "build": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "wasmSha256": "6703baf38bf73d33bfd737e251b16ffe5d3bb6b1c65cbccc3fc275189061bb8e",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "65dc13af3083a56b3826d28e5b026da49012c66ed9645399c547ddecc82caaff",
+    "nativeInputProfile": "terrain-no-eco-items",
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ]
+  },
+  "compiler": {
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "implementation": [
+    "Native dimension runtime compilation exposes resolved binding/source/mask metadata.",
+    "Coordinate authoring reports original runtime region/biome/surface-block overrides and native public mask-sampler weights with raw map values.",
+    "Current unsaved dimension text is captured with saved dependencies; procedural fallback and later terrain are not synthesized.",
+    "Bounded pack-owned inspection contexts are reused and cleared on release.",
+    "Worker ownership handles cancellation, stale PNG decoding, per-point sampling errors and whole-request native compilation refusal."
+  ],
+  "limits": {
+    "cachedDimensions": 16,
+    "bindingsPerDimension": 64,
+    "masksPerBinding": 16,
+    "requestCoordinates": 16,
+    "imageCompilation": "Existing cumulative 64 MiB snapshot work budget remains in force."
+  },
+  "focusedCheck": {
+    "scope": "native-dimension-image-binding-authoring-development-targeted",
+    "result": "pass",
+    "images": 2,
+    "imagePixels": 8,
+    "bindingPoints": 5,
+    "bindingReference": {
+      "description": {
+        "dimension": "terrain3d",
+        "minimumWorldY": -32,
+        "bindings": [
+          {
+            "key": "region",
+            "map": "regions",
+            "application": "REGION",
+            "source": "colors",
+            "sourceWidth": 4,
+            "sourceHeight": 1,
+            "mapType": "COLOR_MAP",
+            "sampling": "NEAREST",
+            "outOfBounds": "FALLBACK",
+            "alphaPolicy": "IGNORE",
+            "sourceColorMode": "RGB",
+            "sourceBitDepth": 8,
+            "sourceChannels": 3,
+            "minimumAlpha": 1,
+            "maximumAlpha": 1,
+            "clippedPixelCount": 0,
+            "unknownColorPixelCount": 0,
+            "contentHash": "a97fb5391d6705a8357962af35d689c8b74367db1fad059dcd48d7dc8c58960b",
+            "masks": [
+              {
+                "map": "weight",
+                "operation": "MULTIPLY",
+                "inverted": false,
+                "threshold": 0,
+                "falloff": 0
+              }
+            ]
+          },
+          {
+            "key": "biome",
+            "map": "biomes",
+            "application": "BIOME",
+            "source": "colors",
+            "sourceWidth": 4,
+            "sourceHeight": 1,
+            "mapType": "COLOR_MAP",
+            "sampling": "NEAREST",
+            "outOfBounds": "FALLBACK",
+            "alphaPolicy": "IGNORE",
+            "sourceColorMode": "RGB",
+            "sourceBitDepth": 8,
+            "sourceChannels": 3,
+            "minimumAlpha": 1,
+            "maximumAlpha": 1,
+            "clippedPixelCount": 0,
+            "unknownColorPixelCount": 0,
+            "contentHash": "cc683fd2ac9eb3b9239fcf90aa563a50fa186ce035f829f9d63a5fcd0164eeba",
+            "masks": [
+              {
+                "map": "weight",
+                "operation": "MULTIPLY",
+                "inverted": false,
+                "threshold": 0,
+                "falloff": 0
+              }
+            ]
+          },
+          {
+            "key": "surface",
+            "map": "blocks",
+            "application": "SURFACE_BLOCK",
+            "source": "colors",
+            "sourceWidth": 4,
+            "sourceHeight": 1,
+            "mapType": "COLOR_MAP",
+            "sampling": "NEAREST",
+            "outOfBounds": "FALLBACK",
+            "alphaPolicy": "IGNORE",
+            "sourceColorMode": "RGB",
+            "sourceBitDepth": 8,
+            "sourceChannels": 3,
+            "minimumAlpha": 1,
+            "maximumAlpha": 1,
+            "clippedPixelCount": 0,
+            "unknownColorPixelCount": 0,
+            "contentHash": "d3d712c3140c7d73f87014e7f5c463eb990715703bd86220ff0a55cd972ee4b8",
+            "masks": [
+              {
+                "map": "weight",
+                "operation": "MULTIPLY",
+                "inverted": false,
+                "threshold": 0,
+                "falloff": 0
+              }
+            ]
+          },
+          {
+            "key": "weight",
+            "map": "weight",
+            "application": "MASK",
+            "source": "weights",
+            "sourceWidth": 4,
+            "sourceHeight": 1,
+            "mapType": "GRAYSCALE_MASK",
+            "sampling": "NEAREST",
+            "outOfBounds": "FALLBACK",
+            "alphaPolicy": "IGNORE",
+            "sourceColorMode": "GRAYSCALE",
+            "sourceBitDepth": 8,
+            "sourceChannels": 1,
+            "minimumAlpha": 1,
+            "maximumAlpha": 1,
+            "clippedPixelCount": 0,
+            "unknownColorPixelCount": 0,
+            "contentHash": "fd55d6842bdcdf8ab2dd41c710b5136e6cbb957f17000acf4c7fd94eea0a6cbf",
+            "masks": []
+          }
+        ]
+      },
+      "samples": [
+        {
+          "x": 0,
+          "z": 0,
+          "regionOverride": null,
+          "biomeOverride": null,
+          "surfaceBlockOverride": null,
+          "bindings": [
+            {
+              "key": "region",
+              "application": "REGION",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 0,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:mapped"
+              }
+            },
+            {
+              "key": "biome",
+              "application": "BIOME",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 0,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:alternate"
+              }
+            },
+            {
+              "key": "surface",
+              "application": "SURFACE_BLOCK",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 0,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "minecraft:clay"
+              }
+            },
+            {
+              "key": "weight",
+              "application": "MASK",
+              "maskWeight": 1,
+              "sample": {
+                "x": 0,
+                "z": 0,
+                "type": "GRAYSCALE_MASK",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "normalized": 0
+              }
+            }
+          ]
+        },
+        {
+          "x": 1,
+          "z": 0,
+          "regionOverride": null,
+          "biomeOverride": null,
+          "surfaceBlockOverride": null,
+          "bindings": [
+            {
+              "key": "region",
+              "application": "REGION",
+              "maskWeight": 0.49803921580314636,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "biome",
+              "application": "BIOME",
+              "maskWeight": 0.49803921580314636,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "surface",
+              "application": "SURFACE_BLOCK",
+              "maskWeight": 0.49803921580314636,
+              "categoricalSelected": false,
+              "sample": {
+                "x": 1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "minecraft:stone"
+              }
+            },
+            {
+              "key": "weight",
+              "application": "MASK",
+              "maskWeight": 1,
+              "sample": {
+                "x": 1,
+                "z": 0,
+                "type": "GRAYSCALE_MASK",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "normalized": 0.49803921580314636
+              }
+            }
+          ]
+        },
+        {
+          "x": 2,
+          "z": 0,
+          "regionOverride": "mapped",
+          "biomeOverride": "alternate",
+          "surfaceBlockOverride": "minecraft:clay",
+          "bindings": [
+            {
+              "key": "region",
+              "application": "REGION",
+              "maskWeight": 0.501960813999176,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 2,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:mapped"
+              }
+            },
+            {
+              "key": "biome",
+              "application": "BIOME",
+              "maskWeight": 0.501960813999176,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 2,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:alternate"
+              }
+            },
+            {
+              "key": "surface",
+              "application": "SURFACE_BLOCK",
+              "maskWeight": 0.501960813999176,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 2,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "minecraft:clay"
+              }
+            },
+            {
+              "key": "weight",
+              "application": "MASK",
+              "maskWeight": 1,
+              "sample": {
+                "x": 2,
+                "z": 0,
+                "type": "GRAYSCALE_MASK",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "normalized": 0.501960813999176
+              }
+            }
+          ]
+        },
+        {
+          "x": 3,
+          "z": 0,
+          "regionOverride": "ledges",
+          "biomeOverride": "ledges",
+          "surfaceBlockOverride": "minecraft:stone",
+          "bindings": [
+            {
+              "key": "region",
+              "application": "REGION",
+              "maskWeight": 1,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 3,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "biome",
+              "application": "BIOME",
+              "maskWeight": 1,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 3,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "surface",
+              "application": "SURFACE_BLOCK",
+              "maskWeight": 1,
+              "categoricalSelected": true,
+              "sample": {
+                "x": 3,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "target": "minecraft:stone"
+              }
+            },
+            {
+              "key": "weight",
+              "application": "MASK",
+              "maskWeight": 1,
+              "sample": {
+                "x": 3,
+                "z": 0,
+                "type": "GRAYSCALE_MASK",
+                "insideSource": true,
+                "samplingKernelInsideSource": true,
+                "normalized": 1
+              }
+            }
+          ]
+        },
+        {
+          "x": -1,
+          "z": 0,
+          "regionOverride": null,
+          "biomeOverride": null,
+          "surfaceBlockOverride": null,
+          "bindings": [
+            {
+              "key": "region",
+              "application": "REGION",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": -1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": false,
+                "samplingKernelInsideSource": false,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "biome",
+              "application": "BIOME",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": -1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": false,
+                "samplingKernelInsideSource": false,
+                "target": "iris:ledges"
+              }
+            },
+            {
+              "key": "surface",
+              "application": "SURFACE_BLOCK",
+              "maskWeight": 0,
+              "categoricalSelected": false,
+              "sample": {
+                "x": -1,
+                "z": 0,
+                "type": "COLOR_MAP",
+                "insideSource": false,
+                "samplingKernelInsideSource": false,
+                "target": "minecraft:stone"
+              }
+            },
+            {
+              "key": "weight",
+              "application": "MASK",
+              "maskWeight": 1,
+              "sample": {
+                "x": -1,
+                "z": 0,
+                "type": "GRAYSCALE_MASK",
+                "insideSource": false,
+                "samplingKernelInsideSource": false,
+                "normalized": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "regionReference": [
+      "mapped",
+      "mapped",
+      "ledges"
+    ],
+    "terrainReference": [
+      {
+        "height": "4050000000000000",
+        "biome": "alternate"
+      },
+      {
+        "height": "4050000000000000",
+        "biome": "alternate"
+      },
+      {
+        "height": "4050000000000000",
+        "biome": "ledges"
+      }
+    ],
+    "paintReference": [
+      [
+        2,
+        32,
+        0,
+        "minecraft:stone"
+      ],
+      [
+        2,
+        31,
+        0,
+        "minecraft:stone"
+      ],
+      [
+        3,
+        32,
+        0,
+        "minecraft:stone"
+      ],
+      [
+        3,
+        31,
+        0,
+        "minecraft:stone"
+      ]
+    ],
+    "workerNativeRefusalRecoveryAndPerPointErrors": true,
+    "workerStaleDecodeOwnership": true,
+    "clientValidationDispatchCancellation": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "6703baf38bf73d33bfd737e251b16ffe5d3bb6b1c65cbccc3fc275189061bb8e",
+    "sourceSha256": "65dc13af3083a56b3826d28e5b026da49012c66ed9645399c547ddecc82caaff",
+    "browserVerified": false,
+    "terrainParityVerified": false
+  },
+  "validationNotes": [
+    "Initial malformed-target fixture removed valid legend colors and triggered native legend validation first; corrected only that fixture.",
+    "Syntax, patch and corresponding source-bundle identities passed.",
+    "One native chunk was painted to inspect four selected surface cells; no cell-by-cell terrain comparison or registry enumeration ran."
+  ],
+  "algorithmSourceSha256": {
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/image/IrisImageMapRuntime.java": "13b095390d855ba21f08b44db6f77b61d322af2c88c2400199876c5231c43c93",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/image/IrisImageMapMaskSampler.java": "3c814eed968ad82463c541cf20f1a993d36d0390f795f7556930f698c4023c45",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/terrain/RegionSelection.java": "34c554bf55ad291eb5885daa8ac2bde3446b8113da7c458eddcb7ed4442312d1",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/stage/IrisTerrainNormalActuator.java": "abb1c3a8075c9a92d4a95319617448a499cc7d367cc73435c948312bfc30cd05"
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "c228854e4c900204f92a7f57828b122c71ea170f416dc5c9fffeb0d87031c3e4",
+    "apps/web/workers/iris-worker.js": "7d90880fe8d051c80eaeb272ff6c21998293794f72ed3f2c4c73647ca4c0ab66",
+    "packages/iris-engine/client.mjs": "4a0fe336ea8f0b60ba0a080bb00cb7f5e8ec1f78d0b6a4984b784c2ba65dfc69",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "b08f434a8fff1dfede9761b396901841fbd02934fc14a72eb84c589a2519b661",
+    "packages/iris-engine/java/studio/engine/pack/MemoryPack.java": "11227ec6be50d47dc214100824286e522a53f163ad19b88f99356258d68e020a",
+    "packages/iris-engine/java/studio/engine/image/DimensionImageMaps.java": "3cfefff109c5d4a156b60f5063ccfea49a059990710bc0b9513a8dcd7fd3d09b",
+    "tools/engine-build/build.mjs": "7cc73341c48a1ab54e548effdf48d4cba342f064b6067b4fa4b6853016bd5c4b",
+    "tools/checks/NativeTerrainLinkCheck.java": "503bc9be66e96c01a75de14e6fe76e650fb28bf235ea23e2a999b13cc47ff4f4",
+    "tools/checks/native-dimension-images-smoke.mjs": "86efc80b3136dc8bd2574f47da57693fa622b242952b279be45da457621fff5d"
+  },
+  "limitations": [
+    "Full mask/options/categorical dimension interactions remain unqualified.",
+    "Real browser UI/GPU/interaction verification remains pending.",
+    "Inspection overrides are not full procedural fallback/height blending/later terrain output.",
+    "Production registry/assets, exact dependency/release reference and remaining engine host services remain unresolved."
+  ],
+  "broadSuiteRun": false,
+  "terrainCellEnumerationRun": false,
+  "registrySweepRun": false,
+  "githubWorkflowRun": false,
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false
+}

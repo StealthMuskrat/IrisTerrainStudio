@@ -66,12 +66,24 @@ function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris re
 self.onmessage=async({data})=>{
   if(data.kind==='release-context'){active=0;const loaded=runtime&&await runtime.catch(()=>null);if(loaded&&active===0)clearContext(loaded.api);return;}
   if(data.kind==='cancel'){if(active===data.id)active=0;return;}
-  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map')return;
-  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack'||data.kind==='sample-image-map')active=id;
+  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map'&&data.kind!=='sample-dimension-image-maps')return;
+  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack'||data.kind==='sample-image-map'||data.kind==='sample-dimension-image-maps')active=id;
   let apiForCleanup;
   try {
     const {api,manifest}=await engine();apiForCleanup=api;
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
+    if(data.kind==='sample-dimension-image-maps'){
+      if(active!==id)return;
+      if(typeof data.name!=='string'||!data.name||!Array.isArray(data.points)||data.points.length<1||data.points.length>16||data.points.some(point=>!Array.isArray(point)||point.length!==2||!point.every(Number.isFinite)))throw new Error('Supply one to sixteen finite X, Z coordinate pairs.');
+      if(typeof api.inspectDimensionImageMaps!=='function'||typeof api.sampleDimensionImageMaps!=='function')throw new Error('Rebuild the local Iris engine to enable dimension image-map inspection.');
+      await registry(api,manifest);if(active!==id)return;clearContext(api);
+      try{
+        if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;
+        const snapshot=JSON.parse(api.openPack()),dimension=JSON.parse(api.inspectDimensionImageMaps(data.name));
+        const samples=data.points.map(([x,z])=>{try{return JSON.parse(api.sampleDimensionImageMaps(data.name,x,z));}catch(error){return{x,z,error:error.message||String(error)};}});
+        if(active===id)self.postMessage({kind:'info',id,info:{...snapshot,dimension,samples,scope:'native-dimension-image-map-authoring',terrainParityVerified:false}});
+      }finally{if(active===id)clearContext(api);}return;
+    }
     if(data.kind==='sample-image-map'){
       if(active!==id)return;
       if(typeof data.name!=='string'||!data.name||!Array.isArray(data.points)||data.points.length<1||data.points.length>16||data.points.some(point=>!Array.isArray(point)||point.length!==2||!point.every(Number.isFinite)))throw new Error('Supply one to sixteen finite X, Z coordinate pairs.');
