@@ -27,9 +27,10 @@ public final class TerrainCaveMaterials {
             WorkerCaveStorage.select(cx,cz);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());
             ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
+            var biomes=TerrainBiomeStage.paint(engine,x,z,context);
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
             new IrisCarveModifier(engine).onModify(cx,cz,blocks,false,context);
-            return TerrainPaintStage.serialize(engine,x,z,blocks,"native-dimension-cave-material-stage-development");
+            return TerrainPaintStage.serialize(engine,x,z,blocks,"native-dimension-cave-material-stage-development",biomes);
         } finally {WorkerCaveStorage.clear();}
     }
 }

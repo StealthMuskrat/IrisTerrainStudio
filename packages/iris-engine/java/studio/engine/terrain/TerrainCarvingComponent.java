@@ -52,6 +52,7 @@ public final class TerrainCarvingComponent {
             WorkerCaveStorage.select(cx,cz);
             if(neighbors)WorkerCaveStorage.restoreContinuations(neighborhood.session().continuations(engine),engine);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
+            var biomes=TerrainBiomeStage.paint(engine,x,z,context);
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
             IrisCarveModifier cave=new IrisCarveModifier(engine);cave.onModify(cx,cz,blocks,false,context);
             if(post)new art.arcane.iris.generation.stage.IrisPostModifier(engine).onModify(x,z,blocks,false,context);
@@ -71,7 +72,7 @@ public final class TerrainCarvingComponent {
                 new art.arcane.iris.generation.stage.IrisPerfectionModifier(engine).onModify(x,z,blocks,false,context);
             }
             if(stage==Stage.SUBTERRAIN_FINISH)cave.preserveSubterrain(x,z,blocks);
-            String result=TerrainPaintStage.serialize(engine,x,z,blocks,placement==null?stage.scope:"native-procedural-placement-development");
+            String result=TerrainPaintStage.serialize(engine,x,z,blocks,placement==null?stage.scope:"native-procedural-placement-development",biomes);
             result=result.substring(0,result.length()-1)+",\"subterrain\":{\"nativePlanner\":true,\"enabled\":"+!engine.getComplex().getSubterrainPlanner().isEmpty()+",\"preservationApplied\":"+(stage==Stage.SUBTERRAIN_FINISH)+",\"samplingWorkCharged\":"+WorkerCaveStorage.subterrainWork()+",\"workLimit\":16777216}}";
             if(content&&!neighbors)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
             if(neighbors){var stats=placementResult.neighborhood();result=result.substring(0,result.length()-1)+",\"neighborhood\":{\"sourceChunks\":"+stats.sourceChunks()+",\"contributingSources\":"+stats.contributingSources()+",\"placementRadius\":"+stats.placementRadius()+",\"inputChunkRadius\":"+stats.inputChunkRadius()+",\"sourceChunkRadius\":"+stats.sourceChunkRadius()+",\"builtPlanBytes\":"+stats.builtPlanBytes()+"},\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";}

@@ -4,3 +4,5 @@
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important}}
 
 .world-empty{position:absolute;inset:60px 20px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;pointer-events:none;gap:10px;color:var(--muted);font-size:11px}.world-empty strong{font-weight:500;font-size:14px}.world-empty p{max-width:240px;color:var(--subtle);line-height:1.8}
+
+.world-biome-slice{position:absolute;top:12px;right:14px;z-index:1}

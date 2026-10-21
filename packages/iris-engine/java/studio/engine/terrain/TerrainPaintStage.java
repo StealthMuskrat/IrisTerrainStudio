@@ -17,8 +17,9 @@ public final class TerrainPaintStage {
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999984||Math.abs((long)z)>29999984||height<1||height>4096)throw new IllegalArgumentException("Terrain painting exceeds worker chunk bounds");
         ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());
         ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
+        var biomes=TerrainBiomeStage.paint(engine,x,z,context);
         new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
-        return serialize(engine,x,z,blocks,"native-terrain-paint-stage-development");
+        return serialize(engine,x,z,blocks,"native-terrain-paint-stage-development",biomes);
     }
     public static String serialize(BrowserTerrainEngine engine,int x,int z,ArrayHunk<NativeBlockState> blocks,String scope)throws IOException{
         return serialize(engine,x,z,blocks,scope,null);
