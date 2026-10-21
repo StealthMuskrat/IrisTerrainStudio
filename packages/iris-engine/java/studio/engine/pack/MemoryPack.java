@@ -19,7 +19,11 @@ import art.arcane.iris.spi.PlatformRegistries;
 public final class MemoryPack {
     private static final Map<IrisData,MemoryPack> OWNERS=new IdentityHashMap<>();
     private static MemoryPack opening;
+    private static long snapshotSequence;
+    private final String objectRoot="/iris-memory-objects/"+(++snapshotSequence);
     private final Map<String,String> resources=new LinkedHashMap<>();
+    private final Map<String,byte[]> objects=new LinkedHashMap<>();
+    private MemoryObjectLoader objectLoader;
     private final Map<String,MemoryResourceLoader<?>> loaders=new LinkedHashMap<>();
     private int bytes;
     private IrisData data;
@@ -33,8 +37,21 @@ public final class MemoryPack {
         validatePath(path);
         if(text==null||text.length()>4*1024*1024)throw new IllegalArgumentException("Pack resource exceeds the native reader text budget");
         String prior=resources.get(path);int total=bytes+2*(text.length()-(prior==null?0:prior.length()));
-        if((resources.size()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        if((resourceCount()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
         resources.put(path,text);bytes=total;
+    }
+    public void registerObject(String path,String binary){
+        if(data!=null)throw new IllegalStateException("The native pack snapshot is sealed");
+        validateObjectPath(path);
+        if(binary==null||binary.length()>8*1024*1024)throw new IllegalArgumentException("Native object exceeds 8 MiB");
+        byte[] prior=objects.get(path);int total=bytes+binary.length()-(prior==null?0:prior.length);
+        if((resourceCount()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        byte[] value=new byte[binary.length()];for(int i=0;i<value.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Object transport must contain bytes");value[i]=(byte)c;}
+        objects.put(path,value);bytes=total;
+    }
+    static void validateObjectPath(String path){
+        if(path==null||!path.startsWith("objects/")||!path.endsWith(".iob"))throw new IllegalArgumentException("Invalid native object path");
+        validatePath(path.substring(0,path.length()-4)+".json");
     }
     public static void validatePath(String path){
         if(path==null||path.length()>1024||!path.endsWith(".json")||path.contains("\\")||path.contains(":")||Arrays.stream(path.split("/",-1)).anyMatch(part->part.isEmpty()||part.equals(".")||part.equals("..")||part.chars().anyMatch(c->c<32)))throw new IllegalArgumentException("Invalid pack JSON resource path");
@@ -58,6 +75,7 @@ public final class MemoryPack {
         data.setBlockLoader(pack.loader(new IrisBlockData(),IrisBlockData.class));
         data.setExpressionLoader(pack.loader(new IrisExpression(),IrisExpression.class));
         data.setImageMapLoader(pack.loader(new IrisImageMap(),IrisImageMap.class));
+        pack.objectLoader=new MemoryObjectLoader(pack,data);data.setObjectLoader(pack.objectLoader);data.getLoaders().put(art.arcane.iris.structure.object.IrisObject.class,pack.objectLoader);
         pack.gate=new ContentGate(pack.registries,pack::fallbacks,data.getCompatReport(),key->data.getBlockLoader().load(key,false));
         if(pack.registries==null)data.getCompatReport().markIncomplete("Browser native registry is not installed");
     }
@@ -66,11 +84,16 @@ public final class MemoryPack {
     }
     public static ContentGate contentGate(IrisData data){return owner(data).gate;}
     public static MemoryPack owner(IrisData data){MemoryPack pack=OWNERS.get(data);if(pack==null)throw new IllegalStateException("No worker snapshot owns this native data instance");return pack;}
-    public IrisRegistrant load(String folder,String name){if(data==null)throw new IllegalStateException("Open the pack snapshot first");MemoryResourceLoader<?> loader=loaders.get(folder);if(loader==null)throw new IllegalArgumentException("Native resource folder is not linked: "+folder);return loader.load(name);}
-    public int resourceCount(){return resources.size();}
+    public IrisRegistrant load(String folder,String name){if(data==null)throw new IllegalStateException("Open the pack snapshot first");if(folder.equals("objects"))return objectLoader.load(name);MemoryResourceLoader<?> loader=loaders.get(folder);if(loader==null)throw new IllegalArgumentException("Native resource folder is not linked: "+folder);return loader.load(name);}
+    public int resourceCount(){return resources.size()+objects.size();}
     public boolean compatibilityReady(){return gate!=null&&gate.ready()&&!data.getCompatReport().isIncomplete();}
     public void requireGenerationReady(){if(!compatibilityReady())throw new IllegalStateException("Native pack compatibility is incomplete; terrain generation is unavailable");}
-    public void release(){if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();data=null;gate=null;resources.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
+    public void release(){if(data!=null)OWNERS.remove(data);for(var loader:loaders.values())loader.clearCache();loaders.clear();if(objectLoader!=null)objectLoader.clearCache();objectLoader=null;data=null;gate=null;resources.clear();objects.clear();bytes=0;NativeConfigReader.bindResourceProvider(null);}
+    boolean isOpen(){return data!=null&&OWNERS.get(data)==this;}
+    String objectFilePath(String name){return objectRoot+"/"+objectPath(name);}
+    byte[] objectBytes(String name){return objects.get(objectPath(name));}
+    String objectPath(String name){String path="objects/"+name+".iob";validateObjectPath(path);return path;}
+    String[] objectKeys(){return objects.keySet().stream().map(path->path.substring(8,path.length()-4)).toArray(String[]::new);}
     String text(String path){return resources.get(path);}
     String resolve(String folder,String name){
         if(name.contains(":"))return null; // Native getFolders(name) rejects foreign prefixes.

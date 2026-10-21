@@ -12,6 +12,7 @@ export class StudioApi {
   packs() { return this.request('packs'); }
   resources(pack) { return this.request('resources', { query: { pack } }); }
   async read(pack, path) { const response = await this.request('resource', { query: { pack, path }, raw: true }); return { text: await response.text(), etag: response.headers.get('etag') }; }
+  async readBinary(pack, path) { const response = await this.request('resource', { query: { pack, path }, raw: true }); return { bytes: new Uint8Array(await response.arrayBuffer()), etag: response.headers.get('etag') }; }
   save(pack, path, text, etag) { return this.request('resource', { method: 'PUT', query: { pack, path }, headers: { 'Content-Type': 'application/json', [etag === '*' ? 'If-None-Match' : 'If-Match']: etag }, body: text }); }
   operation(pack, action) { return this.request('operation', { method: 'POST', query: { pack }, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(action) }); }
   async export(pack) { const response = await this.request('export', { query: { pack }, raw: true }); return response.blob(); }

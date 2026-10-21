@@ -28,6 +28,19 @@ async function registry(api,engineManifest){
     const installed=JSON.parse(api.installRegistry(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));if(installed.blocks!==manifest.blocks||installed.states!==manifest.states)throw new Error('Native registry state coverage differs from the export manifest.');return installed;
   })().catch(error=>{registryRuntime=null;throw error;});return registryRuntime;
 }
+function registerSnapshot(api,snapshot){
+  if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
+  const paths=new Set();let budget=0;
+  for(const resource of snapshot.resources){
+    if(paths.has(resource.path))throw new Error('Duplicate native pack resource.');paths.add(resource.path);
+    if(resource.bytes!==undefined){
+      const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native object transport exceeds its byte budget.');
+      const parts=[];for(let i=0;i<bytes.length;i+=16384)parts.push(String.fromCharCode(...bytes.subarray(i,i+16384)));api.registerPackObject(resource.path,parts.join(''));
+    }else{
+      if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
+    }
+  }
+}
 const bits=new DataView(new ArrayBuffer(8));
 function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris returned invalid double bits.');bits.setBigUint64(0,BigInt('0x'+hex));const value=bits.getFloat64(0);if(!Number.isFinite(value))throw new Error('Iris returned a non-finite value.');return value; }
 self.onmessage=async({data})=>{
@@ -38,7 +51,7 @@ self.onmessage=async({data})=>{
     const {api,manifest}=await engine();
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
     if(data.kind==='inspect-pack'){
-      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;api.clear();try{for(const resource of data.snapshot.resources)api.registerPackResource(resource.path,resource.text);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{api.clear();}return;
+      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;api.clear();try{registerSnapshot(api,data.snapshot);const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{api.clear();}return;
     }
     if(active!==id)return;
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;
@@ -46,7 +59,7 @@ self.onmessage=async({data})=>{
     if(options.packSnapshot){await registry(api,manifest);if(active!==id)return;}
     api.clear();
     let terrainInfo;
-    if(options.packSnapshot){for(const resource of options.packSnapshot.resources)api.registerPackResource(resource.path,resource.text);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}}
+    if(options.packSnapshot){registerSnapshot(api,options.packSnapshot);api.openPack();if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}}
     if(options.field==='caves'){
       const chunk=JSON.parse(api.carveDimensionChunk(Math.floor(x/16)*16,Math.floor(z/16)*16));
       if(chunk.scope!=='native-dimension-cave-markers-development'||!Number.isInteger(chunk.height)||chunk.height<1||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>65536||chunk.palette[0]!==null||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height)throw new Error('Native cave marker output is incomplete.');

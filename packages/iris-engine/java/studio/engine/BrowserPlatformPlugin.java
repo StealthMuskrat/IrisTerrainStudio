@@ -55,6 +55,16 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if(name.equals("art.arcane.iris.generation.mantle.EngineMantle")){
                 int storage=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("insertMatter")){Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();String target=null;if(ref.getClassName().equals(name)&&ref.getName().equals("getMantle"))target="getMantle";else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="useChunk";if(target!=null){redirectHostCall(call,target);storage++;}}}if(storage!=2)throw new IllegalStateException("Pinned matter insertion calls changed");
             }
+            if(name.equals("art.arcane.iris.structure.object.IrisObjectIO")){
+                int streams=0,tiles=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().equals("readTile")){unavailable(method,"Native object tile-entity payloads");tiles++;}
+                    Program p=method.getProgram();if(p!=null)for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.io.FileInputStream")&&call.getMethod().getName().equals("<init>"))streams++;
+                }
+                if(streams!=3||tiles!=1)throw new IllegalStateException("Pinned native object IO boundary changed");
+                replaceClass(cls,"java.io.FileInputStream","studio.engine.pack.MemoryObjectStream");
+                replaceClass(cls,"java.util.concurrent.locks.Lock","studio.engine.terrain.WorkerLock");
+            }
             if(name.equals("art.arcane.iris.structure.object.IrisObject")){
                 replaceClass(cls,"java.util.concurrent.locks.Lock","studio.engine.terrain.WorkerLock");
                 replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock","studio.engine.terrain.WorkerReadWriteLock");

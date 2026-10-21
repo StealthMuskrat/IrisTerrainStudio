@@ -99,3 +99,6 @@ The comparator checks provenance, complete capture bounds, exact floating-point 
 - [Contribution workflow](CONTRIBUTING.md)
 
 No F8thful archive or Minecraft assets were supplied with the specification. Asset validation and redistribution review remain open. The optional noise-module installer preserves the compiled module's corresponding source and notices. No proprietary game assets are committed.
+
+
+Native `.iob` object resources can now be inspected from the explorer using the original Iris binary reader in the browser worker. The inspector shows dimensions and a bounded block sample. Binary bytes are preserved, and changed object content invalidates cached previews. Object/structure placement and tile-entity payload support remain unfinished; see [development details](docs/DEVELOPMENT.md#native-binary-object-resources).

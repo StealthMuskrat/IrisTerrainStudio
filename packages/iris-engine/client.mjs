@@ -37,7 +37,22 @@ export class GenerationClient extends EventTarget {
     if(!Number.isInteger(options.width)||!Number.isInteger(options.height)||options.width<1||options.height<1||options.width>512||options.height>512||options.span<=0||options.span>4096||Math.abs(options.x)+options.span/2>30_000_000||Math.abs(options.z)+options.span*options.height/options.width/2>30_000_000||Math.abs(options.y)>30_000_000)throw new Error('Preview exceeds the supported coordinate, resolution or memory limits.');
     if(['regions','terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','caves'].includes(request.field)&&(!options.packSnapshot||typeof options.dimensionKey!=='string'||!options.dimensionKey))throw new Error('Choose a dimension and capture its native pack resources before generating native dimension fields.');
     if(!['regions','terrain','biomes','density','terrain-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','caves'].includes(request.field)&&irisStyles.has(request.field)&&!options.configured&&!options.generator&&!options.nativeConfig&&(typeof options.style!=='string'||!/^[A-Z][A-Z0-9_]*$/.test(options.style)))throw new Error('Choose an Iris noise style.');
-    const encoded=new TextEncoder().encode(JSON.stringify(options)),key=[...new Uint8Array(await crypto.subtle.digest('SHA-256',encoded))].map(value=>value.toString(16).padStart(2,'0')).join('');if(revision!==this.revision)throw new DOMException('Preview cancelled.','AbortError');
+    // Hash byte content directly; JSON.stringify(Uint8Array) expands each byte into an object property.
+    let cacheOptions=options;
+    if(options.packSnapshot){
+      if(!Array.isArray(options.packSnapshot.resources)||options.packSnapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
+      const resources=[];let budget=0;
+      for(const resource of options.packSnapshot.resources){
+        if(resource.bytes!==undefined){
+          if(!(resource.bytes instanceof Uint8Array)||resource.bytes.byteLength>8*1024*1024||(budget+=resource.bytes.byteLength)>64*1024*1024)throw new Error('Native object exceeds its snapshot byte budget.');
+          // Own the input throughout hashing and worker dispatch, even if a caller edits its buffer.
+          const bytes=resource.bytes.slice();resources.push({path:resource.path,bytes,sha256:[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('')});
+        }else{if(typeof resource.text!=='string'||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack exceeds its text budget.');resources.push({...resource});}
+      }
+      options.packSnapshot={...options.packSnapshot,resources};
+      cacheOptions={...options,packSnapshot:{...options.packSnapshot,resources:resources.map(resource=>resource.bytes?{path:resource.path,byteLength:resource.bytes.byteLength,sha256:resource.sha256}:resource)}};
+    }
+    const encoded=new TextEncoder().encode(JSON.stringify(cacheOptions)),key=[...new Uint8Array(await crypto.subtle.digest('SHA-256',encoded))].map(value=>value.toString(16).padStart(2,'0')).join('');if(revision!==this.revision)throw new DOMException('Preview cancelled.','AbortError');
     if(this.cache.has(key)){const result=this.cache.get(key);this.cache.delete(key);this.cache.set(key,result);return result;}
     const worker=this.worker(irisStyles.has(request.field)?'iris':'lab'),id=++this.sequence;
     return new Promise((resolve,reject)=>{this.pending={id,key,worker,resolve,reject};worker.postMessage({kind:'generate',id,options});});

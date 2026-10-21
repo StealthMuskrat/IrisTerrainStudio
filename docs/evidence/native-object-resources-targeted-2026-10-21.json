@@ -1,0 +1,81 @@
+{
+  "scope": "native-object-resource-development-targeted",
+  "date": "2026-10-21",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "validation": {
+    "result": "pass",
+    "fixtures": 1,
+    "storedInputBlocks": 3,
+    "decodedBlockProbes": 2,
+    "nativeFiltering": "structure_void removed by original reader",
+    "reference": {
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "blockCount": 2,
+      "blocks": [
+        [
+          -1,
+          0,
+          0,
+          "minecraft:stone"
+        ],
+        [
+          1,
+          1,
+          0,
+          "minecraft:oak_stairs[facing=east,half=top,shape=straight,waterlogged=false]"
+        ]
+      ],
+      "paletteKeys": [
+        "minecraft:stone",
+        "minecraft:structure_void",
+        "minecraft:oak_stairs[facing=east,half=top,shape=straight,waterlogged=false]"
+      ]
+    },
+    "binaryBytes": 180,
+    "binarySha256": "38bb413d3e829a5046876ea91a6694bba64c5a676d99010f111d282f7a9a6311",
+    "wasmSha256": "c864da4495930d62523dd56009f0c62de892e737ea5b103480c1cb5b6cfe159c",
+    "sourceSha256": "3e38f3fb53bba1b9acc6988d37d38162fe6c4334037d58f408411e4acb94f8c8",
+    "workerGenerations": 2,
+    "checks": [
+      "raw JSON token preservation",
+      "owned binary snapshot",
+      "nested object path",
+      "native V2 dimensions and two decoded states",
+      "native raw palette and same-path snapshot cache isolation",
+      "truncation rejected",
+      "tile payload refused",
+      "snapshot recovery after failure",
+      "binary-aware cache reuse and invalidation"
+    ],
+    "legacyV1Verified": false,
+    "browserVerified": false,
+    "placementConnected": false
+  },
+  "harnesses": [
+    {
+      "path": "tools/checks/native-object-smoke.mjs",
+      "sha256": "22beb00a241e9234230c675970b316a228e87042481439bd1ecd1c4ea30a11e3"
+    },
+    {
+      "path": "tools/checks/NativeObjectLinkCheck.java",
+      "sha256": "9d9c3cd6ae70152f00a882ba88f31b3e3c34fe42e2d978f586be3a9ff02e6140"
+    }
+  ],
+  "limitations": [
+    "Node-hosted actual Wasm/worker check, not real-browser qualification",
+    "Legacy V1 uses the original native format dispatcher but has no targeted fixture evidence yet",
+    "Object tile-entity payloads refuse explicitly",
+    "Object/structure content generation and placement remain unconnected",
+    "Native release/dependency provenance and checksum gates remain open"
+  ],
+  "registry": {
+    "manifestSha256": "579b7e6e4eb36cf3c3c64219358ae241ceaec76489343d6291d72ff6980ac05e",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "registryParityVerified": false,
+    "releaseMatchVerified": false
+  }
+}

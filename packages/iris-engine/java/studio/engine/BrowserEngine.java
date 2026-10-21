@@ -78,18 +78,19 @@ public final class BrowserEngine {
 
     @JSExport public static String installRegistry(String text)throws java.io.IOException{
         if(pack.resourceCount()!=0)throw new IllegalStateException("Install the native registry before adding pack resources");
-        BrowserRegistries installed=BrowserRegistries.read(text);pack.release();registry=installed;pack=new MemoryPack(registry);return "{\"blocks\":"+registry.typeCount()+",\"states\":"+registry.stateCount()+"}";
+        BrowserRegistries installed=BrowserRegistries.read(text);pack.release();registry=installed;studio.engine.terrain.WorkerTerrainPlatform.install(registry);pack=new MemoryPack(registry);return "{\"blocks\":"+registry.typeCount()+",\"states\":"+registry.stateCount()+"}";
     }
     @JSExport public static String registryState(String text,boolean strict)throws java.io.IOException{if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.describe(text,strict);}
     @JSExport public static String registryRenderingState(String key)throws java.io.IOException{if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.describeRendering(key);}
     @JSExport public static boolean registryMatches(String first,String other){if(registry==null)throw new IllegalStateException("Native registry is not installed");return registry.decodeBlockState(first).matches(registry.decodeBlockState(other));}
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
+    @JSExport public static void registerPackObject(String path,String bytes){pack.registerObject(path,bytes);}
     @JSExport public static String openPack(){pack.open();return "{\"resources\":"+pack.resourceCount()+",\"compatibilityReady\":"+pack.compatibilityReady()+"}";}
     /** Authoring graph inspection; not a terrain preview or compatibility success claim. */
     @JSExport public static String inspectPackResource(String folder,String name)throws java.io.IOException{
         pack.open();IrisRegistrant resource=pack.load(folder,name);StringWriter output=new StringWriter();
-        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());json.name("excluded").value(resource.isCompatExcluded());}json.name("findings").beginArray();for(String line:pack.open().getCompatReport().detailLines())json.value(line);json.endArray();json.endObject();}return output.toString();
+        try(JsonWriter json=new JsonWriter(output)){json.beginObject();json.name("found").value(resource!=null);json.name("compatibilityReady").value(pack.compatibilityReady());if(resource!=null){json.name("key").value(resource.getLoadKey());json.name("type").value(resource.getTypeName());json.name("folder").value(resource.getFolderName());json.name("excluded").value(resource.isCompatExcluded());if(resource instanceof art.arcane.iris.structure.object.IrisObject object){json.name("dimensions").beginArray().value(object.getW()).value(object.getH()).value(object.getD()).endArray();json.name("blockCount").value(object.getBlocks().size());var palette=art.arcane.iris.structure.object.IrisObjectIO.readPaletteKeysCached(object.getLoadFile());json.name("paletteCount").value(palette.size());json.name("paletteKeys").beginArray();for(int i=0;i<Math.min(32,palette.size());i++)json.value(palette.get(i));json.endArray();json.name("blocks").beginArray();int sampled=0;for(var entry:object.getBlocks()){if(sampled++>=32)break;var point=entry.getKey();json.beginArray().value(point.getBlockX()).value(point.getBlockY()).value(point.getBlockZ()).value(entry.getValue().key()).endArray();}json.endArray();json.name("placementConnected").value(false);json.name("tileEntitiesSupported").value(false);}}json.name("findings").beginArray();for(String line:pack.open().getCompatReport().detailLines())json.value(line);json.endArray();json.endObject();}return output.toString();
     }
 
     @JSExport
