@@ -355,8 +355,11 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if(java.util.Set.of("art.arcane.iris.generation.cache.ConcurrentClockCache","art.arcane.iris.generation.terrain.Terrain3DRuntime$Anchor","art.arcane.iris.generation.terrain.Terrain3DRuntime$BlockCache").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
             if(java.util.Set.of("art.arcane.iris.generation.terrain.Terrain3DFragmentFilter$DensityColumn","art.arcane.iris.generation.terrain.Terrain3DFragmentFilter$Traversal").contains(name))replaceClass(cls,"java.util.concurrent.atomic.AtomicIntegerArray","studio.engine.WorkerIntegerArray");
             if(name.equals("art.arcane.iris.generation.stream.CachedStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2D","studio.engine.terrain.WorkerWorldCache");
-            if(name.equals("art.arcane.iris.generation.stream.CachedDoubleStream2D"))replaceClass(cls,"art.arcane.volmlib.util.cache.WorldCache2DDouble","studio.engine.terrain.WorkerWorldDoubleCache");
-            if(java.util.Set.of("art.arcane.iris.generation.runtime.SharedCornerBounds","art.arcane.iris.generation.mantle.CaveDensityGrid","art.arcane.iris.generation.mantle.CaveDensityGrid$Column","art.arcane.volmlib.util.parallel.AtomicBooleanArray").contains(name)){
+            if(name.equals("art.arcane.volmlib.util.cache.WorldCache2DDouble")){
+                replaceClass(cls,"com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap","studio.engine.terrain.WorkerChunkCacheMap");
+                replaceClass(cls,"com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap$Builder","studio.engine.terrain.WorkerChunkCacheMap$Builder");
+            }
+            if(java.util.Set.of("art.arcane.volmlib.util.cache.ChunkCache2DDouble","art.arcane.iris.generation.runtime.SharedCornerBounds","art.arcane.iris.generation.mantle.CaveDensityGrid","art.arcane.iris.generation.mantle.CaveDensityGrid$Column","art.arcane.volmlib.util.parallel.AtomicBooleanArray").contains(name)){
                 replaceClass(cls,"java.lang.invoke.VarHandle","studio.engine.terrain.WorkerArrayAccess");
                 for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.lang.invoke.MethodHandles"))call.setMethod(new MethodReference("studio.engine.terrain.WorkerArrayAccess",call.getMethod().getDescriptor()));}
             }

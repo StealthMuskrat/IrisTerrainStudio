@@ -1,0 +1,119 @@
+{
+  "scope": "native-double-cache-and-terrain-release-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "build": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "wasmSha256": "66838749fcf7e9682e1ca562c76b78bd74720e70e6dc2f1d6b231019e412dedd",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "3ce3c1f0fec73b8d7f90aa6f20320d6e246db5871dfd903a95f25533495f7f3a",
+    "nativeInputProfile": "terrain-no-eco-items",
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ]
+  },
+  "compiler": {
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "implementation": [
+    "Retain original native WorldCache2DDouble get/fill/batch, missing-coordinate collection and publication behavior.",
+    "Retain original ChunkCache2DDouble scalar, fill and per-slot publication/failure handling.",
+    "Replace concurrent linked-map dependency with bounded single-worker map service; private byte/double VarHandle access remains synchronous worker-local.",
+    "Remove rejecting WorkerWorldDoubleCache shim.",
+    "Invoke original IrisComplex.close during terrain release; ensure engine/object-domain/reference cleanup follows in finally paths.",
+    "Detach published terrain before teardown; terrain-only release retains immutable pack; failed prepare/constructor and full-clear recovery preserve ownership.",
+    "Correct manifest export inventory for lifecycle/cache and existing image-map sample diagnostics."
+  ],
+  "workerMapLimitChunks": 256,
+  "cacheBoundary": "Map limit only; original per-thread recent-chunk and temporary batch-owner references remain. Object-valued stream memoization is unchanged.",
+  "algorithmSourceSha256": {
+    ".upstream/VolmLib/shared/src/main/java/art/arcane/volmlib/util/cache/WorldCache2DDouble.java": "454504627e767a952f3d55933a9eb749dc9023526d4357ac4bab857e6390981e",
+    ".upstream/VolmLib/shared/src/main/java/art/arcane/volmlib/util/cache/ChunkCache2DDouble.java": "3c7ebda371ed8db64c5abc8125f30aa9d7150d13a36a0e9360753199ff2fbb2a",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/stream/CachedDoubleStream2D.java": "89c0bf34c9bea68847400e6de6a389cedc9e01ff424e50b771cf0e5168567378",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/runtime/IrisComplex.java": "97a6cc027a266041e7a9c16b6675b4dcaa2e7576528fd66c0f035d08fcdc7e13"
+  },
+  "workspaceSha256": {
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "7d4a028527e421bd9d61eaa13c0acdf476d4ebfa9899c5c2768f992bd8f52566",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java": "589f1b3d896825a43a2a8bba8dbc0f15171730127bca9651f17523828e3109be",
+    "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java": "ab1c012654a7eb8794c0f478642061d1bc7cab6e8082057fc0cf5a3737b6ea22",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerArrayAccess.java": "6a0625a8affffb6b9f3febaa3530cb6e6b8b483f08eab0f6ac0286c0f32ecdb8",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerChunkCacheMap.java": "b64addb0e316c0d47c98be9f7a9bf268cc136fdc01c8261eecb577412a465051",
+    "packages/iris-engine/java/studio/engine/terrain/NativeCacheDiagnostic.java": "3b8d0e553499f0d3e67f03aeb35a218274aa4961943c7787f2ba7c94899a8570",
+    "tools/engine-build/build.mjs": "26745ceba7faf61fd5e2a1e974c5c81639307e46f0cb475693026636bbe10a74",
+    "tools/checks/native-cache-lifecycle-smoke.mjs": "a5d76e1ef189527c4a26f39bd9dab57c96b15ee609b91fe632bee3d2ba1f70eb"
+  },
+  "focusedCheck": {
+    "scope": "native-double-cache-and-terrain-release-development-targeted",
+    "result": "pass",
+    "nativeCacheReference": {
+      "values": [
+        "8000000000000000",
+        "7ff8000000000023",
+        "7ff8000000000023",
+        "fff0000000000000"
+      ],
+      "batchCalls": 1,
+      "batchFailure": true,
+      "retryUniqueMisses": 2,
+      "recovered": [
+        "3ff0000000000000",
+        "4000000000000000"
+      ],
+      "publishedWinner": "4031000000000000",
+      "scalarFailure": true,
+      "scalarRetry": "4037000000000000",
+      "guards": 4,
+      "retainedCells": 768
+    },
+    "terrainPoints": [
+      [
+        0,
+        0
+      ],
+      [
+        -17,
+        9
+      ]
+    ],
+    "terrainSamples": [
+      {
+        "height": "403f000000000000",
+        "biome": "ledges"
+      },
+      {
+        "height": "4044800000000000",
+        "biome": "ledges"
+      }
+    ],
+    "releasePreservesPack": true,
+    "duplicateReleaseAndClear": true,
+    "failedReplacementAndConstructorRecovery": true,
+    "nativeOriginalBatchAndPublication": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "66838749fcf7e9682e1ca562c76b78bd74720e70e6dc2f1d6b231019e412dedd",
+    "sourceSha256": "3ce3c1f0fec73b8d7f90aa6f20320d6e246db5871dfd903a95f25533495f7f3a",
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "pairedTerrainPointsCompared": 4,
+    "individualRecoveryScalarAssertions": 2
+  },
+  "validationNotes": [
+    "First harness attempt mixed JVM deprecation warnings with structured JSON; capture parsing was corrected without runtime changes.",
+    "Original native class bodies are retained; only identified map/array host boundaries change."
+  ],
+  "limitations": [
+    "Hydrology, saved-world/history, upper/stacks/transforms and full IrisEngine lifecycle remain unavailable.",
+    "Real browser/GC behavior, complete cache eviction/interleaving and full-program verification remain pending.",
+    "Production dependency/reference, schemas/registry and authorized assets remain unqualified."
+  ],
+  "broadSuiteRun": false,
+  "terrainCellEnumerationRun": false,
+  "registrySweepRun": false,
+  "githubWorkflowRun": false,
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false
+}

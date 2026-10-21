@@ -42,7 +42,10 @@ public final class BrowserEngine {
     private static BrowserRegistries registry;
     private static ProceduralStream<IrisRegion> selectedRegions;
     private static studio.engine.terrain.BrowserTerrainEngine terrain;
-    @JSExport public static String prepareTerrain(String key,String seed){if(terrain!=null)terrain.release();terrain=null;pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",key);if(!(resource instanceof IrisDimension dimension)||dimension.isCompatExcluded())throw new IllegalArgumentException("Native dimension unavailable or excluded");terrain=new studio.engine.terrain.BrowserTerrainEngine(dimension,pack.open(),Long.parseLong(seed),registry);return "{\"minHeight\":"+terrain.getMinHeight()+",\"maxHeight\":"+terrain.getMaxHeight()+",\"terrainParityVerified\":false}";}
+    @JSExport public static String prepareTerrain(String key,String seed){releaseTerrain();pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load("dimensions",key);if(!(resource instanceof IrisDimension dimension)||dimension.isCompatExcluded())throw new IllegalArgumentException("Native dimension unavailable or excluded");terrain=new studio.engine.terrain.BrowserTerrainEngine(dimension,pack.open(),Long.parseLong(seed),registry);return "{\"minHeight\":"+terrain.getMinHeight()+",\"maxHeight\":"+terrain.getMaxHeight()+",\"terrainParityVerified\":false}";}
+    @JSExport public static void releaseTerrain(){var previous=terrain;terrain=null;if(previous!=null)previous.release();}
+    @JSExport public static String inspectTerrainLifecycle(){return terrain==null?"{\"prepared\":false}":"{\"prepared\":true,\"closed\":"+terrain.isClosed()+",\"activeLeases\":"+terrain.getGenerationSessions().activeLeases()+"}";}
+    @JSExport public static String diagnosticNativeCacheBatch()throws java.io.IOException{return studio.engine.terrain.NativeCacheDiagnostic.run();}
     @JSExport public static String sampleTerrainHeight(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");return bits(terrain.getComplex().getHeightStream().getDouble(x,z));}
     @JSExport public static String sampleTerrainBiome(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");var biome=terrain.getComplex().getTrueBiomeStream().get(x,z);if(biome==null)throw new IllegalStateException("Native biome pool returned no biome");return biome.getLoadKey();}
 
@@ -366,6 +369,9 @@ public final class BrowserEngine {
     public static String diagnosticRng(String seed) { return studio.probe.RngProbe.sample(seed, false, "0"); }
 
     @JSExport
-    public static void clear() {if(terrain!=null)terrain.release();terrain=null; selectedRegions=null;pack.release();pack=new MemoryPack(registry);definitions.clear(); generators.clear(); layers.clear(); composites.clear(); loadedStyles.clear(); dimensions.clear(); controls.clear(); NativeConfigReader.clear(); }
+    public static void clear() {
+        try{releaseTerrain();}
+        finally{selectedRegions=null;try{pack.release();}finally{pack=new MemoryPack(registry);definitions.clear();generators.clear();layers.clear();composites.clear();loadedStyles.clear();dimensions.clear();controls.clear();NativeConfigReader.clear();}}
+    }
     public static void main(String[] args) { }
 }
