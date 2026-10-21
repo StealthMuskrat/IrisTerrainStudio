@@ -41,3 +41,9 @@ Scalar and voxel generation use a shared result-publication boundary. Native CNM
 ### PNG raster identity
 
 PNG decoding preserves raw band values and the pinned JDK raster/color-model shape. Packed rows are unfiltered before bit extraction; indexed rasters keep index bands plus a bounded owned RGBA palette. Palette transport has a separate native registration entry; decoded bands/palettes count toward existing snapshot limits. Original IrisImage classifies formats and supplies up to eight inspector pixel samples. Original map compiler validation remains the authority on map eligibility; inspecting a source does not convert indexed/gray-alpha/high-depth inputs into supported maps.
+
+### Image-map authoring requests
+
+`sample-image-map` loads an owned snapshot, compiles the selected map with the original Iris compiler, and evaluates at most sixteen finite coordinate pairs. Native `containsWorld` and `containsWorldForSampling` describe the source rectangle/kernel before outside handling. Per-point native errors accompany successful points; compilation/registration failures abort the request. The worker releases the snapshot only while it still owns the request. GenerationClient cancellation invalidates sampling requests as it does resource inspection. No terrain request or persistence write is required.
+
+Packed-gray transparency creates the same 8-bit gray/alpha raster as the pinned JDK PNG reader. The adapter deliberately preserves its order: scale gray, then compare the scaled sample to the unscaled transparency key. Nontransparent packed gray retains its indexed raster identity.

@@ -35,7 +35,6 @@ export async function decodeNativePng(input){
         if(dataStarted||transparency)throw new Error('Invalid PNG transparency ordering or duplicate key.');
         if(color===3){if(!palette||length<1||length>palette.length/3)throw new Error('Invalid indexed PNG transparency palette.');transparency=bytes.slice(start,end);}
         else if(color===0||color===2){
-          if(color===0&&bitDepth<8)throw new Error('Packed grayscale transparency expansion remains unavailable.');
           if(length!==(color===0?2:6))throw new Error('PNG transparency key has an invalid channel count.');
           transparency=Array.from({length:inputChannels},(_,i)=>view.getUint16(start+2*i));if(transparency.some(sample=>sample>2**bitDepth-1))throw new Error('PNG transparency key exceeds its source bit depth.');
         }else throw new Error('PNG alpha-channel images cannot contain a transparency key.');
@@ -44,7 +43,7 @@ export async function decodeNativePng(input){
     }offset=end+4;
   }
   if(!ended||!compressedBytes)throw new Error('PNG has no complete image data.');
-  const indexed=color===3||color===0&&bitDepth<8,key=transparency&&color!==3?transparency:null,channels=key?inputChannels+1:inputChannels,sampleBytes=bitDepth===16?2:1,outputPixelBytes=channels*sampleBytes,decodedBytes=width*height*outputPixelBytes;
+  const packedKey=color===0&&bitDepth<8&&transparency,outputDepth=packedKey?8:bitDepth,indexed=color===3||color===0&&bitDepth<8&&!packedKey,key=transparency&&color!==3?transparency:null,channels=key?inputChannels+1:inputChannels,sampleBytes=outputDepth===16?2:1,outputPixelBytes=channels*sampleBytes,decodedBytes=width*height*outputPixelBytes;
   let indexedPalette;
   if(indexed){
     const count=2**bitDepth;indexedPalette=new Uint8Array(count*4);
@@ -75,8 +74,11 @@ export async function decodeNativePng(input){
         for(let b=0;b<inputChannels;b++){
           const source=(x*inputChannels+b)*sampleBytes,value=bitDepth<8?(row[Math.floor(x*bitDepth/8)]>>>(8-bitDepth-x*bitDepth%8))&(2**bitDepth-1):sampleBytes===1?row[source]:(row[source]<<8)|row[source+1];
           if(color===3&&value>=palette.length/3)throw new Error('PNG pixel references a missing palette entry.');
-          if(sampleBytes===2)samples[target+b*2]=value>>>8;samples[target+b*sampleBytes+sampleBytes-1]=value&255;
-          if(key&&value!==key[b])match=false;
+          // The pinned JDK scales packed gray to an 8-bit raster before comparing tRNS.
+          // Preserve that reader behavior, including comparison to the original unscaled key.
+          const rasterValue=packedKey?Math.floor((value*255+Math.floor((2**bitDepth-1)/2))/(2**bitDepth-1)):value;
+          if(sampleBytes===2)samples[target+b*2]=rasterValue>>>8;samples[target+b*sampleBytes+sampleBytes-1]=rasterValue&255;
+          if(key&&rasterValue!==key[b])match=false;
         }
         if(key)for(let b=0;b<sampleBytes;b++)samples[target+inputChannels*sampleBytes+b]=match?0:255;
       }
@@ -85,5 +87,5 @@ export async function decodeNativePng(input){
       [row,previous]=[previous,row];
     }
   }
-  return{width,height,channels,bitDepth,samples,...(indexedPalette?{palette:indexedPalette}:{})};
+  return{width,height,channels,bitDepth:outputDepth,samples,...(indexedPalette?{palette:indexedPalette}:{})};
 }

@@ -66,12 +66,25 @@ function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris re
 self.onmessage=async({data})=>{
   if(data.kind==='release-context'){active=0;const loaded=runtime&&await runtime.catch(()=>null);if(loaded&&active===0)clearContext(loaded.api);return;}
   if(data.kind==='cancel'){if(active===data.id)active=0;return;}
-  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack')return;
-  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack')active=id;
+  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map')return;
+  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack'||data.kind==='sample-image-map')active=id;
   let apiForCleanup;
   try {
     const {api,manifest}=await engine();apiForCleanup=api;
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
+    if(data.kind==='sample-image-map'){
+      if(active!==id)return;
+      if(typeof data.name!=='string'||!data.name||!Array.isArray(data.points)||data.points.length<1||data.points.length>16||data.points.some(point=>!Array.isArray(point)||point.length!==2||!point.every(Number.isFinite)))throw new Error('Supply one to sixteen finite X, Z coordinate pairs.');
+      if(typeof api.inspectPackImageMapSample!=='function')throw new Error('Rebuild the local Iris engine to enable native image-map sampling.');
+      await registry(api,manifest);if(active!==id)return;clearContext(api);
+      try{
+        if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;
+        const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource('image-maps',data.name));
+        if(!resource.found)throw new Error('The native image map could not be resolved.');
+        const samples=data.points.map(([x,z])=>{try{return JSON.parse(api.inspectPackImageMapSample(data.name,x,z));}catch(error){return{x,z,error:error.message||String(error)};}});
+        if(active===id)self.postMessage({kind:'info',id,info:{...snapshot,resource,samples,scope:'native-image-map-authoring-samples',terrainParityVerified:false}});
+      }finally{if(active===id)clearContext(api);}return;
+    }
     if(data.kind==='inspect-pack'){
       if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;clearContext(api);try{if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{if(active===id)clearContext(api);}return;
     }
