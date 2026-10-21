@@ -47,6 +47,17 @@ public final class WorkerCaveStorage {
         }writer.endArray();}return output.toString();
     }
     public static void setMarker(Mantle<?> ignored,int x,int y,int z,Object value){requireActive();if(!(value instanceof MatterMarker marker))throw unsupported();if(y<0||y>=height)return;MantleChunk<Matter> chunk=existingChunk(ignored,x>>4,z>>4);if(chunk==null)throw studio.engine.UnsupportedPlatform.unavailable("Cave marker writes outside the prepared window");chunk.getOrCreate(y>>4).<MatterMarker>slice(MatterMarker.class).set(x&15,y&15,z&15,marker);}
+    public static String componentFlags()throws java.io.IOException{
+        requireActive();var flags=new art.arcane.volmlib.util.mantle.flag.MantleFlag[]{art.arcane.volmlib.util.mantle.flag.ReservedFlag.CARVED,art.arcane.volmlib.util.mantle.flag.ReservedFlag.OBJECT,art.arcane.volmlib.util.mantle.flag.ReservedFlag.FLOATING_OBJECT,art.arcane.volmlib.util.mantle.flag.ReservedFlag.JIGSAW,art.arcane.volmlib.util.mantle.flag.MantleFlag.PLANNED};
+        var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){writer.beginArray();for(var chunk:chunks.values()){
+            boolean any=false;for(var flag:flags)any|=chunk.isFlagged(flag);if(!any)continue;
+            writer.beginArray();writer.value(chunk.getX());writer.value(chunk.getZ());for(var flag:flags)writer.value(chunk.isFlagged(flag));writer.endArray();
+        }writer.endArray();}return output.toString();
+    }
+    public static art.arcane.volmlib.util.mantle.MantleChunk<Matter> customChunk(Mantle<?> ignored,int x,int z){
+        var chunk=existingChunk(ignored,x,z);if(chunk==null)throw new IllegalStateException("Custom stage chunk is not prepared");
+        if(chunk.isFlagged(art.arcane.volmlib.util.mantle.flag.MantleFlag.CUSTOM_ACTIVE))throw studio.engine.UnsupportedPlatform.unavailable("Native custom block contributions");return chunk.use();
+    }
     private record MarkerEntry(int x,int y,int z,String tag){}
     public static String markerEntries()throws java.io.IOException{
         requireActive();List<MarkerEntry> entries=new ArrayList<>();

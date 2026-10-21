@@ -1,0 +1,686 @@
+{
+  "scope": "native-overworld-registered-content-and-cache-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "14c8c2a2a93a5a0989b9e8f49a2fae643e622ed2a6950109329c2d32c07c5e02",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "47bd89a3d4d844d2fd4a33a3360fd68613f0eb9b83ba41ec9bd1398125bddd04",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/Engine.java",
+      "sha256": "41f671246c40e538791b26e69c43538a07c10e07b28a655ae034eaf7b53a6019"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/EngineMode.java",
+      "sha256": "4ab6ad938165febae2167775b999c6a77ba177f4e89fa023934a5c6e18fe5397"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngineMantle.java",
+      "sha256": "603cf6fbdb136799b1b3195caf9d9282d768aaa5758616edd4311b71cf73fa06"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeOverworld.java",
+      "sha256": "47a586944056125ec16618d2e0dcda2a23ebef576933c395ea7230b0fc316abb"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MatterGenerator.java",
+      "sha256": "51f24ee13b26d4a21092604301579717db4e836aee3c76a9c2f9d258d649b170"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleWriter.java",
+      "sha256": "82eceffca0ed15d99e25437fc244edd4302ea316b020f5ae5e32e6fb81be1e79"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleObjectComponent.java",
+      "sha256": "3da3ee187aa85a08f7aabd9cf3436681c85cc3785f60cc1295bc4ac19ccf4d78"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/ObjectSourcePlanCache.java",
+      "sha256": "f910aff856b944ba1dab951e0a2a797b2f063d15e93845f295e564b06c646f42"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleFloatingObjectComponent.java",
+      "sha256": "f04bf68cb051d0bcddd30cc6c3ff9091533a8a119815565d75aa21408efac577"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/IrisStructureComponent.java",
+      "sha256": "01852e9630e795a0ab9d1a84e6f51933e28101cadd238a18aea5123ed5f8c200"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisCustomModifier.java",
+      "sha256": "91af0d8a9fd38205fcb0f3e6a8b0706999d1bdd06a65b4dc9df556f133e15f64"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/structure/placement/StructurePlacementScope.java",
+      "sha256": "7d3444650dee892622e85ffd3830dac1b191ea5032efddc3732021e28911d987"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+    "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java",
+    "packages/iris-engine/java/studio/engine/terrain/OverworldTerrainStage.java",
+    "packages/iris-engine/java/studio/engine/terrain/RegisteredModeObserver.java",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerModeDispatch.java",
+    "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerNativeSourcePlans.java",
+    "packages/iris-engine/client.mjs",
+    "tools/engine-build/GenerateEngineBoundary.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendAndCheckSources": [
+    {
+      "path": "apps/web/index.html",
+      "sha256": "63c627442f323f715ca9e31e4e0c9b4f4ce8aebea752d5dc799d74f1b62c0b9e"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "3f9bdafdb7ecbbd5e896b3528533b5e4c0da82a3e3cb51072fd5fd2eb109f5c2"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "0f0619c7ac07069677f2198a497a97be1ae99eb4940a3c3e2ff6d8ae6820d49b"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "274e138f91ad3438315ac7c3aeecca214521739cb28ed85641b98c6c471f965b"
+    },
+    {
+      "path": "tools/checks/native-overworld-mode-smoke.mjs",
+      "sha256": "d0a5c7419e60c313f29d67a87cc3b19bb2bd33992d2965fbf438a590602680bb"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-overworld-mode-generation-development-targeted",
+    "fixtures": 1,
+    "seeds": 1,
+    "blockProbesCompared": 6,
+    "biomeProbesCompared": 6,
+    "results": {
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          8,
+          20,
+          8,
+          "minecraft:cave_air",
+          "minecraft:plains"
+        ],
+        [
+          8,
+          96,
+          8,
+          "minecraft:stone",
+          "minecraft:forest"
+        ],
+        [
+          15,
+          127,
+          15,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          7,
+          13,
+          2,
+          "minecraft:oak_log[axis=y]",
+          "minecraft:plains"
+        ],
+        [
+          7,
+          14,
+          2,
+          "minecraft:oak_log[axis=y]",
+          "minecraft:plains"
+        ]
+      ],
+      "journaledCells": 105,
+      "selectedJournalProbes": 2,
+      "objectTags": {
+        "cells": 105,
+        "placements": 3,
+        "treeMaterials": 105
+      },
+      "componentFlags": [
+        [
+          -2,
+          -2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -2,
+          -1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -2,
+          0,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -2,
+          1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -2,
+          2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -1,
+          -2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -1,
+          -1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -1,
+          0,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -1,
+          1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          -1,
+          2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          0,
+          -2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          0,
+          -1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          0,
+          0,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          0,
+          1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          0,
+          2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          1,
+          -2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          1,
+          -1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          1,
+          0,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          1,
+          1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          1,
+          2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          2,
+          -2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          2,
+          -1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          2,
+          0,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          2,
+          1,
+          true,
+          false,
+          false,
+          false,
+          false
+        ],
+        [
+          2,
+          2,
+          true,
+          false,
+          false,
+          false,
+          false
+        ]
+      ],
+      "contentPhase": true,
+      "activeLeasesAfter": 0,
+      "matterWindow": [
+        [
+          -2,
+          -2,
+          true,
+          false
+        ],
+        [
+          -2,
+          -1,
+          true,
+          false
+        ],
+        [
+          -2,
+          0,
+          true,
+          false
+        ],
+        [
+          -2,
+          1,
+          true,
+          false
+        ],
+        [
+          -2,
+          2,
+          true,
+          false
+        ],
+        [
+          -1,
+          -2,
+          true,
+          false
+        ],
+        [
+          -1,
+          -1,
+          true,
+          false
+        ],
+        [
+          -1,
+          0,
+          true,
+          false
+        ],
+        [
+          -1,
+          1,
+          true,
+          false
+        ],
+        [
+          -1,
+          2,
+          true,
+          false
+        ],
+        [
+          0,
+          -2,
+          true,
+          false
+        ],
+        [
+          0,
+          -1,
+          true,
+          false
+        ],
+        [
+          0,
+          0,
+          true,
+          true
+        ],
+        [
+          0,
+          1,
+          true,
+          false
+        ],
+        [
+          0,
+          2,
+          true,
+          false
+        ],
+        [
+          1,
+          -2,
+          true,
+          false
+        ],
+        [
+          1,
+          -1,
+          true,
+          false
+        ],
+        [
+          1,
+          0,
+          true,
+          false
+        ],
+        [
+          1,
+          1,
+          true,
+          false
+        ],
+        [
+          1,
+          2,
+          true,
+          false
+        ],
+        [
+          2,
+          -2,
+          true,
+          false
+        ],
+        [
+          2,
+          -1,
+          true,
+          false
+        ],
+        [
+          2,
+          0,
+          true,
+          false
+        ],
+        [
+          2,
+          1,
+          true,
+          false
+        ],
+        [
+          2,
+          2,
+          true,
+          false
+        ]
+      ],
+      "terrainStages": 4,
+      "contentStages": 9
+    },
+    "nativeModeGenerate": true,
+    "nativeRegisteredTerrainStages": 4,
+    "nativeRegisteredContentStages": 9,
+    "nativeContentSchedulingAndFlags": true,
+    "nativeProceduralInsertion": true,
+    "journaledCells": 105,
+    "objectTags": {
+      "cells": 105,
+      "placements": 3,
+      "treeMaterials": 105
+    },
+    "cache": {
+      "lookups": 9,
+      "builds": 9,
+      "replays": 0,
+      "drained": 0,
+      "retired": 0,
+      "retained": 9,
+      "retainedBytes": 28318,
+      "budgetBytes": 8388608,
+      "continuationChunks": 4,
+      "continuationBytes": 4351
+    },
+    "caveSearch": {
+      "columnWorkCharged": 3456,
+      "workLimit": 1048576
+    },
+    "failureCleanup": {
+      "sessionId": "1",
+      "activeLeases": 0,
+      "scopeBound": false
+    },
+    "recoveryAfterFailure": true,
+    "prefixRoutePreserved": true,
+    "workerClientCache": true,
+    "executionCacheIsolation": true,
+    "nativeSourcePlanReuse": {
+      "lookups": 18,
+      "builds": 12,
+      "replays": 3,
+      "drained": 0,
+      "retired": 0,
+      "retained": 9,
+      "retainedBytes": 28318,
+      "budgetBytes": 8388608,
+      "continuationChunks": 4,
+      "continuationBytes": 4351
+    },
+    "controlledCancellation": true,
+    "actualWasmWorkerClient": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "3d95a80c67309ecab71ed874fe94001bf5b7e446fb38c5065a3e969c1f87ef41"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "372dd5740d630432c9d6ec31554aaa434a48a72651273a7c97011ba6a9faebff"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      },
+      {
+        "path": "biomes/island.json",
+        "sha256": "66456053af5c484ca06ddcd4a6122a0a33299e9d96fdd5c089d64116e34fba84"
+      }
+    ],
+    "wasmSha256": "14c8c2a2a93a5a0989b9e8f49a2fae643e622ed2a6950109329c2d32c07c5e02",
+    "sourceSha256": "47bd89a3d4d844d2fd4a33a3360fd68613f0eb9b83ba41ec9bd1398125bddd04",
+    "browserVerified": false,
+    "contentGenerated": true,
+    "fullEngineLifecycle": false,
+    "fullTerrainParityVerified": false
+  },
+  "implemented": [
+    "Original EngineMode.generate for ModeOverworld: four terrain and nine content stages, native context prefill and phase transition, scope and generation lease.",
+    "Original MatterGenerator CONTENT scheduling, prerequisites, partial-window decisions and PLANNED completion; original terrain-on-access within bounded prepared storage.",
+    "Native source planning, cave anchor placement, destination transactions, deposits, insertion, decorators, perfection and final subterrain preservation in native mode order.",
+    "Original empty floating/imported structure component paths and inactive custom modifier guard; imported placement routines, hydrology execution and CUSTOM_ACTIVE contributions still explicitly unavailable. Native getAllBiomes supplies original structure-scope indexing.",
+    "Non-writing observer checks ordered execution of all 13 registered stages, scoped context/session and phase; actual original stages restored before close, including failure.",
+    "Shared immutable context retention for registered mode and neighborhood requests; separate fixed native object-cache domains avoid sharing plans/continuation bytes between execution paths. Snapshot release closes both; failed passes invalidate their own domain.",
+    "Selectable browser Overworld mode with block/physical-biome buffers, native stage/flag/journal/cache diagnostics, client reuse and interruptible cancellation."
+  ],
+  "limits": {
+    "preparedChunks": 49,
+    "prefetchRadius": 3,
+    "logicalWriterAccessRadius": 6,
+    "potentialChunkCells": 8388608,
+    "objectCacheDomains": 2,
+    "planBytesPerDomain": 8388608,
+    "continuationBytesPerDomain": 4194304,
+    "maximumCombinedPlanAndEncodedContinuationBytes": 25165824,
+    "completePipeline": false
+  },
+  "limitations": [
+    "One 128-high authored fixture, one seed/destination, six selected blocks/biomes. Two content probes selected only from populated native journals; no whole-volume comparison or complete options qualification.",
+    "Native completion flags describe executed empty or configured component work. JIGSAW/FLOATING_OBJECT flags do not establish imported structure/object support; custom modifier runs inactive path only.",
+    "Original mode history methods return by engine-type guard for the browser/JVM proxy host. Full IrisEngine.generate, REAL flags, world listeners, saved-world/history/continuation restoration, hydrology/transforms/stacks, active custom blocks and collision qualification remain unfinished.",
+    "Native continuation bytes are retained in memory only. Source-plan reuse preserves original consume/rebuild behavior; no durable world persistence or fabricated history step is supplied.",
+    "Independent JVM memory host and actual Wasm under controlled Node worker/client only; real browser DOM/GPU/storage/cancellation and complete options remain unqualified.",
+    "20-type fixture registry only. Native checksum issue #15, exact dependency/server/release identity, production schemas/registry and authorized assets remain outstanding."
+  ],
+  "nextMilestone": "Continue remaining native host/services and unsupported option/resource boundaries in coherent local batches; complete application/browser verification after implementation.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Broad application/native suites",
+    "Registry state or placement-pair sweeps/exports",
+    "Whole-volume output comparisons",
+    "GitHub test workflows"
+  ]
+}

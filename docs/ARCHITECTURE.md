@@ -27,3 +27,9 @@ The eventual worker protocol carries a job ID, revision, pinned engine identity,
 ## Planned code boundaries
 
 After the proof of concept, use `apps/web`, `apps/server`, and separate packages for engine, configuration, resources, renderer, resource packs, and shared contracts. Start with only modules needed by the proved generation path. Development-only reference/export tools live under `tools/reference-tests`; generated game assets remain local unless distribution rights are established.
+
+### Registered Overworld mode ownership
+
+The bounded Overworld route uses original ModeOverworld/EngineMode generation with the original Mantle registration and TERRAIN/CONTENT scheduler. Owned sparse chunks replace storage services; native order, prerequisites, flags, lazy terrain-on-access and algorithms remain authoritative. A non-writing observer checks all four terrain/nine content stages and restores actual stage objects before close. A native generation lease owns the synchronous operation.
+
+Each immutable terrain snapshot owns two separate native object-cache domains: registered mode generation and standalone procedural diagnostics. Native component field hosts capture their domain at construction. Each domain has 8 MiB plan/4 MiB continuation limits; snapshot release closes both. Neighbor/mode requests can share the immutable terrain context while preserving this separation. Retained native continuation bytes do not implement saved-world history restoration. Imported placement/custom/hydrology services and full IrisEngine/REAL/world lifecycle remain explicit unfinished boundaries.

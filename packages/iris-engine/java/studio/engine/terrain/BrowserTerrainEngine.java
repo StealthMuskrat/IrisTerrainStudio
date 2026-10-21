@@ -17,9 +17,14 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final WorkerCarvingMantle mantle=new WorkerCarvingMantle(this);
     private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
-    private art.arcane.iris.generation.mantle.WorkerObjectSession objectSession;private boolean closed;
-    public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(){if(closed)throw new IllegalStateException("Terrain context is closed");if(objectSession==null)objectSession=new art.arcane.iris.generation.mantle.WorkerObjectSession(this);return objectSession;}
-    public void release(){if(closed)return;closed=true;try{sessions.sealAndAwait("browser snapshot release",0,true);}catch(GenerationSessionException failure){throw new IllegalStateException("Worker generation leases did not drain",failure);}finally{data.unregisterEngine(this);if(objectSession!=null)objectSession.close();}}
+    private art.arcane.iris.generation.mantle.WorkerObjectSession objectSession,nativeObjectSession;private boolean closed;
+    public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(){return objectSession(nativeMatter!=null);}
+    public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(boolean registeredMode){
+        if(closed)throw new IllegalStateException("Terrain context is closed");
+        if(registeredMode){if(nativeObjectSession==null)nativeObjectSession=new art.arcane.iris.generation.mantle.WorkerObjectSession(this);return nativeObjectSession;}
+        if(objectSession==null)objectSession=new art.arcane.iris.generation.mantle.WorkerObjectSession(this);return objectSession;
+    }
+    public void release(){if(closed)return;closed=true;try{sessions.sealAndAwait("browser snapshot release",0,true);}catch(GenerationSessionException failure){throw new IllegalStateException("Worker generation leases did not drain",failure);}finally{data.unregisterEngine(this);if(objectSession!=null)objectSession.close();if(nativeObjectSession!=null)nativeObjectSession.close();}}
     public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
         if(dimension.hasUpperDimension()||dimension.hasDimensionStack())throw new UnsupportedOperationException("Upper dimensions and dimension stacks are not connected in the worker terrain runtime");
         this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);

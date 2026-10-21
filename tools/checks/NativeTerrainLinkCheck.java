@@ -20,7 +20,7 @@ public final class NativeTerrainLinkCheck {
     private static int[] lastSourcePlan;
     private static JsonObject lastNeighborhood;
     private static art.arcane.iris.generation.mantle.MantleObjectComponent neighborhoodComponent;
-    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
+    private static final Set<String> NATIVE_DEFAULTS=Set.of("getAllBiomes","getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
     public static void main(String[] args)throws Exception{
         Gson gson=new GsonBuilder().serializeNulls().create();JsonObject request=JsonParser.parseString(Files.readString(Path.of(args[0]))).getAsJsonObject();JsonArray result=new JsonArray();preserveSubterrain=request.has("subterrainFinish")&&request.get("subterrainFinish").getAsBoolean();materialSampling=request.has("materialSampling")?request.getAsJsonObject("materialSampling"):null;singlePlacement=request.has("singlePlacement")?request.getAsJsonObject("singlePlacement"):null;
         art.arcane.iris.configuration.IrisSettings.settings=new art.arcane.iris.configuration.IrisSettings();
@@ -32,7 +32,7 @@ public final class NativeTerrainLinkCheck {
                 case"blockOrNull"->resolver.getOrNull((String)values[0]);case"block"->resolver.get((String)values[0]);case"air"->resolver.getAir();case"decodeBlockState"->NativeBlockResolver.strictParse(((String)values[0]).trim());case"blockTypeKeys"->access.blockKeys();default->{try{yield NativeRegistryAccess.class.getMethod(method.getName(),method.getParameterTypes()).invoke(access,values);}catch(NoSuchMethodException failure){throw new UnsupportedOperationException(method.toString(),failure);}}
             });
             IrisPlatforms.bind((IrisPlatform)Proxy.newProxyInstance(IrisPlatform.class.getClassLoader(),new Class<?>[]{IrisPlatform.class},(self,method,values)->switch(method.getName()){case"supportsMatterWorldIo"->InvocationHandler.invokeDefault(self,method,values);case"platformName"->"native-terrain-reference";case"minecraftVersion"->"26.3";case"registries"->registries;case"log","msg"->{System.err.println(Arrays.toString(values));yield null;}case"reportError"->throw new IllegalStateException(Arrays.toString(values));default->throw new UnsupportedOperationException(method.toString());}));
-            if(singlePlacement!=null)art.arcane.iris.structure.object.IrisObjectRotation.bindPlatformRotator((art.arcane.iris.structure.object.IrisObjectRotation.StateRotator)Class.forName("art.arcane.iris.modded.ModdedStateRotator").getConstructor().newInstance());
+            if(singlePlacement!=null||request.has("registeredOverworldCheck"))art.arcane.iris.structure.object.IrisObjectRotation.bindPlatformRotator((art.arcane.iris.structure.object.IrisObjectRotation.StateRotator)Class.forName("art.arcane.iris.modded.ModdedStateRotator").getConstructor().newInstance());
             if(singlePlacement!=null&&singlePlacement.has("edit"))art.arcane.iris.generation.block.BlockDataMergeSupport.bindPlatformMerger(new NativeStateMerger(resolver)::merge);
             var decorators=new art.arcane.iris.modded.ModdedDecoratorHooks();art.arcane.iris.generation.decoration.DecoratorPlatformHooks.bind(decorators,decorators);
             for(JsonElement entry:request.getAsJsonArray("packs")){
@@ -91,12 +91,30 @@ public final class NativeTerrainLinkCheck {
             void releaseUnusedBacking()throws Exception{super.getMantle().close();}
         };host.releaseUnusedBacking();caveHost=host;
         int x=request.get("x").getAsInt(),z=request.get("z").getAsInt();var mode=new art.arcane.iris.generation.mode.ModeOverworld(engine);
+        boolean generate=request.has("generate")&&request.get("generate").getAsBoolean();var original=mode.getTerrainStages().get(0);art.arcane.iris.generation.context.ChunkContext[] observed={null};
+        if(generate)mode.getTerrainStages().set(0,(bx,bz,b,p,m,c)->{observed[0]=c;original.generate(bx,bz,b,p,m,c);});
         try{
             var blocks=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBlockState>(16,engine.getHeight(),16);blocks.fill(registries.air());var biomes=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBiome>(16,engine.getHeight(),16);
-            try(var lease=engine.acquireGenerationLease("registered_overworld_reference")){var context=new art.arcane.iris.generation.context.ChunkContext(x,z,engine.getComplex(),lease.sessionId(),true,art.arcane.iris.generation.context.ChunkContext.PrefillPlan.NO_CAVE,engine.getMetrics());try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine,lease.sessionId(),context)){mode.generateTerrain(x,z,blocks,biomes,false,context);}}
+            try(var lease=engine.acquireGenerationLease("registered_overworld_reference")){
+                if(generate){mode.generate(x,z,blocks,biomes,false,lease.sessionId());if(observed[0]==null||observed[0].isNaturalTerrain())throw new IllegalStateException("Native Overworld did not enter content phase");}
+                else{var context=new art.arcane.iris.generation.context.ChunkContext(x,z,engine.getComplex(),lease.sessionId(),true,art.arcane.iris.generation.context.ChunkContext.PrefillPlan.NO_CAVE,engine.getMetrics());try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine,lease.sessionId(),context)){mode.generateTerrain(x,z,blocks,biomes,false,context);}}
+            }
             var output=new JsonObject();JsonArray probes=new JsonArray();for(JsonElement value:request.getAsJsonArray("controls")){var xyz=value.getAsJsonArray();int lx=xyz.get(0).getAsInt(),y=xyz.get(1).getAsInt(),lz=xyz.get(2).getAsInt();var row=xyz.deepCopy();row.add(blocks.getRaw(lx,y,lz).key());row.add(biomes.getRaw(lx,y,lz).key());probes.add(row);}output.add("probes",probes);
+            if(generate){
+                var centre=memory.prepare(x>>4,z>>4);int[] counts={0,0,0,0};Set<String> tags=new HashSet<>();
+                for(int section=0;section<engine.getHeight()/16;section++)if(centre.exists(section)){
+                    final int sy=section<<4;var matter=centre.get(section);var journal=matter.getSlice(art.arcane.iris.world.storage.matter.PreObjectMatterCell.class);
+                    if(journal!=null)journal.iterate((lx,ly,lz,value)->{counts[0]++;int y=sy+ly;var block=blocks.getRaw(lx,y,lz);if(counts[1]<2&&block.materialKey().equals("minecraft:oak_log")){var row=new JsonArray();row.add(lx);row.add(y);row.add(lz);row.add(block.key());row.add(biomes.getRaw(lx,y,lz).key());probes.add(row);counts[1]++;}});
+                    var strings=matter.getSlice(String.class);if(strings!=null)strings.iterate((lx,ly,lz,value)->{counts[2]++;tags.add(value);});
+                    var trees=matter.getSlice(art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class);if(trees!=null)trees.iterate((lx,ly,lz,value)->counts[3]++);
+                }
+                output.addProperty("journaledCells",counts[0]);output.addProperty("selectedJournalProbes",counts[1]);var tagResult=new JsonObject();tagResult.addProperty("cells",counts[2]);tagResult.addProperty("placements",tags.size());tagResult.addProperty("treeMaterials",counts[3]);output.add("objectTags",tagResult);
+                var names=new art.arcane.volmlib.util.mantle.flag.MantleFlag[]{art.arcane.volmlib.util.mantle.flag.ReservedFlag.CARVED,art.arcane.volmlib.util.mantle.flag.ReservedFlag.OBJECT,art.arcane.volmlib.util.mantle.flag.ReservedFlag.FLOATING_OBJECT,art.arcane.volmlib.util.mantle.flag.ReservedFlag.JIGSAW,art.arcane.volmlib.util.mantle.flag.MantleFlag.PLANNED};
+                JsonArray componentFlags=new JsonArray();for(int dx=-3;dx<=3;dx++)for(int dz=-3;dz<=3;dz++){int cx=(x>>4)+dx,cz=(z>>4)+dz;var plate=memory.getLoadedRegion(cx>>5,cz>>5);var chunk=plate==null?null:plate.get(cx&31,cz&31);if(chunk==null)continue;boolean any=false;for(var flag:names)any|=chunk.isFlagged(flag);if(any){var row=new JsonArray();row.add(cx);row.add(cz);for(var flag:names)row.add(chunk.isFlagged(flag));componentFlags.add(row);}}output.add("componentFlags",componentFlags);
+                output.addProperty("contentPhase",observed[0]!=null&&!observed[0].isNaturalTerrain());output.addProperty("activeLeasesAfter",engine.getGenerationSessions().activeLeases());
+            }
             JsonArray flags=new JsonArray();for(int dx=-3;dx<=3;dx++)for(int dz=-3;dz<=3;dz++){int cx=(x>>4)+dx,cz=(z>>4)+dz;var plate=memory.getLoadedRegion(cx>>5,cz>>5);var chunk=plate==null?null:plate.get(cx&31,cz&31);if(chunk==null)continue;boolean carved=chunk.isFlagged(art.arcane.volmlib.util.mantle.flag.ReservedFlag.CARVED),planned=chunk.isFlagged(art.arcane.volmlib.util.mantle.flag.MantleFlag.PLANNED);if(carved||planned){var row=new JsonArray();row.add(cx);row.add(cz);row.add(carved);row.add(planned);flags.add(row);}}output.add("matterWindow",flags);output.addProperty("terrainStages",mode.getTerrainStages().size());output.addProperty("contentStages",mode.getStages().size());return output;
-        }finally{mode.close();caveHost=null;}
+        }finally{mode.getTerrainStages().set(0,original);mode.close();caveHost=null;}
     }
     private static JsonObject terrainModeCheck(Engine engine,JsonObject request,PlatformRegistries registries)throws Exception{
         int x=request.get("x").getAsInt(),z=request.get("z").getAsInt();

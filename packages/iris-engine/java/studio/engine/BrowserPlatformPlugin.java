@@ -139,10 +139,32 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     }else if(!retained.contains(method.getName())&&!method.getName().startsWith("lambda$getComponents$")&&!method.getName().startsWith("lambda$getDisabledFlags$")&&!method.getName().startsWith("lambda$registerComponent$")&&!(method.getName().equals("<init>")&&method.parameterCount()==2)&&method.getProgram()!=null)unavailable(method,"Native mantle service "+method.getName()+" outside registered terrain planning");
                 }
             }
-            if(java.util.Set.of("art.arcane.iris.generation.mantle.MantleFloatingObjectComponent","art.arcane.iris.generation.mantle.MantleHydrologyComponent","art.arcane.iris.generation.mantle.IrisStructureComponent","art.arcane.iris.generation.stage.IrisCustomModifier").contains(name))for(MethodHolder method:cls.getMethods())if(java.util.Set.of("generateLayer","onModify").contains(method.getName()))unavailable(method,"Unconnected native floating/imported structure, hydrology or custom content stage");
+            if(name.equals("art.arcane.iris.generation.mantle.MantleHydrologyComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("generateLayer"))unavailable(method,"Native hydrology execution");
+            if(name.equals("art.arcane.iris.generation.mantle.MantleFloatingObjectComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().startsWith("tryPlace")||method.getName().equals("interiorColumns"))unavailable(method,"Imported floating object placement");
+            if(name.equals("art.arcane.iris.generation.mantle.IrisStructureComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("placeFromPlacement"))unavailable(method,"Imported conventional structure placement");
+            if(name.equals("art.arcane.iris.generation.stage.IrisCustomModifier")){
+                int storage=0,dispatch=0;
+                for(MethodHolder method:cls.getMethods()){
+                    if(method.getName().startsWith("lambda$onModify$")){unavailable(method,"Native custom block contributions");continue;}
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();
+                        if(instruction instanceof GetFieldInstruction field&&field.getField().equals(new FieldReference("art.arcane.iris.generation.concurrent.MultiBurst","burst"))){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(field.getReceiver());instruction.replace(empty);dispatch++;}
+                        else if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();String target=null;
+                            if(ref.getClassName().equals("art.arcane.iris.generation.concurrent.MultiBurst")&&ref.getName().equals("burst")&&ref.parameterCount()==1){Variable estimate=call.getArguments().get(0);call.setInstance(null);call.setArguments(estimate);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerModeDispatch","rows",ValueType.INTEGER,ValueType.object("studio.engine.terrain.WorkerModeDispatch")));dispatch++;}
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.runtime.Engine")&&ref.getName().equals("getMantle"))target="engineMantle";
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle"))target="getMantle";
+                            else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="customChunk";
+                            if(target!=null){redirectHostCall(call,target);storage++;}
+                        }instruction=next;
+                    }
+                }
+                if(storage!=3||dispatch!=2)throw new IllegalStateException("Pinned custom stage host boundary changed: "+storage+","+dispatch);
+                replaceClass(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerModeDispatch");
+                replaceDeclarations(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerModeDispatch");
+            }
             if(name.equals("art.arcane.iris.generation.mantle.MatterGenerator")){
                 for(MethodHolder method:cls.getMethods()){
-                    if(java.util.Set.of("generateMatter","generateContentMatter","runComponentAsync","awaitComponentTasks","awaitComponentTask","completeComponentTask","runComponentWithContext").contains(method.getName())){unavailable(method,"Native content or parallel matter scheduling outside the terrain phase");continue;}
+                    if(java.util.Set.of("generateMatter","runComponentAsync","awaitComponentTasks","awaitComponentTask","completeComponentTask","runComponentWithContext").contains(method.getName())){unavailable(method,"Native content or parallel matter scheduling outside the terrain phase");continue;}
                     Program p=method.getProgram();if(p==null)continue;
                     for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();
                         if(instruction instanceof GetFieldInstruction field&&field.getField().equals(new FieldReference("art.arcane.iris.generation.concurrent.MultiBurst","burst"))){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(field.getReceiver());instruction.replace(empty);}
@@ -202,7 +224,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 int debug=0;for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference(java.io.File.class,"isFile",boolean.class))){Variable file=call.getInstance();call.setInstance(null);call.setArguments(file);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerProceduralMap","debugFile",ValueType.object("java.io.File"),ValueType.BOOLEAN));debug++;}}
                 if(debug!=1)throw new IllegalStateException("Pinned procedural debug-file boundary changed");
             }
-            if(name.equals("art.arcane.iris.generation.mantle.MantleWriter$TerrainAccess"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("ensure"))unavailable(method,"Lazy terrain pass execution outside the prepared object window");
             if(name.equals("art.arcane.iris.generation.mantle.MantleWriter$TerrainAccess"))replaceClass(cls,"java.util.concurrent.atomic.AtomicReferenceArray","studio.engine.WorkerReferenceArray");
             if(name.equals("art.arcane.volmlib.util.mantle.FlaggedChunk")){replaceClass(cls,"java.util.concurrent.locks.ReentrantLock","studio.engine.terrain.WorkerLock");replaceDeclarations(cls,"java.util.concurrent.locks.ReentrantLock","studio.engine.terrain.WorkerLock");}
             if(java.util.Set.of("art.arcane.iris.structure.object.IrisObjectScale$CacheKey","art.arcane.iris.structure.object.IrisObjectTransforms").contains(name))replaceClass(cls,"java.util.concurrent.locks.Lock","studio.engine.terrain.WorkerLock");

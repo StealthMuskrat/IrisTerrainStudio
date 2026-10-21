@@ -8,7 +8,7 @@ import java.util.*;
 
 /** Generate fail-closed declarations for the native engine's platform-facing API. */
 public final class GenerateEngineBoundary {
-    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
+    private static final Set<String> NATIVE_DEFAULTS=Set.of("getAllBiomes","getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
     public static void main(String[] args) throws Exception {
         generate(Engine.class,"EngineBoundary",args[0]);
         generate(art.arcane.iris.spi.IrisPlatform.class,"PlatformBoundary",args[0]);

@@ -6,11 +6,12 @@ import studio.engine.terrain.BrowserTerrainEngine;
 /** Field host for the unchanged native object component; the dimension owns the actual native cache. */
 public final class WorkerNativeSourcePlans {
     private final BrowserTerrainEngine owner;
+    private final WorkerObjectSession session;
     public WorkerNativeSourcePlans(EngineMantle host){
         if(!(host.getEngine() instanceof BrowserTerrainEngine terrain))throw new IllegalArgumentException("Native source plans require their worker terrain owner");
-        owner=terrain;
+        owner=terrain;session=owner.objectSession(host instanceof art.arcane.iris.generation.runtime.IrisEngineMantle);
     }
-    ObjectSourcePlan acquire(int sx,int sz,int dx,int dz,int radius,Supplier<ObjectSourcePlan> builder){return owner.objectSession().acquire(owner,sx,sz,dx,dz,radius,builder);}
-    ObjectSourcePlanCache.Stats stats(){return owner.objectSession().nativeStats(owner);}
-    void clear(){owner.objectSession().invalidate(owner);}
+    ObjectSourcePlan acquire(int sx,int sz,int dx,int dz,int radius,Supplier<ObjectSourcePlan> builder){return session.acquire(owner,sx,sz,dx,dz,radius,builder);}
+    ObjectSourcePlanCache.Stats stats(){return session.nativeStats(owner);}
+    void clear(){session.invalidate(owner);}
 }
