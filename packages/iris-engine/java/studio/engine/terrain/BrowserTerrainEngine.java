@@ -11,13 +11,14 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final IrisDimension dimension;
     private final IrisData data;
     private final SeedManager seeds;
+    private final GenerationSessionManager sessions=new GenerationSessionManager();
     private final EngineMetrics metrics=new EngineMetrics(16);
     private final WorkerCarvingMantle mantle=new WorkerCarvingMantle(this);
     private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
     private art.arcane.iris.generation.mantle.WorkerObjectSession objectSession;private boolean closed;
     public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(){if(closed)throw new IllegalStateException("Terrain context is closed");if(objectSession==null)objectSession=new art.arcane.iris.generation.mantle.WorkerObjectSession(this);return objectSession;}
-    public void release(){if(closed)return;closed=true;data.unregisterEngine(this);if(objectSession!=null)objectSession.close();}
+    public void release(){if(closed)return;closed=true;try{sessions.sealAndAwait("browser snapshot release",0,true);}catch(GenerationSessionException failure){throw new IllegalStateException("Worker generation leases did not drain",failure);}finally{data.unregisterEngine(this);if(objectSession!=null)objectSession.close();}}
     public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
         if(dimension.hasUpperDimension()||dimension.hasDimensionStack())throw new UnsupportedOperationException("Upper dimensions and dimension stacks are not connected in the worker terrain runtime");
         this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
@@ -25,6 +26,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
         WorkerTerrainPlatform.install(registry);
         complex=new IrisComplex(this);data.registerEngine(this);
     }
+    @Override public GenerationSessionManager getGenerationSessions(){return sessions;}
     @Override public IrisDimension getDimension(){return dimension;}
     @Override public IrisData getData(){return data;}
     @Override public SeedManager getSeedManager(){return seeds;}

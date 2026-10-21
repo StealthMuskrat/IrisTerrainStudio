@@ -20,7 +20,7 @@ public final class NativeTerrainLinkCheck {
     private static int[] lastSourcePlan;
     private static JsonObject lastNeighborhood;
     private static art.arcane.iris.generation.mantle.MantleObjectComponent neighborhoodComponent;
-    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes");
+    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
     public static void main(String[] args)throws Exception{
         Gson gson=new GsonBuilder().serializeNulls().create();JsonObject request=JsonParser.parseString(Files.readString(Path.of(args[0]))).getAsJsonObject();JsonArray result=new JsonArray();preserveSubterrain=request.has("subterrainFinish")&&request.get("subterrainFinish").getAsBoolean();materialSampling=request.has("materialSampling")?request.getAsJsonObject("materialSampling"):null;singlePlacement=request.has("singlePlacement")?request.getAsJsonObject("singlePlacement"):null;
         art.arcane.iris.configuration.IrisSettings.settings=new art.arcane.iris.configuration.IrisSettings();
@@ -43,9 +43,9 @@ public final class NativeTerrainLinkCheck {
                 if(request.has("imageSamples"))result.add(imageMapChecks(data,request,gson));
                 IrisDimension dimension=data.getDimensionLoader().load("terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
                 JsonArray pack=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
-                    SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};EngineMetrics metrics=new EngineMetrics(16);var world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(Long.parseLong(seed.getAsString())).build();
+                    SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};var sessions=new GenerationSessionManager();EngineMetrics metrics=new EngineMetrics(16);var world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(Long.parseLong(seed.getAsString())).build();
                     Engine engine=(Engine)Proxy.newProxyInstance(Engine.class.getClassLoader(),new Class<?>[]{Engine.class},(self,method,values)->switch(method.getName()){
-                        case"burst"->art.arcane.iris.generation.concurrent.MultiBurst.burst;case"getMantle"->{if(caveHost==null)throw new IllegalStateException("No native cave host");yield caveHost;}case"getWorld"->world;case"getMetrics"->metrics;case"getDimension"->dimension;case"getData"->data;case"getSeedManager"->seeds;case"getMinHeight"->dimension.getMinHeight();case"getMaxHeight"->dimension.getMaxHeight();case"getHeight"->{if(values!=null&&values.length!=0)throw new UnsupportedOperationException(method.toString());yield dimension.getMaxHeight()-dimension.getMinHeight();}case"getCacheID"->System.identityHashCode(self);case"getUpperContext"->null;case"getPlatformHooks"->new EnginePlatformHooks(){};case"getComplex"->runtime[0];case"isStudio","isClosed"->false;
+                        case"getGenerationSessions"->sessions;case"burst"->art.arcane.iris.generation.concurrent.MultiBurst.burst;case"getMantle"->{if(caveHost==null)throw new IllegalStateException("No native cave host");yield caveHost;}case"getWorld"->world;case"getMetrics"->metrics;case"getDimension"->dimension;case"getData"->data;case"getSeedManager"->seeds;case"getMinHeight"->dimension.getMinHeight();case"getMaxHeight"->dimension.getMaxHeight();case"getHeight"->{if(values!=null&&values.length!=0)throw new UnsupportedOperationException(method.toString());yield dimension.getMaxHeight()-dimension.getMinHeight();}case"getCacheID"->System.identityHashCode(self);case"getUpperContext"->null;case"getPlatformHooks"->new EnginePlatformHooks(){};case"getComplex"->runtime[0];case"isStudio","isClosed"->false;
                         case"getFocus"->{String key=dimension.getFocus();var biome=key==null||key.isBlank()?null:data.getBiomeLoader().load(key);yield biome==null||biome.isCompatExcluded()?null:biome;}
                         case"getFocusRegion"->{String key=dimension.getFocusRegion();var region=key==null||key.isBlank()?null:data.getRegionLoader().load(key);yield region==null||region.isCompatExcluded()?null:region;}
                         default->{if(method.isDefault()&&NATIVE_DEFAULTS.contains(method.getName()))yield InvocationHandler.invokeDefault(self,method,values==null?new Object[0]:values);throw new UnsupportedOperationException(method.toString());}
@@ -76,13 +76,20 @@ public final class NativeTerrainLinkCheck {
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
         Files.writeString(Path.of(args[1]),gson.toJson(result));
     }
-    private static JsonObject terrainModeCheck(Engine engine,JsonObject request,PlatformRegistries registries){
+    private static JsonObject terrainModeCheck(Engine engine,JsonObject request,PlatformRegistries registries)throws Exception{
         int x=request.get("x").getAsInt(),z=request.get("z").getAsInt();
         var blocks=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBlockState>(16,engine.getHeight(),16);blocks.fill(registries.air());
         var biomes=new art.arcane.volmlib.util.hunk.storage.ArrayHunk<art.arcane.volmlib.nativelib.terrain.NativeBiome>(16,engine.getHeight(),16);
         var context=new art.arcane.iris.generation.context.ChunkContext(x,z,engine.getComplex(),false);var mode=engine.getDimension().getMode().create(engine);JsonObject output=new JsonObject();
-        try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine,engine.getGenerationSessionId(),context)){
-            mode.generateTerrain(x,z,blocks,biomes,false,context);
+        boolean generate=request.has("generate")&&request.get("generate").getAsBoolean();
+        var previous=art.arcane.iris.generation.context.IrisContext.get();art.arcane.iris.generation.context.ChunkContext[] observed={null};
+        try{
+            if(generate){
+                var original=mode.getTerrainStages().get(0);mode.getTerrainStages().set(0,(bx,bz,b,p,m,c)->{observed[0]=c;original.generate(bx,bz,b,p,m,c);});
+                try(var lease=engine.acquireGenerationLease("mode_reference")){mode.generate(x,z,blocks,biomes,false,lease.sessionId());}
+                if(observed[0]==null||observed[0].isNaturalTerrain()||art.arcane.iris.generation.context.IrisContext.get()!=previous)throw new IllegalStateException("Native mode context lifecycle failed");
+                output.addProperty("contentPhase",true);output.addProperty("sessionId",Long.toString(observed[0].getGenerationSessionId()));output.addProperty("activeLeasesAfter",engine.getGenerationSessions().activeLeases());
+            }else try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine,engine.getGenerationSessionId(),context)){mode.generateTerrain(x,z,blocks,biomes,false,context);}
             JsonArray probes=new JsonArray();for(JsonElement value:request.getAsJsonArray("controls")){var xyz=value.getAsJsonArray();int lx=xyz.get(0).getAsInt(),y=xyz.get(1).getAsInt(),lz=xyz.get(2).getAsInt();var row=xyz.deepCopy();row.add(blocks.getRaw(lx,y,lz).key());var biome=biomes.getRaw(lx,y,lz);if(biome==null)throw new IllegalStateException("Native mode biome unresolved");row.add(biome.key());probes.add(row);}output.add("probes",probes);
             output.addProperty("mode",engine.getDimension().getMode().getType().name());output.addProperty("terrainStages",mode.getTerrainStages().size());output.addProperty("contentStages",mode.getStages().size());return output;
         }finally{mode.close();}

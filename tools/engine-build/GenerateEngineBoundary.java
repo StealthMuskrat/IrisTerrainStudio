@@ -8,7 +8,7 @@ import java.util.*;
 
 /** Generate fail-closed declarations for the native engine's platform-facing API. */
 public final class GenerateEngineBoundary {
-    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes");
+    private static final Set<String> NATIVE_DEFAULTS=Set.of("getDimensionStackContext","isAdditionalTerrainOwned","getSubterrainCell","getSubterrainBiome","getCaveBiome","getSurfaceBiome","getHostSurfaceBiome","answersFromNaturalTerrain","getGenerationSessionId","getGenerationSessions","isTerrainSurfaceSolid","getNativeStructureVolumes","acquireGenerationLease","isClosing");
     public static void main(String[] args) throws Exception {
         generate(Engine.class,"EngineBoundary",args[0]);
         generate(art.arcane.iris.spi.IrisPlatform.class,"PlatformBoundary",args[0]);
@@ -28,7 +28,7 @@ public final class GenerateEngineBoundary {
             for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append(parameters[i].getCanonicalName()).append(" p").append(i);}
             if(api==Engine.class&&NATIVE_DEFAULTS.contains(method.getName())||api==art.arcane.iris.generation.mantle.EngineMantle.class&&Set.of("getData","getComplex","trueHeight","getFluidHeight","insertMatter","getHighest","isPreventingDecay","isUnderwater","isDebugSmartBore").contains(method.getName())){
                 if(!method.isDefault())throw new IllegalStateException("Pinned native engine default changed: "+method);
-                out.append("){");if(method.getReturnType()!=void.class)out.append("return ");out.append(api.getCanonicalName()).append(".super.").append(method.getName()).append('(');for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append('p').append(i);}out.append(");}\n");
+                out.append(')');Class<?>[] errors=method.getExceptionTypes();if(errors.length>0){out.append(" throws ");for(int i=0;i<errors.length;i++){if(i>0)out.append(',');out.append(errors[i].getCanonicalName());}}out.append('{');if(method.getReturnType()!=void.class)out.append("return ");out.append(api.getCanonicalName()).append(".super.").append(method.getName()).append('(');for(int i=0;i<parameters.length;i++){if(i>0)out.append(',');out.append('p').append(i);}out.append(");}\n");
             }else out.append("){throw studio.engine.UnsupportedPlatform.unavailable(\"Native engine platform operation: ").append(method.getName()).append("\");}\n");
         }
         out.append("}\n");Path file=Path.of(directory,"studio/engine/terrain/"+name+".java");Files.createDirectories(file.getParent());Files.writeString(file,out);

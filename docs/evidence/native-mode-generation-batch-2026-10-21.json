@@ -1,0 +1,310 @@
+{
+  "scope": "native-registered-mode-generation-and-session-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "6455d1c345208a1d0243a9d6f93e2e31242178d12e15b7c7ef94450e1c44b951",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "5558a5b60504de490b900c91e8d27ecd9a661661c97afd4a6d89a4471970adbe",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/EngineMode.java",
+      "sha256": "4ab6ad938165febae2167775b999c6a77ba177f4e89fa023934a5c6e18fe5397"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngineMode.java",
+      "sha256": "ad4d9d7b70d2b308d4431005fc42df31d9bbe7e8ecc908c7d17873cbabab8257"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/GenerationSessionManager.java",
+      "sha256": "cfca2e7135283cd8a3c6f6468f2ddd90b22765efd047c9669493bd277b84f66d"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/GenerationSessionLease.java",
+      "sha256": "f433b9cbe9dbf74397c20f61901bb24dcdc1d61dc1792c7a5d31a34aad5a27cc"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/GenerationTransitionGate.java",
+      "sha256": "dab6e46b524ef3ae6a1a3c2bea7296482da61ca745fb02fd3821b6e55b3c57d2"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/context/ChunkContext.java",
+      "sha256": "87b52cd1c66f5132625c3c186d06e5a5a2e86cd7675d26b0952c2f73f7443ab6"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/context/IrisContext.java",
+      "sha256": "fa118985b36c72de31e693bfa0b6c4c44a0387c8fcd78de0c029da164cae4761"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeSuperFlat.java",
+      "sha256": "5a44a366ed3e4cd662a833298d58f09cc8f1028832be585aaa699c727fff821b"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeEnclosure.java",
+      "sha256": "fb98687aa67a0eed5613eb65f3da3e480241bcbe3dcb3e9424c439846f52d504"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeIslands.java",
+      "sha256": "b5122b6cf8b64222f83ed6e75f5b7462a6cc4e2f6fc72ac44bf65b26523a42d3"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+    "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainModeStage.java",
+    "packages/iris-engine/client.mjs",
+    "tools/engine-build/GenerateEngineBoundary.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendAndCheckSources": [
+    {
+      "path": "apps/web/index.html",
+      "sha256": "1e42746d535e28d66162e173d1e7edd29e3b1c6bd749181d5352bc517b58c56a"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "ebe07389e136f55ec870472282cba8c40388161e3f6132e5916dd5890cec01e4"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "cad9797f468b53488e42f3464fee3c9ade5be01e366213f058e500fbdfaa3706"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "d0c6445becb4328968423a1222a01d07fa8451360ac2e57d9dba99b4c6095978"
+    },
+    {
+      "path": "tools/checks/native-mode-generation-smoke.mjs",
+      "sha256": "ed0489a3f77b8cd429a5333660dd353f4054846e3e89e1e27b4978e50da46261"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-mode-generation-development-targeted",
+    "fixtures": 3,
+    "seeds": 1,
+    "blockProbesCompared": 9,
+    "biomeProbesCompared": 9,
+    "results": [
+      {
+        "mode": "SUPERFLAT",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:plains"
+          ],
+          [
+            3,
+            24,
+            6,
+            "minecraft:air",
+            "minecraft:plains"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:plains"
+          ]
+        ],
+        "sessionId": "1",
+        "contentPhase": true,
+        "scopeRestored": true,
+        "activeLeasesAfter": 0,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "79904fc5cc304f064f51282eb34d32c498087087ff0a461f605b45cd45a6ea2d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "f8718ac625fc35c3d11b1a0e4613be8e6b77502abd8c5075ef2ad5bb9b2e3c9f"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "mode": "ENCLOSURE",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:forest"
+          ],
+          [
+            3,
+            24,
+            6,
+            "minecraft:stone",
+            "minecraft:forest"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:forest"
+          ]
+        ],
+        "sessionId": "1",
+        "contentPhase": true,
+        "scopeRestored": true,
+        "activeLeasesAfter": 0,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "da78a6a5d779c4b2089fe3c57b9e48181f929a1d01bee2b97a4377a80ae2380d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "ac20d15966f668dc9680aec33936e0027f5d82e8aeaff4b90aa73cccfee60848"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "mode": "ISLANDS",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:desert"
+          ],
+          [
+            3,
+            24,
+            6,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:desert"
+          ]
+        ],
+        "sessionId": "1",
+        "contentPhase": true,
+        "scopeRestored": true,
+        "activeLeasesAfter": 0,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "4f0e855f2437ba6a22d16ab990d9fde2da0e87c4305db1acefd22b25570647e4"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "4f0ff6aa18765d3c00d14268110ed6777699b95794bec998f2786d6d36892c6c"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "nativeModeGenerate": true,
+    "nativeContextPrefillAndContentPhase": true,
+    "nativeSessionLeases": true,
+    "scopeAndLeaseCleanupAfterFailure": {
+      "sessionId": "1",
+      "activeLeases": 0,
+      "scopeBound": false
+    },
+    "prefixRoutePreserved": true,
+    "workerClientCache": true,
+    "controlledCancellation": true,
+    "overworldRefuses": true,
+    "actualWasmWorkerClient": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "6455d1c345208a1d0243a9d6f93e2e31242178d12e15b7c7ef94450e1c44b951",
+    "sourceSha256": "5558a5b60504de490b900c91e8d27ecd9a661661c97afd4a6d89a4471970adbe",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "implemented": [
+    "Original EngineMode.generate for Superflat/Enclosure/Islands; existing generateTerrain prefix remains separately selectable.",
+    "Original cached ChunkContext with NO_CAVE prefill, metrics, scoped session binding, native terrain/transition stages and natural-to-content phase transition. Existing worker fill/dispatch remains inline.",
+    "Snapshot-owned original GenerationSessionManager and original Engine acquisition/closing/session defaults; leases acquired around mode.generate and released on failures. Release seals with timeout zero.",
+    "Non-writing registered-stage observer checks native natural-phase scope, final content phase/session and prior scope restoration; actual original stage restored before native mode close.",
+    "Boundary generator retains native checked exception declarations. Saved-world GenerationHistoryRuntimeRouter methods explicitly fail if reached; no invented history or continuations.",
+    "Browser field/metadata/client cache and immediate cancellation transport added for the new mode path; block and physical biome buffers remain bounded."
+  ],
+  "limitations": [
+    "Three small 64-high authored fixtures, one seed/destination each, nine selected blocks and nine selected biomes; no full-volume comparison or complete topology/options proof.",
+    "All three pinned modes register the same single terrain burst and zero content stages. Different authored heights/scatter keys exercise inputs, not mode-specific topology.",
+    "Independent JVM host and Node-Wasm Worker shim execute the original interface-mode entry. Browser host is not IrisEngine: native history branches return by engine-type guard.",
+    "Full IrisEngine.generate, REAL flags, world listeners, server/Mantle orchestration, saved-world capture/continuations, hydrology/transforms/stacks and custom blocks remain unfinished. Overworld refuses the new route.",
+    "Native session manager has Studio/live transitions disabled for immutable snapshots. No concurrent session hot-reload or full lifecycle qualification; native session IDs are scoped to engine ownership.",
+    "Existing 20-type fixture registry only; actual browser DOM/GPU/cancellation and complete registry/schema/dependency/asset qualification remain pending.",
+    "Upstream checksum issue #15, exact native dependency/server identity and production release provenance remain unqualified."
+  ],
+  "nextMilestone": "Continue remaining original native chunk stages and host services, then complete real browser/application verification after implementation.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Broad application/native suites",
+    "Registry state or placement-pair sweeps/exports",
+    "Whole-volume output comparisons",
+    "GitHub test workflows"
+  ]
+}
