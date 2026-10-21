@@ -18,12 +18,12 @@ public final class WorkerCaveStorage {
     private static final Map<Long,MantleChunk<Matter>> chunks=new LinkedHashMap<>();
     public static void begin(int worldHeight,int x,int z){begin(worldHeight,x,z,5);}
     public static void begin(int worldHeight,int x,int z,int limit){
-        if(limit!=5&&limit!=9)throw new IllegalArgumentException("Invalid worker chunk window");chunkLimit=limit;
+        if(limit!=5&&limit!=9&&limit!=25&&limit!=49)throw new IllegalArgumentException("Invalid worker chunk window");chunkLimit=limit;
         if(active!=null)throw new IllegalStateException("Nested worker cave storage");
         height=worldHeight;chunkX=x;chunkZ=z;
         active=new MantleChunk<>((worldHeight+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE);chunks.put(key(x,z),active);
     }
-    public static void requirePrepared(int x,int z){requireActive();if(!chunks.containsKey(key(x,z)))throw studio.engine.UnsupportedPlatform.unavailable("Object access outside the prepared three-by-three chunk window");}
+    public static void requirePrepared(int x,int z){requireActive();if(!chunks.containsKey(key(x,z)))throw studio.engine.UnsupportedPlatform.unavailable("Object access outside the prepared chunk window");}
     public static void clear(){active=null;height=0;chunks.clear();}
     public static void select(int x,int z){requireActive();if(chunks.size()>=chunkLimit&&!chunks.containsKey(key(x,z)))throw new IllegalStateException("Worker window exceeds its chunk budget");active=chunks.computeIfAbsent(key(x,z),ignored->new MantleChunk<>((height+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE));chunkX=x;chunkZ=z;}
     private static long key(int x,int z){return ((long)x<<32)|(z&0xffffffffL);}

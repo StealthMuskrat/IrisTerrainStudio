@@ -9,6 +9,9 @@ import art.arcane.iris.structure.object.ObjectPlaceMode;
 /** Guarded original MantleObjectComponent origin pass; neighboring source scheduling is not connected. */
 public final class ProceduralSourcePreview {
     public static String render(BrowserTerrainEngine engine,int x,int z)throws java.io.IOException{
+        return render(engine,x,z,false);
+    }
+    public static String render(BrowserTerrainEngine engine,int x,int z,boolean neighborhood)throws java.io.IOException{
         WorkerProceduralMap.begin();try{
             int[] attempts={0};var dimension=engine.getDimension();
             for(var region:dimension.getAllRegions(engine::getData))if(region!=null){
@@ -19,7 +22,7 @@ public final class ProceduralSourcePreview {
                 if(!biome.getObjects().isEmpty())throw unsupported("Imported object placements");
                 check(biome.getProceduralObjects(),attempts);
             }
-            return TerrainCarvingComponent.paint(engine,x,z,TerrainCarvingComponent.Stage.SOURCE_SCATTER);
+            return TerrainCarvingComponent.paint(engine,x,z,neighborhood?TerrainCarvingComponent.Stage.NEIGHBOR_SCATTER:TerrainCarvingComponent.Stage.SOURCE_SCATTER);
         }finally{WorkerProceduralMap.end();}
     }
     private static void check(IrisProceduralObjects objects,int[] attempts){

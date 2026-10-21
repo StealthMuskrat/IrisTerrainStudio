@@ -8,7 +8,17 @@ import art.arcane.volmlib.util.matter.Matter;
 
 /** Access bridge to original native writer initialization, source plans and destination transactions. */
 public final class WorkerObjectTransactions {
-    public record Result(int placedY,int sourcePlanDestinations,int replayedDestinations,int retainedBytes){}
+    public record Neighborhood(MantleObjectComponent component,int placementRadius,int inputChunkRadius,int sourceChunkRadius){}
+    public record NeighborhoodStats(int sourceChunks,int contributingSources,int placementRadius,int inputChunkRadius,int sourceChunkRadius,long builtPlanBytes){}
+    public record Result(int placedY,int sourcePlanDestinations,int replayedDestinations,int retainedBytes,NeighborhoodStats neighborhood){
+        public Result(int y,int destinations,int replayed,int bytes){this(y,destinations,replayed,bytes,null);}
+    }
+    public static ObjectSourcePlan buildPlan(MantleObjectComponent component,MantleWriter writer,int sourceX,int sourceZ,art.arcane.iris.generation.context.ChunkContext context){throw new UnsupportedOperationException("Native private source-plan builder requires its pinned compiler bridge");}
+    public static Neighborhood prepareNeighborhood(EngineMantle engine){
+        var component=new MantleObjectComponent(engine);int radius=component.getRadius(),input=Math.ceilDiv(component.getInputRadius(),16),sources=MantleObjectComponent.sourceChunkRadius(radius);
+        if(input>3||sources>1)throw studio.engine.UnsupportedPlatform.unavailable("Procedural neighborhood exceeds 49 prepared chunks or nine source chunks");
+        return new Neighborhood(component,radius,Math.max(1,input),sources);
+    }
     public static MantleWriter createWriter(EngineMantle engine,Mantle<Matter> mantle,int x,int z,int radius){throw new UnsupportedOperationException("Browser writer factory requires its pinned compiler adapter");}
     public static Result place(EngineMantle engine,IrisObject object,IrisObjectPlacement config,RNG rng,boolean plausible,int x,int z,art.arcane.iris.generation.context.ChunkContext context){
         int cx=x>>4,cz=z>>4;
@@ -34,6 +44,20 @@ public final class WorkerObjectTransactions {
                 new MantleObjectComponent(engine).generateOrigin(source,cx,cz,context);
                 result[0]=replay(writer,source.sourcePlanSince(checkpoint),cx,cz,-1);
             });return result[0];
+        }
+    }
+    public static Result neighborhood(EngineMantle engine,int cx,int cz,art.arcane.iris.generation.context.ChunkContext context,Neighborhood neighborhood){
+        try(var scope=art.arcane.iris.generation.context.IrisContext.open(engine.getEngine(),engine.getEngine().getGenerationSessionId(),context);MantleWriter writer=createWriter(engine,null,cx,cz,neighborhood.inputChunkRadius())){
+            ObjectDestinationTransaction destination=new ObjectDestinationTransaction(writer,cx,cz);
+            int[] sources={0,0};long[] bytes={0};
+            writer.withComponentPriority(2,()->{
+                MantleObjectComponent.replaySourceChunks(cx,cz,neighborhood.placementRadius(),(sx,sz)->{
+                    ObjectSourcePlan plan=buildPlan(neighborhood.component(),writer,sx,sz,context);sources[0]++;bytes[0]+=plan.estimatedRetainedBytes();
+                    if(plan.destinationSlot(cx,cz)>=0){sources[1]++;destination.apply(plan);}
+                });
+                destination.commit();
+            });
+            return new Result(-1,0,0,0,new NeighborhoodStats(sources[0],sources[1],neighborhood.placementRadius(),neighborhood.inputChunkRadius(),neighborhood.sourceChunkRadius(),bytes[0]));
         }
     }
     private static Result replay(MantleWriter writer,ObjectSourcePlan plan,int cx,int cz,int placedY){

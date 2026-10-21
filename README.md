@@ -111,3 +111,6 @@ The same chooser can attempt **Single placement on terrain** at the selected chu
 
 
 **Native procedural content · one source chunk · development** now runs native world-seed derivation, chance/density selection and tree/object placement for the selected source chunk. Neighboring source contributions and collision replay remain unfinished. Use rotation-disabled natural entries without imported objects, ruins or cave anchors. See [the current source-pass scope](docs/DEVELOPMENT.md#native-one-source-procedural-scatter).
+
+
+Use **Native procedural neighborhood · one chunk · development** to include the required neighboring source contributions. Native radii determine the prepared window; one destination chunk is displayed. Plan caching, persistent continuations and full terrain qualification remain unfinished. See [the neighborhood scope](docs/DEVELOPMENT.md#native-procedural-source-neighborhoods).
