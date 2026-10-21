@@ -1,0 +1,43 @@
+import{displayRange,categoryColor}from'../../../packages/voxel-renderer/field-data.mjs';
+import{clipBounds,clipCenter,emptyClip}from'../../../packages/voxel-renderer/clip.mjs';
+
+export class MapTools{
+  constructor(services){Object.assign(this,services);this.index=null;this.selection=null;}
+  current(index){if(!index||this.map()?.index!==index)throw new Error('The displayed map changed. Select a sample again.');}
+  action(callback){return()=>{try{callback();}catch(error){this.onError(error);}};}
+  sync(){
+    const map=this.map(),index=map?.index??null;if(index!==this.index){this.index=index;this.selection=null;}
+    this.get('map-range').disabled=!index||!!index.categories;this.get('map-legend').disabled=!index?.categories;this.get('map-inspect').disabled=!this.selection;
+    this.get('map-range-status').textContent=!index?'No map samples':index.categories?`${index.categories.length} observed categories`:`Display ${((map.settings.range)??[index.min,index.max]).join(' … ')}`;
+    const pin=this.get('map-selection');pin.hidden=!this.selection;if(this.selection){pin.style.left=(this.selection.sample.column+.5)/index.data.width*100+'%';pin.style.top=(this.selection.sample.row+.5)/index.data.height*100+'%';}
+  }
+  select(row,column,index=this.map()?.index){this.current(index);const sample=index.sample(row,column);this.index=index;this.selection={index,sample};this.sync();this.onSelect(sample);return sample;}
+  async rangeDialog(){
+    const map=this.map(),index=map?.index;this.current(index);if(index.categories)throw new Error('Categorical maps use identity colors rather than a scalar range.');
+    const {element,field,copy}=this,range=map.settings.range??[index.min,index.max],auto=element('input',{type:'checkbox',checked:!map.settings.range}),low=element('input',{type:'number',step:'any',value:String(range[0]),disabled:auto.checked}),high=element('input',{type:'number',step:'any',value:String(range[1]),disabled:auto.checked});
+    auto.addEventListener('change',()=>{low.disabled=high.disabled=auto.checked;});
+    await this.ask('Map display range',[copy(`Stored native values: ${index.min} … ${index.max}. Display settings leave the samples unchanged.`),element('label',{class:'settings-check'},auto,' Automatic range'),field('Minimum',low),field('Maximum',high)],{submit:'Apply display range',read:()=>{if(!auto.checked&&(!low.value.trim()||!high.value.trim()))throw new Error('Enter both display limits.');return auto.checked?null:displayRange([Number(low.value),Number(high.value)]);},onSubmit:value=>{this.current(index);map.configure({range:value});this.onRange(value);this.sync();}});
+  }
+  async inspect(){
+    const selected=this.selection;if(!selected)throw new Error('Select a sample on the map first.');const {index,sample}=selected;this.current(index);
+    const {element,field,copy}=this,volume=this.volume(),world=this.world(),bounds=volume?clipBounds(volume,world.clip):null,hasBounds=bounds&&!emptyClip(bounds),within=hasBounds&&[sample.x,sample.z].every((value,i)=>{const axis=i*2;return value>=volume.origin[axis]+bounds.min[axis]&&value<volume.origin[axis]+bounds.max[axis];});
+    const y=element('input',{type:'number',step:'any',value:String(Number.isFinite(sample.y)?sample.y+.5:hasBounds?clipCenter(volume,world.clip)[1]:0)});
+    const use=element('button',{type:'button',class:'quiet-button',text:'Use X/Z for next preview',onclick:this.action(()=>{this.current(index);this.onCoordinates(sample);})});
+    await this.ask('Stored map sample',[copy(`X ${sample.x} · Z ${sample.z}${sample.y===null?'':` · Slice Y ${sample.y}`}`),copy(sample.category===null?`Native value: ${sample.value}`:`Category: ${sample.category} · stored index ${sample.value}`),copy(`Row ${sample.row} · Column ${sample.column} · ${index.data.scope??index.data.field??'Retained field'}`),use,...(within?[field('Focus world Y',y,'Focuses the retained 3D volume without generating terrain.')]:[copy('These X/Z coordinates have no visible retained 3D volume to focus. They can be used for a later preview.')])],{submit:within?'Focus displayed volume':null,cancel:'Close',read:()=>{if(!y.value.trim()||!Number.isFinite(Number(y.value)))throw new Error('Enter a finite world Y.');return[sample.x,Number(y.value),sample.z];},onSubmit:point=>{this.current(index);if(this.volume()!==volume||this.world()!==world)throw new Error('The displayed volume changed. Open the sample again.');world.focus(point);this.onFocus();}});
+  }
+  async legend(){
+    const index=this.map()?.index;this.current(index);if(!index.categories)throw new Error('This scalar map has no category legend.');
+    const {element,field,copy}=this,query=element('input',{type:'search',placeholder:'Search category keys',maxlength:'1024'}),list=element('ul',{class:'modal-list'}),pageStatus=element('p',{class:'modal-copy'}),selected=element('p',{class:'modal-copy',text:'Choose a category to select its first retained sample.'});
+    let active=true,page=0,category=null,cursor=0;
+    const guard=()=>{if(!active)throw new Error('This legend has closed.');this.current(index);};
+    const choose=()=>{guard();const sample=index.categorySample(category,cursor);this.select(sample.row,sample.column,index);selected.textContent=`${index.data.categories[category]} · sample ${((cursor%index.counts[category])+index.counts[category])%index.counts[category]+1} of ${index.counts[category]} · X ${sample.x} · Z ${sample.z}`;previousMatch.disabled=nextMatch.disabled=false;};
+    const previousMatch=element('button',{type:'button',class:'quiet-button',text:'Previous sample',disabled:true,onclick:this.action(()=>{cursor--;choose();})}),nextMatch=element('button',{type:'button',class:'quiet-button',text:'Next sample',disabled:true,onclick:this.action(()=>{cursor++;choose();})});
+    const previousPage=element('button',{type:'button',class:'quiet-button',text:'Previous page',onclick:this.action(()=>{page--;render();})}),nextPage=element('button',{type:'button',class:'quiet-button',text:'Next page',onclick:this.action(()=>{page++;render();})});
+    const render=()=>{
+      guard();const result=index.legend(query.value||'',page);page=result.page;previousPage.disabled=page===0;nextPage.disabled=page===result.pages-1;pageStatus.textContent=`${result.total} observed categories · page ${page+1} of ${result.pages}`;
+      list.replaceChildren(...result.rows.map(row=>{const color=categoryColor(row.key).slice(0,3).map(value=>Math.round(value*255));return element('li',{},element('span',{class:'category-swatch',style:`background:rgb(${color.join(',')})`,'aria-hidden':'true'}),element('button',{type:'button',class:'text-button category-name',text:row.key,onclick:this.action(()=>{category=row.index;cursor=0;choose();})}),element('small',{class:'muted',text:`${row.count} stored samples`}));}));
+    };
+    query.addEventListener('input',this.action(()=>{page=0;render();}));render();
+    try{await this.ask('Observed category legend',[copy('Colors identify category keys. Counts describe only the retained samples. Choosing a category marks its samples on the map; close this legend to inspect the selection.'),field('Find category',query),list,pageStatus,element('div',{class:'map-dialog-actions'},previousPage,nextPage),selected,element('div',{class:'map-dialog-actions'},previousMatch,nextMatch)],{wide:true,submit:null,cancel:'Close'});}finally{active=false;}
+  }
+}
