@@ -35,8 +35,27 @@ public final class WorkerCaveStorage {
     public static int getWorldHeight(Mantle<?> unused){requireActive();return height;}
     public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requireActive();if(x!=chunkX||z!=chunkZ)throw studio.engine.UnsupportedPlatform.unavailable("Cave access outside the prepared chunk");return active;}
     public static void setMarker(Mantle<?> ignored,int x,int y,int z,Object value){requireActive();if(!(value instanceof MatterMarker marker))throw unsupported();if(y<0||y>=height)return;MantleChunk<Matter> chunk=existingChunk(ignored,x>>4,z>>4);if(chunk==null)throw studio.engine.UnsupportedPlatform.unavailable("Cave marker writes outside the prepared window");chunk.getOrCreate(y>>4).<MatterMarker>slice(MatterMarker.class).set(x&15,y&15,z&15,marker);}
-    public static String markerEntries()throws java.io.IOException{requireActive();var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){writer.beginArray();for(int y=0;y<height;y++)for(int z=0;z<16;z++)for(int x=0;x<16;x++){MatterMarker marker=active.get(x,y,z,MatterMarker.class);if(marker!=null){writer.beginArray();writer.value(x);writer.value(y);writer.value(z);writer.value(marker.getTag());writer.endArray();}}writer.endArray();}return output.toString();}
-    public static int journalCellCount(){requireActive();int[] count={0};for(int section=0;section<(height+15)/16;section++)if(active.exists(section)){var slice=active.get(section).getSlice(art.arcane.iris.world.storage.matter.PreObjectMatterCell.class);if(slice!=null)slice.iterate((x,y,z,value)->count[0]++);}return count[0];}
+    private record MarkerEntry(int x,int y,int z,String tag){}
+    public static String markerEntries()throws java.io.IOException{
+        requireActive();List<MarkerEntry> entries=new ArrayList<>();
+        for(int section=0;section<(height+15)/16;section++)if(active.exists(section)){
+            var slice=active.get(section).getSlice(MatterMarker.class);int baseY=section<<4;
+            if(slice!=null)slice.iterate((x,y,z,marker)->entries.add(new MarkerEntry(x,baseY+y,z,marker.getTag())));
+        }
+        entries.sort(Comparator.comparingInt(MarkerEntry::y).thenComparingInt(MarkerEntry::z).thenComparingInt(MarkerEntry::x));
+        var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){
+            writer.beginArray();for(var entry:entries){writer.beginArray();writer.value(entry.x());writer.value(entry.y());writer.value(entry.z());writer.value(entry.tag());writer.endArray();}writer.endArray();
+        }return output.toString();
+    }
+    private static int journalCellCount(MantleChunk<Matter> chunk){
+        int[] count={0};for(int section=0;section<(height+15)/16;section++)if(chunk.exists(section)){var slice=chunk.get(section).getSlice(art.arcane.iris.world.storage.matter.PreObjectMatterCell.class);if(slice!=null)slice.iterate((x,y,z,value)->count[0]++);}return count[0];
+    }
+    public static int journalCellCount(){requireActive();return journalCellCount(active);}
+    public static String journalWindow()throws java.io.IOException{
+        requireActive();var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){
+            writer.beginArray();for(var entry:chunks.entrySet()){int count=journalCellCount(entry.getValue());if(count==0)continue;writer.beginArray();writer.value((int)(entry.getKey()>>32));writer.value((int)(long)entry.getKey());writer.value(count);writer.endArray();}writer.endArray();
+        }return output.toString();
+    }
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
     public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
     private static Class<?> valueType(Object value){if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;if(value instanceof art.arcane.volmlib.nativelib.terrain.NativeBlockState)return art.arcane.volmlib.nativelib.terrain.NativeBlockState.class;if(value instanceof String)return String.class;if(value instanceof art.arcane.iris.world.storage.matter.PreObjectMatterCell)return art.arcane.iris.world.storage.matter.PreObjectMatterCell.class;if(value instanceof art.arcane.iris.generation.decoration.tree.TreeBlockMaterial)return art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class;if(value instanceof art.arcane.iris.integration.Identifier)return art.arcane.iris.integration.Identifier.class;throw unsupported();}
