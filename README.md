@@ -108,3 +108,6 @@ For an isolated procedural tree or natural-object preview, open a biome or regio
 
 
 The same chooser can attempt **Single placement on terrain** at the selected chunk centre. It uses native placement conditions and source plans, replays touched destinations within a temporary 3 × 3 chunk window, and reports acceptance or rejection. The displayed volume remains the selected chunk. Start with rotation-disabled entries; rotated block states, edit merging, tile values and native structure obstacles remain unsupported. See [the supported placement subset](docs/DEVELOPMENT.md#native-single-procedural-placement).
+
+
+**Native procedural content · one source chunk · development** now runs native world-seed derivation, chance/density selection and tree/object placement for the selected source chunk. Neighboring source contributions and collision replay remain unfinished. Use rotation-disabled natural entries without imported objects, ruins or cave anchors. See [the current source-pass scope](docs/DEVELOPMENT.md#native-one-source-procedural-scatter).

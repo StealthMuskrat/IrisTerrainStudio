@@ -14,5 +14,7 @@ public final class WorkerProceduralMap<K,V> extends HashMap<K,V> {
         if(!containsKey(key)&&++entries>262144)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
         return super.put(key,value);
     }
+    /** Browser workers have no server marker file; preserve the native JVM-property query. */
+    public static String debugSpec(){String value=System.getProperty("iris.goldendebug");return value==null||value.isBlank()?null:value;}
     public static boolean debugFile(File file){if(!file.getPath().equals("plugins/Iris/goldendebug.txt"))throw studio.engine.UnsupportedPlatform.unavailable("Procedural filesystem access");return false;}
 }

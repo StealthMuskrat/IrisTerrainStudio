@@ -56,6 +56,15 @@ public final class WorkerCaveStorage {
             writer.beginArray();for(var entry:chunks.entrySet()){int count=journalCellCount(entry.getValue());if(count==0)continue;writer.beginArray();writer.value((int)(entry.getKey()>>32));writer.value((int)(long)entry.getKey());writer.value(count);writer.endArray();}writer.endArray();
         }return output.toString();
     }
+    public static String objectTags(){
+        requireActive();Set<String> placements=new HashSet<>();int[] counts={0,0};
+        for(int section=0;section<(height+15)/16;section++)if(active.exists(section)){
+            var matter=active.get(section);var strings=matter.getSlice(String.class);var trees=matter.getSlice(art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class);
+            if(strings!=null)strings.iterate((x,y,z,value)->{counts[0]++;placements.add(value);});
+            if(trees!=null)trees.iterate((x,y,z,value)->counts[1]++);
+        }
+        return "{\"cells\":"+counts[0]+",\"placements\":"+placements.size()+",\"treeMaterials\":"+counts[1]+"}";
+    }
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
     public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
     private static Class<?> valueType(Object value){if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;if(value instanceof art.arcane.volmlib.nativelib.terrain.NativeBlockState)return art.arcane.volmlib.nativelib.terrain.NativeBlockState.class;if(value instanceof String)return String.class;if(value instanceof art.arcane.iris.world.storage.matter.PreObjectMatterCell)return art.arcane.iris.world.storage.matter.PreObjectMatterCell.class;if(value instanceof art.arcane.iris.generation.decoration.tree.TreeBlockMaterial)return art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class;if(value instanceof art.arcane.iris.integration.Identifier)return art.arcane.iris.integration.Identifier.class;throw unsupported();}

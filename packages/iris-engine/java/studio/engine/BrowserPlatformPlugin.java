@@ -13,6 +13,15 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("art.arcane.iris.generation.mantle.MantleObjectComponent")){
+                replaceClass(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
+                replaceDeclarations(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
+                for(MethodHolder method:cls.getMethods())if(java.util.Set.of("generateLayer","buildSourcePlan","logSourcePlanStats","placeObject","placeCaveObject","placeUpperObjects","placeContainedCaveObject","findCavePlacementAnchor").contains(method.getName()))unavailable(method,"Automatic neighboring source scheduling/cache, imported objects or cave anchors");
+            }
+            if(name.equals("art.arcane.iris.generation.mantle.GoldenDebugObjectPlacer"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("resolveGoldenDebugSpec")){
+                Program p=new Program();p.createVariable();Variable result=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerProceduralMap","debugSpec",ValueType.object("java.lang.String")));call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);
+            }
+            if(name.equals("art.arcane.iris.generation.decoration.ruin.IrisRuin"))for(MethodHolder method:cls.getMethods())if(java.util.Set.of("getVariantObjects","getVariantObject").contains(method.getName()))unavailable(method,"Procedural ruins outside natural-object preview scope");
             if(name.equals("art.arcane.iris.generation.mantle.MantleCarvingComponent")){
                 int mantle=0,chunks=0,heights=0,subterrain=0;
                 for(MethodHolder method:cls.getMethods()){
@@ -254,7 +263,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 }
                 if(changed!=1)throw new IllegalStateException("Pinned object-cache budget entry point changed");
             }
-            if(java.util.Set.of("art.arcane.volmlib.util.cache.AtomicCache","art.arcane.iris.world.entity.IrisAttributeModifier","art.arcane.iris.pack.loading.ResourceLoader","art.arcane.iris.spi.IrisLogging","art.arcane.iris.pack.validation.ContentGate").contains(name)){
+            if(java.util.Set.of("art.arcane.volmlib.util.cache.AtomicCache","art.arcane.iris.world.entity.IrisAttributeModifier","art.arcane.iris.pack.loading.ResourceLoader","art.arcane.iris.spi.IrisLogging","art.arcane.iris.pack.validation.ContentGate","art.arcane.iris.generation.mantle.MantleObjectComponent").contains(name)){
                 int factories=0;
                 for(MethodHolder method:cls.getMethods()){
                     Program program=method.getProgram();if(program==null)continue;

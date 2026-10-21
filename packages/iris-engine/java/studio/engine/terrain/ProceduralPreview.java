@@ -28,7 +28,7 @@ public final class ProceduralPreview {
         if(settings==null)return List.of();
         return switch(family){case"trees"->settings.getTrees();case"formations"->settings.getFormations();case"coral"->settings.getCoral();case"fungi"->settings.getFungi();case"crystals"->settings.getCrystals();default->throw new IllegalArgumentException("Procedural family is outside the natural-object preview scope");};
     }
-    private static int variants(IrisProceduralPlacement value){return Math.max(1,value instanceof IrisProceduralTree tree?tree.getVariants():value instanceof IrisFormation formation?formation.getVariants():value instanceof IrisCoral coral?coral.getVariants():value instanceof IrisFungus fungus?fungus.getVariants():((IrisCrystal)value).getVariants());}
+    static int variants(IrisProceduralPlacement value){return Math.max(1,value instanceof IrisProceduralTree tree?tree.getVariants():value instanceof IrisFormation formation?formation.getVariants():value instanceof IrisCoral coral?coral.getVariants():value instanceof IrisFungus fungus?fungus.getVariants():((IrisCrystal)value).getVariants());}
     private static long seed(IrisProceduralPlacement value){return value instanceof IrisProceduralTree tree?tree.getSeed():value instanceof IrisFormation formation?formation.getSeed():value instanceof IrisCoral coral?coral.getSeed():value instanceof IrisFungus fungus?fungus.getSeed():((IrisCrystal)value).getSeed();}
     public static void describe(IrisRegistrant resource,JsonWriter writer)throws IOException{
         if(!(resource instanceof IrisBiome)&&!(resource instanceof IrisRegion))return;

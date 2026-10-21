@@ -18,7 +18,8 @@ public final class TerrainCarvingComponent {
         FLOATING("native-overworld-floating-material-stage-development"),
         CAVE_DECORATION("native-overworld-cave-decoration-stage-development"),
         DEPOSITS("native-overworld-deposit-material-stage-development"),
-        MATERIAL_FINISH("native-overworld-material-finish-development");
+        MATERIAL_FINISH("native-overworld-material-finish-development"),
+        SOURCE_SCATTER("native-procedural-source-scatter-development");
         final String scope;Stage(String scope){this.scope=scope;}
     }
     public static String paint(BrowserTerrainEngine engine,int x,int z)throws IOException{return paint(engine,x,z,Stage.CARVING);}
@@ -36,11 +37,12 @@ public final class TerrainCarvingComponent {
         if(post&&!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Material preview outside the native Overworld mode");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Carving component window exceeds worker bounds");
         WorkerCaveStorage.requireNoSubterrain(null,x>>4,z>>4,engine.getComplex());
-        int cx=x>>4,cz=z>>4;WorkerCaveStorage.begin(height,cx,cz,placement==null?5:9);
+        boolean scatter=stage==Stage.SOURCE_SCATTER,content=placement!=null||scatter;
+        int cx=x>>4,cz=z>>4;WorkerCaveStorage.begin(height,cx,cz,content?9:5);
         art.arcane.iris.generation.mantle.WorkerObjectTransactions.Result placementResult=null;
         try {
             MantleCarvingComponent carving=new MantleCarvingComponent(engine.getMantle());
-            for(int[] offset:placement==null?new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1}}:new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}}){int chunkX=cx+offset[0],chunkZ=cz+offset[1];WorkerCaveStorage.select(chunkX,chunkZ);carving.generateLayer(null,chunkX,chunkZ,new ChunkContext(chunkX<<4,chunkZ<<4,engine.getComplex(),false));}
+            for(int[] offset:!content?new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1}}:new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}}){int chunkX=cx+offset[0],chunkZ=cz+offset[1];WorkerCaveStorage.select(chunkX,chunkZ);carving.generateLayer(null,chunkX,chunkZ,new ChunkContext(chunkX<<4,chunkZ<<4,engine.getComplex(),false));}
             WorkerCaveStorage.select(cx,cz);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
@@ -50,17 +52,19 @@ public final class TerrainCarvingComponent {
             if(floating)floatingModifier.onModify(x,z,blocks,false,context);
             if(decorate)cave.decorateNaturalCaves(x,z,blocks,context);
             if(placement!=null)placementResult=art.arcane.iris.generation.mantle.WorkerObjectTransactions.place(engine.getMantle(),placement.object(),placement.config(),placement.rng(),placement.plausible(),x+8,z+8,context);
+            if(scatter)placementResult=art.arcane.iris.generation.mantle.WorkerObjectTransactions.scatter(engine.getMantle(),cx,cz,context);
             if(stage.ordinal()>=Stage.DEPOSITS.ordinal()){
                 new art.arcane.iris.generation.stage.IrisDepositModifier(engine).onModify(x,z,blocks,false,context);
                 engine.getMantle().insertMatter(cx,cz,blocks,false,context);
             }
-            if(stage==Stage.MATERIAL_FINISH){
+            if(stage.ordinal()>=Stage.MATERIAL_FINISH.ordinal()){
                 new art.arcane.iris.generation.stage.IrisDecorantActuator(engine).onActuate(x,z,blocks,false,context);
                 floatingModifier.decorateColumns(x,z,blocks,false,context);
                 new art.arcane.iris.generation.stage.IrisPerfectionModifier(engine).onModify(x,z,blocks,false,context);
             }
             String result=TerrainPaintStage.serialize(engine,x,z,blocks,placement==null?stage.scope:"native-procedural-placement-development");
-            if(placement!=null)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
+            if(content)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
+            if(scatter)result=result.substring(0,result.length()-1)+",\"objectTags\":"+WorkerCaveStorage.objectTags()+"}";
             return decorate?result.substring(0,result.length()-1)+",\"markers\":"+WorkerCaveStorage.markerEntries()+"}":result;
         } finally {if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}
     }

@@ -1,0 +1,298 @@
+{
+  "scope": "native-one-source-procedural-scatter-development-targeted",
+  "date": "2026-10-20",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "validation": {
+    "result": "pass",
+    "baseFixtures": 1,
+    "cases": 2,
+    "seeds": 1,
+    "chunksPerCase": 1,
+    "probesCompared": 8,
+    "workerGenerations": 2,
+    "results": [
+      {
+        "case": "density-two",
+        "placedY": 0,
+        "journaledCells": 132,
+        "objectTags": {
+          "cells": 132,
+          "placements": 2,
+          "treeMaterials": 132
+        },
+        "sourcePlan": {
+          "destinations": 5,
+          "replayedDestinations": 5,
+          "retainedBytes": 5892
+        },
+        "journalWindow": [
+          [
+            -1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            132
+          ],
+          [
+            0,
+            1,
+            22
+          ],
+          [
+            1,
+            0,
+            22
+          ],
+          [
+            1,
+            1,
+            13
+          ]
+        ],
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 2,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            2,
+            34,
+            6,
+            "minecraft:oak_log[axis=y]"
+          ],
+          [
+            1,
+            36,
+            4,
+            "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+          ]
+        ],
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "2130a4ca9b00a6630cde178bc29081e4ba76e27ab59b536cfe9785d1e0432ce1"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+          }
+        ]
+      },
+      {
+        "case": "chance-zero",
+        "placedY": 0,
+        "journaledCells": 0,
+        "objectTags": {
+          "cells": 0,
+          "placements": 0,
+          "treeMaterials": 0
+        },
+        "sourcePlan": {
+          "destinations": 0,
+          "replayedDestinations": 0,
+          "retainedBytes": 160
+        },
+        "journalWindow": [],
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 0,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ]
+        ],
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "0c26e62b998e5585f90852b3758d6aedab32fb06997d4995922f8b8adbce6524"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+          }
+        ]
+      }
+    ],
+    "wasmSha256": "7e7f30f15c22244f9173a90f70f26f4a6c3f3e719a93b59138cb39b8668af54d",
+    "sourceSha256": "25e364381894cc9ded1796cd0eedfda1e5e1f2c0834b4a428e95eae8a75b0375",
+    "scope": "native-procedural-source-scatter-development",
+    "automaticScatterVerified": false,
+    "crossSourceCollisionReplayVerified": false,
+    "sourcePlanReplayVerified": true,
+    "nativeOriginScatterVerified": true,
+    "neighboringSourcesVerified": false,
+    "sourcePlanCacheVerified": false,
+    "continuationPersistenceVerified": false,
+    "fullGeometryParityVerified": false,
+    "browserVerified": false,
+    "preparedChunksPerCase": 9
+  },
+  "additionalChecks": {
+    "cancellation": "Mock-worker cancellation passes for isolated variants, manual placement and one-source scatter; immediate termination and fresh worker, no geometry execution",
+    "sourceIdentity": "Changed engine/build files match the retained corresponding-source archive"
+  },
+  "registry": {
+    "manifestSha256": "579b7e6e4eb36cf3c3c64219358ae241ceaec76489343d6291d72ff6980ac05e",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "registryParityVerified": false
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/iris-engine/client.mjs",
+      "sha256": "fbdf1159d9b9c8e925f15406fee075d84e9abc1aa91e1badf8497fcaa664cd21"
+    },
+    {
+      "path": "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerObjectTransactions.java",
+      "sha256": "09b68d480cc3c33723672e2d2b5d93613990a3557902fe0da8961d99df91e841"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "52590565f172f6c41c2a59cb5570438c7011320e43d3487f3ba369d81a458e66"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "02634e31ea9cb78d57d5b8aafbde60bc2e8c336b363191a5658cfcf23a5051ef"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/ProceduralPreview.java",
+      "sha256": "9cdeb49e2726d482dc8358d51b1a602ace2f6047c44247d042736de0b656ca35"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java",
+      "sha256": "900804e2c60cfec49257b1d34c5e2100930c33f7768a211a5e6f417186905061"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java",
+      "sha256": "cc0a2b91506a81442337d4ecd38333da8c77db9b3b7c86a5fe3af7288639aa7c"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerProceduralMap.java",
+      "sha256": "3c52e4b6cdc4b891ad2163256ad61ce461028d6092b8b8c9ff4e6d777fdb3369"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "d787f2757c3755cd5c173f4a6a7a5949fd071309ef7fda1b3059a536b90a25a3"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/ProceduralSourcePreview.java",
+      "sha256": "c0e46b8bd7435feb3a61ab4cd4a697d2bffee8631cb99ea02d46958d5005657d"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerUnconnectedSourcePlans.java",
+      "sha256": "ecab4ff188ff5437ae7467b657a863f261f405d34a22529bd2432c334a7fc132"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "bbad23f72e102f7c8ecb86f4eed28146be2ab00bfdd8d12cf64bd62a8830d663"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "d43e4fd36fd7011adffb3386d5038ec8bf06126112089392d766276f5c9cca80"
+    },
+    {
+      "path": "apps/web/index.html",
+      "sha256": "2fe0b655bf6b53ef318e47697972c94b09b1c81c20203319e1885251b32dade3"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "11c0cef903139fe4b7b63570ddedb6ce94c38787bcf65a04a4e1f94881471c56"
+    },
+    {
+      "path": "tools/checks/native-source-scatter-smoke.mjs",
+      "sha256": "5f3238d509305f8f42e98432b8c32f25fed4a70acfa6a0b3bab1124b0a2ff7ff"
+    },
+    {
+      "path": "tools/checks/procedural-cancel-smoke.mjs",
+      "sha256": "27528e7f3ce8406b520201059cbbf57ab4f9fd78df7b1b2b876dca32bf43a501"
+    }
+  ],
+  "nativeSources": [
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleObjectComponent.java",
+      "sha256": "3da3ee187aa85a08f7aabd9cf3436681c85cc3785f60cc1295bc4ac19ccf4d78"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/ObjectSourcePlan.java",
+      "sha256": "32ac37082bcfa955c47ea2df77d3c3e1ae2ea28161bf4db6dcca81dfd4ebf110"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/ObjectDestinationTransaction.java",
+      "sha256": "e662cd702fffad66dbe529de4c76328bc76214af7da75b6a9af817c475525633"
+    }
+  ],
+  "nativeOriginScatterVerified": true,
+  "automaticScatterVerified": false,
+  "neighboringSourcesVerified": false,
+  "sourcePlanCacheVerified": false,
+  "crossSourceCollisionReplayVerified": false,
+  "continuationPersistenceVerified": false,
+  "fullGeometryParityVerified": false,
+  "browserVerified": false,
+  "limitations": [
+    "One rotation-disabled small oak, one source chunk and seed, density-two/chance-zero cases, eight material probes and bounded native metadata only",
+    "Native origin seeding/chance/density/variant/placement/tree callbacks run; neighboring source scheduling/cache and predecessor collisions remain unconnected",
+    "Full native component-layer/build/cache operations refuse explicitly; unused cache host replaced by unavailable holder for this diagnostic",
+    "No native continuation persistence or neighboring-source contributions; only centre terrain volume is rendered",
+    "Nine prepared chunks, 64 configured density attempts across reachable settings, eight variants per entry and existing canvas budget; larger plans refuse before publication",
+    "Imported objects, ruins, cave anchors and collision-rule configurations refuse; unsupported state operations, native structure obstacles and custom-block contributions remain unavailable",
+    "Full geometry/options, other source families, failure-injection rollback, real browser/GPU/assets, native checksum/dependency/release qualification remain pending",
+    "No full suite, exhaustive state/registry comparison or GitHub workflow run"
+  ]
+}
