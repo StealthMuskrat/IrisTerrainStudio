@@ -19,6 +19,7 @@ import { GenerationClient } from '/packages/iris-engine/client.mjs';
 import { createGpuDevice, MapRenderer } from '/packages/voxel-renderer/map.mjs';
 import { volumeBiomeSlice } from '/packages/voxel-renderer/biome-slice.mjs';
 import { WorldRenderer } from '/packages/voxel-renderer/world.mjs';
+import { GpuSession } from '/packages/voxel-renderer/gpu-session.mjs';
 import { sectionSettings,sectionClip,clipBounds,clipCenter,emptyClip } from '/packages/voxel-renderer/clip.mjs';
 import { MinecraftResourcePack, ResourcePackStack } from '/packages/resource-packs/pack.mjs';
 import { inspectRenderingDependencies } from '/packages/resource-packs/dependencies.mjs';
@@ -26,7 +27,7 @@ import { writeRenderingBundle, assetCurrent } from '/packages/resource-packs/bun
 
 let closeDialog = null, resourceLoadSequence=0, catalogLoadSequence=0;
 const $ = id => document.getElementById(id), api = new StudioApi(), generation = new GenerationClient();
-const state = { pack:'', catalog:new ResourceCatalog(), selected:null, text:'', baseText:'', etag:'', history:null, document:null, schema:null, mode:'form', view:'map', mapRange:null, fieldsOpen:new Set(['']), gpu:null, map:null, world:null, field:null, volume:null, biomeSlice:false, textures:[], textureStack:new ResourcePackStack(), revision:0, rawTimer:null, draftTimer:null, generationTimer:null, ready:false, objectUrl:null, noiseStyle:null, styleSelection:null, inventory:null, pendingGeneration:false, proceduralSelection:null, section:sectionSettings(),worldLoading:false, volumeField:null, volumeInputs:null, mapInputs:null, pendingVolume:null, previewDirty:false, renderError:null };
+const state = { pack:'', catalog:new ResourceCatalog(), selected:null, text:'', baseText:'', etag:'', history:null, document:null, schema:null, mode:'form', view:'map', mapRange:null, fieldsOpen:new Set(['']), gpu:null, map:null, world:null, field:null, volume:null, biomeSlice:false, textures:[], textureStack:new ResourcePackStack(), revision:0, rawTimer:null, draftTimer:null, generationTimer:null, ready:false, objectUrl:null, noiseStyle:null, styleSelection:null, inventory:null, pendingGeneration:false, proceduralSelection:null, section:sectionSettings(),worldLoading:false, mapField:null, mapError:null, gpuSession:null, gpuRecovering:false, gpuError:null, recoveryCamera:null, validatedVolume:null, volumeField:null, volumeInputs:null, mapInputs:null, pendingVolume:null, previewDirty:false, renderError:null };
 const textureLibrary=new TextureLibrary({open:(file,name)=>MinecraftResourcePack.open(file,name),read:localTextureSnapshot,write:(changes,expectedTextureConfig)=>localBatch(changes,{expectedTextureConfig})});
 let textureImportOptions={role:'custom',remember:false};
 
@@ -292,28 +293,75 @@ function previewOptions(){
   if(['iris-continent','iris-region-control'].includes(options.field)){const path=$('dimension-select').value;if(!path)throw new Error('Select a dimension for its native control fields.');if(state.selected?.path===path){flushHistory();parseDocument();if(!state.document)throw new Error('Correct the dimension JSON before previewing.');}options.nativeConfig={kind:'dimension',id:path,text:state.selected?.path===path?state.text:null};options.style=resourceId(path);}
   return options;
 }
+let gpuOpenSequence=0;
+function retainGpuData(session){
+  const map=session.map,world=session.world;
+  if(map?.data)state.mapField=map.data;
+  if(world?.volume&&state.volume&&world.volume.blocks===state.volume.blocks){
+    state.validatedVolume=world.volume;
+    const camera=world.camera;if(camera&&[camera.yaw,camera.pitch,camera.distance,...(camera.target??[])].every(Number.isFinite)&&camera.target?.length===3)state.recoveryCamera={...camera,target:camera.target.slice()};
+  }
+}
+function loseGpu(session,error){
+  if(state.gpuSession!==session)return;
+  const dirty=state.previewDirty;retainGpuData(session);gpuOpenSequence++;state.gpuSession=null;state.gpu=null;state.map=null;state.world=null;state.gpuRecovering=false;state.gpuError=error.message;
+  session.dispose();cancelPreview();state.previewDirty=dirty;mapTools.sync();syncPreviewStatus();$('render-status').textContent='WebGPU unavailable';errorMessage(error);
+}
+async function retryMapRendering(){
+  if(!state.map)throw new Error('Recover WebGPU before rendering the retained map.');
+  if(!state.mapField)throw new Error('Generate a map before retrying its display.');
+  try{state.map.setData(state.mapField);state.mapError=null;}
+  catch(error){state.mapError=error.message;throw error;}
+  finally{syncPreviewStatus();}
+}
+async function recoverGpu({notify=true}={}){
+  if(state.gpuRecovering)return false;if(state.gpuSession&&!state.gpuSession.disposed&&!state.gpuSession.lost)return true;
+  const sequence=++gpuOpenSequence;state.gpuRecovering=true;state.gpuError=null;syncPreviewStatus();
+  const session=new GpuSession({createGpu:createGpuDevice,createMap:gpu=>new MapRenderer($('map-canvas'),gpu),createWorld:gpu=>new WorldRenderer($('world-canvas'),gpu),onLost:error=>loseGpu(session,error),onError:errorMessage});state.gpuSession=session;
+  try{
+    await session.open();if(sequence!==gpuOpenSequence||session.disposed||session.lost)return false;
+    state.gpu=session.gpu;state.map=session.map;state.world=session.world;
+    const map=session.map,world=session.world;
+    world.onInspect=hit=>inspectWorldVoxel(hit).catch(errorMessage);world.onError=errorMessage;map.onError=errorMessage;
+    map.onData=data=>{if(state.map!==map)return;state.mapField=data;state.mapError=null;mapTools.sync();syncPreviewStatus();};
+    map.configure({palette:$('palette').value,grid:$('grid-toggle').checked,studioLayout:$('studio-layout').checked,range:state.mapRange});
+    $('render-status').textContent='WebGPU';$('empty-noise').disabled=false;
+    if(state.mapField)try{await retryMapRendering();}catch(error){errorMessage(error);}
+    if(state.volume)try{await renderStoredVolume(state.volume,state.textureStack);}catch(error){if(error.name!=='AbortError')errorMessage(error);}
+    if(sequence!==gpuOpenSequence||state.gpuSession!==session)return false;
+    if(!state.mapField&&!state.volume)$('preview-description').textContent='Generate a native field or voxel preview. Generated data stays in your browser.';
+    if(notify)message(state.mapError||state.renderError?'WebGPU is ready. Some retained previews need a rendering retry.':'WebGPU previews restored without regenerating terrain.',!!(state.mapError||state.renderError));return true;
+  }catch(error){
+    if(sequence!==gpuOpenSequence)return false;
+    retainGpuData(session);state.gpuSession=null;state.gpu=null;state.map=null;state.world=null;state.gpuError=error.message;session.dispose();$('render-status').textContent='WebGPU unavailable';throw error;
+  }finally{if(sequence===gpuOpenSequence){state.gpuRecovering=false;mapTools.sync();syncWorldNotice();}}
+}
 let previewRequest=0;
 function cancelPreview({clear=false}={}){
   clearTimeout(state.generationTimer);state.generationTimer=null;previewRequest++;generation.cancel();worldRenderSequence++;sectionSequence++;
   state.world?.cancelMesh();state.worldLoading=false;state.pendingGeneration=false;$('preview-progress').hidden=true;
   if(clear){
-    state.map?.clear();state.world?.clear();state.field=null;state.volume=null;state.volumeField=null;state.pendingVolume=null;state.mapInputs=null;state.volumeInputs=null;state.biomeSlice=false;state.previewDirty=false;state.renderError=null;
+    state.map?.clear();state.world?.clear();state.field=null;state.mapField=null;state.mapError=null;state.recoveryCamera=null;state.validatedVolume=null;state.volume=null;state.volumeField=null;state.pendingVolume=null;state.mapInputs=null;state.volumeInputs=null;state.biomeSlice=false;state.previewDirty=false;state.renderError=null;
     $('preview-scope').textContent='No generated data';$('preview-description').textContent='Generate a native field or voxel preview. Generated data stays in your browser.';$('map-caption').textContent='2D FIELD';$('map-scale').textContent='';
-  }else state.previewDirty=!!(state.map?.data||state.volume||state.pendingVolume);
+  }else state.previewDirty=!!(state.mapField||state.map?.data||state.volume||state.pendingVolume);
   syncWorldNotice();syncPreviewStatus();
 }
 function syncPreviewStatus(){
-  const retained=!!(state.map?.data||state.world?.volume),pending=!!state.pendingVolume;
-  $('preview-empty').hidden=retained;
-  $('preview-state').textContent=state.worldLoading?(retained?'Updating 3D rendering · showing retained preview':'Preparing 3D rendering'):state.pendingGeneration?(retained?'Generating · showing retained previews':'Generating'):pending?'New voxel data retained · retry 3D rendering':state.renderError?'3D update failed · retained preview available':state.previewDirty&&retained?'Inputs changed · showing retained previews':retained?'Stored previews':'No generated data';
-  $('preview-state').title=state.renderError||'';
-  $('retry-rendering').disabled=state.worldLoading||state.pendingGeneration||!((pending||state.renderError)&&state.world);
+  const retained=!!(state.mapField||state.map?.data||state.volume||state.world?.volume),pending=!!state.pendingVolume;
+  $('preview-empty').hidden=retained&&!state.gpuError;
+  $('recover-gpu').hidden=!state.gpuError&&!state.gpuRecovering;$('recover-gpu').disabled=!!state.gpuRecovering;
+  $('retry-map-rendering').disabled=!state.map||!state.mapField||state.map.data===state.mapField||!!state.gpuRecovering;
+  if(state.gpuError)$('preview-description').textContent=state.gpuError;
+  $('empty-noise').disabled=!!state.gpuError||!!state.gpuRecovering;$('generate').disabled=!state.map||!!state.gpuError||!!state.gpuRecovering;
+  $('preview-state').textContent=state.gpuRecovering?'Recovering WebGPU · generated data retained':state.gpuError?(retained?'WebGPU unavailable · generated data retained':'WebGPU unavailable'):state.mapError?'Map upload failed · retry map rendering':state.worldLoading?(retained?'Updating 3D rendering · showing retained preview':'Preparing 3D rendering'):state.pendingGeneration?(retained?'Generating · showing retained previews':'Generating'):pending?'New voxel data retained · retry 3D rendering':state.renderError?'3D update failed · retained preview available':state.previewDirty&&retained?'Inputs changed · showing retained previews':retained?'Stored previews':'No generated data';
+  $('preview-state').title=state.gpuError||state.mapError||state.renderError||'';
+  $('retry-rendering').disabled=state.worldLoading||state.pendingGeneration||state.gpuRecovering||!((pending||state.renderError)&&state.world);
   $('preview-details').disabled=!retained&&!pending;
   $('clear-preview').disabled=!retained&&!pending&&!state.pendingGeneration&&!state.worldLoading;
 }
 async function previewDetails(){
   const rows=[copy('Map and 3D previews retain their own generation inputs. Changing controls does not relabel existing data. Retained previews can differ from each other and from the next request.')];
-  for(const [label,data,inputs]of[['Map',state.map?.data,state.mapInputs],['Displayed 3D',state.volume,state.volumeInputs],['Awaiting 3D rendering',state.pendingVolume?.field.volume,state.pendingVolume?.inputs]]){
+  for(const [label,data,inputs]of[['Map',state.mapField??state.map?.data,state.mapInputs],['Displayed 3D',state.volume,state.volumeInputs],['Awaiting 3D rendering',state.pendingVolume?.field.volume,state.pendingVolume?.inputs]]){
     rows.push(element('h3',{text:label}),...previewDescription(data,inputs).map(copy));
   }
   await ask('Retained preview details',rows,{wide:true,submit:null,cancel:'Close'});
@@ -324,12 +372,13 @@ async function presentPendingVolume(record,stack=state.textureStack){
   try{
     const result=await renderStoredVolume(record.field.volume,stack);
     if(result===false||state.pendingVolume!==record||state.textureStack!==stack)throw new DOMException('Voxel preview superseded.','AbortError');
-    state.volume=record.field.volume;state.volumeField=record.field;state.volumeInputs=record.inputs;state.field=record.field;state.pendingVolume=null;state.biomeSlice=false;state.renderError=null;
+    state.volume=record.field.volume;state.validatedVolume=state.world?.volume??null;state.recoveryCamera=null;state.volumeField=record.field;state.volumeInputs=record.inputs;state.field=record.field;state.pendingVolume=null;state.biomeSlice=false;state.renderError=null;
     state.previewDirty=record.inputs.request!==previewRequest||record.inputs.pack!==state.pack||record.inputs.revision!==state.revision;
     showVolumePreview(record);syncWorldNotice();syncPreviewStatus();return true;
   }catch(error){if(state.pendingVolume===record&&error.name!=='AbortError')state.renderError=error.message;syncPreviewStatus();throw error;}
 }
 async function retryVolumeRendering(){
+  if(!state.world||state.gpuRecovering)throw new Error('Recover WebGPU before rendering retained voxels.');
   if(state.pendingGeneration||state.worldLoading)throw new Error('Wait for the current preview operation or cancel it first.');
   if(state.pendingVolume)await presentPendingVolume(state.pendingVolume);
   else if(state.volume){if(await renderStoredVolume(state.volume,state.textureStack)===false)throw new DOMException('Voxel preview superseded.','AbortError');}
@@ -338,7 +387,7 @@ async function retryVolumeRendering(){
 }
 async function regenerate(){
   cancelPreview();const request=++previewRequest;
-  if(!state.map)throw new Error('WebGPU is unavailable. Pack editing and saving remain available.');
+  if(!state.map||state.gpuRecovering)throw new Error('WebGPU is unavailable. Pack editing and saving remain available.');
   if($('field-mode').value.startsWith('iris-style')&&!state.noiseStyle){await chooseNoiseStyle();return;}
   const options=previewOptions();if(!scalarMode()&&!$('dimension-select').value)throw new Error('Choose an Iris dimension before generating terrain.');
   state.pendingVolume=null;$('preview-progress').hidden=false;state.pendingGeneration=true;syncPreviewStatus();const start=performance.now(),pack=state.pack,revision=state.revision,inputs=capturePreviewInputs(options,{pack,revision,request});
@@ -348,7 +397,7 @@ async function regenerate(){
 
       const diagnostics=state.world.diagnostics||[];if(['terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode'].includes(options.field)){message(`Generated native ${field.volume.metadata.mode} terrain and physical biomes in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;}if(options.field==='procedural-neighborhood'){message(`Generated native procedural contributions from ${field.volume.metadata.sourceChunks} source chunks in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;}if(options.field==='procedural-source'){message(`Generated native procedural content for one source chunk in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;}if(options.field==='procedural-placement'){message(`Native single placement ${field.volume.metadata.accepted?'accepted':'rejected'} in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;}if(['procedural-object','procedural-placement'].includes(options.field)){message(`Generated native ${field.volume.metadata.family} variant ${field.volume.metadata.variant} in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;}message(`Generated one native ${options.field==='subterrain-finish-stage'?'subterrain-preserved terrain':options.field==='material-finish-stage'?'decorated terrain':options.field==='deposit-stage'?'deposit':options.field==='cave-decoration-stage'?'cave-decorated':options.field==='floating-stage'?'floating-biome':options.field==='post-stage'?'post-processed terrain':options.field==='carving-stage'?'cave':options.field==='cave-stage'?'dimension cave':'terrain'} material chunk in ${Math.round(performance.now()-start)} ms.`+(diagnostics.length?` ${diagnostics.length} block assets need attention: ${diagnostics[0].message}`:''),diagnostics.length>0);return;
     }
-    state.map.setData(field);state.field=field;state.mapInputs=inputs;state.biomeSlice=false;state.previewDirty=false;$('preview-empty').hidden=true;
+    state.map.setData(field);state.mapField=field;state.mapError=null;state.field=field;state.mapInputs=inputs;state.biomeSlice=false;state.previewDirty=false;$('preview-empty').hidden=true;
     const native=field.scope.startsWith('iris-');$('preview-scope').textContent=options.field==='biome-stage'?'Native physical biome stage · one chunk slice · development':options.field==='caves'?'Native dimension cave profile markers · development':['terrain','biomes','density'].includes(options.field)?'Native '+(options.field==='terrain'?'procedural height':options.field==='density'?'volumetric occupancy':'surface biome')+' · development':options.field==='regions'?'Native region selection · development':options.nativeConfig?.kind==='dimension'?'Dimension control noise · input is world seed':options.generator||options.nativeConfig?.kind==='generator'?'Standalone Iris generator · input is superSeed':native?'Iris noise style · development':'Experimental native primitive';
     $('map-caption').textContent=native?`${options.style} · ${options.field==='biome-stage'?'PHYSICAL BIOME STAGE · Y '+field.y:options.field==='caves'?'DIMENSION CAVE MARKERS · Y '+field.y:options.field==='density'?'NATIVE VOLUMETRIC OCCUPANCY':options.field==='terrain'?'NATIVE PROCEDURAL HEIGHT':options.field==='biomes'?'NATIVE SURFACE BIOMES':options.field==='regions'?'NATIVE REGIONS':options.nativeConfig?.kind==='dimension'?(options.field==='iris-continent'?'CONTINENT CONTROL':'REGION CONTROL'):options.generator||options.nativeConfig?.kind==='generator'?'IRIS GENERATOR':'IRIS NOISE STYLE'}`:options.field.replace('lab-','').toUpperCase()+' · NATIVE NOISE LAB';
     $('map-scale').textContent=field.span+' blocks';$('preview-description').textContent=options.field==='biome-stage'?'Physical biome keys written by the native biome actuator at Slice Y. Dimension stacks, historical transitions and custom biome registry contributions remain unfinished.':options.field==='caves'?'Dimension profile markers before native block resolution. Biome cave profiles and later cave stages remain unfinished.':'';if(['caves','biome-stage'].includes(options.field)&&state.view==='world')setView('map');message(`Generated ${field.width} × ${field.height} samples in ${Math.round(performance.now()-start)} ms.`);
@@ -359,9 +408,9 @@ function showVolumePreview(record){const {field,inputs:options}=record;$('previe
 function storedBiomeVolume(){return state.volumeField?.volume===state.volume&&state.volume?.biomes&&state.world?.volume?.blocks===state.volume.blocks?state.world.volume:null;}
 function updateBiomeSlice(){
   const worldY=Math.floor(Number($('slice-y').value));
-  const slice=volumeBiomeSlice(storedBiomeVolume(),worldY);state.map.setData(slice);state.mapInputs=state.volumeInputs;state.biomeSlice=true;$('map-caption').textContent=`PHYSICAL BIOMES · GENERATED VOLUME · Y ${slice.y}`;$('map-scale').textContent=slice.span+' blocks';syncPreviewStatus();
+  const slice=volumeBiomeSlice(storedBiomeVolume(),worldY);state.map.setData(slice);state.mapField=slice;state.mapError=null;state.mapInputs=state.volumeInputs;state.biomeSlice=true;$('map-caption').textContent=`PHYSICAL BIOMES · GENERATED VOLUME · Y ${slice.y}`;$('map-scale').textContent=slice.span+' blocks';syncPreviewStatus();
 }
-function scheduleGeneration(force=false){const needed=state.field||state.pendingGeneration||force;cancelPreview();if(needed)state.generationTimer=setTimeout(()=>regenerate().catch(errorMessage),250);}
+function scheduleGeneration(force=false){const needed=state.field||state.pendingGeneration||force;cancelPreview();if(!state.map||state.gpuRecovering)return;if(needed)state.generationTimer=setTimeout(()=>regenerate().catch(errorMessage),250);}
 function setView(view){state.view=view;$('canvas-workspace').dataset.view=view;for(const button of document.querySelectorAll('button[data-view]')){button.classList.toggle('active',button.dataset.view===view);button.setAttribute('aria-selected',String(button.dataset.view===view));}state.map?.draw();state.world?.draw();syncWorldNotice();persistPreview();}
 function syncWorldNotice(){
   syncSectionControls();syncPreviewStatus();
@@ -375,13 +424,13 @@ let worldRenderSequence=0,sectionSequence=0;
 function currentVoxelVolume(){return state.volume&&state.world?.volume&&state.volume.blocks===state.world.volume.blocks&&!state.worldLoading?state.world.volume:null;}
 async function renderStoredVolume(volume,stack){
   const sequence=++worldRenderSequence;sectionSequence++;state.worldLoading=true;syncSectionControls();syncPreviewStatus();if(state.pendingGeneration)$('preview-progress').querySelector('p').textContent='Preparing 3D rendering…';
-  try{const result=await state.world.setVolume(volume,stack,{clip:sectionClip(volume,state.section)});if(sequence!==worldRenderSequence)return false;state.renderError=null;return result;}
+  try{const input=volume===state.volume&&state.validatedVolume?.blocks===volume.blocks?state.validatedVolume:volume,result=await state.world.setVolume(input,stack,{clip:sectionClip(volume,state.section)});if(sequence!==worldRenderSequence)return false;if(volume===state.volume&&state.recoveryCamera){state.world.camera={...state.recoveryCamera,target:state.recoveryCamera.target.slice()};state.world.draw();state.recoveryCamera=null;}if(volume===state.volume)state.validatedVolume=state.world.volume;state.renderError=null;return result;}
   catch(error){if(sequence===worldRenderSequence&&error.name!=='AbortError')state.renderError=error.message;throw error;}
   finally{if(sequence===worldRenderSequence){state.worldLoading=false;syncWorldNotice();}}
 }
 function syncSectionControls(){
   const volume=currentVoxelVolume(),pending=state.pendingVolume?.field.volume,source=pending??volume,active=state.section.axis!=='off';
-  $('section-axis').disabled=!source||state.worldLoading;$('section-mode').disabled=!source||!active||state.worldLoading;$('section-position').disabled=!source||!active||state.worldLoading;
+  $('section-axis').disabled=!source||!state.world||state.worldLoading;$('section-mode').disabled=!source||!state.world||!active||state.worldLoading;$('section-position').disabled=!source||!state.world||!active||state.worldLoading;
   $('frame-section').disabled=!volume||emptyClip(state.world?.clip);$('focus-point').disabled=!volume||emptyClip(state.world?.clip);
   if(!source){$('section-status').textContent=state.worldLoading?'Loading stored voxel geometry…':'Generate voxel data to inspect sections.';return;}
   const bounds=pending?clipBounds(source,sectionClip(source,state.section)):clipBounds(source,state.world.clip);
@@ -453,7 +502,7 @@ async function rebuildTextureStack({notify=true}={}){
   const revision=++textureRevision,previous=state.textureStack,stack=new ResourcePackStack([...state.textures]);
   state.world?.suspendTextures();state.textureStack=stack;await previous.dispose();if(revision!==textureRevision)return;
   const pending=state.pendingVolume,volume=state.volume;if((pending||volume)&&state.world){if(pending)await presentPendingVolume(pending,stack);else await renderStoredVolume(volume,stack);if(revision!==textureRevision)return;syncWorldNotice();}
-  if(notify)toast('Resource-pack appearance updated. Generation data was retained.');
+  if(notify)toast(state.world?'Resource-pack appearance updated. Generation data was retained.':'Rendering packs updated. Recover WebGPU to apply them to retained data.');
 }
 async function settingsDialog(){const token=element('input',{type:'password',value:api.token,placeholder:'Optional access token',autocomplete:'off'}),schema=element('button',{type:'button',class:'quiet-button',text:'Import local JSON Schema',onclick:()=>{closeDialog?.(null);$('schema-file').click();}});await ask('Workspace settings',[field('Server access token',token,'Required only when the server is configured with IRIS_STUDIO_TOKEN.'),copy('World seed, preview coordinates, drafts, rendering settings and resource packs stay in the browser. Only pack files and file-management metadata are sent to the server.'),schema,copy('Native noise tiles for scalar, voxel and registered-mode previews can be reused from local browser storage. This cache is limited to 32 MiB and can be removed without changing pack files.'),element('button',{type:'button',class:'quiet-button',text:'Clear native noise cache',onclick:async event=>{const button=event.currentTarget;button.disabled=true;generation.invalidate();try{await noiseTilePersistence.clear();message('Local native noise cache cleared.');}catch{message('Local native noise cache storage is unavailable.',true);}finally{button.disabled=false;}}}),element('div',{class:'info-box',text:'Iris terrain reference qualification remains blocked by the upstream checksum mismatch. Native noise lab results are experimental primitive values, not dimension terrain.'})],{submit:'Save settings',read:()=>token.value,onSubmit:async value=>api.setToken(value)});}
 function resizer(id,property,min,max,inverse=false){const handle=$(id),workspace=document.querySelector('.workspace');let start;handle.addEventListener('pointerdown',event=>{start={x:event.clientX,width:parseFloat(getComputedStyle(workspace).getPropertyValue(property))};handle.setPointerCapture(event.pointerId);});handle.addEventListener('pointermove',event=>{if(!start)return;const width=Math.max(min,Math.min(max,start.width+(event.clientX-start.x)*(inverse?-1:1)));workspace.style.setProperty(property,width+'px');});handle.addEventListener('pointerup',()=>{start=null;localSet('settings',property,workspace.style.getPropertyValue(property)).catch(()=>{});});handle.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight'].includes(event.key))return;const current=parseFloat(getComputedStyle(workspace).getPropertyValue(property));workspace.style.setProperty(property,Math.max(min,Math.min(max,current+(event.key==='ArrowRight'?10:-10)*(inverse?-1:1)))+'px');event.preventDefault();});}
@@ -466,7 +515,7 @@ function wire(){
   bind('texture-file','change',async event=>{const file=event.target.files[0],options={...textureImportOptions};event.target.value='';if(!file)return;message('Loading local rendering pack…');await textureLibrary.add(file,options);await rebuildTextureStack();if(!closeDialog)await textureDialog();});
   bind('schema-file','change',async event=>{const file=event.target.files[0];event.target.value='';if(!file)return;if(!state.selected)throw new Error('Select a resource before importing its schema.');if(file.size>JSON_LIMIT)throw new Error('Schema exceeds 8 MiB.');const text=await file.text(),schema=new JsonDocument(text).value;state.schema=schema;await localSet('settings','schema/'+state.pack+'/'+category(state.selected.path).id,{formatVersion:1,text});parseDocument();renderInspector();toast('Loaded local schema for '+category(state.selected.path).label);});
   bind('biome-slice','click',()=>{updateBiomeSlice();setView('split');message('Showing physical biomes from the generated volume.');});
-  bind('noise-style','click',()=>chooseNoiseStyle());bind('generate','click',regenerate);bind('empty-noise','click',async()=>{$('field-mode').value='iris-style2d';$('noise-style').hidden=false;setView('map');await regenerate();});bind('cancel-generation','click',()=>{cancelPreview();message('Preview work cancelled. Retained data stays available.');});bind('clear-preview','click',()=>{cancelPreview({clear:true});message('Local preview data cleared.');});bind('retry-rendering','click',retryVolumeRendering);bind('preview-details','click',previewDetails);bind('reset-camera','click',resetPreviewView);
+  bind('noise-style','click',()=>chooseNoiseStyle());bind('generate','click',regenerate);bind('empty-noise','click',async()=>{$('field-mode').value='iris-style2d';$('noise-style').hidden=false;setView('map');await regenerate();});bind('cancel-generation','click',()=>{cancelPreview();message('Preview work cancelled. Retained data stays available.');});bind('clear-preview','click',()=>{cancelPreview({clear:true});message('Local preview data cleared.');});bind('retry-rendering','click',retryVolumeRendering);bind('retry-map-rendering','click',retryMapRendering);bind('recover-gpu','click',()=>recoverGpu());bind('preview-details','click',previewDetails);bind('reset-camera','click',resetPreviewView);
   for(const button of document.querySelectorAll('button[data-view]'))button.addEventListener('click',()=>setView(button.dataset.view));for(const id of ['field-mode','seed','coordinate-x','coordinate-z','preview-span','slice-y','resolution','dimension-select'])bind(id,'change',()=>{const active=state.pendingGeneration;if(id==='slice-y'&&!active&&state.biomeSlice&&storedBiomeVolume()){updateBiomeSlice();persistPreview();return;}cancelPreview();if(id==='field-mode'){$('noise-style').hidden=!$('field-mode').value.startsWith('iris-style');if(!state.map?.data&&!state.volume){$('preview-empty').hidden=false;$('preview-description').textContent=['regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes($('field-mode').value)?'Select a dimension to preview native region, biome or procedural height fields. Cave profile markers use one chunk at Slice Y; complete chunk generation remains unfinished.':scalarMode()?'Evaluate native Iris noise, standalone generators or dimension control fields in your browser. These fields precede complete dimension terrain generation.':'Choose a dimension and generate its terrain when the qualified Iris engine is available.';$('preview-scope').textContent='No generated data';}}persistPreview();if(id==='field-mode'&&(scalarMode()||['regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes($('field-mode').value)))regenerate().catch(errorMessage);else scheduleGeneration(active);});bind('palette','change',()=>{state.map?.configure({palette:$('palette').value});persistPreview();});bind('studio-layout','change',()=>{cancelPreview();persistPreview();if(['regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes($('field-mode').value))scheduleGeneration(true);});bind('grid-toggle','change',()=>{state.map?.configure({grid:$('grid-toggle').checked,studioLayout:$('studio-layout').checked});persistPreview();});
   generation.addEventListener('progress',event=>{if(state.worldLoading)return;$('preview-progress').querySelector('p').textContent=`Generating ${Math.round(event.detail*100)}%`;});
   window.addEventListener('keydown',event=>{const modifier=event.ctrlKey||event.metaKey;if(modifier&&event.key.toLowerCase()==='s'){event.preventDefault();saveResource().catch(errorMessage);}if(modifier&&event.key.toLowerCase()==='z'){event.preventDefault();$(event.shiftKey?'redo':'undo').click();}if(event.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){event.preventDefault();$('resource-search').focus();}if(event.key==='Escape'&&!$('modal').open)cancelPreview();});window.addEventListener('beforeunload',event=>{if(dirty()){event.preventDefault();event.returnValue='';}});
@@ -475,7 +524,7 @@ function wire(){
 async function initialize(){const restoringTextures=textureLibrary.restore();wire();syncSectionControls();const preview=await localGet('settings','preview').catch(()=>null);if(preview){try{state.mapRange=displayRange(preview.mapRange);}catch{}state.noiseStyle=preview.noiseStyle||null;for(const [key,id]of Object.entries({field:'field-mode',seed:'seed',x:'coordinate-x',z:'coordinate-z',span:'preview-span',y:'slice-y',resolution:'resolution',palette:'palette'}))if(preview[key]!==undefined)$(id).value=preview[key];if(preview.grid!==undefined)$('grid-toggle').checked=preview.grid;if(preview.studioLayout!==undefined)$('studio-layout').checked=preview.studioLayout;try{state.section=sectionSettings(preview.section);}catch{}$('section-axis').value=state.section.axis;$('section-mode').value=state.section.mode;$('section-position').value=state.section.position;setView(preview.view||'map');$('noise-style').hidden=!$('field-mode').value.startsWith('iris-style');if(state.noiseStyle)$('noise-style').textContent=state.noiseStyle;}for(const property of ['--explorer-width','--inspector-width']){const width=await localGet('settings',property).catch(()=>null);if(width)document.querySelector('.workspace').style.setProperty(property,width);}
   try{const status=await authenticate();$('target-version').textContent=`Iris ${status.target.iris} · Minecraft ${status.target.minecraft}`;const last=await localGet('settings','last-pack').catch(()=>null);await loadPacks(last);state.ready=true;}catch(error){$('connection-state').textContent='Server connection unavailable';errorMessage(error);}
   try{state.inventory=await loadFieldInventory();if(state.inventory&&state.document)renderInspector();}catch(error){message(error.message,true);}
-  try{state.gpu=await createGpuDevice();state.map=new MapRenderer($('map-canvas'),state.gpu);state.world=new WorldRenderer($('world-canvas'),state.gpu);state.world.onInspect=hit=>inspectWorldVoxel(hit).catch(errorMessage);state.map.onError=errorMessage;state.map.onData=()=>mapTools.sync();state.world.onError=errorMessage;state.map.configure({palette:$('palette').value,grid:$('grid-toggle').checked,studioLayout:$('studio-layout').checked,range:state.mapRange});mapTools.sync();$('render-status').textContent='WebGPU';}catch(error){$('render-status').textContent='WebGPU unavailable';$('preview-description').textContent=error.message;$('empty-noise').disabled=true;message(error.message,true);}
+  try{await recoverGpu({notify:false});}catch(error){errorMessage(error);}
   await restoringTextures;await rebuildTextureStack({notify:false});if(textureLibrary.warnings.length)message(textureLibrary.warnings.join(' '),true);
 }
 initialize().catch(errorMessage);

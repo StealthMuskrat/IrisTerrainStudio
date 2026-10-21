@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-21",
+  "scope": "explicit WebGPU recovery, retained CPU restoration and renderer resource/event lifecycle",
+  "fixture": {
+    "storedVoxels": 2,
+    "storedMapSamples": 2,
+    "decodedPixels": 0,
+    "generatedTerrainCells": 0,
+    "controlledDevice": true
+  },
+  "checks": [
+    "failed/late device acquisition, partial construction rollback, loss/validation reporting and idempotent all-owner cleanup",
+    "real renderer disposal clears CPU/GPU ownership, observers/animation and pointer handlers; repeated construction does not duplicate input",
+    "disposed renderers refuse allocations; constructor failures release partial canvas/GPU resources",
+    "explicit recovery preserves samples/validated voxels, independent inputs, map settings, slice linkage, camera/clip and pending retry without generation; offline edits do not schedule GPU work",
+    "device loss during startup or asynchronous mesh restoration cannot publish an orphaned GPU session",
+    "map/voxel upload failures keep CPU ownership and expose independent retries; clear during acquisition and stale loss cannot restore old views"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/gpu-session.mjs": "02e81e2471dfb65f7fa3a6b3b968fb1cc4006b3db43db3d585910c3e6554cd05",
+    "packages/voxel-renderer/map.mjs": "b4994a31e598c28830dc7dac8bd9c57feb41072e01186abd23baa74373f45496",
+    "packages/voxel-renderer/world.mjs": "4541e27d9ce3f28f0dedc0b7f9ad0736e731a8bddfd34ac605c75d3116d7f351",
+    "apps/web/main.mjs": "354a076d1a83f18838a7fcbdcadda6b3d0e6325e186344a621399d1a051f7e6a",
+    "apps/web/index.html": "ad49261346a51ae0a9888219b9b668e3c0c68c0f91a70fb2ac00e2a68dfd9d81",
+    "tools/checks/gpu-recovery-smoke.mjs": "8654cf09aff67e6cb3bede8ff4ceb716751ac542e1aae58edb56c88fa9546236"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "performanceMeasured": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Controlled Node EventTarget/device/loss/canvas and application hosts; no actual adapter reset, rasterization or terrain generation. Recreates rendering resources from retained immutable CPU data; one pending voxel result remains explicit. Complete device-loss/interleaving/GPU-memory/client qualification remains open. No native build, registry/state sweep, broad suite or GitHub workflow."
+}

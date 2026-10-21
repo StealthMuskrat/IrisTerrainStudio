@@ -27,16 +27,18 @@ function opaqueUnitCube(quads){
 }
 function sameVoxelData(a,b){return !!a&&!!b&&a.blocks===b.blocks&&a.palette===b.palette&&a.width===b.width&&a.height===b.height&&a.depth===b.depth&&Array.isArray(b.origin)&&b.origin.length===3&&a.origin.every((value,axis)=>value===b.origin[axis]);}
 export class WorldRenderer{
-  constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
+  constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');try{this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
     this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'}});
     this.selectionPipeline=createSelectionPipeline(gpu.device,this.pipeline.getBindGroupLayout(0),gpu.format);
     this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume&&this.atlas.update(time))this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
+    }catch(error){this.dispose();throw error;}
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
   cancelMesh(){this.job=(this.job||0)+1;this.meshSession?.cancel();this.pendingMesh?.dispose();this.pendingMesh=null;}
-  suspendTextures(){this.cancelMesh();this.atlas.pause();}
+  suspendTextures(){if(this.disposed)return;this.cancelMesh();this.atlas.pause();}
   async setVolume(input,stack,{clip}={}){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     // Generated inputs are immutable. Reusing the exact committed input avoids another
     // complete block/biome validation scan during an appearance-only replacement.
     const reuse=input===this.volumeInput&&sameVoxelData(this.volume,input)&&this.volume.biomes===(input.biomes||null)&&this.volume.metadata===input.metadata;
@@ -59,6 +61,7 @@ export class WorldRenderer{
     }catch(error){atlas.dispose();session?.dispose();if(this.pendingMesh===session)this.pendingMesh=null;throw error;}
   }
   async setClip(input){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     if(!this.volume||!this.models)throw new Error('Generate a stored voxel volume before selecting a cross-section.');
     const volume=this.volume,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
     const before=clipBounds(volume,this.clip),after=clipBounds(volume,clip);
@@ -74,20 +77,23 @@ export class WorldRenderer{
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){if(this.disposed)return;this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   uploadMesh(mesh){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     this.buffers??=new MeshBufferStore(this.gpu.device);
     this.buffers.reserveMany([{name:'opaque',bytes:mesh.opaque.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparent',bytes:mesh.transparent.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparentIndices',bytes:mesh.transparent.byteLength/12,usage:GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST}]);
     this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.ranges=mesh.ranges;this.clearSelection(false);
   }
   clearSelection(redraw=true){this.selection=null;this.selectionCount=0;if(redraw)this.draw();}
   select(hit){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     if(!hit){this.clearSelection();return;}
     if(hit.meshOwner!==this.picker)throw new Error('The displayed mesh changed. Select a face again.');
     const data=new Float32Array([0,1,1,2,2,3,3,0].flatMap(index=>hit.quad[index]));this.buffers??=new MeshBufferStore(this.gpu.device);
     this.selectionBuffer=this.buffers.write('selection',data,GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST);this.selectionCount=8;this.selection=hit;this.draw();
   }
   upload(name,data){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     this.buffers??=new MeshBufferStore(this.gpu.device);
     this[name]=this.buffers.write(name,data,GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST);this[name+'Count']=data.length/12;
     if(name==='transparent'){
@@ -121,6 +127,7 @@ export class WorldRenderer{
   }
   matrices(){const c=this.camera,eye=[c.target[0]+Math.sin(c.yaw)*Math.cos(c.pitch)*c.distance,c.target[1]+Math.sin(c.pitch)*c.distance,c.target[2]+Math.cos(c.yaw)*Math.cos(c.pitch)*c.distance],matrix=multiply(perspective(Math.PI/3,this.canvas.width/Math.max(this.canvas.height,1),.1,8192),lookAt(eye,c.target));return{eye,matrix};}
   draw(){
+    if(this.disposed)return;
     const rect=this.canvas.getBoundingClientRect();if(rect.width<1||rect.height<1||this.disposed)return;
     const ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(rect.width*ratio)),h=Math.max(1,Math.round(rect.height*ratio));
     if(this.canvas.width!==w||this.canvas.height!==h||!this.depth){this.canvas.width=w;this.canvas.height=h;this.depth?.destroy();this.depth=this.gpu.device.createTexture({size:[w,h,1],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}
@@ -134,26 +141,28 @@ export class WorldRenderer{
     if(this.selectionCount){pass.setPipeline(this.selectionPipeline);pass.setVertexBuffer(0,this.selectionBuffer);pass.draw(this.selectionCount);}
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX,clientY){if(!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();return this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});}
+  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();return this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});}
   controls(){
-    let drag=null,moved=false;
-    this.canvas.addEventListener('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,pointerId:event.pointerId,shift:event.shiftKey||event.button===1};this.canvas.focus({preventScroll:true});moved=false;this.canvas.setPointerCapture(event.pointerId);});
-    this.canvas.addEventListener('pointermove',event=>{
+    this.inputAbort?.abort();this.inputAbort=new AbortController();let drag=null,moved=false;
+    const listen=(name,callback,options={})=>this.canvas.addEventListener(name,callback,{...options,signal:this.inputAbort.signal});
+    this.inputAbort.signal.addEventListener('abort',()=>{if(drag&&this.canvas.hasPointerCapture?.(drag.pointerId))this.canvas.releasePointerCapture(drag.pointerId);drag=null;},{once:true});
+    listen('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,pointerId:event.pointerId,shift:event.shiftKey||event.button===1};this.canvas.focus({preventScroll:true});moved=false;this.canvas.setPointerCapture(event.pointerId);});
+    listen('pointermove',event=>{
       if(!drag||event.pointerId!==drag.pointerId)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       if(Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)>3)moved=true;
       if(drag.shift){const{eye}=this.matrices(),forward=normalize(subtract(this.camera.target,eye)),right=normalize(cross(forward,[0,1,0])),up=cross(right,forward),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);this.camera.target=this.camera.target.map((v,i)=>v-right[i]*dx*scale+up[i]*dy*scale);}
       else{this.camera.yaw-=dx*.007;this.camera.pitch=Math.max(-1.5,Math.min(1.5,this.camera.pitch+dy*.007));}
       drag.x=event.clientX;drag.y=event.clientY;this.draw();
     });
-    this.canvas.addEventListener('pointerup',event=>{
+    listen('pointerup',event=>{
       if(!drag||event.pointerId!==drag.pointerId)return;
       try{if(!moved&&event.button===0){const hit=this.inspect(event.clientX,event.clientY);this.select(hit);this.onInspect?.(hit);}}
       catch(error){this.onError?.(error);}finally{drag=null;}
     });
-    this.canvas.addEventListener('pointercancel',()=>{drag=null;});
-    this.canvas.addEventListener('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});
-    this.canvas.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.selection){event.preventDefault();event.stopPropagation();this.clearSelection();}});
-    this.canvas.addEventListener('contextmenu',event=>event.preventDefault());
+    listen('pointercancel',()=>{drag=null;});
+    listen('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});
+    listen('keydown',event=>{if(event.key==='Escape'&&this.selection){event.preventDefault();event.stopPropagation();this.clearSelection();}});
+    listen('contextmenu',event=>event.preventDefault());
   }
-  dispose(){this.disposed=true;this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
+  dispose(){if(this.disposed)return;this.disposed=true;this.inputAbort?.abort();this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer?.disconnect();this.buffers?.dispose();this.uniform?.destroy();this.depth?.destroy();this.atlas?.dispose();this.context?.unconfigure();this.ranges=[];this.transparentCenters=null;this.transparentOrder=null;this.sortedIndices=null;this.transparentIndices=null;this.opaque=null;this.transparent=null;this.onInspect=null;this.onError=null;this.onProgress=null;this.onDiagnostics=null;}
 }

@@ -29,14 +29,15 @@ export class MapRenderer {
   constructor(canvas, gpu) {
     this.canvas = canvas; this.gpu = gpu; this.data = null; this.settings = { palette: 'terrain', grid: true };
     this.context = canvas.getContext('webgpu'); if (!this.context) throw new Error('A WebGPU canvas could not be created.');
-    this.context.configure({ device: gpu.device, format: gpu.format, alphaMode: 'opaque' });
+    try{this.context.configure({ device: gpu.device, format: gpu.format, alphaMode: 'opaque' });
     const module = gpu.device.createShaderModule({ label: 'Native noise field display', code: shader });
     this.pipeline = gpu.device.createRenderPipeline({ label: '2D field display', layout: 'auto', vertex: { module, entryPoint: 'vertex' }, fragment: { module, entryPoint: 'fragment', targets: [{ format: gpu.format }] }, primitive: { topology: 'triangle-list' } });
     this.uniforms = gpu.device.createBuffer({ size: 64, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     this.observer = new ResizeObserver(() => this.draw()); this.observer.observe(canvas);
-    gpu.device.lost.then(info => this.onError?.(new Error('WebGPU device lost: ' + info.message)));
+    }catch(error){this.dispose();throw error;}
   }
   setData(data) {
+    if(this.disposed)throw new DOMException('Map renderer disposed.','AbortError');
     const index=new FieldIndex(data),values=index.display(this.settings.range),colors=new Float32Array(data.categories?data.categories.flatMap(categoryColor):[0,0,0,1]),device=this.gpu.device;
     const limit=Math.min(device.limits.maxBufferSize,device.limits.maxStorageBufferBindingSize);if(values.byteLength>limit||colors.byteLength>limit)throw new Error('Map resources exceed the GPU storage-buffer limit.');
     let storage,categoryStorage,bindGroup;
@@ -45,18 +46,20 @@ export class MapRenderer {
     this.storage?.destroy();this.categoryStorage?.destroy();this.storage=storage;this.categoryStorage=categoryStorage;this.bindGroup=bindGroup;this.data=data;this.index=index;this.draw();this.onData?.(data);
   }
   configure(settings) {
+    if(this.disposed)throw new DOMException('Map renderer disposed.','AbortError');
     const next={...this.settings,...settings};next.range=displayRange(next.range);if(!['terrain','grayscale','heat'].includes(next.palette)||typeof next.grid!=='boolean')throw new Error('Choose a supported map palette and grid setting.');
     if(this.index&&!this.index.categories&&JSON.stringify(next.range)!==JSON.stringify(this.settings.range))this.gpu.device.queue.writeBuffer(this.storage,0,this.index.display(next.range));
     this.settings=next;this.draw();
   }
-  clear() { this.storage?.destroy();this.categoryStorage?.destroy();this.categoryStorage=null;this.storage=null; this.bindGroup=null;this.index=null; this.data=null; this.draw();this.onData?.(null); }
+  clear() { if(this.disposed)return;this.storage?.destroy();this.categoryStorage?.destroy();this.categoryStorage=null;this.storage=null; this.bindGroup=null;this.index=null; this.data=null; this.draw();this.onData?.(null); }
   draw() {
+    if(this.disposed)return;
     const rect = this.canvas.getBoundingClientRect(); if (rect.width < 1 || rect.height < 1) return;
     const ratio = Math.min(devicePixelRatio || 1, 2), width = Math.max(1, Math.round(rect.width * ratio)), height = Math.max(1, Math.round(rect.height * ratio)); if (this.canvas.width !== width || this.canvas.height !== height) { this.canvas.width = width; this.canvas.height = height; }
     const encoder = this.gpu.device.createCommandEncoder(), pass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: { r: .061, g: .089, b: .092, a: 1 }, loadOp: 'clear', storeOp: 'store' }] });
     if (this.data && this.bindGroup) { const d = this.data, start=[d.x-d.span/2,d.z-d.depth/2],grid=start.map(value=>value-Math.floor(value/16)*16); const parameters = new Float32Array([d.width,d.height,width,height,0,1,0,0,...grid,d.span,d.depth,['terrain','grayscale','heat'].indexOf(this.settings.palette),this.settings.grid ? 1 : 0,d.categories?1:0,0]); this.gpu.device.queue.writeBuffer(this.uniforms, 0, parameters); pass.setPipeline(this.pipeline); pass.setBindGroup(0, this.bindGroup); pass.draw(3); }
     pass.end(); this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX, clientY) { if (!this.index) return null; const r = this.canvas.getBoundingClientRect(), d = this.data, u = (clientX-r.left)/r.width, v = (clientY-r.top)/r.height; if (![u,v].every(Number.isFinite)||u<0||v<0||u>=1||v>=1) return null; return this.index.sample(Math.floor(v*d.height),Math.floor(u*d.width)); }
-  dispose() { this.observer.disconnect(); this.storage?.destroy();this.categoryStorage?.destroy();this.uniforms.destroy(); this.context.unconfigure(); }
+  inspect(clientX, clientY) { if (this.disposed||!this.index) return null; const r = this.canvas.getBoundingClientRect(), d = this.data, u = (clientX-r.left)/r.width, v = (clientY-r.top)/r.height; if (![u,v].every(Number.isFinite)||u<0||v<0||u>=1||v>=1) return null; return this.index.sample(Math.floor(v*d.height),Math.floor(u*d.width)); }
+  dispose() { if(this.disposed)return;this.disposed=true;this.observer?.disconnect();this.storage?.destroy();this.categoryStorage?.destroy();this.uniforms?.destroy();this.context?.unconfigure();this.storage=null;this.categoryStorage=null;this.bindGroup=null;this.index=null;this.data=null;this.onData=null;this.onError=null; }
 }
