@@ -7,8 +7,18 @@ import java.io.File;
 public final class WorkerProceduralMap<K,V> extends HashMap<K,V> {
     private static boolean active;
     private static int entries;
-    public static void begin(){if(active)throw new IllegalStateException("Nested procedural preview");active=true;entries=0;}
-    public static void end(){active=false;entries=0;}
+    private static long caveSearchWork;
+    private static final long CAVE_SEARCH_LIMIT=1048576;
+    public static void begin(){if(active)throw new IllegalStateException("Nested procedural preview");active=true;entries=0;caveSearchWork=0;}
+    public static void end(){active=false;entries=0;caveSearchWork=0;}
+    /** Admission only: retain native retries, cached column scans and anchor selection unchanged. */
+    public static void admitCaveSearch(int attempts){
+        if(!active)throw new IllegalStateException("Cave anchor search requires an owned procedural preview");
+        long work=(long)Math.max(1,attempts)*WorkerCaveStorage.getWorldHeight(null);
+        if(work>CAVE_SEARCH_LIMIT-caveSearchWork)throw new IllegalArgumentException("Procedural cave anchor search exceeds its bounded native column budget");
+        caveSearchWork+=work;
+    }
+    public static String caveSearchStatistics(){return "{\"columnWorkCharged\":"+caveSearchWork+",\"workLimit\":"+CAVE_SEARCH_LIMIT+"}";}
     @Override public V put(K key,V value){
         if(!active)throw new IllegalStateException("Native procedural canvas requires an owned preview");
         if(!containsKey(key)&&++entries>262144)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");

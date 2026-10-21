@@ -88,7 +88,13 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                         call.setArguments(p.variableAt(1));call.setMethod(new MethodReference("art.arcane.iris.generation.mantle.WorkerNativeSourcePlans","<init>",ValueType.object("art.arcane.iris.generation.mantle.EngineMantle"),ValueType.VOID));hosts++;
                     }
                 }if(hosts!=1)throw new IllegalStateException("Pinned object cache ownership constructor changed");
-                for(MethodHolder method:cls.getMethods())if(java.util.Set.of("loadObjectSize","placeObject","placeCaveObject","placeUpperObjects","placeContainedCaveObject","findCavePlacementAnchor").contains(method.getName()))unavailable(method,"Imported object lookup/placement or cave anchors outside guarded procedural previews");
+                int searches=0;for(MethodHolder method:cls.getMethods()){
+                    if(java.util.Set.of("loadObjectSize","placeObject","placeCaveObject","placeUpperObjects").contains(method.getName()))unavailable(method,"Imported object lookup/placement outside guarded procedural previews");
+                    if(method.getName().equals("findCavePlacementAnchor")){
+                        if(method.parameterCount()!=11||!method.parameterType(7).equals(ValueType.INTEGER))throw new IllegalStateException("Pinned cave-anchor search boundary changed");
+                        Program p=method.getProgram();InvokeInstruction guard=new InvokeInstruction();guard.setType(InvocationType.SPECIAL);guard.setMethod(new MethodReference("studio.engine.terrain.WorkerProceduralMap","admitCaveSearch",ValueType.INTEGER,ValueType.VOID));guard.setArguments(p.variableAt(8));p.basicBlockAt(0).getFirstInstruction().insertPrevious(guard);searches++;
+                    }
+                }if(searches!=1)throw new IllegalStateException("Pinned cave-anchor search method changed");
             }
             if(name.equals("art.arcane.iris.generation.mantle.ObjectSourcePlan")){
                 int mantles=0,heights=0;
