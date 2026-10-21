@@ -40,3 +40,6 @@ Immediate blocker: [#15 — explain the native checksum mismatch](https://github
 | P1 | measure performance, verify deployment, and enforce evidence-based release gates | [#12](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/12) |
 
 Dependencies are recorded in each issue. Start with [#2](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/2); [#4](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/4) is the first browser-execution proof gate. No future monitoring or recurring task has been scheduled.
+
+
+The isolated native source-plan cache boundary now compiles and passes a small JVM/Node-Wasm lifecycle/host check with controlled plan-ABI fixtures. It does not activate caching in terrain previews or qualify real plan compression/reuse. Next: recover the native build input blocked by the Eco dependency server's HTTP 521 response, then connect explicit cache budgets/ownership and native continuations. See the scoped [cache boundary notes](DEVELOPMENT.md#isolated-native-source-plan-cache-boundary).

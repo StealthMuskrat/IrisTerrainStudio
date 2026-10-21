@@ -119,3 +119,6 @@ Native directional state rotation now runs the pinned modded-platform algorithm 
 
 
 Native edit-state merging now runs the pinned platform merger with owned property handles and native partial-property masks. Seven selected merges and one explicit-rule oak placement match the JVM reference. This diagnostic does not add edit settings to native procedural entry types. See [merge scope and evidence](docs/DEVELOPMENT.md#native-edit-state-merging).
+
+
+The native source-plan cache platform boundary now has an isolated JVM/Node-Wasm development check using controlled plan fixtures. Terrain previews remain uncached until real source-plan integration is qualified. See [cache scope and the current native build dependency blocker](docs/DEVELOPMENT.md#isolated-native-source-plan-cache-boundary).

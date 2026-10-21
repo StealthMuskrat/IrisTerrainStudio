@@ -1,0 +1,14 @@
+{
+  "scope": "isolated-native-source-plan-cache-boundary",
+  "nativeSources": {
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/mantle/ObjectSourcePlanCache.java": "f910aff856b944ba1dab951e0a2a797b2f063d15e93845f295e564b06c646f42",
+    ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/cache/Cache.java": "df142d349b6a1f2d25cbd8c8b517c9c303c8921a3a8d06198021f4de6d8ff9f1",
+    ".upstream/VolmLib/shared/src/main/java/art/arcane/volmlib/util/cache/CacheKey.java": "6aecaddf3dde6a9bc373687330fdfeaffc0c48d0354273ec4fb213e0497f9632"
+  },
+  "caffeine": {
+    "version": "3.2.4",
+    "sha256": "9d9d2cfd681fd9272ded3d27c9930db12f89f732345975aa113ebc223bbf1224"
+  },
+  "teavm": "0.16.0",
+  "planFixtureIsNativeImplementation": false
+}

@@ -1,6 +1,6 @@
 # Project status
 
-As of 2026-10-20. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
+As of 2026-10-21. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
 
 ## Implemented
 
@@ -32,6 +32,9 @@ A local pack-management server, browser editor, lossless JSON document model, We
 
 
 [Native edit-state merging](evidence/native-state-merge-targeted-2026-10-20.json) now executes the pinned platform merger with stable block identity, original parsed-property masks, opaque captured enum values and canonical normalization handles. Seven selected state merges, two result-mask checks and one inconsistent-metadata refusal pass. One tiny oak with an explicit diagnostic same-material edit passes five material probes, placement Y 35 and 95 journal cells against the original JVM host. Native procedural entry types do not expose object edit rules; this diagnostic does not add an authoring setting. Tile/custom adapters, continuations/cache and complete browser/release qualification remain pending. No broad suite or state/pair sweep was run.
+
+
+[The isolated native source-plan cache boundary](evidence/native-source-plan-cache-boundary-2026-10-21.json) now compiles the original cache lifecycle to Wasm with a weighted worker store, single-worker counters and cause-preserving completion values. A small controlled plan-ABI fixture covers consumption, draining, repeated-consumption rebuilds, nine-visitor retirement, empty plans, clearing, oversized plans and recursive-build failure recovery; JVM and Node-Wasm results agree. Weighted-store accounting and completion checks pass. Actual source-plan/terrain integration remains disabled and unverified. The reset workspace's cold core build is blocked resolving `com.willfp:eco:2026.27` (upstream dependency server HTTP 521); no registry export or test tasks were run in that attempt.
 
 ## Remaining engine and application work
 
