@@ -3,6 +3,8 @@ import{VoxelVolume}from'./volume.mjs';
 import{localClip,clipBounds,clipCenter,emptyClip}from'./clip.mjs';
 import{bakeBlock}from'./models.mjs';
 import{TextureAtlas}from'../resource-packs/atlas.mjs';
+import{visibleMeshRanges}from'./frustum.mjs';
+import{MeshBufferStore}from'./mesh-buffers.mjs';
 const source=`
 struct Camera{matrix:mat4x4f,eye:vec4f};@group(0) @binding(0)var<uniform> camera:Camera;@group(0) @binding(1)var atlas:texture_2d<f32>;@group(0) @binding(2)var nearest:sampler;
 struct Output{@builtin(position) position:vec4f,@location(0) normal:vec3f,@location(1) color:vec4f,@location(2) uv:vec2f,@location(3) distance:f32};
@@ -24,7 +26,7 @@ export class WorldRenderer{
   constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
     this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'}});
-    this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume){this.atlas.update(time);this.draw();}this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
+    this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume&&this.atlas.update(time))this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
   cancelMesh(){this.job=(this.job||0)+1;this.worker?.terminate();this.worker=null;this.meshReject?.(new DOMException('Voxel meshing cancelled.','AbortError'));this.meshReject=null;}
@@ -40,8 +42,8 @@ export class WorldRenderer{
       const meshPalette=volume.palette.map((block,index)=>({...block,solid:opaqueUnitCube(models[index])}));
       const mesh=await this.buildMesh(volume,models,clip,id,meshPalette);
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
+      this.uploadMesh(mesh);
       this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.models=models;this.meshPalette=meshPalette;this.clip=clip;this.diagnostics=diagnostics;
-      this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));
       this.faces=mesh.faces;this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
     }catch(error){atlas.dispose();if(this.job===id){this.worker?.terminate();this.worker=null;this.meshReject=null;}throw error;}
   }
@@ -51,7 +53,7 @@ export class WorldRenderer{
       rejectMesh=reject;this.meshReject=reject;
       worker.onmessage=({data})=>{if(id!==this.job||data.id!==id)return;if(data.error){reject(new Error(data.error));return;}if(data.kind==='progress'){this.onProgress?.(data.progress);return;}if(data.kind==='mesh')resolve(data);};
       worker.onerror=event=>reject(new Error(event.message));
-      worker.postMessage({id,width:volume.width,height:volume.height,depth:volume.depth,blocks:volume.blocks,palette,models,clip});
+      worker.postMessage({id,width:volume.width,height:volume.height,depth:volume.depth,blocks:volume.blocks,palette,models,clip,origin:volume.origin});
     });}finally{worker.terminate();if(this.worker===worker)this.worker=null;if(this.meshReject===rejectMesh)this.meshReject=null;}
   }
   async setClip(input){
@@ -59,7 +61,7 @@ export class WorldRenderer{
     const volume=this.volume,models=this.models,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
     const mesh=await this.buildMesh(volume,models,clip,id,this.meshPalette);
     if(this.job!==id||this.disposed||this.volume!==volume)throw new DOMException('Voxel meshing cancelled.','AbortError');
-    this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.faces=mesh.faces;this.clip=clip;this.draw();return mesh.faces;
+    this.uploadMesh(mesh);this.faces=mesh.faces;this.clip=clip;this.draw();return mesh.faces;
   }
   focus(world){
     if(!this.volume)throw new Error('Generate a stored voxel volume before focusing the camera.');
@@ -67,26 +69,38 @@ export class WorldRenderer{
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){this.cancelMesh();this.volume=null;this.models=null;this.meshPalette=null;this.clip=null;this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){this.cancelMesh();this.volume=null;this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  uploadMesh(mesh){
+    this.buffers??=new MeshBufferStore(this.gpu.device);
+    this.buffers.reserveMany([{name:'opaque',bytes:mesh.opaque.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparent',bytes:mesh.transparent.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparentIndices',bytes:mesh.transparent.byteLength/12,usage:GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST}]);
+    this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.ranges=mesh.ranges;
+  }
   upload(name,data){
-    this[name]?.destroy();this[name+'Count']=data.length/12;
+    this.buffers??=new MeshBufferStore(this.gpu.device);
+    this[name]=this.buffers.write(name,data,GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST);this[name+'Count']=data.length/12;
     if(name==='transparent'){
-      this.transparentIndices?.destroy();this.transparentIndices=null;this.transparentCenters=null;this.sortEye=null;
+      this.transparentCenters=null;this.transparentIndices=null;this.transparentOrder=null;this.sortedIndices=null;this.sortEye=null;this.sortRanges=null;this.transparentDrawCount=0;
       if(data.length){
-        const count=data.length/72;this.transparentCenters=new Float32Array(count*3);this.transparentOrder=new Uint32Array(count);this.sortedIndices=new Uint32Array(count*6);
-        for(let i=0;i<count;i++){this.transparentOrder[i]=i;for(let axis=0;axis<3;axis++){let sum=0;for(let vertex=0;vertex<6;vertex++)sum+=data[i*72+vertex*12+axis];this.transparentCenters[i*3+axis]=sum/6;}}
-        this.transparentIndices=this.gpu.device.createBuffer({size:this.sortedIndices.byteLength,usage:GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST});
+        const count=data.length/72;this.transparentCenters=new Float32Array(count*3);this.sortedIndices=new Uint32Array(count*6);
+        for(let i=0;i<count;i++)for(let axis=0;axis<3;axis++){let sum=0;for(let vertex=0;vertex<6;vertex++)sum+=data[i*72+vertex*12+axis];this.transparentCenters[i*3+axis]=sum/6;}
+        this.transparentIndices=this.buffers.reserve('transparentIndices',this.sortedIndices.byteLength,GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST);
       }
     }
-    if(!data.length){this[name]=null;return;}
-    this[name]=this.gpu.device.createBuffer({size:data.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST});this.gpu.device.queue.writeBuffer(this[name],0,data);
   }
-  sortTransparent(eye){
-    if(!this.transparentCenters||this.sortEye?.every((value,index)=>value===eye[index]))return;
+  sortTransparent(eye,ranges){
+    if(!this.transparentCenters)return;
+    const key=ranges.map(range=>range.first+':'+range.count).join(','),sameRanges=this.sortRanges===key;
+    if(sameRanges&&this.sortEye?.every((value,index)=>value===eye[index]))return;
+    if(!sameRanges){
+      const count=ranges.reduce((sum,range)=>sum+range.count/6,0);this.transparentOrder=new Uint32Array(count);let at=0;
+      for(const range of ranges)for(let index=range.first/6;index<(range.first+range.count)/6;index++)this.transparentOrder[at++]=index;
+    }
     const centers=this.transparentCenters,distance=index=>{const offset=index*3;return(centers[offset]-eye[0])**2+(centers[offset+1]-eye[1])**2+(centers[offset+2]-eye[2])**2;};
     this.transparentOrder.sort((a,b)=>distance(b)-distance(a)||a-b);
     for(let i=0;i<this.transparentOrder.length;i++)for(let vertex=0;vertex<6;vertex++)this.sortedIndices[i*6+vertex]=this.transparentOrder[i]*6+vertex;
-    this.gpu.device.queue.writeBuffer(this.transparentIndices,0,this.sortedIndices);this.sortEye=eye.slice();
+    this.transparentDrawCount=this.transparentOrder.length*6;
+    if(this.transparentDrawCount)this.gpu.device.queue.writeBuffer(this.transparentIndices,0,this.sortedIndices.subarray(0,this.transparentDrawCount));
+    this.sortEye=eye.slice();this.sortRanges=key;
   }
   reset(){
     let target=[0,0,0],distance=90;
@@ -94,8 +108,20 @@ export class WorldRenderer{
     this.camera={yaw:Math.PI*.25,pitch:.55,distance,target};this.draw();
   }
   matrices(){const c=this.camera,eye=[c.target[0]+Math.sin(c.yaw)*Math.cos(c.pitch)*c.distance,c.target[1]+Math.sin(c.pitch)*c.distance,c.target[2]+Math.cos(c.yaw)*Math.cos(c.pitch)*c.distance],matrix=multiply(perspective(Math.PI/3,this.canvas.width/Math.max(this.canvas.height,1),.1,8192),lookAt(eye,c.target));return{eye,matrix};}
-  draw(){const rect=this.canvas.getBoundingClientRect();if(rect.width<1||rect.height<1||this.disposed)return;const ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(rect.width*ratio)),h=Math.max(1,Math.round(rect.height*ratio));if(this.canvas.width!==w||this.canvas.height!==h||!this.depth){this.canvas.width=w;this.canvas.height=h;this.depth?.destroy();this.depth=this.gpu.device.createTexture({size:[w,h,1],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}const{eye,matrix}=this.matrices();this.sortTransparent(eye);const uniforms=new Float32Array(20);uniforms.set(matrix);uniforms.set([...eye,1],16);this.gpu.device.queue.writeBuffer(this.uniform,0,uniforms);const encoder=this.gpu.device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:this.context.getCurrentTexture().createView(),clearValue:{r:.061,g:.089,b:.092,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:this.depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});pass.setBindGroup(0,this.bindGroup);if(this.opaque){pass.setPipeline(this.pipeline);pass.setVertexBuffer(0,this.opaque);pass.draw(this.opaqueCount);}if(this.transparent){pass.setPipeline(this.transparentPipeline);pass.setVertexBuffer(0,this.transparent);pass.setIndexBuffer(this.transparentIndices,'uint32');pass.drawIndexed(this.transparentCount);}pass.end();this.gpu.device.queue.submit([encoder.finish()]);}
+  draw(){
+    const rect=this.canvas.getBoundingClientRect();if(rect.width<1||rect.height<1||this.disposed)return;
+    const ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(rect.width*ratio)),h=Math.max(1,Math.round(rect.height*ratio));
+    if(this.canvas.width!==w||this.canvas.height!==h||!this.depth){this.canvas.width=w;this.canvas.height=h;this.depth?.destroy();this.depth=this.gpu.device.createTexture({size:[w,h,1],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}
+    const{eye,matrix}=this.matrices(),visible=visibleMeshRanges(this.ranges??[],matrix);
+    this.visibility={opaqueSections:visible.opaque.length,transparentSections:visible.transparent.length,totalSections:this.ranges?.length??0};this.sortTransparent(eye,visible.transparent);
+    const uniforms=new Float32Array(20);uniforms.set(matrix);uniforms.set([...eye,1],16);this.gpu.device.queue.writeBuffer(this.uniform,0,uniforms);
+    const encoder=this.gpu.device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:this.context.getCurrentTexture().createView(),clearValue:{r:.061,g:.089,b:.092,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:this.depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
+    pass.setBindGroup(0,this.bindGroup);
+    if(this.opaque&&this.opaqueCount&&visible.opaque.length){pass.setPipeline(this.pipeline);pass.setVertexBuffer(0,this.opaque);for(const range of visible.opaque)pass.draw(range.count,1,range.first);}
+    if(this.transparent&&this.transparentDrawCount){pass.setPipeline(this.transparentPipeline);pass.setVertexBuffer(0,this.transparent);pass.setIndexBuffer(this.transparentIndices,'uint32');pass.drawIndexed(this.transparentDrawCount);}
+    pass.end();this.gpu.device.queue.submit([encoder.finish()]);
+  }
   inspect(clientX,clientY){if(!this.volume)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];return this.volume.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{clip:this.clip,visible:(block,index)=>!!this.models?.[index]?.length});}
   controls(){let drag=null,moved=false;this.canvas.addEventListener('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,shift:event.shiftKey||event.button===1};moved=false;this.canvas.setPointerCapture(event.pointerId);});this.canvas.addEventListener('pointermove',event=>{if(!drag)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>1)moved=true;if(drag.shift){const{eye}=this.matrices(),forward=normalize(subtract(this.camera.target,eye)),right=normalize(cross(forward,[0,1,0])),up=cross(right,forward),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);this.camera.target=this.camera.target.map((v,i)=>v-right[i]*dx*scale+up[i]*dy*scale);}else{this.camera.yaw-=dx*.007;this.camera.pitch=Math.max(-1.5,Math.min(1.5,this.camera.pitch+dy*.007));}drag.x=event.clientX;drag.y=event.clientY;this.draw();});this.canvas.addEventListener('pointerup',event=>{if(!moved)this.onInspect?.(this.inspect(event.clientX,event.clientY));drag=null;});this.canvas.addEventListener('pointercancel',()=>{drag=null;});this.canvas.addEventListener('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});this.canvas.addEventListener('contextmenu',event=>event.preventDefault());}
-  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.cancelMesh();this.observer.disconnect();this.opaque?.destroy();this.transparent?.destroy();this.transparentIndices?.destroy();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
+  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.cancelMesh();this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
 }

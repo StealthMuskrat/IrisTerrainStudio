@@ -52,8 +52,9 @@ export class TextureAtlas {
   }
   pause(){this.paused=true;}
   update(time){
-    if(this.disposed||this.paused)return;
-    for(const entry of this.entries.values())if(entry.frames.length>1){const frame=animationFrame(entry,time);if(frame!==entry.frame){if(entry.frames[frame].index!==entry.frames[entry.frame].index)this.upload(entry,entry.frames[frame].index);entry.frame=frame;}}
+    if(this.disposed||this.paused)return false;let changed=false;
+    for(const entry of this.entries.values())if(entry.frames.length>1){const frame=animationFrame(entry,time);if(frame!==entry.frame){if(entry.frames[frame].index!==entry.frames[entry.frame].index){this.upload(entry,entry.frames[frame].index);changed=true;}entry.frame=frame;}}
+    return changed;
   }
   dispose(){if(this.disposed)return;this.disposed=true;this.texture.destroy();this.entries.clear();this.pending.clear();this.canvas.width=1;this.canvas.height=1;}
 }

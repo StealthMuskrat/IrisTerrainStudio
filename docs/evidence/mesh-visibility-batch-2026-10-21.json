@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-21",
+  "scope": "world-aligned mesh sections, frustum visibility, retained GPU buffers and animation redraw signals",
+  "fixture": {
+    "storedCells": 34,
+    "occupiedCells": 2,
+    "sections": 2,
+    "fullFaces": 10,
+    "clippedFaces": 6,
+    "sourcePixels": 0
+  },
+  "checks": [
+    "negative world section alignment and cross-section neighbor culling",
+    "contiguous draw ranges bound actual float32 geometry including overhangs",
+    "clipping retains exposed model faces without modifying blocks",
+    "WebGPU zero-to-one near/far and side-plane visibility",
+    "opaque range draws and visible transparent face indices",
+    "projection-only blend subset refresh and unchanged-view sort reuse",
+    "buffer capacity reuse, atomic allocation failure, bounded growth, empty uploads and idempotent disposal",
+    "animation signals only changed referenced images"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/world.mjs": "e705083e94d833c7591f12479f94ced2e618340fc2ace2f6da84de4909e9be6f",
+    "packages/voxel-renderer/mesh-worker.mjs": "213c236eae02f4be3331066d808b77d4fd361a88b44adb7b86dd83c43afd7b2c",
+    "packages/voxel-renderer/frustum.mjs": "b1715736a9917cf36db7ed79583df41057310ecb1a9f6a439741ac42c8145538",
+    "packages/voxel-renderer/mesh-buffers.mjs": "0a35c1a6ea055e09728751872991c72ce0494adb6c4b8b4fd5072d1339c909a3",
+    "packages/resource-packs/atlas.mjs": "dc97cbc5a5a88809fa5fa764ea69ccc36fb248320c14d4d18c030ed99c6e8acd",
+    "tools/checks/mesh-visibility-smoke.mjs": "4af329f75fc87df550102553ac7514ed7b96b12cca6d7457302e606b1529ec12"
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "performanceMeasured": false,
+  "minecraftClientParityVerified": false,
+  "complete": false,
+  "limits": "Controlled Node worker/device/animation probes only; no native build, terrain generation, registry/state sweep, broad suite or GitHub workflow."
+}
