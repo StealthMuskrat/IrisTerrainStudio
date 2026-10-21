@@ -223,6 +223,9 @@ public final class BrowserEngine {
     @JSExport public static String expressionStatistics(){pack.open();return pack.expressionStatistics();}
     @JSExport public static String samplePackExpression(String key,String seed,double x,double y,double z,int dimensions){pack.open();var resource=pack.load("expressions",key);if(!(resource instanceof art.arcane.iris.generation.noise.IrisExpression expression))throw new IllegalArgumentException("Missing native expression resource");if(!Double.isFinite(x)||!Double.isFinite(y)||!Double.isFinite(z)||dimensions!=2&&dimensions!=3)throw new IllegalArgumentException("Invalid expression sample coordinates/dimensions");var rng=new RNG(Long.parseLong(seed));return bits(dimensions==2?expression.evaluate(rng,x,z):expression.evaluate(rng,x,y,z));}
     @JSExport public static String inspectNoiseCache()throws java.io.IOException{pack.open();return pack.noiseCache().inspect();}
+    @JSExport public static void restoreNoiseCacheTile(String name,String payload)throws java.io.IOException{pack.open();pack.noiseCache().restoreTile(name,payload);}
+    @JSExport public static String exportNoiseCacheTile(String name)throws java.io.IOException{pack.open();return pack.noiseCache().exportTile(name);}
+    @JSExport public static void discardRestoredNoiseCache()throws java.io.IOException{pack.open();pack.noiseCache().discardRestoredTiles();}
     @JSExport public static String noiseCacheStatistics(){pack.open();return pack.noiseCache().statistics();}
     private static boolean requiresCache(IrisGeneratorStyle style){return style!=null&&(style.getCacheSize()>0||style.getExpression()!=null||requiresCache(style.getFracture()));}
     private static void supportedStyle(IrisGeneratorStyle style, int depth) {
