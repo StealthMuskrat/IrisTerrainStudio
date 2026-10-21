@@ -1,0 +1,381 @@
+{
+  "scope": "native-png-adam7-transparency-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "38286355a6bf6221ce5eec7db15ec54d2d3920dc17e9e4f3bbdc3cd1a05a17a4",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "24df7a206bb70c38935f7cb9315b2c094e12f3933b4cb67db67a3181282a2cb6",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImage.java",
+      "sha256": "c2301fc8b8f01e02e27e57a479821f9b8f933a4ca1f12ad468187d34f06b2e53"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapCompiler.java",
+      "sha256": "47e276197b277630f10921e099ba84735bc5c21b243bb80ad3499df25c0f30bf"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/CompiledIrisImageMap.java",
+      "sha256": "c7f62e4935b67cf7ec5dfed815724062797cadf2f23bdc39997351e4e54eff42"
+    }
+  ],
+  "nativePngReference": {
+    "runtime": "Temurin 25.0.4.1+1",
+    "writer": "ImageIO PNGImageWriter with explicit progressive/default or disabled modes",
+    "reader": "ImageIO PNGImageReader, read through original IrisImage and image-map compiler",
+    "reviewedReaderSourceSha256": "9f98dfd09a5b811b452ae7ca93f117698476254ee0709a891425c503ccb18a3c",
+    "reviewedReaderSource": "java.desktop/com/sun/imageio/plugins/png/PNGImageReader.java"
+  },
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/png.mjs",
+    "tools/engine-build/build.mjs"
+  ],
+  "focusedCheck": {
+    "result": "pass",
+    "scope": "native-png-inputs-development-targeted",
+    "images": [
+      {
+        "name": "gray-adam7",
+        "width": 5,
+        "height": 5,
+        "channels": 1,
+        "bitDepth": 16,
+        "colorMode": "GRAYSCALE",
+        "hasAlpha": false,
+        "bands": [
+          0,
+          8009,
+          16018,
+          24027,
+          32036,
+          12347,
+          20356,
+          28365,
+          36374,
+          44383,
+          24694,
+          32703,
+          40712,
+          48721,
+          56730,
+          37041,
+          45050,
+          53059,
+          61068,
+          3541,
+          49388,
+          57397,
+          65406,
+          7879,
+          15888
+        ],
+        "pngSha256": "52a86100143e001bfa3604350b13379a688c2513aec5b4b013521dbb35fe9c90"
+      },
+      {
+        "name": "rgba-adam7",
+        "width": 3,
+        "height": 3,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          0,
+          47,
+          94,
+          0,
+          51,
+          98,
+          145,
+          127,
+          102,
+          149,
+          196,
+          254,
+          73,
+          120,
+          167,
+          127,
+          124,
+          171,
+          218,
+          254,
+          175,
+          222,
+          13,
+          0,
+          146,
+          193,
+          240,
+          254,
+          197,
+          244,
+          35,
+          0,
+          248,
+          39,
+          86,
+          127
+        ],
+        "pngSha256": "00b26a3c7c882eef588f4f5e31a00cd03b68889153e3c15b4f7414ff37c886d6"
+      },
+      {
+        "name": "key-adam7",
+        "width": 3,
+        "height": 2,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          0,
+          61,
+          92,
+          123,
+          255,
+          122,
+          153,
+          184,
+          255,
+          11,
+          22,
+          33,
+          0,
+          150,
+          181,
+          212,
+          255,
+          211,
+          242,
+          17,
+          255
+        ],
+        "pngSha256": "047a3bd9cc9983362029d5bf234344352eec1ab7ff0f9a31174c3a19b99a3671"
+      },
+      {
+        "name": "key-plain",
+        "width": 3,
+        "height": 2,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          0,
+          61,
+          92,
+          123,
+          255,
+          122,
+          153,
+          184,
+          255,
+          11,
+          22,
+          33,
+          0,
+          150,
+          181,
+          212,
+          255,
+          211,
+          242,
+          17,
+          255
+        ],
+        "pngSha256": "f7ddaa4abac80329c6d6dc78e6df8042453ab90b53419f39c7cb3486b2ac895e"
+      }
+    ],
+    "rawBandSamplesCompared": 109,
+    "mapSamplesCompared": 12,
+    "mapSamples": [
+      {
+        "key": "height",
+        "samples": [
+          {
+            "type": "GRAYSCALE_HEIGHT",
+            "contentHash": "8016c5484865b1d9aa3f25321ca54c71afb693a3c6ec8f4e303aa6643fc36430",
+            "sourceHash": "5a31cd2d3e60fd890846c167f5c4c58c962798a4206f3c855a3b0f7be10d0f6a",
+            "width": 5,
+            "height": 5,
+            "normalized": "0000000000000000",
+            "worldHeight": "c040000000000000"
+          },
+          {
+            "type": "GRAYSCALE_HEIGHT",
+            "contentHash": "8016c5484865b1d9aa3f25321ca54c71afb693a3c6ec8f4e303aa6643fc36430",
+            "sourceHash": "5a31cd2d3e60fd890846c167f5c4c58c962798a4206f3c855a3b0f7be10d0f6a",
+            "width": 5,
+            "height": 5,
+            "normalized": "3fcf081f00000000",
+            "worldHeight": "bfeefc2000000000"
+          },
+          {
+            "type": "GRAYSCALE_HEIGHT",
+            "contentHash": "8016c5484865b1d9aa3f25321ca54c71afb693a3c6ec8f4e303aa6643fc36430",
+            "sourceHash": "5a31cd2d3e60fd890846c167f5c4c58c962798a4206f3c855a3b0f7be10d0f6a",
+            "width": 5,
+            "height": 5,
+            "normalized": "3fe2d1f2d0000000",
+            "worldHeight": "4045a3e5a0000000"
+          }
+        ]
+      },
+      {
+        "key": "alpha",
+        "samples": [
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "98c42db3d982cc8a240931570485ccdd4af0a9d0821a226c802a582d8a75536a",
+            "sourceHash": "48dcfd48918fda3449ffdd6b93bcb0375b11f70c316e0fd49d4776c24662f5e3",
+            "width": 3,
+            "height": 3,
+            "normalized": "0000000000000000"
+          },
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "98c42db3d982cc8a240931570485ccdd4af0a9d0821a226c802a582d8a75536a",
+            "sourceHash": "48dcfd48918fda3449ffdd6b93bcb0375b11f70c316e0fd49d4776c24662f5e3",
+            "width": 3,
+            "height": 3,
+            "normalized": "3fdfdfdfe0000000"
+          },
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "98c42db3d982cc8a240931570485ccdd4af0a9d0821a226c802a582d8a75536a",
+            "sourceHash": "48dcfd48918fda3449ffdd6b93bcb0375b11f70c316e0fd49d4776c24662f5e3",
+            "width": 3,
+            "height": 3,
+            "normalized": "3fefdfdfe0000000"
+          }
+        ]
+      },
+      {
+        "key": "key-alpha",
+        "samples": [
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "964025ed432af0ad2079ded545673cf1b6989e9aa70131c463423d69492d3c6a",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "normalized": "0000000000000000"
+          },
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "964025ed432af0ad2079ded545673cf1b6989e9aa70131c463423d69492d3c6a",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "normalized": "3ff0000000000000"
+          },
+          {
+            "type": "ALPHA_MASK",
+            "contentHash": "964025ed432af0ad2079ded545673cf1b6989e9aa70131c463423d69492d3c6a",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "normalized": "0000000000000000"
+          }
+        ]
+      },
+      {
+        "key": "key-colors",
+        "samples": [
+          {
+            "type": "COLOR_MAP",
+            "contentHash": "1731555d2a26767e7ebb898cf0dad06af173251233a43169683fe8968cd73c32",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "target": "minecraft:stone"
+          },
+          {
+            "type": "COLOR_MAP",
+            "contentHash": "1731555d2a26767e7ebb898cf0dad06af173251233a43169683fe8968cd73c32",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "target": "minecraft:dirt"
+          },
+          {
+            "type": "COLOR_MAP",
+            "contentHash": "1731555d2a26767e7ebb898cf0dad06af173251233a43169683fe8968cd73c32",
+            "sourceHash": "d07a87cd3fec8dfec03d1d02e3a96df9f773d44bb546ea5456f32c321f7d2309",
+            "width": 3,
+            "height": 2,
+            "target": "minecraft:stone"
+          }
+        ]
+      }
+    ],
+    "javaWriterAndReader": true,
+    "adam7TinyEmptyPasses": true,
+    "rgbTransparencyPreservesHiddenColor": true,
+    "suggestedTruecolorPaletteAccepted": true,
+    "actualWorkerDecodeAndNativeInspection": true,
+    "malformedOrderingInterlaceAndInflationRefused": true,
+    "decodeFailureRecovery": true,
+    "oversizedHeaderRefusedBeforeInflation": true,
+    "pngDecoderSha256": "7bbca3d3a361bd3be1b0793b7953ac6edfc14195e52a255740dd9047477e3014",
+    "wasmSha256": "38286355a6bf6221ce5eec7db15ec54d2d3920dc17e9e4f3bbdc3cd1a05a17a4",
+    "sourceSha256": "24df7a206bb70c38935f7cb9315b2c094e12f3933b4cb67db67a3181282a2cb6",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "checkCommands": [
+    "node --experimental-vm-modules tools/checks/native-png-inputs-smoke.mjs"
+  ],
+  "implemented": [
+    "Adam7 pass extents, independent row-filter state per pass and exact raw-band scatter for the existing grayscale 8/16-bit and RGB/RGBA 8-bit formats.",
+    "8-bit RGB tRNS expansion to raw RGBA with original RGB values retained at alpha zero, plus legal optional suggested PLTE metadata in truecolor PNGs.",
+    "Explicit 16 MiB decoded-band admission and exact pass-byte inflation bounds, transparency/palette duplicate/order/length checks and invalid-interlace refusal; existing snapshot ownership and failure cleanup reused."
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "legacyImageMapCheckUpdatedButNotRerun": true,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "Four tiny independent Java-written/read PNGs: 5x5 grayscale16 Adam7, 3x3 RGBA8 Adam7, and 3x2 RGB transparency/suggested-palette images in Adam7 and noninterlaced forms. This is not all dimensions/filter combinations or comprehensive PNG conformance.",
+    "Indexed, grayscale-alpha/gray tRNS, packed low-bit grayscale, RGB/RGBA16, APNG, ICC/HDR and unconnected color-profile semantics still refuse. The original native map compiler also rejects indexed and noncanonical RGB map depths; sources are not silently converted to bypass it.",
+    "The 16 MiB decoded limit is admission, not a measured peak-heap guarantee. Inflation and output buffers coexist; compressed input is bounded at 8 MiB and pixels at 4,194,304. Oversized-header refusal is checked without generating a large image.",
+    "The actual decoder, Wasm image bridge and worker snapshot inspection run under Node with the existing separate 20-type fixture and a controlled VM/Worker host. No real browser worker, GPU, GC or performance qualification is claimed.",
+    "The existing image-map smoke was adjusted to reject invalid interlace method 2; valid Adam7 is now connected. Its earlier broad scoped cases were not rerun in this batch.",
+    "Full image-map options and categorical dimension applications, native terrain stages, hydrology, custom registry, durable persistence, assets and dependency/release qualification remain unfinished."
+  ],
+  "nextMilestone": "Continue remaining native terrain/platform adapters and resource options, then complete native mode/Mantle finalization and whole-program browser verification.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}
