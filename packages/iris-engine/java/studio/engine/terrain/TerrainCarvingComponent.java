@@ -19,6 +19,7 @@ public final class TerrainCarvingComponent {
         CAVE_DECORATION("native-overworld-cave-decoration-stage-development"),
         DEPOSITS("native-overworld-deposit-material-stage-development"),
         MATERIAL_FINISH("native-overworld-material-finish-development"),
+        SUBTERRAIN_FINISH("native-overworld-subterrain-finish-development"),
         SOURCE_SCATTER("native-procedural-source-scatter-development"),
         NEIGHBOR_SCATTER("native-procedural-neighborhood-development");
         final String scope;Stage(String scope){this.scope=scope;}
@@ -69,8 +70,9 @@ public final class TerrainCarvingComponent {
                 floatingModifier.decorateColumns(x,z,blocks,false,context);
                 new art.arcane.iris.generation.stage.IrisPerfectionModifier(engine).onModify(x,z,blocks,false,context);
             }
+            if(stage==Stage.SUBTERRAIN_FINISH)cave.preserveSubterrain(x,z,blocks);
             String result=TerrainPaintStage.serialize(engine,x,z,blocks,placement==null?stage.scope:"native-procedural-placement-development");
-            result=result.substring(0,result.length()-1)+",\"subterrain\":{\"nativePlanner\":true,\"enabled\":"+!engine.getComplex().getSubterrainPlanner().isEmpty()+",\"samplingWorkCharged\":"+WorkerCaveStorage.subterrainWork()+",\"workLimit\":16777216}}";
+            result=result.substring(0,result.length()-1)+",\"subterrain\":{\"nativePlanner\":true,\"enabled\":"+!engine.getComplex().getSubterrainPlanner().isEmpty()+",\"preservationApplied\":"+(stage==Stage.SUBTERRAIN_FINISH)+",\"samplingWorkCharged\":"+WorkerCaveStorage.subterrainWork()+",\"workLimit\":16777216}}";
             if(content&&!neighbors)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
             if(neighbors){var stats=placementResult.neighborhood();result=result.substring(0,result.length()-1)+",\"neighborhood\":{\"sourceChunks\":"+stats.sourceChunks()+",\"contributingSources\":"+stats.contributingSources()+",\"placementRadius\":"+stats.placementRadius()+",\"inputChunkRadius\":"+stats.inputChunkRadius()+",\"sourceChunkRadius\":"+stats.sourceChunkRadius()+",\"builtPlanBytes\":"+stats.builtPlanBytes()+"},\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";}
             if(scatter||neighbors)result=result.substring(0,result.length()-1)+",\"objectTags\":"+WorkerCaveStorage.objectTags()+"}";
