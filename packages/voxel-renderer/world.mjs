@@ -5,6 +5,8 @@ import{bakeBlock}from'./models.mjs';
 import{TextureAtlas}from'../resource-packs/atlas.mjs';
 import{visibleMeshRanges}from'./frustum.mjs';
 import{MeshBufferStore}from'./mesh-buffers.mjs';
+import{MeshPicker}from'./picking.mjs';
+import{createSelectionPipeline}from'./selection.mjs';
 const source=`
 struct Camera{matrix:mat4x4f,eye:vec4f};@group(0) @binding(0)var<uniform> camera:Camera;@group(0) @binding(1)var atlas:texture_2d<f32>;@group(0) @binding(2)var nearest:sampler;
 struct Output{@builtin(position) position:vec4f,@location(0) normal:vec3f,@location(1) color:vec4f,@location(2) uv:vec2f,@location(3) distance:f32};
@@ -26,6 +28,7 @@ export class WorldRenderer{
   constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
     this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'}});
+    this.selectionPipeline=createSelectionPipeline(gpu.device,this.pipeline.getBindGroupLayout(0),gpu.format);
     this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume&&this.atlas.update(time))this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
@@ -42,7 +45,7 @@ export class WorldRenderer{
       const meshPalette=volume.palette.map((block,index)=>({...block,solid:opaqueUnitCube(models[index])}));
       const mesh=await this.buildMesh(volume,models,clip,id,meshPalette);
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
-      this.uploadMesh(mesh);
+      const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;
       this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.models=models;this.meshPalette=meshPalette;this.clip=clip;this.diagnostics=diagnostics;
       this.faces=mesh.faces;this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
     }catch(error){atlas.dispose();if(this.job===id){this.worker?.terminate();this.worker=null;this.meshReject=null;}throw error;}
@@ -61,7 +64,7 @@ export class WorldRenderer{
     const volume=this.volume,models=this.models,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
     const mesh=await this.buildMesh(volume,models,clip,id,this.meshPalette);
     if(this.job!==id||this.disposed||this.volume!==volume)throw new DOMException('Voxel meshing cancelled.','AbortError');
-    this.uploadMesh(mesh);this.faces=mesh.faces;this.clip=clip;this.draw();return mesh.faces;
+    const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.clip=clip;this.draw();return mesh.faces;
   }
   focus(world){
     if(!this.volume)throw new Error('Generate a stored voxel volume before focusing the camera.');
@@ -69,11 +72,18 @@ export class WorldRenderer{
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){this.cancelMesh();this.volume=null;this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){this.cancelMesh();this.volume=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   uploadMesh(mesh){
     this.buffers??=new MeshBufferStore(this.gpu.device);
     this.buffers.reserveMany([{name:'opaque',bytes:mesh.opaque.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparent',bytes:mesh.transparent.byteLength,usage:GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST},{name:'transparentIndices',bytes:mesh.transparent.byteLength/12,usage:GPUBufferUsage.INDEX|GPUBufferUsage.COPY_DST}]);
-    this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.ranges=mesh.ranges;
+    this.upload('opaque',new Float32Array(mesh.opaque));this.upload('transparent',new Float32Array(mesh.transparent));this.ranges=mesh.ranges;this.clearSelection(false);
+  }
+  clearSelection(redraw=true){this.selection=null;this.selectionCount=0;if(redraw)this.draw();}
+  select(hit){
+    if(!hit){this.clearSelection();return;}
+    if(hit.meshOwner!==this.picker)throw new Error('The displayed mesh changed. Select a face again.');
+    const data=new Float32Array([0,1,1,2,2,3,3,0].flatMap(index=>hit.quad[index]));this.buffers??=new MeshBufferStore(this.gpu.device);
+    this.selectionBuffer=this.buffers.write('selection',data,GPUBufferUsage.VERTEX|GPUBufferUsage.COPY_DST);this.selectionCount=8;this.selection=hit;this.draw();
   }
   upload(name,data){
     this.buffers??=new MeshBufferStore(this.gpu.device);
@@ -119,9 +129,29 @@ export class WorldRenderer{
     pass.setBindGroup(0,this.bindGroup);
     if(this.opaque&&this.opaqueCount&&visible.opaque.length){pass.setPipeline(this.pipeline);pass.setVertexBuffer(0,this.opaque);for(const range of visible.opaque)pass.draw(range.count,1,range.first);}
     if(this.transparent&&this.transparentDrawCount){pass.setPipeline(this.transparentPipeline);pass.setVertexBuffer(0,this.transparent);pass.setIndexBuffer(this.transparentIndices,'uint32');pass.drawIndexed(this.transparentDrawCount);}
+    if(this.selectionCount){pass.setPipeline(this.selectionPipeline);pass.setVertexBuffer(0,this.selectionBuffer);pass.draw(this.selectionCount);}
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX,clientY){if(!this.volume)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];return this.volume.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{clip:this.clip,visible:(block,index)=>!!this.models?.[index]?.length});}
-  controls(){let drag=null,moved=false;this.canvas.addEventListener('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,shift:event.shiftKey||event.button===1};moved=false;this.canvas.setPointerCapture(event.pointerId);});this.canvas.addEventListener('pointermove',event=>{if(!drag)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>1)moved=true;if(drag.shift){const{eye}=this.matrices(),forward=normalize(subtract(this.camera.target,eye)),right=normalize(cross(forward,[0,1,0])),up=cross(right,forward),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);this.camera.target=this.camera.target.map((v,i)=>v-right[i]*dx*scale+up[i]*dy*scale);}else{this.camera.yaw-=dx*.007;this.camera.pitch=Math.max(-1.5,Math.min(1.5,this.camera.pitch+dy*.007));}drag.x=event.clientX;drag.y=event.clientY;this.draw();});this.canvas.addEventListener('pointerup',event=>{if(!moved)this.onInspect?.(this.inspect(event.clientX,event.clientY));drag=null;});this.canvas.addEventListener('pointercancel',()=>{drag=null;});this.canvas.addEventListener('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});this.canvas.addEventListener('contextmenu',event=>event.preventDefault());}
-  dispose(){this.disposed=true;cancelAnimationFrame(this.frame);this.cancelMesh();this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
+  inspect(clientX,clientY){if(!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();return this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});}
+  controls(){
+    let drag=null,moved=false;
+    this.canvas.addEventListener('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,pointerId:event.pointerId,shift:event.shiftKey||event.button===1};this.canvas.focus({preventScroll:true});moved=false;this.canvas.setPointerCapture(event.pointerId);});
+    this.canvas.addEventListener('pointermove',event=>{
+      if(!drag||event.pointerId!==drag.pointerId)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+      if(Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)>3)moved=true;
+      if(drag.shift){const{eye}=this.matrices(),forward=normalize(subtract(this.camera.target,eye)),right=normalize(cross(forward,[0,1,0])),up=cross(right,forward),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);this.camera.target=this.camera.target.map((v,i)=>v-right[i]*dx*scale+up[i]*dy*scale);}
+      else{this.camera.yaw-=dx*.007;this.camera.pitch=Math.max(-1.5,Math.min(1.5,this.camera.pitch+dy*.007));}
+      drag.x=event.clientX;drag.y=event.clientY;this.draw();
+    });
+    this.canvas.addEventListener('pointerup',event=>{
+      if(!drag||event.pointerId!==drag.pointerId)return;
+      try{if(!moved&&event.button===0){const hit=this.inspect(event.clientX,event.clientY);this.select(hit);this.onInspect?.(hit);}}
+      catch(error){this.onError?.(error);}finally{drag=null;}
+    });
+    this.canvas.addEventListener('pointercancel',()=>{drag=null;});
+    this.canvas.addEventListener('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});
+    this.canvas.addEventListener('keydown',event=>{if(event.key==='Escape'&&this.selection){event.preventDefault();event.stopPropagation();this.clearSelection();}});
+    this.canvas.addEventListener('contextmenu',event=>event.preventDefault());
+  }
+  dispose(){this.disposed=true;this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.observer.disconnect();this.buffers?.dispose();this.uniform.destroy();this.depth?.destroy();this.atlas.dispose();this.context.unconfigure();}
 }

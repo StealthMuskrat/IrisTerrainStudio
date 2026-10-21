@@ -51,6 +51,13 @@ export class TextureAtlas {
     this.device.queue.copyExternalImageToTexture({source:this.canvas,origin:[x-1,y-1]},{texture:this.texture,origin:[x-1,y-1]},[w+2,h+2]);
   }
   pause(){this.paused=true;}
+  sampleAlpha(u,v,cache){
+    if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
+    if(!Number.isFinite(u)||!Number.isFinite(v))throw new Error('Picking requires finite atlas coordinates.');
+    const x=Math.min(this.size-1,Math.max(0,Math.floor(u*this.size))),y=Math.min(this.size-1,Math.max(0,Math.floor(v*this.size)));
+    const key=x+y*this.size;if(cache?.has(key))return cache.get(key);
+    const value=this.context.getImageData(x,y,1,1).data[3]/255;cache?.set(key,value);return value;
+  }
   update(time){
     if(this.disposed||this.paused)return false;let changed=false;
     for(const entry of this.entries.values())if(entry.frames.length>1){const frame=animationFrame(entry,time);if(frame!==entry.frame){if(entry.frames[frame].index!==entry.frames[entry.frame].index){this.upload(entry,entry.frames[frame].index);changed=true;}entry.frame=frame;}}

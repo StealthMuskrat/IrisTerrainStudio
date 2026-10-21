@@ -1,6 +1,6 @@
 const LIMIT=160*1024*1024,PAGE=64*1024;
 // Retain capacity across section remeshes; zero-length uploads only hide old contents.
-// Both vertex buffers and the blend index buffer share one bounded owner.
+// Mesh vertex/index buffers and the small selection outline share one bounded owner.
 export class MeshBufferStore{
   constructor(device,{byteLimit=LIMIT}={}){this.device=device;this.byteLimit=byteLimit;this.slots=new Map();this.bytes=0;this.disposed=false;}
   reserve(name,bytes,usage){return this.reserveMany([{name,bytes,usage}]).get(name);}
