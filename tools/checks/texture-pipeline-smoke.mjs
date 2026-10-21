@@ -3,6 +3,7 @@ import assert from'node:assert/strict';
 import fs from'node:fs/promises';
 import vm from'node:vm';
 import{createHash}from'node:crypto';
+import{localClip,emptyClip}from'../../packages/voxel-renderer/clip.mjs';
 import{textureAnimation,animationFrame}from'../../packages/resource-packs/texture-animation.mjs';
 import{TextureAtlas}from'../../packages/resource-packs/atlas.mjs';
 import{ResourcePackStack,MinecraftResourcePack}from'../../packages/resource-packs/pack.mjs';
@@ -43,7 +44,7 @@ gutter(uploads.at(-1),Array(4).fill(opaque).flat());atlas.update(50);gutter(uplo
 const firstPixels=uploads.at(-1).pixels.slice(),other=bitmap(1,1,rgba([200,0,0,255]));await atlas.add('other',{async bitmap(){return{bitmap:other,animation:null};}});const oldOther=Array.from(atlas.context.getImageData(6,1,1,1).data);atlas.update(100);assert.deepEqual(Array.from(atlas.context.getImageData(6,1,1,1).data),oldOther);gutter(uploads.at(-1),Array(4).fill(opaque).flat());assert.notDeepEqual(firstPixels,uploads.at(-1).pixels);
 const onlyOpaque=await atlas.add('only-used',{async bitmap(){return{bitmap:frames,animation:{width:2,height:2,frames:[0]}};}});assert.equal(onlyOpaque.transparency,'opaque');
 const quads=await bakeBlock({id:'check:block'},{blockModels(){return[{model:{id:'check:model',elements:[{from:[0,0,0],to:[16,16,16],faces:{north:{texture:'check:animated'}}}]},x:0,y:0}];},texture(){return'animated';}},atlas);assert.equal(quads[0].transparency,'blend');
-const messages=[],context=vm.createContext({self:{postMessage:data=>messages.push(data)},Float32Array,setTimeout});vm.runInContext(await fs.readFile(new URL('../../packages/voxel-renderer/mesh-worker.mjs',import.meta.url),'utf8'),context);await context.self.onmessage({data:{id:1,width:1,height:1,depth:1,blocks:new Uint32Array([0]),palette:[{id:'check:block'}],models:[quads]}});assert.equal(messages.at(-1).opaque.byteLength,0);assert.equal(messages.at(-1).transparent.byteLength,6*12*4);
+const messages=[],context=vm.createContext({self:{postMessage:data=>messages.push(data)},Float32Array,setTimeout,localClip,emptyClip});vm.runInContext((await fs.readFile(new URL('../../packages/voxel-renderer/mesh-worker.mjs',import.meta.url),'utf8')).replace(/^import.*\n/,''),context);await context.self.onmessage({data:{id:1,width:1,height:1,depth:1,blocks:new Uint32Array([0]),palette:[{id:'check:block'}],models:[quads]}});assert.equal(messages.at(-1).opaque.byteLength,0);assert.equal(messages.at(-1).transparent.byteLength,6*12*4);
 const before={x:atlas.x,y:atlas.y,rowHeight:atlas.rowHeight,size:atlas.entries.size};await assert.rejects(atlas.add('invalid',{async bitmap(){return{bitmap:other,animation:{frametime:0}};}}),/frametime/);assert.deepEqual({x:atlas.x,y:atlas.y,rowHeight:atlas.rowHeight,size:atlas.entries.size},before);await atlas.add('invalid',{async bitmap(){return{bitmap:other,animation:null};}});
 let resolveLate;const late=atlas.add('late',{bitmap(){return new Promise(resolve=>resolveLate=resolve);}});atlas.dispose();const lateRejected=assert.rejects(late,e=>e.name==='AbortError');resolveLate({bitmap:other,animation:null});await lateRejected;
 // The renderer pauses old atlas uploads before closing any source bitmaps.

@@ -1,0 +1,112 @@
+{
+  "scope": "stored-voxel-cross-sections-and-inspection-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "implementation": [
+    "Shared half-open bounds for world-coordinate X/Y/Z whole-block slices and lower/upper cutaways.",
+    "Renderer reuses stored volume, models, texture atlas and occlusion palette; worker visits only retained cells.",
+    "Section mesh commits and picking bounds are owned by the same render request; stale/cleared jobs cannot commit.",
+    "Camera framing targets retained bounds; world-point/block focus validates the current visible stored volume.",
+    "Inspection displays stored blockstate properties, physical biome and available generation metadata; unavailable models can be skipped.",
+    "Section controls persist in browser preview settings and are excluded from generation requests/cache keys.",
+    "Existing optional texture check adapts its module-worker host to the shared clipping import."
+  ],
+  "focusedCheck": {
+    "scope": "stored-voxel-cross-sections-and-inspection-development-targeted",
+    "result": "pass",
+    "fixtureCells": 8,
+    "sourcePixels": 0,
+    "meshCases": [
+      {
+        "kind": "full",
+        "faces": 24
+      },
+      {
+        "axis": "x",
+        "position": -16,
+        "faces": 16
+      },
+      {
+        "axis": "y",
+        "position": -32,
+        "faces": 16
+      },
+      {
+        "axis": "z",
+        "position": -48,
+        "faces": 16
+      },
+      {
+        "kind": "single-stored-cell",
+        "faces": 6
+      },
+      {
+        "kind": "outside",
+        "faces": 0
+      }
+    ],
+    "checks": [
+      "X/Y/Z slices and lower/upper cutaways expose actual model faces",
+      "Picking respects half-open clips, negative world coordinates, parallel/reverse rays and stored physical biomes",
+      "Unavailable models can be excluded from voxel picking",
+      "Renderer reuses models, palette, atlas ownership and volume when remeshing sections; camera stays unchanged until explicitly focused",
+      "Superseded/cleared section jobs cannot commit stale geometry",
+      "UI section actions persist locally without terrain generation; focus and inspection reject stale volumes",
+      "Blocks and biome arrays remain unchanged"
+    ],
+    "workspaceSha256": {
+      "packages/voxel-renderer/clip.mjs": "e43d54706552e5df6471a92a2a2c6338c649684ab5ae461b45efe50ec7a44e15",
+      "packages/voxel-renderer/volume.mjs": "8f72ff29ea5d3d9d7a97762fc4b78064a78b9f1256ee4b23924d12eda23d6c76",
+      "packages/voxel-renderer/world.mjs": "87acd0f413c3dd3abc02d87ca8a65aaa3de7ffb7bcd06ed62d7f97fd7a364555",
+      "packages/voxel-renderer/mesh-worker.mjs": "91b5ccb9622c33db7b2cd573ae74af9f180969607b0e6773b06534b1beff4ede",
+      "apps/web/main.mjs": "ab8a64d94345c3ef86c8ec17ee341d7dbcc79daeae4cbd08182ad5d462e23599",
+      "apps/web/index.html": "51a6cfeeab88574d1dfe2b64d795469bce8219da8613577a738071978d2d430f",
+      "apps/web/styles.css": "b3fb554f3ce000f7a67480062b5d6b147eed50e24ff11684f2b77774d4a95ae5",
+      "tools/checks/voxel-sections-smoke.mjs": "3cbeb46018296720ed0ce72e9fc3f4fc7a2cec817972cf80ec9343b31cef370c"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "exactTriangleAndTexelPickingVerified": false,
+    "terrainParityVerified": false,
+    "controlledUiAndWorkerHost": true
+  },
+  "deliveryWorkspaceSha256": {
+    "packages/voxel-renderer/clip.mjs": "e43d54706552e5df6471a92a2a2c6338c649684ab5ae461b45efe50ec7a44e15",
+    "packages/voxel-renderer/volume.mjs": "8f72ff29ea5d3d9d7a97762fc4b78064a78b9f1256ee4b23924d12eda23d6c76",
+    "packages/voxel-renderer/world.mjs": "87acd0f413c3dd3abc02d87ca8a65aaa3de7ffb7bcd06ed62d7f97fd7a364555",
+    "packages/voxel-renderer/mesh-worker.mjs": "91b5ccb9622c33db7b2cd573ae74af9f180969607b0e6773b06534b1beff4ede",
+    "apps/web/main.mjs": "93f48c41b751d1efeec9984b099dc1efbe1d1376eecf629741a3d018272d341b",
+    "apps/web/index.html": "51a6cfeeab88574d1dfe2b64d795469bce8219da8613577a738071978d2d430f",
+    "apps/web/styles.css": "b3fb554f3ce000f7a67480062b5d6b147eed50e24ff11684f2b77774d4a95ae5",
+    "tools/checks/voxel-sections-smoke.mjs": "3cbeb46018296720ed0ce72e9fc3f4fc7a2cec817972cf80ec9343b31cef370c",
+    "tools/checks/texture-pipeline-smoke.mjs": "4040dc97de5e3c29968fbf451e28ae9ca6e587af9978abc2f425d2cbc6cb0f23"
+  },
+  "postCheckCopyChange": "Shortened only the no-visible-geometry message and invoked the already-checked section-control synchronization at initialization before asynchronous loading. Tested source hash is retained in focusedCheck; delivered source hash is retained separately.",
+  "validationNotes": [
+    "Initial controlled UI stub omitted the sync callback; fixing the harness resolved the assertion without changing runtime behavior.",
+    "Syntax and git diff --check passed.",
+    "Controlled fixture has eight voxel cells and one model; no native generation or large-state enumeration."
+  ],
+  "engineRebuilt": false,
+  "engineArtifactsChanged": false,
+  "inheritedDevelopmentEngine": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "wasmSha256": "66838749fcf7e9682e1ca562c76b78bd74720e70e6dc2f1d6b231019e412dedd",
+    "sourceSha256": "3ce3c1f0fec73b8d7f90aa6f20320d6e246db5871dfd903a95f25533495f7f3a"
+  },
+  "limitations": [
+    "Real browser DOM/WebGPU/interaction and visual qualification remain pending.",
+    "Sections retain whole stored cells; fractional triangle clipping and exact non-cube/transparent-texel picking remain unfinished.",
+    "Missing models, fluids and authoritative tints still require their pending rendering adapters/assets.",
+    "No metadata is fabricated when a volume lacks region/biome/generation values.",
+    "Full native terrain, program and release qualification remain incomplete."
+  ],
+  "broadSuiteRun": false,
+  "terrainOrRegistrySweepRun": false,
+  "githubWorkflowRun": false,
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "webGpuVerified": false,
+  "releaseMatchVerified": false
+}
