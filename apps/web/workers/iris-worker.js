@@ -44,7 +44,7 @@ async function registerSnapshot(api,snapshot,isCurrent=()=>true){
     if(resource.bytes!==undefined){
       const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');
       let payload=bytes,image;if(/^images\/.+\.png$/.test(resource.path)){const{decodeNativePng}=await import('/packages/iris-engine/png.mjs');image=await decodeNativePng(bytes);if(!isCurrent())return false;payload=image.samples;}
-      const parts=[];for(let i=0;i<payload.length;i+=16384)parts.push(String.fromCharCode(...payload.subarray(i,i+16384)));if(image)api.registerPackImage(resource.path,image.width,image.height,image.channels,image.bitDepth,parts.join(''));else api.registerPackObject(resource.path,parts.join(''));
+      const parts=[];for(let i=0;i<payload.length;i+=16384)parts.push(String.fromCharCode(...payload.subarray(i,i+16384)));if(image?.palette)api.registerPackIndexedImage(resource.path,image.width,image.height,image.bitDepth,parts.join(''),String.fromCharCode(...image.palette));else if(image)api.registerPackImage(resource.path,image.width,image.height,image.channels,image.bitDepth,parts.join(''));else api.registerPackObject(resource.path,parts.join(''));
     }else{
       if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
     }

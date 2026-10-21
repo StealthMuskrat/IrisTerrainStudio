@@ -37,3 +37,7 @@ Each immutable terrain snapshot owns two separate native object-cache domains: r
 ### Native tile publication and asynchronous ownership
 
 Scalar and voxel generation use a shared result-publication boundary. Native CNM bytes and cache diagnostics are captured synchronously for the owning snapshot before asynchronous hashing/storage. Current-request guards precede restore, storage mutation, result publication and temporary-snapshot release. Retained contexts skip repeat restore after style construction. Corrupt-record deletion carries its guard through IndexedDB opening/transaction entry, and delayed context releases check that the worker remains idle before clearing native state. The existing per-snapshot/global encoded-byte budgets and original native FloatCache codecs remain unchanged.
+
+### PNG raster identity
+
+PNG decoding preserves raw band values and the pinned JDK raster/color-model shape. Packed rows are unfiltered before bit extraction; indexed rasters keep index bands plus a bounded owned RGBA palette. Palette transport has a separate native registration entry; decoded bands/palettes count toward existing snapshot limits. Original IrisImage classifies formats and supplies up to eight inspector pixel samples. Original map compiler validation remains the authority on map eligibility; inspecting a source does not convert indexed/gray-alpha/high-depth inputs into supported maps.

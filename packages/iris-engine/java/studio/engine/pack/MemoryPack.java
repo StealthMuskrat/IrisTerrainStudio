@@ -57,13 +57,16 @@ public final class MemoryPack {
         byte[] value=new byte[binary.length()];for(int i=0;i<value.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Object transport must contain bytes");value[i]=(byte)c;}
         objects.put(path,value);bytes=total;
     }
-    public void registerImage(String path,int width,int height,int channels,int depth,String binary){
+    public void registerImage(String path,int width,int height,int channels,int depth,String binary){registerImage(path,width,height,channels,depth,binary,null);}
+    public void registerIndexedImage(String path,int width,int height,int depth,String binary,String palette){if(palette==null||palette.length()<8||palette.length()>1024)throw new IllegalArgumentException("Invalid indexed image palette");registerImage(path,width,height,1,depth,binary,palette);}
+    private void registerImage(String path,int width,int height,int channels,int depth,String binary,String palette){
         if(data!=null)throw new IllegalStateException("The native pack snapshot is sealed");validateImagePath(path);
-        if(binary==null||binary.length()>16*1024*1024)throw new IllegalArgumentException("Decoded image exceeds 16 MiB");
-        int total=bytes+binary.length()-imageSizes.getOrDefault(path,0);if((resourceCount()>=4096&&!images.containsKey(path))||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
-        byte[] samples=new byte[binary.length()];for(int i=0;i<samples.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Image transport must contain bytes");samples[i]=(byte)c;}
-        var pixels=new studio.engine.image.WorkerImagePixels(width,height,channels,depth,samples);images.put(path,pixels);imageSizes.put(path,binary.length());bytes=total;
+        int size=binary==null?0:binary.length()+(palette==null?0:palette.length());
+        if(binary==null||size>16*1024*1024)throw new IllegalArgumentException("Decoded image exceeds 16 MiB");
+        int total=bytes+size-imageSizes.getOrDefault(path,0);if((resourceCount()>=4096&&!images.containsKey(path))||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        var pixels=new studio.engine.image.WorkerImagePixels(width,height,channels,depth,imageBytes(binary),palette==null?null:imageBytes(palette));images.put(path,pixels);imageSizes.put(path,size);bytes=total;
     }
+    private static byte[] imageBytes(String binary){byte[] samples=new byte[binary.length()];for(int i=0;i<samples.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Image transport must contain bytes");samples[i]=(byte)c;}return samples;}
     static void validateImagePath(String path){if(path==null||!path.startsWith("images/")||!path.endsWith(".png"))throw new IllegalArgumentException("Invalid native image path");validatePath(path.substring(0,path.length()-4)+".json");}
     String imagePath(String name){
         if(name.contains(":"))return null;String exact="images/"+name+".png";validateImagePath(exact);if(images.containsKey(exact))return exact;if(name.contains("/"))return null;String selected=null;
