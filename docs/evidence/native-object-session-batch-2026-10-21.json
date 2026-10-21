@@ -1,0 +1,419 @@
+{
+  "scope": "native-object-session-batch-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "nativeInputProfile": "terrain-no-eco-items",
+  "excludedNativeSources": [
+    "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+  ],
+  "excludedNativeDependencies": [
+    "com.willfp:eco:2026.27"
+  ],
+  "build": {
+    "coreCapture": "pass, 36 native tasks; no test tasks",
+    "wasmCompilation": "TeaVM 0.16.0 strict ADVANCED, pass",
+    "defaultFullProfile": "Eco dependency HTTP 521; unchanged reference profile",
+    "coldRegistryPreparation": "class inputs and rotation property metadata only; no full predicate/pair export",
+    "commands": [
+      "node tools/engine-build/build.mjs --browser-terrain-inputs --native-inputs-only",
+      "node tools/engine-build/registry.mjs --inputs-only",
+      "node tools/engine-build/rotation.mjs",
+      "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs"
+    ],
+    "wasmSha256": "dcfc862485b6b582ef8595a080e836305e1f2d98ad6e5bf79ab409db384dfd1b",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "d36353b5dd7d70873d0f93669253c0012229b23d830ea4f54576f0705c1ca56d",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "platformInputs": {
+    "scope": "pinned-native-rotation-inputs",
+    "sourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "jarSha256": "84151794cbe5c776bbe1cd9c40befa76e0d931f9d8a785ad256afacefc37c8e9",
+    "nativeSources": [
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateRotator.java",
+        "sha256": "98ccf4ccec61f30d812996b9ac65dc8620745333a6a1bba089da9630300dfb3a"
+      },
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateMerger.java",
+        "sha256": "abdda87c8618d8b258bf6fba0ae6311733aba835677eab4cf64acc610802173d"
+      },
+      {
+        "path": ".upstream/Iris/adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedStateRotator.java",
+        "sha256": "1c4555ed3e8817b7603c1952be362fd27079320d5eeb23b2f7e74405459d5a7d"
+      }
+    ],
+    "minecraftClasses": {
+      "net/minecraft/world/level/block/state/properties/RotationSegment.class": "5ede57cefcb87f28ccdc2154f2d88ca69c3713d384e31c874d4b379f63a87025",
+      "net/minecraft/util/SegmentedAnglePrecision.class": "03fded4de6a259fafbab1446ae160b1a7d92bae48ecea6ac706ae19c3c7b0e7c"
+    },
+    "metadataSha256": "f132d7842471a59ba4d340fa3c13cddb0ab8b086ca2fd7d67d3ab2b6fba0fd5f",
+    "generatedSources": [
+      {
+        "path": "RotationBindings.java",
+        "sha256": "836380eb99357fcd2c470b28e14b2cd202d1a2aae93e118dd7f5a74dca7d208f"
+      },
+      {
+        "path": "RotationTokens.java",
+        "sha256": "e80a13d7a75e7055d89458865eb68047447ee55c1bd2d0fef5bca3899dbd65a9"
+      }
+    ]
+  },
+  "changes": [
+    "Snapshot-owned original native source-plan cache with explicit 8 MiB estimated byte budget",
+    "Original native continuation bundle/Matter encoding in private worker bytes, 4 MiB and 64 chunks; no silent eviction",
+    "Explicit supported native Matter codecs and legacy identifiers; original encode/decode validation retained",
+    "Hash actual snapshot text/binary resources; reuse coordinates and release changed/failed/invalidated contexts",
+    "Cold builds prepare native class/property inputs without implicit full registry sweep; refuse mismatched server-JAR identities"
+  ],
+  "focusedChecks": {
+    "realNativeSession": {
+      "scope": "native-object-session-development-targeted",
+      "result": "pass",
+      "results": {
+        "reused": {
+          "lookups": 2,
+          "builds": 1,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 1,
+          "retainedBytes": 290,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "aborted": {
+          "lookups": 3,
+          "builds": 2,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 0,
+          "retainedBytes": 0,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "destinations": 2,
+        "continuationValue": "crossing",
+        "bundleBytes": 127,
+        "foreign": true,
+        "outside": true,
+        "nested": true,
+        "oversized": true,
+        "capacity": true,
+        "trailing": true,
+        "closed": true
+      },
+      "wasmSha256": "6c70a16fa857d54d51e2abb1938fa6b5ac5c0a3705240a897f1dfe098225b573",
+      "mainEngineWasmSha256": "3d7965f8a1047f0a5adce497c7f9f365db42746d464ddff97ac8aa5cf6d7a199",
+      "mainEngineSourceSha256": "e09ea422dc36347c8385200f3a64bf4c19d209cca5a6792883d43673afe0d982",
+      "nativeInputProfile": "terrain-no-eco-items",
+      "excludedNativeSources": [
+        "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+      ],
+      "fixturePlanReplacement": false,
+      "registryExportExecuted": false,
+      "terrainGenerationVerified": false,
+      "browserVerified": false,
+      "sourceInputs": [
+        {
+          "path": "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerObjectSession.java",
+          "sha256": "90bb407555e7a8eefb05f569fb6b8e130e109b905b165cfa965cba9eb691722a"
+        },
+        {
+          "path": "packages/iris-engine/java/studio/engine/matter/WorkerMatterCodecs.java",
+          "sha256": "cc02ead411cfda6f1b7cb9d9f2f25c5a88fed3b06e3f69757414c183206ecca1"
+        },
+        {
+          "path": "packages/iris-engine/java/studio/engine/matter/SourceMatterPlugin.java",
+          "sha256": "a17613f157bf4618f135e18a05a8596d182fccff5a5c16fcc74074cc5d6ba903"
+        },
+        {
+          "path": "packages/iris-engine/java/studio/engine/matter/WorkerContinuationStore.java",
+          "sha256": "c69b6f33545357246c83194cb480be53354a9a261649f51084c9839a716a1cc6"
+        },
+        {
+          "path": "tools/checks/NativeObjectSessionProbe.java",
+          "sha256": "fe5e41700fa8e912fa28e9f639a05982ed1d87a39253e57081f588dde60349b5"
+        }
+      ]
+    },
+    "workerOwnershipContract": {
+      "scope": "worker-terrain-context-contract-mocked-api",
+      "result": "pass",
+      "successfulRequests": 8,
+      "failedRequests": 1,
+      "trace": [
+        {
+          "id": 1,
+          "prepare": 1,
+          "reused": false
+        },
+        {
+          "id": 2,
+          "prepare": 1,
+          "reused": true
+        },
+        {
+          "id": 3,
+          "prepare": 2,
+          "reused": false
+        },
+        {
+          "id": 4,
+          "prepare": 3,
+          "reused": false
+        },
+        {
+          "id": 5,
+          "prepare": 4,
+          "reused": false
+        },
+        {
+          "id": 6,
+          "prepare": 5,
+          "reused": false
+        },
+        {
+          "id": 7,
+          "prepare": 6,
+          "reused": false
+        },
+        {
+          "id": 9,
+          "prepare": 7,
+          "reused": false
+        }
+      ],
+      "counts": {
+        "prepare": 7,
+        "clear": 9,
+        "registered": 14
+      },
+      "idleInvalidationReleasesContext": true,
+      "mismatchedServerInputsRefused": true,
+      "workerSha256": "5e3be5519000c720023efb5440680593fa37fa296e094c50b52cfcb292d76840",
+      "clientSha256": "8a0c5b073d4c390949ca5a9749135a02fc0987a8bbd8d04e6efdc1daeac0fb15",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    },
+    "cachedNativeTerrain": {
+      "result": "pass",
+      "scope": "native-cached-neighborhood-development-targeted",
+      "baseFixtures": 1,
+      "seeds": 1,
+      "destinations": 2,
+      "requests": 4,
+      "probesCompared": 15,
+      "results": [
+        {
+          "x": 0,
+          "cache": {
+            "lookups": 9,
+            "builds": 9,
+            "replays": 0,
+            "drained": 0,
+            "retired": 0,
+            "retained": 9,
+            "retainedBytes": 51114,
+            "budgetBytes": 8388608,
+            "continuationChunks": 4,
+            "continuationBytes": 3171
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 2,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 50152
+          },
+          "journaledCells": 147,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              2,
+              34,
+              6,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              1,
+              36,
+              4,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        },
+        {
+          "x": 16,
+          "cache": {
+            "lookups": 18,
+            "builds": 12,
+            "replays": 0,
+            "drained": 0,
+            "retired": 0,
+            "retained": 12,
+            "retainedBytes": 67658,
+            "budgetBytes": 8388608,
+            "continuationChunks": 9,
+            "continuationBytes": 9155
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 3,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 16226
+          },
+          "journaledCells": 169,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              15,
+              34,
+              0,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              13,
+              36,
+              0,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        },
+        {
+          "x": 0,
+          "cache": {
+            "lookups": 27,
+            "builds": 14,
+            "replays": 2,
+            "drained": 0,
+            "retired": 0,
+            "retained": 12,
+            "retainedBytes": 67658,
+            "budgetBytes": 8388608,
+            "continuationChunks": 9,
+            "continuationBytes": 9155
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 2,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 11448
+          },
+          "journaledCells": 147,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              2,
+              34,
+              6,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              1,
+              36,
+              4,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        }
+      ],
+      "freshContextBuilds": 9,
+      "registryFixture": {
+        "scope": "test-only-native-session-registry",
+        "fixtureInput": true,
+        "blocks": 17,
+        "states": 86,
+        "placementPairs": 289,
+        "sourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+        "sha256": "e90b883ec19c5e1990efaef30ff6fafde7c5cf1b837cd367d0eb10ab33c1d8d0",
+        "bytes": 156167
+      },
+      "wasmSha256": "dcfc862485b6b582ef8595a080e836305e1f2d98ad6e5bf79ab409db384dfd1b",
+      "sourceSha256": "d36353b5dd7d70873d0f93669253c0012229b23d830ea4f54576f0705c1ca56d",
+      "fullGeometryParityVerified": false,
+      "browserVerified": false
+    }
+  },
+  "executionIdentityNote": "The isolated session JVM/Node-Wasm check ran on its recorded earlier main-module/source hashes. The final main module adds the continuation world-height host binding; the cached native terrain check runs on the final build hashes above. The mocked worker check runs on the recorded final worker/client file hashes. These are separate scopes, not a browser end-to-end result.",
+  "developmentFixes": [
+    "The first actual terrain continuation attempt exposed a missing prepared-world-height host call; original ObjectSourcePlan now binds that host call with exact call-site counts. The final targeted terrain check passes.",
+    "Test-only native capture includes sand/clay required by original dimension constructor defaults; no substitute states were added."
+  ],
+  "limits": [
+    "Full production registry absent in reset workspace; test-only 17-type/86-state/289-pair capture is separate from application registry output",
+    "Mapped server JAR differs from historical development capture; reference/provenance remains unqualified",
+    "Native full generateLayer/mode sequencing, durable continuation consumption/REAL lifecycle and collision qualification remain incomplete",
+    "Unsupported terrain/resource/state adapters still refuse explicitly",
+    "No browser/GPU execution or complete geometry/options verification in this batch",
+    "Existing native all-style checksum mismatch remains unresolved"
+  ],
+  "fullRegistryExportExecuted": false,
+  "broadSuiteExecuted": false,
+  "githubTestWorkflowInvoked": false,
+  "browserVerified": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "completePipeline": false
+}

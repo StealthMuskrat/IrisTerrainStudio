@@ -11,7 +11,7 @@ async function run(command,args,name,cwd=root){const filename=path.join(local,na
 const lock=JSON.parse(await fs.readFile(path.join(root,'tools/native-reference/source-lock.json'),'utf8'));
 async function git(directory,args){return new Promise((resolve,reject)=>{const child=spawn('git',['-C',directory,...args],{cwd:root,stdio:['ignore','pipe','pipe']});let output='';child.stdout.on('data',chunk=>output+=chunk);child.on('error',reject);child.on('exit',code=>code===0?resolve(output.trim()):reject(new Error('Cannot verify registry source identity')));});}
 for(const[name,commit]of[['Iris',lock.iris.commit],['VolmLib',lock.volmLib.commit]]){const directory=path.join(root,'.upstream',name);if(await git(directory,['rev-parse','HEAD'])!==commit||await git(directory,['diff','HEAD','--name-only']))throw new Error(`Registry source ${name} differs from its unmodified pinned commit`);}
-console.log('Exporting native Minecraft 26.3 registry data locally. No test tasks are invoked.');
+console.log(process.argv.includes('--inputs-only')?'Preparing native Minecraft 26.3 class inputs only; registry predicates and reports are skipped.':'Exporting native Minecraft 26.3 registry data locally. No test tasks are invoked.');
 await fs.access(path.join(local,'iris-inputs.json')).catch(()=>{throw new Error('Build the native Iris inputs first with npm run engine:build.');});
 if(!process.argv.includes('--reuse-native-inputs'))await run(process.env.IRIS_GRADLE_BIN||path.join(local,'gradle-9.5.1/bin/gradle'),['-p','.upstream/Iris','--no-daemon','--console=plain','--max-workers=2','--init-script',path.join(root,'tools/engine-build/export-inputs.gradle'),`-Dorg.gradle.jvmargs=-Xmx2g -Djava.io.tmpdir=${temporary}${network}`,`-PlocalVolmLibDirectory=${path.join(root,'.upstream/VolmLib')}`,':VolmLib:native:v26_3_R1:studioRegistryInputs'],'registry-build.log');
 const inputs=JSON.parse(await fs.readFile(env.IRIS_REGISTRY_INPUTS,'utf8')),coreInputs=JSON.parse(await fs.readFile(path.join(local,'iris-inputs.json'),'utf8'));
@@ -19,6 +19,9 @@ if(inputs.volmLibCandidate!==lock.volmLib.commit||coreInputs.irisCommit!==lock.i
 for(const entry of [...inputs.classpath,...coreInputs.classpath])if(entry.sha256&&createHash('sha256').update(await fs.readFile(entry.path)).digest('hex')!==entry.sha256)throw new Error('A captured registry dependency JAR changed');
 // Minecraft 26.3 must precede Iris's compile-only Paper API version.
 const classpath=[...new Set([...inputs.classpath,...coreInputs.classpath].map(entry=>entry.path))].join(path.delimiter);
+const server=inputs.classpath.find(entry=>path.basename(entry.path)==='mappedServerJar.jar');if(!server)throw new Error('Native mapped server class input is missing');
+await fs.writeFile(path.join(local,'platform-registry-source.json'),JSON.stringify({scope:'native-platform-class-inputs-only',minecraft:'26.3',volmLibCandidate:lock.volmLib.commit,sourceServerJarSha256:createHash('sha256').update(await fs.readFile(server.path)).digest('hex'),registryExportExecuted:false,nativeInputProfile:coreInputs.buildProfile||'full'},null,2)+'\n');
+if(!process.argv.includes('--inputs-only')){
 await run(path.join(java,'bin/java'),['-Xmx2g',`-Djava.io.tmpdir=${temporary}`,'-classpath',classpath,'net.minecraft.data.Main','--reports','--output',path.join(root,'.reference-output/minecraft-26.3-registry')],'registry-export.log',working);
 const classes=path.join(local,'registry-classes');await fs.mkdir(classes,{recursive:true});
 await run(path.join(java,'bin/javac'),['-classpath',classpath,'-d',classes,'tools/engine-build/NativeStateExport.java','.upstream/Iris/adapters/bukkit/nms/v26_3_R1/src/offline/java/art/arcane/iris/probe/HeadlessNativeBootstrap.java','.upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeBlockProperties.java'],'registry-predicates-compile.log');
@@ -28,3 +31,5 @@ await run(path.join(java,'bin/javac'),['-classpath',classes+path.delimiter+class
 await run(path.join(java,'bin/java'),['-Xmx2g',`-Djava.io.tmpdir=${temporary}`,'-classpath',classes+path.delimiter+classpath,'art.arcane.iris.probe.NativeRegistryExport',path.join(root,'.reference-output/minecraft-26.3-registry/native-registries.json')],'registry-platform-export.log',working);
 await run('python3',[path.join(root,'tools/engine-build/registry-normalize.py')],'registry-package.log');
 console.log((await fs.readFile(path.join(local,'registry-package.log'),'utf8')).trim());
+
+}else console.log('Native platform class identities captured without registry/state/pair export.');

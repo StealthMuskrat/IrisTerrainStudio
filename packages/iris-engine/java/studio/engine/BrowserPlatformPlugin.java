@@ -62,6 +62,18 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 replaceDeclarations(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
                 for(MethodHolder method:cls.getMethods())if(java.util.Set.of("generateLayer","loadObjectSize","logSourcePlanStats","placeObject","placeCaveObject","placeUpperObjects","placeContainedCaveObject","findCavePlacementAnchor").contains(method.getName()))unavailable(method,"Automatic neighboring source scheduling/cache, imported objects or cave anchors");
             }
+            if(name.equals("art.arcane.iris.generation.mantle.ObjectSourcePlan")){
+                int mantles=0,heights=0;
+                for(MethodHolder method:cls.getMethods()){
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.mantle.MantleWriter")&&ref.getName().equals("getMantle")){target="getMantle";mantles++;}
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("getWorldHeight")){target="getWorldHeight";heights++;}
+                        if(target!=null)redirectHostCall(call,target);
+                    }
+                }if(mantles!=1||heights!=1)throw new IllegalStateException("Pinned continuation world-height boundary changed");
+            }
             if(name.equals("art.arcane.iris.generation.mantle.GoldenDebugObjectPlacer"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("resolveGoldenDebugSpec")){
                 Program p=new Program();p.createVariable();Variable result=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerProceduralMap","debugSpec",ValueType.object("java.lang.String")));call.setReceiver(result);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);block.add(exit);method.setProgram(p);
             }

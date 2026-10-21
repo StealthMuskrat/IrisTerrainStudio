@@ -18,13 +18,13 @@ import java.util.*;
 /** Export actual pinned native predicates; no block-name classification guesses. */
 public final class NativeStateExport {
     private static final String[] FLAGS={"isAir","isSolid","isOccluding","isFluid","isWater","isWaterLogged","isLit","isUpdatable","isFoliage","isTreeBlock","isFoliagePlantable","isDecorant","isStorage","isStorageChest","isOre","isDeepSlate","isVineBlock","hasTileEntity"};
-    private static int flags(BlockState state){
+    static int flags(BlockState state){
         boolean[] values={NativeBlockProperties.isAir(state),NativeBlockProperties.isSolid(state),NativeBlockProperties.isOccluding(state),NativeBlockProperties.isFluid(state),NativeBlockProperties.isWater(state),NativeBlockProperties.isWaterLogged(state),NativeBlockProperties.isLit(state),NativeBlockProperties.isUpdatable(state),NativeBlockProperties.isFoliage(state),state.is(BlockTags.LOGS)||state.is(BlockTags.LEAVES),NativeBlockProperties.isFoliagePlantable(state),NativeBlockProperties.isDecorant(state),NativeBlockProperties.isStorage(state),NativeBlockProperties.isStorageChest(state),NativeBlockProperties.isOre(state),NativeBlockProperties.isDeepSlate(state),NativeBlockProperties.isVineBlock(state),NativeBlockProperties.hasTileEntity(state)};
         int bits=0;for(int i=0;i<values.length;i++)if(values[i])bits|=1<<i;return bits;
     }
     private static final Direction[] FACES={Direction.NORTH,Direction.EAST,Direction.SOUTH,Direction.WEST,Direction.UP,Direction.DOWN};
-    private static int faces(BlockState state){int bits=0;for(int i=0;i<FACES.length;i++)if(state.isFaceSturdy(EmptyBlockGetter.INSTANCE,BlockPos.ZERO,FACES[i],SupportType.FULL))bits|=1<<i;return bits;}
-    private static String key(BlockState state){
+    static int faces(BlockState state){int bits=0;for(int i=0;i<FACES.length;i++)if(state.isFaceSturdy(EmptyBlockGetter.INSTANCE,BlockPos.ZERO,FACES[i],SupportType.FULL))bits|=1<<i;return bits;}
+    static String key(BlockState state){
         StringBuilder result=new StringBuilder(BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString());
         if(!state.isSingletonState())result.append('[').append(state.getValues().map(value->value.property().getName()+"="+value.valueName()).collect(java.util.stream.Collectors.joining(","))).append(']');
         return result.toString();

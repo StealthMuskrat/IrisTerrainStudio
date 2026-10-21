@@ -43,12 +43,14 @@ public final class TerrainCarvingComponent {
         int radius=neighbors?neighborhood.inputChunkRadius():1,limit=neighbors?(2*radius+1)*(2*radius+1):content?9:5;
         if(neighbors&&((long)height*256*limit>8388608||Math.abs((long)x)+(radius<<4)+15>30000000||Math.abs((long)z)+(radius<<4)+15>30000000))throw new IllegalArgumentException("Procedural neighborhood exceeds its worker volume or coordinate budget");
         int cx=x>>4,cz=z>>4;WorkerCaveStorage.begin(height,cx,cz,limit);
-        art.arcane.iris.generation.mantle.WorkerObjectTransactions.Result placementResult=null;
+        art.arcane.iris.generation.mantle.WorkerObjectTransactions.Result placementResult=null;art.arcane.iris.generation.mantle.WorkerObjectSession.Pass cachePass=null;
         try {
+            if(neighbors)cachePass=neighborhood.session().begin(engine);
             MantleCarvingComponent carving=new MantleCarvingComponent(engine.getMantle());
             int[][] offsets;if(neighbors){offsets=new int[limit][2];int index=0;for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++)offsets[index++]=new int[]{dx,dz};}else offsets=!content?new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1}}:new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
             for(int[] offset:offsets){int chunkX=cx+offset[0],chunkZ=cz+offset[1];WorkerCaveStorage.select(chunkX,chunkZ);carving.generateLayer(null,chunkX,chunkZ,new ChunkContext(chunkX<<4,chunkZ<<4,engine.getComplex(),false));}
             WorkerCaveStorage.select(cx,cz);
+            if(neighbors)WorkerCaveStorage.restoreContinuations(neighborhood.session().continuations(engine),engine);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
             new IrisTerrainNormalActuator(engine).paint(x,z,blocks,context);
             IrisCarveModifier cave=new IrisCarveModifier(engine);cave.onModify(cx,cz,blocks,false,context);
@@ -72,7 +74,9 @@ public final class TerrainCarvingComponent {
             if(content&&!neighbors)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
             if(neighbors){var stats=placementResult.neighborhood();result=result.substring(0,result.length()-1)+",\"neighborhood\":{\"sourceChunks\":"+stats.sourceChunks()+",\"contributingSources\":"+stats.contributingSources()+",\"placementRadius\":"+stats.placementRadius()+",\"inputChunkRadius\":"+stats.inputChunkRadius()+",\"sourceChunkRadius\":"+stats.sourceChunkRadius()+",\"builtPlanBytes\":"+stats.builtPlanBytes()+"},\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";}
             if(scatter||neighbors)result=result.substring(0,result.length()-1)+",\"objectTags\":"+WorkerCaveStorage.objectTags()+"}";
-            return decorate?result.substring(0,result.length()-1)+",\"markers\":"+WorkerCaveStorage.markerEntries()+"}":result;
-        } finally {if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}
+            if(decorate)result=result.substring(0,result.length()-1)+",\"markers\":"+WorkerCaveStorage.markerEntries()+"}";
+            if(neighbors){WorkerCaveStorage.retainContinuations(neighborhood.session().continuations(engine),engine);result=result.substring(0,result.length()-1)+",\"cache\":"+neighborhood.session().statistics(engine)+"}";cachePass.commit();}
+            return result;
+        } finally {try{if(cachePass!=null)cachePass.close();}finally{if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}}
     }
 }

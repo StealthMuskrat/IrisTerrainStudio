@@ -72,6 +72,6 @@ export class GenerationClient extends EventTarget {
     const worker=this.worker(irisStyles.has(request.field)?'iris':'lab'),id=++this.sequence;
     return new Promise((resolve,reject)=>{this.pending={id,key,worker,resolve,reject,interruptible:['procedural-object','procedural-placement','procedural-source','procedural-neighborhood'].includes(request.field)};worker.postMessage({kind:'generate',id,options});});
   }
-  invalidate(){this.cancel();this.cache.clear();this.cacheBytes=0;}
+  invalidate(){this.cancel();this.cache.clear();this.cacheBytes=0;this.workers.get('iris')?.postMessage({kind:'release-context'});}
   dispose(){this.cancel();for(const worker of this.workers.values())worker.terminate();this.workers.clear();for(const request of this.requests.values())request.reject(new DOMException('Engine disposed.','AbortError'));this.requests.clear();this.cache.clear();this.cacheBytes=0;}
 }

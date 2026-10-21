@@ -1,5 +1,13 @@
 import java.security.MessageDigest
+def browserInputProfile = System.getenv('STUDIO_BROWSER_INPUT_PROFILE') ?: 'full'
+if (!(browserInputProfile in ['full', 'terrain-no-eco-items'])) throw new GradleException('Unknown browser native-input profile')
 gradle.beforeProject { project ->
+    if (project.path == ':core' && browserInputProfile == 'terrain-no-eco-items') {
+        project.afterEvaluate {
+            project.configurations.compileOnly.dependencies.removeAll { it.group == 'com.willfp' && it.name == 'eco' }
+            project.sourceSets.main.java.exclude('art/arcane/iris/integration/data/EcoItemsDataProvider.java')
+        }
+    }
     project.tasks.withType(org.gradle.api.tasks.testing.Test).configureEach { enabled = false }
 }
 gradle.projectsEvaluated {
@@ -29,6 +37,13 @@ gradle.projectsEvaluated {
     core.tasks.register('studioBrowserEngineInputs') {
         dependsOn(core.tasks.named('classes'))
         doLast {
+            if (browserInputProfile == 'terrain-no-eco-items') {
+                core.sourceSets.main.output.classesDirs.files.each { directory ->
+                    if (new File(directory, 'art/arcane/iris/integration/data/EcoItemsDataProvider.class').exists()) {
+                        throw new GradleException('Excluded EcoItems provider remains in compiled output; clean the native core output before this profile')
+                    }
+                }
+            }
             def files = (core.sourceSets.main.output + core.sourceSets.main.compileClasspath + core.sourceSets.main.runtimeClasspath).files
             def entries = files.findAll { it.exists() }.collect { file ->
                 [path: file.absolutePath, directory: file.isDirectory(), sha256: file.isFile() ?
@@ -38,6 +53,9 @@ gradle.projectsEvaluated {
             output.parentFile.mkdirs()
             output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
                 formatVersion: 1, scope: 'development-browser-engine-build',
+                buildProfile: browserInputProfile,
+                excludedSources: browserInputProfile == 'terrain-no-eco-items' ? ['core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java'] : [],
+                excludedDependencies: browserInputProfile == 'terrain-no-eco-items' ? ['com.willfp:eco:2026.27'] : [],
                 irisCommit: 'c3a9449a026078c44a87c9776766f54a67779392',
                 volmLibCandidate: 'e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac',
                 releaseMatchVerified: false, classpath: entries]))

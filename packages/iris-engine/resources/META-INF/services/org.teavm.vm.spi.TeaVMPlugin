@@ -1,3 +1,4 @@
 studio.probe.UuidTeaVMPlugin
 studio.engine.BrowserPlatformPlugin
 studio.engine.cache.SourcePlanCachePlugin
+studio.engine.matter.SourceMatterPlugin
