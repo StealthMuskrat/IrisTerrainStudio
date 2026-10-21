@@ -33,6 +33,12 @@ final class BrowserBlockState implements NativeBlockState {
     @Override public boolean canPlaceOnto(NativeBlockState onto){return owner.canPlace(this,onto);}
     @Override public boolean matches(NativeBlockState other){if(!(other instanceof BrowserBlockState value)||value.owner!=owner||value.state.type!=state.type)return false;if(value.state==state)return true;if(value.parsed==null)return false;String key=key();for(var property:value.parsed.entrySet())key=BlockStateKey.withProperty(key,property.getKey(),property.getValue());return key.equals(key());}
     @Override public NativeBlockState withProperty(String name,String value){return owner.decodeBlockState(BlockStateKey.withProperty(key(),name,value));}
+    public RotationState handle(){return owner.rotationHandle(state);}
+    public Map<String,String> parsedProperties(){return parsed;}
+    public BrowserBlockState withHandle(RotationState updated,Map<String,String> properties){
+        if(updated.owner!=owner)throw studio.engine.UnsupportedPlatform.unavailable("Rotation state belongs to another registry");
+        return updated.state==state&&properties==parsed?this:owner.intern(updated.state,properties);
+    }
     @Override public Object nativeHandle(){return state;}
     @Override public boolean equals(Object other){return other instanceof BrowserBlockState value&&owner==value.owner&&state==value.state;}
     @Override public int hashCode(){return state.id;}

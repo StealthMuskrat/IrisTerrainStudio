@@ -26,6 +26,13 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
         for filename in sorted((root / relative).rglob('*')):
             if filename.is_file() and 'target' not in filename.relative_to(root).parts:
                 add(str(filename.relative_to(root)), filename.read_bytes())
+    for filename in sorted((root/'.local-tools/rotation-sources').rglob('*.java')):
+        add('generated/rotation/'+str(filename.relative_to(root/'.local-tools/rotation-sources')),filename.read_bytes())
+    for name in ('rotation-inputs.json','rotation-properties.json'):
+        add('platform-inputs/'+name,(root/'.local-tools'/name).read_bytes())
+    with zipfile.ZipFile(root/'.local-tools/engine-jars/native-rotation.jar') as rotation:
+        for name in ('net/minecraft/world/level/block/state/properties/RotationSegment.class','net/minecraft/util/SegmentedAnglePrecision.class'):
+            add('platform-inputs/minecraft/'+name,rotation.read(name))
     add('package.json', (root / 'package.json').read_bytes())
     add('native-inputs.json', (root / '.local-tools/iris-inputs.json').read_bytes())
     dependency_lock=json.loads((root/'tools/engine-build/dependencies.lock.json').read_text())['brigadier']

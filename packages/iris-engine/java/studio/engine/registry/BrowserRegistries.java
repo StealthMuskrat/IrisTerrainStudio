@@ -30,6 +30,19 @@ public final class BrowserRegistries implements PlatformRegistries {
     private final Map<String,Set<String>> keySets=new HashMap<>();
     private final Map<String,String> deep=new LinkedHashMap<>(),normal=new LinkedHashMap<>(),entityCategories=new LinkedHashMap<>();
     private final Map<String,List<NativeBlockProperty>> properties=new LinkedHashMap<>();
+    private final Map<Integer,RotationState> rotationHandles=new HashMap<>();
+    private final Map<Integer,List<RotationProperty>> rotationLayouts=new HashMap<>();
+    BlockType rotationType(int type){return types.get(type);}
+    State rotationDefault(int type){return states.get(types.get(type).defaultState);}
+    RotationState rotationHandle(State state){return rotationHandles.computeIfAbsent(state.id,ignored->new RotationState(this,state));}
+    RotationState rotationState(int type,String[] values){State state=byKey.get(canonical(type,values));if(state==null)throw studio.engine.UnsupportedPlatform.unavailable("Rotated state absent from native registry");return rotationHandle(state);}
+    List<RotationProperty> rotationProperties(int type){return rotationLayouts.computeIfAbsent(type,index->{
+        var block=types.get(index);var layout=RotationBindings.properties(block.name);var descriptors=properties.get(block.name);
+        if(layout.size()!=descriptors.size())throw studio.engine.UnsupportedPlatform.unavailable("Rotation metadata coverage differs from native registry");
+        for(var property:layout){var descriptor=descriptors.stream().filter(value->value.name().equals(property.name)).findFirst().orElseThrow(()->studio.engine.UnsupportedPlatform.unavailable("Missing native rotation property descriptor"));Set<String> allowed=new HashSet<>();for(Object value:descriptor.allowedValues())allowed.add(String.valueOf(value));
+            if(!allowed.equals(new HashSet<>(property.serialized)))throw studio.engine.UnsupportedPlatform.unavailable("Rotation metadata domain differs from native registry");
+        }return layout;
+    });}
     private byte[] placement;
     private boolean preventLeafDecay=new art.arcane.iris.configuration.IrisSettings.IrisSettingsGenerator().isPreventLeafDecay();
 

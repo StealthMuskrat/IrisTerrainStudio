@@ -13,6 +13,36 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("art.arcane.iris.modded.ModdedStateRotator")){
+                int callbacks=0;for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator")&&call.getMethod().getName().equals("rotate")){
+                    Variable callback=p.createVariable();InvokeInstruction factory=new InvokeInstruction();factory.setType(InvocationType.SPECIAL);factory.setMethod(new MethodReference("studio.engine.registry.RotationFailures","instance",ValueType.object("java.util.function.Consumer")));factory.setReceiver(callback);call.insertPrevious(factory);Variable[] arguments=call.getArguments().toArray(Variable[]::new);arguments[2]=callback;call.setArguments(arguments);callbacks++;
+                }}if(callbacks!=1)throw new IllegalStateException("Pinned native rotation failure callback changed");
+            }
+            if(java.util.Set.of("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator","net.minecraft.world.level.block.state.properties.RotationSegment","net.minecraft.util.SegmentedAnglePrecision").contains(name)){
+                String[][] mappings={
+                    {"art.arcane.volmlib.nativelib.minecraft26_2.modded.ModdedBlockState","studio.engine.registry.BrowserBlockState"},
+                    {"net.minecraft.world.level.block.state.BlockState","studio.engine.registry.RotationState"},
+                    {"net.minecraft.world.level.block.state.StateHolder","studio.engine.registry.RotationState"},
+                    {"net.minecraft.world.level.block.Block","studio.engine.registry.RotationState$Block"},
+                    {"net.minecraft.world.level.block.state.properties.Property","studio.engine.registry.RotationProperty"},
+                    {"net.minecraft.world.level.block.state.properties.BooleanProperty","studio.engine.registry.RotationProperty$BooleanProperty"},
+                    {"net.minecraft.world.level.block.state.properties.IntegerProperty","studio.engine.registry.RotationProperty$IntegerProperty"},
+                    {"net.minecraft.world.level.block.state.properties.EnumProperty","studio.engine.registry.RotationProperty$EnumProperty"},
+                    {"net.minecraft.core.Direction","studio.engine.registry.RotationTokens$Direction"},
+                    {"net.minecraft.core.Direction$Axis","studio.engine.registry.RotationTokens$Axis"},
+                    {"net.minecraft.world.level.block.state.properties.WallSide","studio.engine.registry.RotationTokens$WallSide"},
+                    {"net.minecraft.world.level.block.state.properties.RedstoneSide","studio.engine.registry.RotationTokens$RedstoneSide"},
+                    {"art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockProperties","studio.engine.registry.RotationPredicates"}
+                };
+                for(String[] mapping:mappings){replaceClass(cls,mapping[0],mapping[1]);replaceDeclarations(cls,mapping[0],mapping[1]);
+                    for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int block=0;block<p.basicBlockCount();block++)for(Instruction instruction=p.basicBlockAt(block).getFirstInstruction();instruction!=null;instruction=instruction.getNext()){
+                        if(instruction instanceof IsInstanceInstruction check)check.setType(replaced(check.getType(),mapping[0],mapping[1]));
+                        if(instruction instanceof ClassConstantInstruction value)value.setConstant(replaced(value.getConstant(),mapping[0],mapping[1]));
+                        if(instruction instanceof GetFieldInstruction field&&field.getField().getClassName().equals(mapping[0]))field.setField(new FieldReference(mapping[1],field.getField().getFieldName()));
+                        if(instruction instanceof PutFieldInstruction field&&field.getField().getClassName().equals(mapping[0]))field.setField(new FieldReference(mapping[1],field.getField().getFieldName()));
+                    }}
+                }
+            }
             if(name.equals("art.arcane.iris.generation.mantle.MantleObjectComponent")){
                 replaceClass(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
                 replaceDeclarations(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
