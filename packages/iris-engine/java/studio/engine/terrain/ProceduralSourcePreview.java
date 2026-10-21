@@ -11,6 +11,11 @@ public final class ProceduralSourcePreview {
     }
     public static String render(BrowserTerrainEngine engine,int x,int z,boolean neighborhood)throws java.io.IOException{
         WorkerProceduralMap.begin();try{
+            validate(engine);
+            return TerrainCarvingComponent.paint(engine,x,z,neighborhood?TerrainCarvingComponent.Stage.NEIGHBOR_SCATTER:TerrainCarvingComponent.Stage.SOURCE_SCATTER);
+        }finally{WorkerProceduralMap.end();}
+    }
+    public static void validate(BrowserTerrainEngine engine){
             int[] attempts={0};var dimension=engine.getDimension();
             for(var region:dimension.getAllRegions(engine::getData))if(region!=null){
                 if(!region.getObjects().isEmpty())throw unsupported("Imported object placements");
@@ -20,8 +25,6 @@ public final class ProceduralSourcePreview {
                 if(!biome.getObjects().isEmpty())throw unsupported("Imported object placements");
                 check(biome.getProceduralObjects(),attempts);
             }
-            return TerrainCarvingComponent.paint(engine,x,z,neighborhood?TerrainCarvingComponent.Stage.NEIGHBOR_SCATTER:TerrainCarvingComponent.Stage.SOURCE_SCATTER);
-        }finally{WorkerProceduralMap.end();}
     }
     private static void check(IrisProceduralObjects objects,int[] attempts){
         if(objects==null)return;

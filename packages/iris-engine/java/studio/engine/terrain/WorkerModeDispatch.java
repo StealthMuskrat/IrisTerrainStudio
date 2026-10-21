@@ -7,5 +7,6 @@ public final class WorkerModeDispatch {
     public static WorkerModeDispatch burst(int estimate){if(estimate<1||estimate>16)throw new IllegalArgumentException("Native mode stage count exceeds worker bounds");return new WorkerModeDispatch();}
     public void setMulticore(boolean value){if(value)throw studio.engine.UnsupportedPlatform.unavailable("Parallel native mode stages inside one worker");configured=true;}
     public java.util.concurrent.Future<?> queue(Runnable task){if(!configured)throw new IllegalStateException("Native mode dispatch must select inline execution");task.run();return null;}
+    public static <T>WorkerFuture parallelUnavailable(java.util.function.Supplier<T> task){throw studio.engine.UnsupportedPlatform.unavailable("Parallel native mode fan-out in one worker");}
     public void complete(){if(!configured)throw new IllegalStateException("Native mode dispatch was not configured");}
 }

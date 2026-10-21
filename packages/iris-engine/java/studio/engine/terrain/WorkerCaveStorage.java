@@ -35,7 +35,17 @@ public final class WorkerCaveStorage {
     public static MantleChunk<Matter> existingChunk(Mantle<?> ignored,int x,int z){requireActive();return chunks.get(key(x,z));}
     public static Mantle<Matter> getMantle(MantleWriter unused){requireActive();return null;}
     public static int getWorldHeight(Mantle<?> unused){requireActive();return height;}
-    public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requireActive();if(x!=chunkX||z!=chunkZ)throw studio.engine.UnsupportedPlatform.unavailable("Cave access outside the prepared chunk");return active;}
+    public static MantleChunk<Matter> acquireChunk(MantleWriter unused,int x,int z){requirePrepared(x,z);return chunks.get(key(x,z));}
+    public static void getChunks(Mantle<?> ignored,int minX,int maxX,int minZ,int maxZ,int parallelism,art.arcane.volmlib.util.function.Consumer3<Integer,Integer,MantleChunk<Matter>> consumer){
+        requireActive();if(minX>maxX||minZ>maxZ||(long)(maxX-minX+1)*(maxZ-minZ+1)>49)throw studio.engine.UnsupportedPlatform.unavailable("Native matter prefetch exceeds its prepared chunk budget");
+        for(int x=minX;x<=maxX;x++)for(int z=minZ;z<=maxZ;z++){requirePrepared(x,z);consumer.accept(x,z,chunks.get(key(x,z)));}
+    }
+    public static String flagWindow()throws java.io.IOException{
+        requireActive();var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){writer.beginArray();for(var chunk:chunks.values()){
+            boolean carved=chunk.isFlagged(art.arcane.volmlib.util.mantle.flag.ReservedFlag.CARVED),planned=chunk.isFlagged(art.arcane.volmlib.util.mantle.flag.MantleFlag.PLANNED);
+            if(carved||planned){writer.beginArray();writer.value(chunk.getX());writer.value(chunk.getZ());writer.value(carved);writer.value(planned);writer.endArray();}
+        }writer.endArray();}return output.toString();
+    }
     public static void setMarker(Mantle<?> ignored,int x,int y,int z,Object value){requireActive();if(!(value instanceof MatterMarker marker))throw unsupported();if(y<0||y>=height)return;MantleChunk<Matter> chunk=existingChunk(ignored,x>>4,z>>4);if(chunk==null)throw studio.engine.UnsupportedPlatform.unavailable("Cave marker writes outside the prepared window");chunk.getOrCreate(y>>4).<MatterMarker>slice(MatterMarker.class).set(x&15,y&15,z&15,marker);}
     private record MarkerEntry(int x,int y,int z,String tag){}
     public static String markerEntries()throws java.io.IOException{

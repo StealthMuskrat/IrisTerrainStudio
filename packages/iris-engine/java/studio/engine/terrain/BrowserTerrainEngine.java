@@ -13,6 +13,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final SeedManager seeds;
     private final GenerationSessionManager sessions=new GenerationSessionManager();
     private final EngineMetrics metrics=new EngineMetrics(16);
+    private art.arcane.iris.generation.mantle.EngineMantle nativeMatter;
     private final WorkerCarvingMantle mantle=new WorkerCarvingMantle(this);
     private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
@@ -26,6 +27,8 @@ public final class BrowserTerrainEngine extends EngineBoundary {
         WorkerTerrainPlatform.install(registry);
         complex=new IrisComplex(this);data.registerEngine(this);
     }
+    public void bindNativeMatter(art.arcane.iris.generation.mantle.EngineMantle host){if(nativeMatter!=null||host.getEngine()!=this||closed)throw new IllegalStateException("Native matter host ownership mismatch");nativeMatter=host;}
+    public void unbindNativeMatter(art.arcane.iris.generation.mantle.EngineMantle host){if(nativeMatter!=host)throw new IllegalStateException("Native matter host ownership mismatch");nativeMatter=null;}
     @Override public GenerationSessionManager getGenerationSessions(){return sessions;}
     @Override public IrisDimension getDimension(){return dimension;}
     @Override public IrisData getData(){return data;}
@@ -35,7 +38,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public int getMaxHeight(){return dimension.getMaxHeight();}
     @Override public int getHeight(){return getMaxHeight()-getMinHeight();}
     @Override public EngineMetrics getMetrics(){return metrics;}
-    @Override public art.arcane.iris.generation.mantle.EngineMantle getMantle(){return mantle;}
+    @Override public art.arcane.iris.generation.mantle.EngineMantle getMantle(){return nativeMatter==null?mantle:nativeMatter;}
     @Override public art.arcane.iris.world.IrisWorld getWorld(){return world;}
     @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
     @Override public boolean isStudio(){return false;}
