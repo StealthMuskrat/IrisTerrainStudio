@@ -1,0 +1,154 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-material-stages-targeted-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "44673cd052a19bccbe068fd15e83e73d5ce6885586ec0949189c81fc130ed657",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "8d49acc88f21e7566f38015fedb3848233075e74028a84f94bbb3c867ee68061",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "registry": {
+    "browserInputSha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "releaseMatchVerified": false
+  },
+  "focusedCheck": {
+    "command": "node tools/checks/native-deposit-smoke.mjs --finish",
+    "result": "pass",
+    "fixtures": 1,
+    "seeds": 1,
+    "chunks": 1,
+    "probesCompared": 11,
+    "selectedDepositBlocks": 4,
+    "probes": [
+      [
+        0,
+        0,
+        0,
+        "minecraft:bedrock"
+      ],
+      [
+        0,
+        63,
+        0,
+        "minecraft:air"
+      ],
+      [
+        8,
+        8,
+        8,
+        "minecraft:stone"
+      ],
+      [
+        0,
+        32,
+        0,
+        "minecraft:grass_block[snowy=false]"
+      ],
+      [
+        15,
+        30,
+        15,
+        "minecraft:stone"
+      ],
+      [
+        8,
+        33,
+        8,
+        "minecraft:dandelion"
+      ],
+      [
+        8,
+        51,
+        8,
+        "minecraft:dandelion"
+      ],
+      [
+        2,
+        16,
+        3,
+        "minecraft:diamond_ore"
+      ],
+      [
+        15,
+        16,
+        13,
+        "minecraft:diamond_ore"
+      ],
+      [
+        15,
+        20,
+        13,
+        "minecraft:iron_ore"
+      ],
+      [
+        15,
+        24,
+        13,
+        "minecraft:granite"
+      ]
+    ],
+    "workerGenerations": 1,
+    "scope": "native-overworld-material-finish-development",
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "68d19e99b4426b9d09b6fa64088f0db5e4b85ff3b7d59feb35414b8adf7ba53f",
+        "bytes": 406
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "853d311452b79161ed202099d58e53dc31fc122ab04138d9bcf9107273f00e93",
+        "bytes": 267
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "bb6d53c6e0495367b6e37884beb5130c73549a08fd2f238841a45dab26b6fe19",
+        "bytes": 741
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10",
+        "bytes": 140
+      }
+    ],
+    "reference": "Actual Java 25 native painting/carving/post/floating/cave decoration, IrisDepositModifier, EngineMantle.insertMatter, IrisDecorantActuator, floating decorateColumns and IrisPerfectionModifier. The JVM host exports only selected probes; the actual-Wasm worker/client result is inspected at those positions.",
+    "probeSelection": "Five terrain/air/bedrock controls, four native single-block deposits collected from three bounded horizontal bands, two surface/floating flower positions. No full-volume comparison or parameter matrix.",
+    "checks": [
+      "Dimension, region and biome deposits contribute their native blocks",
+      "Terrain and floating-island flowers survive native material cleanup",
+      "Canonical state keys match native Java at 11 positions",
+      "Worker typed transfer and incomplete/content-pending metadata",
+      "Client cache reuse avoids another generation"
+    ]
+  },
+  "harnesses": {
+    "tools/checks/native-deposit-smoke.mjs": "ea2f5501012731d84b435d12e82ad25c645216b73b285e559c135ae6ef7f5020",
+    "tools/checks/NativeTerrainLinkCheck.java": "d1d4c41438009a1710ebfbd509c4f6fe75f756ab57214f9c240b55dcec6e01b7",
+    "apps/web/workers/iris-worker.js": "d6e069affcf3a165ba3ff4f3103a1006651f8bc9d76136781980fed8f9e036c7",
+    "packages/iris-engine/client.mjs": "c10780a761cb81788e7cad7cc35f0d288fe7d987ec6169368c2f7bedcb02d624"
+  },
+  "boundaries": [
+    "Original native deposit planning, geometry, palette/biome/host selection, exposure checks and ore remapping retained",
+    "Only guarded material false-multicore dispatch is worker-local; native preparation handles failures; futures at these call sites are discarded",
+    "Private IrisObject clump locks use the existing single-worker adapter; procedural clumps use original VectorMap algorithms",
+    "Original PlatformBlockMatter registered in temporary storage and EngineMantle.insertMatter called; object/structure producers are not connected",
+    "Native surface/floating decoration and perfection execute in native material order; floating modifier is reused across its phases",
+    "Explicit enum identifies successive material stages and preserves earlier diagnostics",
+    "Native generation-session defaults retained; no server-target or executor simulation"
+  ],
+  "limitations": [
+    "This is a material-stage preview with an unconnected content-generation phase, not complete Overworld mode execution",
+    "Populated object/structure matter insertion, custom block processing, complete biome volumes and full Mantle/mode scheduling remain unqualified",
+    "Other deposit shapes/options, aquatic/shore decorators, perfection options and broad regressions are reserved for later qualification",
+    "Vines, custom registries, subterrain/hydrology, transitions/transforms, upper/stacked dimensions, images/expressions/persistent caches/binary resources remain unsupported or unfinished",
+    "Browser/GPU/GC and final verification, native checksum mismatch, dependency provenance and authorized assets remain release gates",
+    "No exhaustive block-state sweep, comprehensive application suite or GitHub workflow ran"
+  ]
+}

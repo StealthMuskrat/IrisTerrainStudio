@@ -29,6 +29,38 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     }
                 }if(mantle!=1||chunks!=2||heights!=1||subterrain!=1)throw new IllegalStateException("Pinned carving component storage calls changed: "+mantle+","+chunks+","+heights+","+subterrain);
             }
+            if(name.equals("art.arcane.iris.generation.stage.IrisDepositModifier")){
+                int storage=0,dispatch=0;
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("generateDeposits")){
+                    Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();
+                        if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();String target=null;
+                            if(ref.getName().equals("burst")&&ref.parameterCount()==0&&ref.getReturnType().equals(ValueType.object("art.arcane.iris.generation.concurrent.MultiBurst"))){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(call.getReceiver());instruction.replace(empty);dispatch++;}
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.concurrent.MultiBurst")&&ref.getName().equals("burst")&&ref.parameterCount()==1){java.util.List<Variable> args=new java.util.ArrayList<>(call.getArguments());call.setInstance(null);call.setArguments(args.toArray(Variable[]::new));call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerDepositDispatch","burst",ValueType.BOOLEAN,ValueType.object("studio.engine.terrain.WorkerDepositDispatch")));dispatch++;}
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.runtime.Engine")&&ref.getName().equals("getMantle"))target="engineMantle";
+                            else if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle"))target="getMantle";
+                            else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="useChunk";
+                            if(target!=null){redirectHostCall(call,target);storage++;}
+                        }instruction=next;
+                    }
+                }if(storage!=3||dispatch!=2)throw new IllegalStateException("Pinned deposit host calls changed: "+storage+","+dispatch);
+                replaceClass(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerDepositDispatch");
+                replaceDeclarations(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerDepositDispatch");
+            }
+            if(name.equals("art.arcane.iris.generation.stage.IrisPerfectionModifier")){
+                int dispatch=0;for(MethodHolder method:cls.getMethods())if(java.util.Set.of("onModify","hideOres").contains(method.getName())){Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;){Instruction next=instruction.getNext();if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();if(ref.getName().equals("burst")&&ref.parameterCount()==0&&ref.getReturnType().equals(ValueType.object("art.arcane.iris.generation.concurrent.MultiBurst"))){NullConstantInstruction empty=new NullConstantInstruction();empty.setReceiver(call.getReceiver());instruction.replace(empty);dispatch++;}else if(ref.getClassName().equals("art.arcane.iris.generation.concurrent.MultiBurst")&&ref.getName().equals("burst")&&ref.parameterCount()==1){call.setInstance(null);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerDepositDispatch","burst",ValueType.BOOLEAN,ValueType.object("studio.engine.terrain.WorkerDepositDispatch")));dispatch++;}}instruction=next;}}
+                if(dispatch!=4)throw new IllegalStateException("Pinned perfection dispatch changed");
+                replaceClass(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerDepositDispatch");
+                replaceDeclarations(cls,"art.arcane.iris.generation.concurrent.BurstExecutor","studio.engine.terrain.WorkerDepositDispatch");
+            }
+            if(name.equals("art.arcane.iris.generation.mantle.EngineMantle")){
+                int storage=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("insertMatter")){Program p=method.getProgram();for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){MethodReference ref=call.getMethod();String target=null;if(ref.getClassName().equals(name)&&ref.getName().equals("getMantle"))target="getMantle";else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk"))target="useChunk";if(target!=null){redirectHostCall(call,target);storage++;}}}if(storage!=2)throw new IllegalStateException("Pinned matter insertion calls changed");
+            }
+            if(name.equals("art.arcane.iris.structure.object.IrisObject")){
+                replaceClass(cls,"java.util.concurrent.locks.Lock","studio.engine.terrain.WorkerLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock","studio.engine.terrain.WorkerReadWriteLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock","studio.engine.terrain.WorkerReadWriteLock$ReadLock");
+                replaceClass(cls,"java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock","studio.engine.terrain.WorkerReadWriteLock$WriteLock");
+            }
             if(name.equals("art.arcane.iris.generation.stage.IrisCarveModifier")){
                 int hostCalls=0,decorationCalls=0,lookups=0;
                 for(MethodHolder method:cls.getMethods()){

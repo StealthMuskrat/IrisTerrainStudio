@@ -20,3 +20,5 @@ __pycache__/
 /apps/web/engine/registry-generated/
 
 /apps/web/engine/schema-generated/
+
+/logs/

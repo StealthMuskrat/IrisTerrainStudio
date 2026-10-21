@@ -36,14 +36,14 @@ public final class WorkerCaveStorage {
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
     public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
     private static void requireActive(){if(active==null)throw new IllegalStateException("No worker cave storage");}
-    private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Non-cavern/marker Matter storage or persistence");}
+    private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Unconnected Matter value type or persistence");}
     private static final class CavernSection implements Matter {
         private final MatterHeader header=new MatterHeader();
         private final Map<Class<?>,MatterSlice<?>> slices=new HashMap<>();
         public MatterHeader getHeader(){return header;}
         public int getWidth(){return 16;}public int getHeight(){return 16;}public int getDepth(){return 16;}
         public Map<Class<?>,MatterSlice<?>> getSliceMap(){return slices;}
-        @SuppressWarnings("unchecked") public <T>MatterSlice<T> createSlice(Class<T> type,Matter matter){if(type==MatterCavern.class)return (MatterSlice<T>)new CavernMatter(16,16,16);if(type==MatterMarker.class)return (MatterSlice<T>)new MarkerMatter(16,16,16);throw unsupported();}
+        @SuppressWarnings("unchecked") public <T>MatterSlice<T> createSlice(Class<T> type,Matter matter){if(type==MatterCavern.class)return (MatterSlice<T>)new CavernMatter(16,16,16);if(type==art.arcane.volmlib.nativelib.terrain.NativeBlockState.class)return (MatterSlice<T>)new art.arcane.iris.world.storage.matter.PlatformBlockMatter(16,16,16);if(type==MatterMarker.class)return (MatterSlice<T>)new MarkerMatter(16,16,16);throw unsupported();}
     }
     private static final class CavernAdapter implements MantleDataAdapter<Matter> {
         public Matter createSection(){return new CavernSection();}
@@ -51,7 +51,7 @@ public final class WorkerCaveStorage {
         public void writeSection(Matter section,DataOutputStream output){throw unsupported();}
         public void trimSection(Matter section){section.trimSlices();}
         public boolean isSectionEmpty(Matter section){return section.isEmpty();}
-        public Class<?> classifyValue(Object value){if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;throw unsupported();}
+        public Class<?> classifyValue(Object value){if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;if(value instanceof art.arcane.volmlib.nativelib.terrain.NativeBlockState)return art.arcane.volmlib.nativelib.terrain.NativeBlockState.class;throw unsupported();}
         public <T>void set(Matter section,int x,int y,int z,Class<?> type,T value){section.<T>slice(type).set(x,y,z,value);}
         public <T>void remove(Matter section,int x,int y,int z,Class<T> type){MatterSlice<T> slice=section.getSlice(type);if(slice!=null)slice.set(x,y,z,null);}
         public <T>T get(Matter section,int x,int y,int z,Class<T> type){MatterSlice<T> slice=section.getSlice(type);return slice==null?null:slice.get(x,y,z);}
