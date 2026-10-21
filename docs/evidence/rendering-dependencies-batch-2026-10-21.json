@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-21",
+  "fixture": {
+    "blockTypes": 1,
+    "candidateApplications": 3,
+    "modelFiles": 3,
+    "textureFiles": 2,
+    "texturePixels": 1,
+    "sourcePacks": 2
+  },
+  "counts": {
+    "blockTypes": 1,
+    "models": 3,
+    "textures": 2,
+    "files": 12,
+    "bytes": 1207
+  },
+  "bundleBytes": 8096,
+  "bundleSha256": "5ba3d1472a13fce37b7d35b684ca6dfed25d7b74a09ec163cd33f311588f948d",
+  "checks": [
+    "all candidate and inherited references",
+    "pack precedence and metadata provenance",
+    "unknown JSON bytes and notices preserved",
+    "unrelated resources omitted",
+    "bundle reload and model resolution",
+    "hash tamper, unlisted and duplicate file refusal",
+    "snapshot ownership and stale export refusal",
+    "missing assets, model cycles and custom loader diagnostics",
+    "unsupported overlay refusal and disposal",
+    "closed pending modal cannot alter its successor"
+  ],
+  "complete": false,
+  "clientRenderingParity": false,
+  "limits": "Synthetic Node module and controlled modal-node checks only. No terrain/native build, registry sweep, real browser DOM/GPU, supplied assets or GitHub workflow."
+}

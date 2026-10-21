@@ -1,4 +1,5 @@
 import { readZip } from '../shared/zip.mjs';
+import { BUNDLE_MANIFEST, readRenderingBundle, assetDigest, assetJson } from './bundle.mjs';
 const MAX_BITMAP_BYTES=64*1024*1024,MAX_TEXTURE_PIXELS=4_194_304;
 function textureDimensions(bytes,name){
   const signature=[137,80,78,71,13,10,26,10];
@@ -14,10 +15,11 @@ export class MinecraftResourcePack {
   static async open(file, name = file.name || 'Resource pack') {
     const input = file instanceof Uint8Array ? file : new Uint8Array(await file.arrayBuffer());
     const entries = await readZip(input, { maxBytes: 64 * 1024 * 1024 });
+    if(entries.has(BUNDLE_MANIFEST))return new MinecraftResourcePack(name,entries,{studioRenderingBundle:await readRenderingBundle(entries)},await assetDigest(input));
     if (!entries.has('pack.mcmeta')) throw new Error('The ZIP must contain pack.mcmeta at its root. Choose a Minecraft resource pack.');
-    let metadata; try { metadata = JSON.parse(new TextDecoder().decode(entries.get('pack.mcmeta'))); } catch { throw new Error('pack.mcmeta is not valid JSON.'); }
-    if (!metadata.pack) throw new Error('Resource-pack metadata has no pack definition.');
-    const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', input))].map(b => b.toString(16).padStart(2,'0')).join('');
+    const metadata=assetJson(entries.get('pack.mcmeta'),'pack.mcmeta');
+    if (!metadata.pack||typeof metadata.pack!=='object'||Array.isArray(metadata.pack)) throw new Error('Resource-pack metadata has no pack definition.');
+    const digest = await assetDigest(input);
     return new MinecraftResourcePack(name, entries, metadata, digest);
   }
   constructor(name, entries, metadata, digest) { this.name = name; this.entries = entries; this.metadata = metadata; this.digest = digest; this.jsonCache = new Map(); }
@@ -33,14 +35,15 @@ function variantMatches(key, state) { return !key || key.split(',').every(part =
 export class ResourcePackStack {
   constructor(packs = []) { this.packs = packs; this.models = new Map(); this.bitmaps = new Map(); this.diagnostics = new Map(); this.bitmapBytes=0; this.disposed=false; }
   requireOpen(){if(this.disposed)throw new DOMException('Resource-pack stack disposed.','AbortError');}
-  find(path) { this.requireOpen();for (let i = this.packs.length - 1; i >= 0; i--) if (this.packs[i].entries.has(path)) return this.packs[i]; return null; }
+  find(path) { this.requireOpen();for (let i = this.packs.length - 1; i >= 0; i--){const pack=this.packs[i];if(pack.metadata.overlays!==undefined||pack.metadata.filter!==undefined)throw new Error(`Resource-pack overlays and filters require a target-format adapter: ${pack.name}`);if(pack.entries.has(path))return pack;} return null; }
   json(path) { return this.find(path)?.json(path) ?? null; }
   bytes(path) { return this.find(path)?.entries.get(path) ?? null; }
   resolveModel(name, stack = []) {
     this.requireOpen();const id = identifier(name); if (this.models.has(id.id)) return this.models.get(id.id);
     if (stack.includes(id.id) || stack.length > 32) throw new Error(`Model parent cycle: ${[...stack,id.id].join(' → ')}`);
     const json = this.json(`assets/${id.namespace}/models/${id.path}.json`); if (!json) throw new Error(`Missing model ${id.id}. Add its resource pack or the matching vanilla asset baseline.`);
-    if (json.parent?.startsWith('builtin/')) throw new Error(`Built-in model ${json.parent} needs a supported Minecraft model adapter.`);
+    if(Object.hasOwn(json,'loader')||Object.hasOwn(json,'overrides'))throw new Error(`Model ${id.id} requires an unsupported custom loader or override adapter.`);
+    if (json.parent?.startsWith('builtin/')||json.parent?.startsWith('minecraft:builtin/')) throw new Error(`Built-in model ${json.parent} needs a supported Minecraft model adapter.`);
     const parent = json.parent ? this.resolveModel(json.parent, [...stack,id.id]) : {};
     const model = { ...parent, ...json, textures: { ...parent.textures, ...json.textures }, id: id.id, elements: json.elements ?? parent.elements ?? [] };
     this.models.set(id.id, model); return model;
