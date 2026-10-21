@@ -86,6 +86,7 @@ public final class BrowserEngine {
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
     @JSExport public static void registerPackObject(String path,String bytes){pack.registerObject(path,bytes);}
+    @JSExport public static String paintProceduralPlacementChunk(int x,int z,String folder,String key,String family,int index,int variant,String decimalPlacementSeed)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.ProceduralPreview.place(pack,terrain,x,z,folder,key,family,index,variant,decimalPlacementSeed);}
     @JSExport public static String previewProceduralObject(String folder,String key,String family,int index,int variant)throws java.io.IOException{return studio.engine.terrain.ProceduralPreview.render(pack,folder,key,family,index,variant);}
     @JSExport public static String openPack(){pack.open();return "{\"resources\":"+pack.resourceCount()+",\"compatibilityReady\":"+pack.compatibilityReady()+"}";}
     /** Authoring graph inspection; not a terrain preview or compatibility success claim. */

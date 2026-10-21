@@ -36,15 +36,27 @@ public final class ProceduralPreview {
         for(String family:FAMILIES){var values=family(settings(resource),family);if(values==null)continue;for(int i=0;i<values.size();i++){var value=values.get(i);if(value==null)continue;writer.beginObject();writer.name("family").value(family);writer.name("index").value(i);writer.name("name").value(value.getName());writer.name("variants").value(variants(value));writer.name("seed").value(Long.toString(seed(value)));writer.endObject();}}
         writer.endArray();
     }
-    public static String render(MemoryPack pack,String folder,String key,String family,int index,int variant)throws IOException{
+    private record Selection(IrisProceduralPlacement placement,IrisObject object,int poolSize){}
+    private static Selection select(MemoryPack pack,String folder,String key,String family,int index,int variant){
         if(!folder.equals("biomes")&&!folder.equals("regions"))throw new IllegalArgumentException("Choose a native biome or region");
         pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load(folder,key);if(resource==null||resource.isCompatExcluded())throw new IllegalArgumentException("Native procedural source is missing or excluded");
         var values=family(settings(resource),family);if(values==null||index<0||index>=values.size()||values.get(index)==null)throw new IllegalArgumentException("Native procedural entry is missing");
         var placement=values.get(index);if(variants(placement)>8)throw new IllegalArgumentException("Isolated previews support pools of at most eight native variants");
         if(variant<0||variant>=variants(placement))throw new IllegalArgumentException("Native variant index is outside its configured pool");
+        var pool=placement.getVariantObjects(pack.open());if(pool==null||variant>=pool.size())throw new IllegalArgumentException("Native generator did not produce the requested baked variant");
+        return new Selection(placement,pool.get(variant),pool.size());
+    }
+    public static String render(MemoryPack pack,String folder,String key,String family,int index,int variant)throws IOException{
+        WorkerProceduralMap.begin();try{var selected=select(pack,folder,key,family,index,variant);return serialize(selected.object(),family,index,variant,selected.poolSize(),Long.toString(seed(selected.placement())));}finally{WorkerProceduralMap.end();}
+    }
+    public static String place(MemoryPack pack,BrowserTerrainEngine engine,int x,int z,String folder,String key,String family,int index,int variant,String placementSeed)throws IOException{
         WorkerProceduralMap.begin();try{
-            var pool=placement.getVariantObjects(pack.open());if(pool==null||variant>=pool.size())throw new IllegalArgumentException("Native generator did not produce the requested baked variant");
-            return serialize(pool.get(variant),family,index,variant,pool.size(),Long.toString(seed(placement)));
+            var selected=select(pack,folder,key,family,index,variant);var rng=new art.arcane.volmlib.util.math.RNG(Long.parseLong(placementSeed));var config=selected.placement().asPlacement();IrisObject object=config.scaleObject(rng,selected.object(),engine.getDimension());
+            if(object==null)throw new IllegalArgumentException("Native scale produced no object");
+            var request=new TerrainCarvingComponent.Placement(object,config,rng,selected.placement().isPlausible());
+            String result=TerrainCarvingComponent.place(engine,x,z,request);
+            StringWriter metadata=new StringWriter();try(JsonWriter writer=new JsonWriter(metadata)){writer.beginObject();writer.name("key").value(object.getLoadKey());writer.name("family").value(family);writer.name("entryIndex").value(index);writer.name("variant").value(variant);writer.name("poolSize").value(selected.poolSize());writer.name("configuredSeed").value(Long.toString(seed(selected.placement())));writer.name("placementSeed").value(placementSeed);writer.name("automaticScatter").value(false);writer.name("crossSourceCollisionReplay").value(false);writer.endObject();}
+            return result.substring(0,result.length()-1)+",\"placement\":"+metadata+"}";
         }finally{WorkerProceduralMap.end();}
     }
     private static String serialize(IrisObject object,String family,int index,int variant,int poolSize,String seed)throws IOException{

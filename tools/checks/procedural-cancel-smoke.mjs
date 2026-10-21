@@ -7,7 +7,7 @@ const client=new GenerationClient(),options={field:'procedural-object',seed:'0',
 try{
   await assert.rejects(client.generate({...options,procedural:{...options.procedural,index:2**32}}),/Choose a native procedural/);
   for(let i=0;i<2;i++){
-    const started=new Promise(resolve=>{ready=resolve;}),generation=client.generate(options);generation.catch(()=>{});await started;client.cancel();await assert.rejects(generation,{name:'AbortError'});assert.equal(terminated,i+1);assert.equal(client.workers.size,0);
+    const started=new Promise(resolve=>{ready=resolve;}),generation=client.generate({...options,field:i===0?'procedural-object':'procedural-placement',dimensionKey:'terrain3d'});generation.catch(()=>{});await started;client.cancel();await assert.rejects(generation,{name:'AbortError'});assert.equal(terminated,i+1);assert.equal(client.workers.size,0);
   }
-  assert.equal(created,2);console.log('Procedural cancellation terminates the busy worker and creates a fresh worker next time; invalid indices refuse. No geometry executed.');
+  assert.equal(created,2);console.log('Procedural variant/placement cancellation terminates the busy worker and creates a fresh worker next time; invalid indices refuse. No geometry executed.');
 }finally{client.dispose();globalThis.Worker=previousWorker;}
