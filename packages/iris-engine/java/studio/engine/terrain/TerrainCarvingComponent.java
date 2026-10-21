@@ -37,7 +37,6 @@ public final class TerrainCarvingComponent {
         boolean post=stage.ordinal()>=Stage.POST.ordinal(),floating=stage.ordinal()>=Stage.FLOATING.ordinal(),decorate=stage.ordinal()>=Stage.CAVE_DECORATION.ordinal();
         if(post&&!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Material preview outside the native Overworld mode");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Carving component window exceeds worker bounds");
-        WorkerCaveStorage.requireNoSubterrain(null,x>>4,z>>4,engine.getComplex());
         boolean neighbors=stage==Stage.NEIGHBOR_SCATTER,scatter=stage==Stage.SOURCE_SCATTER,content=placement!=null||scatter||neighbors;
         var neighborhood=neighbors?art.arcane.iris.generation.mantle.WorkerObjectTransactions.prepareNeighborhood(engine.getMantle()):null;
         int radius=neighbors?neighborhood.inputChunkRadius():1,limit=neighbors?(2*radius+1)*(2*radius+1):content?9:5;
@@ -48,7 +47,7 @@ public final class TerrainCarvingComponent {
             if(neighbors)cachePass=neighborhood.session().begin(engine);
             MantleCarvingComponent carving=new MantleCarvingComponent(engine.getMantle());
             int[][] offsets;if(neighbors){offsets=new int[limit][2];int index=0;for(int dx=-radius;dx<=radius;dx++)for(int dz=-radius;dz<=radius;dz++)offsets[index++]=new int[]{dx,dz};}else offsets=!content?new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1}}:new int[][]{{0,0},{-1,0},{1,0},{0,-1},{0,1},{-1,-1},{-1,1},{1,-1},{1,1}};
-            for(int[] offset:offsets){int chunkX=cx+offset[0],chunkZ=cz+offset[1];WorkerCaveStorage.select(chunkX,chunkZ);carving.generateLayer(null,chunkX,chunkZ,new ChunkContext(chunkX<<4,chunkZ<<4,engine.getComplex(),false));}
+            for(int[] offset:offsets){int chunkX=cx+offset[0],chunkZ=cz+offset[1];WorkerCaveStorage.select(chunkX,chunkZ);try(var writer=art.arcane.iris.generation.mantle.WorkerObjectTransactions.createWriter(engine.getMantle(),null,chunkX,chunkZ,0)){carving.generateLayer(writer,chunkX,chunkZ,new ChunkContext(chunkX<<4,chunkZ<<4,engine.getComplex(),false));}}
             WorkerCaveStorage.select(cx,cz);
             if(neighbors)WorkerCaveStorage.restoreContinuations(neighborhood.session().continuations(engine),engine);
             ArrayHunk<NativeBlockState> blocks=new ArrayHunk<>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());ChunkContext context=new ChunkContext(x,z,engine.getComplex(),false);
@@ -71,6 +70,7 @@ public final class TerrainCarvingComponent {
                 new art.arcane.iris.generation.stage.IrisPerfectionModifier(engine).onModify(x,z,blocks,false,context);
             }
             String result=TerrainPaintStage.serialize(engine,x,z,blocks,placement==null?stage.scope:"native-procedural-placement-development");
+            result=result.substring(0,result.length()-1)+",\"subterrain\":{\"nativePlanner\":true,\"enabled\":"+!engine.getComplex().getSubterrainPlanner().isEmpty()+",\"samplingWorkCharged\":"+WorkerCaveStorage.subterrainWork()+",\"workLimit\":16777216}}";
             if(content&&!neighbors)result=result.substring(0,result.length()-1)+",\"placedY\":"+placementResult.placedY()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"sourcePlan\":{\"destinations\":"+placementResult.sourcePlanDestinations()+",\"replayedDestinations\":"+placementResult.replayedDestinations()+",\"retainedBytes\":"+placementResult.retainedBytes()+"},\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";
             if(neighbors){var stats=placementResult.neighborhood();result=result.substring(0,result.length()-1)+",\"neighborhood\":{\"sourceChunks\":"+stats.sourceChunks()+",\"contributingSources\":"+stats.contributingSources()+",\"placementRadius\":"+stats.placementRadius()+",\"inputChunkRadius\":"+stats.inputChunkRadius()+",\"sourceChunkRadius\":"+stats.sourceChunkRadius()+",\"builtPlanBytes\":"+stats.builtPlanBytes()+"},\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";}
             if(scatter||neighbors)result=result.substring(0,result.length()-1)+",\"objectTags\":"+WorkerCaveStorage.objectTags()+"}";

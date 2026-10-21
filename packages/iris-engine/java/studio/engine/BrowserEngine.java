@@ -46,6 +46,8 @@ public final class BrowserEngine {
     @JSExport public static String sampleTerrainHeight(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");return bits(terrain.getComplex().getHeightStream().getDouble(x,z));}
     @JSExport public static String sampleTerrainBiome(double x,double z){if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(!Double.isFinite(x)||!Double.isFinite(z))throw new IllegalArgumentException("Coordinates must be finite");var biome=terrain.getComplex().getTrueBiomeStream().get(x,z);if(biome==null)throw new IllegalStateException("Native biome pool returned no biome");return biome.getLoadKey();}
 
+    @JSExport public static String inspectSubterrainCell(int x,int worldY,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.SubterrainDiagnostic.cell(terrain,x,worldY,z);}
+
     @JSExport public static int registryFaceSupport(String state){if(registry==null)throw new IllegalStateException("Install native registry first");return registry.faceSupport(state);}
     @JSExport public static String paintTerrainChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainPaintStage.paint(terrain,x,z);}
     @JSExport public static String carveDimensionChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCaveStage.carve(terrain,x,z);}

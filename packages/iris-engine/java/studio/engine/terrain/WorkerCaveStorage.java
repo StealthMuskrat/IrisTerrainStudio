@@ -15,16 +15,18 @@ import java.util.*;
 public final class WorkerCaveStorage {
     private static MantleChunk<Matter> active;
     private static int height,chunkX,chunkZ,chunkLimit;
+    private static long subterrainWork;
+    private static final long SUBTERRAIN_WORK_LIMIT=16777216;
     private static final Map<Long,MantleChunk<Matter>> chunks=new LinkedHashMap<>();
     public static void begin(int worldHeight,int x,int z){begin(worldHeight,x,z,5);}
     public static void begin(int worldHeight,int x,int z,int limit){
         if(limit!=5&&limit!=9&&limit!=25&&limit!=49)throw new IllegalArgumentException("Invalid worker chunk window");chunkLimit=limit;
         if(active!=null)throw new IllegalStateException("Nested worker cave storage");
-        height=worldHeight;chunkX=x;chunkZ=z;
+        height=worldHeight;chunkX=x;chunkZ=z;subterrainWork=0;
         active=new MantleChunk<>((worldHeight+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE);chunks.put(key(x,z),active);
     }
     public static void requirePrepared(int x,int z){requireActive();if(!chunks.containsKey(key(x,z)))throw studio.engine.UnsupportedPlatform.unavailable("Object access outside the prepared chunk window");}
-    public static void clear(){active=null;height=0;chunks.clear();}
+    public static void clear(){active=null;height=0;subterrainWork=0;chunks.clear();}
     public static void select(int x,int z){requireActive();if(chunks.size()>=chunkLimit&&!chunks.containsKey(key(x,z)))throw new IllegalStateException("Worker window exceeds its chunk budget");active=chunks.computeIfAbsent(key(x,z),ignored->new MantleChunk<>((height+15)/16,x,z,new CavernAdapter(),MantleHooks.NONE));chunkX=x;chunkZ=z;}
     private static long key(int x,int z){return ((long)x<<32)|(z&0xffffffffL);}
     public static art.arcane.iris.generation.mantle.EngineMantle engineMantle(art.arcane.iris.generation.runtime.Engine ignored){requireActive();return null;}
@@ -75,7 +77,16 @@ public final class WorkerCaveStorage {
         requireActive();if(y<0||y>=height)return null;var chunk=chunks.get(key(x>>4,z>>4));if(chunk==null)throw studio.engine.UnsupportedPlatform.unavailable("Decorator neighbor outside the prepared matter window");return chunk.get(x&15,y,z&15,type);
     }
     public static MatterCavern get(int x,int y,int z){requireActive();return active.get(x,y,z,MatterCavern.class);}
-    public static void requireNoSubterrain(art.arcane.iris.generation.mantle.MantleWriter ignored,int x,int z,art.arcane.iris.generation.runtime.IrisComplex complex){var planner=complex.getSubterrainPlanner();if(planner!=null&&!planner.isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain writes in the cave component stage");}
+    /** Admission only: the original rasterizer still selects plans and evaluates every cell. */
+    public static void admitSubterrain(art.arcane.iris.generation.subterrain.SubterrainPlanner planner,int x,int z){
+        requirePrepared(x,z);var plans=planner.plansForBounds((x<<4)-1,(z<<4)-1,(x<<4)+16,(z<<4)+16);if(plans.isEmpty())return;
+        long low=Long.MAX_VALUE,high=Long.MIN_VALUE;for(var plan:plans){low=Math.min(low,plan.bounds().minY());high=Math.max(high,plan.bounds().maxY());}
+        // Include the six neighboring samples used by the native fluid-seal rule.
+        long work=256L*(high-low+1)*plans.size()*7L;
+        if(work>SUBTERRAIN_WORK_LIMIT-subterrainWork)throw new IllegalArgumentException("Subterrain preview exceeds its bounded native sampling budget");subterrainWork+=work;
+    }
+    public static long subterrainWork(){requireActive();return subterrainWork;}
+
     private static Class<?> valueType(Object value){if(value instanceof art.arcane.iris.generation.mantle.ObjectContinuationBundle)return art.arcane.iris.generation.mantle.ObjectContinuationBundle.class;if(value instanceof MatterCavern)return MatterCavern.class;if(value instanceof MatterMarker)return MatterMarker.class;if(value instanceof art.arcane.volmlib.nativelib.terrain.NativeBlockState)return art.arcane.volmlib.nativelib.terrain.NativeBlockState.class;if(value instanceof String)return String.class;if(value instanceof art.arcane.iris.world.storage.matter.PreObjectMatterCell)return art.arcane.iris.world.storage.matter.PreObjectMatterCell.class;if(value instanceof art.arcane.iris.generation.decoration.tree.TreeBlockMaterial)return art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class;if(value instanceof art.arcane.iris.integration.Identifier)return art.arcane.iris.integration.Identifier.class;throw unsupported();}
     private static void requireActive(){if(active==null)throw new IllegalStateException("No worker cave storage");}
     private static RuntimeException unsupported(){return studio.engine.UnsupportedPlatform.unavailable("Unconnected Matter value type or persistence");}

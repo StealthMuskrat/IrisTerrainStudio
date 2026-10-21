@@ -107,12 +107,8 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             }
             if(name.equals("art.arcane.iris.generation.decoration.ruin.IrisRuin"))for(MethodHolder method:cls.getMethods())if(java.util.Set.of("getVariantObjects","getVariantObject").contains(method.getName()))unavailable(method,"Procedural ruins outside natural-object preview scope");
             if(name.equals("art.arcane.iris.generation.mantle.MantleCarvingComponent")){
-                int mantle=0,chunks=0,heights=0,subterrain=0;
+                int mantle=0,chunks=0,heights=0;
                 for(MethodHolder method:cls.getMethods()){
-                    if(method.getName().startsWith("lambda$rasterizeSubterrain$")){unavailable(method,"Subterrain writes in the carving component");continue;}
-                    if(method.getName().equals("rasterizeSubterrain")){
-                        Program p=new Program();p.createVariable();Variable writer=p.createVariable(),x=p.createVariable(),z=p.createVariable(),complex=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage","requireNoSubterrain",ValueType.object("art.arcane.iris.generation.mantle.MantleWriter"),ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.iris.generation.runtime.IrisComplex"),ValueType.VOID));call.setArguments(writer,x,z,complex);block.add(call);block.add(new ExitInstruction());method.setProgram(p);subterrain++;continue;
-                    }
                     Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
                         MethodReference ref=call.getMethod();String target=null;
                         if(ref.getClassName().equals("art.arcane.iris.generation.mantle.MantleWriter")&&ref.getName().equals("getMantle")){target="getMantle";mantle++;}
@@ -120,7 +116,12 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                         else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("getWorldHeight")){target="getWorldHeight";heights++;}
                         if(target!=null)redirectHostCall(call,target);
                     }
-                }if(mantle!=1||chunks!=2||heights!=1||subterrain!=1)throw new IllegalStateException("Pinned carving component storage calls changed: "+mantle+","+chunks+","+heights+","+subterrain);
+                }if(mantle!=2||chunks!=2||heights!=2)throw new IllegalStateException("Pinned carving component storage calls changed: "+mantle+","+chunks+","+heights);
+            }
+            if(name.equals("art.arcane.iris.generation.subterrain.SubterrainRasterizer")){
+                int guards=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("rasterize")){
+                    Program p=method.getProgram();InvokeInstruction guard=new InvokeInstruction();guard.setType(InvocationType.SPECIAL);guard.setMethod(new MethodReference("studio.engine.terrain.WorkerCaveStorage","admitSubterrain",ValueType.object("art.arcane.iris.generation.subterrain.SubterrainPlanner"),ValueType.INTEGER,ValueType.INTEGER,ValueType.VOID));guard.setArguments(p.variableAt(1),p.variableAt(2),p.variableAt(3));p.basicBlockAt(0).getFirstInstruction().insertPrevious(guard);guards++;
+                }if(guards!=1)throw new IllegalStateException("Pinned subterrain rasterizer entry changed");
             }
             if(name.equals("art.arcane.iris.generation.stage.IrisDepositModifier")){
                 int storage=0,dispatch=0;
