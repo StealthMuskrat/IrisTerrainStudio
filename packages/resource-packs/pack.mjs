@@ -13,6 +13,7 @@ function textureDimensions(bytes,name){
 export function identifier(value, defaultNamespace = 'minecraft') { if (typeof value !== 'string') throw new Error('Expected a resource identifier.'); const parts = value.includes(':') ? value.split(':') : [defaultNamespace, value]; if (parts.length !== 2 || !/^[a-z0-9_.-]+$/.test(parts[0]) || !/^[a-z0-9_./-]+$/.test(parts[1]) || parts[1].split('/').some(p => p === '..' || p === '.')) throw new Error(`Invalid resource identifier: ${value}`); return { namespace: parts[0], path: parts[1], id: parts.join(':') }; }
 export class MinecraftResourcePack {
   static async open(file, name = file.name || 'Resource pack') {
+    if((file instanceof Uint8Array?file.byteLength:file.size)>64*1024*1024)throw new Error('Resource-pack input exceeds 64 MiB.');
     const input = file instanceof Uint8Array ? file : new Uint8Array(await file.arrayBuffer());
     const entries = await readZip(input, { maxBytes: 64 * 1024 * 1024 });
     if(entries.has(BUNDLE_MANIFEST))return new MinecraftResourcePack(name,entries,{studioRenderingBundle:await readRenderingBundle(entries)},await assetDigest(input));
@@ -22,7 +23,7 @@ export class MinecraftResourcePack {
     const digest = await assetDigest(input);
     return new MinecraftResourcePack(name, entries, metadata, digest);
   }
-  constructor(name, entries, metadata, digest) { this.name = name; this.entries = entries; this.metadata = metadata; this.digest = digest; this.jsonCache = new Map(); }
+  constructor(name, entries, metadata, digest) { this.name = name; this.entries = entries; this.metadata = metadata; this.digest = digest; this.expandedBytes=[...entries.values()].reduce((sum,bytes)=>sum+bytes.byteLength,0); this.jsonCache = new Map(); }
   json(path) { if (!this.entries.has(path)) return null; if (!this.jsonCache.has(path)) { const bytes = this.entries.get(path); if (bytes.length > 2 * 1024 * 1024) throw new Error(`Model definition is too large: ${path}`); try { this.jsonCache.set(path, JSON.parse(new TextDecoder().decode(bytes))); } catch { throw new Error(`Invalid resource-pack JSON: ${path}`); } } return this.jsonCache.get(path); }
 }
 function matchesWhen(condition, state) {
