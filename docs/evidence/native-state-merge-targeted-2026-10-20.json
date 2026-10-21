@@ -1,0 +1,223 @@
+{
+  "scope": "native-state-merge-development-targeted",
+  "recordedAt": "2026-10-20",
+  "result": "pass",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "artifacts": {
+    "wasmSha256": "be316e7ce9b3941a67eb5d174b662b7ccdac1dbaa5189784656ea57c2738c3fb",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "4efc21dad4c0ec9facd2f2eda89d5c7cdb7a96bb0f13193263197be6f156b52b",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+  "nativePlatformInputs": {
+    "scope": "pinned-native-rotation-inputs",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "jarSha256": "84151794cbe5c776bbe1cd9c40befa76e0d931f9d8a785ad256afacefc37c8e9",
+    "nativeSources": [
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateRotator.java",
+        "sha256": "98ccf4ccec61f30d812996b9ac65dc8620745333a6a1bba089da9630300dfb3a"
+      },
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateMerger.java",
+        "sha256": "abdda87c8618d8b258bf6fba0ae6311733aba835677eab4cf64acc610802173d"
+      },
+      {
+        "path": ".upstream/Iris/adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedStateRotator.java",
+        "sha256": "1c4555ed3e8817b7603c1952be362fd27079320d5eeb23b2f7e74405459d5a7d"
+      }
+    ],
+    "minecraftClasses": {
+      "net/minecraft/world/level/block/state/properties/RotationSegment.class": "5ede57cefcb87f28ccdc2154f2d88ca69c3713d384e31c874d4b379f63a87025",
+      "net/minecraft/util/SegmentedAnglePrecision.class": "03fded4de6a259fafbab1446ae160b1a7d92bae48ecea6ac706ae19c3c7b0e7c"
+    },
+    "metadataSha256": "d1c144e4dfcd26b964504658460c1e0a8f1c71d13996cadc848d59d09e5c2666",
+    "generatedSources": [
+      {
+        "path": "RotationBindings.java",
+        "sha256": "836380eb99357fcd2c470b28e14b2cd202d1a2aae93e118dd7f5a74dca7d208f"
+      },
+      {
+        "path": "RotationTokens.java",
+        "sha256": "e80a13d7a75e7055d89458865eb68047447ee55c1bd2d0fef5bca3899dbd65a9"
+      }
+    ]
+  },
+  "directMergeChecks": {
+    "result": "pass",
+    "stateMerges": 7,
+    "matchingMaskChecks": 2,
+    "unavailableHandleRefusals": 1,
+    "results": [
+      {
+        "base": "minecraft:furnace[facing=west,lit=true]",
+        "update": "minecraft:furnace[lit=false]",
+        "match": "minecraft:furnace[facing=west,lit=true]",
+        "result": "minecraft:furnace[facing=west,lit=false]",
+        "matchingResult": false
+      },
+      {
+        "base": "minecraft:oak_stairs[facing=east,half=bottom,shape=straight,waterlogged=true]",
+        "update": "minecraft:oak_stairs[shape=outer_left,half=top]",
+        "result": "minecraft:oak_stairs[facing=east,half=top,shape=outer_left,waterlogged=true]"
+      },
+      {
+        "base": "minecraft:redstone_wire[north=side,east=up,power=3]",
+        "update": "minecraft:redstone_wire[power=7]",
+        "result": "minecraft:redstone_wire[east=up,north=side,power=7,south=none,west=none]"
+      },
+      {
+        "base": "minecraft:birch_log[axis=x]",
+        "update": "minecraft:birch_log",
+        "result": "minecraft:birch_log[axis=x]"
+      },
+      {
+        "base": "minecraft:stone",
+        "update": "minecraft:dirt",
+        "result": "minecraft:dirt"
+      },
+      {
+        "base": "minecraft:blast_furnace[facing=west,lit=true]",
+        "update": "minecraft:blast_furnace[facing=north]",
+        "normalize": true,
+        "result": "minecraft:blast_furnace[facing=north,lit=false]"
+      },
+      {
+        "base": "minecraft:stone",
+        "update": "minecraft:acacia_leaves[distance=4,persistent=false,waterlogged=false]",
+        "match": "minecraft:acacia_leaves[distance=4,persistent=false,waterlogged=false]",
+        "result": "minecraft:acacia_leaves[distance=4,persistent=true,waterlogged=false]",
+        "matchingResult": true
+      }
+    ],
+    "wasmSha256": "be316e7ce9b3941a67eb5d174b662b7ccdac1dbaa5189784656ea57c2738c3fb",
+    "sourceSha256": "4efc21dad4c0ec9facd2f2eda89d5c7cdb7a96bb0f13193263197be6f156b52b",
+    "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "scope": "native-state-merge-development-targeted",
+    "fullStateCoverageVerified": false,
+    "geometryVerified": false,
+    "browserVerified": false
+  },
+  "diagnosticPlacementCheck": {
+    "result": "pass",
+    "baseFixtures": 1,
+    "cases": 1,
+    "seeds": 1,
+    "chunksPerCase": 1,
+    "probesCompared": 5,
+    "results": [
+      {
+        "placedY": 35,
+        "journaledCells": 95,
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 2,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            8,
+            34,
+            8,
+            "minecraft:oak_log[axis=x]"
+          ],
+          [
+            7,
+            36,
+            6,
+            "minecraft:oak_leaves[distance=3,persistent=false,waterlogged=false]"
+          ]
+        ],
+        "edit": {
+          "find": [
+            {
+              "block": "minecraft:oak_log"
+            }
+          ],
+          "replace": {
+            "palette": [
+              {
+                "block": "minecraft:oak_log[axis=x]"
+              }
+            ]
+          }
+        },
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "b9563c1ceaad45ebaaf755ca39e2389a9f9a1373eaca5e7fd09819e1e475568a"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+          }
+        ]
+      }
+    ],
+    "wasmSha256": "be316e7ce9b3941a67eb5d174b662b7ccdac1dbaa5189784656ea57c2738c3fb",
+    "sourceSha256": "4efc21dad4c0ec9facd2f2eda89d5c7cdb7a96bb0f13193263197be6f156b52b",
+    "scope": "native-diagnostic-placement-edit-development",
+    "rotationEnabled": false,
+    "sameMaterialEdit": true,
+    "proceduralEntryEditsSupported": false,
+    "workerClientVerified": false,
+    "fullGeometryParityVerified": false,
+    "browserVerified": false
+  },
+  "correspondingSourceCheck": {
+    "changedEngineBuildFilesMatched": 11,
+    "sourceArchiveSha256Verified": true,
+    "wasmSha256Verified": true
+  },
+  "checks": [
+    "node tools/engine-build/build.mjs --reuse-native-inputs (compilation only; no test tasks)",
+    "node tools/checks/native-merge-smoke.mjs",
+    "node tools/checks/native-edited-placement-smoke.mjs",
+    "node --check apps/web/main.mjs",
+    "git diff --check"
+  ],
+  "qualification": {
+    "fullStateCoverageVerified": false,
+    "completePipelineVerified": false,
+    "browserVerified": false,
+    "workerClientReverified": false,
+    "releaseMatchVerified": false,
+    "proceduralEntryEditSettingsSupported": false
+  },
+  "limits": [
+    "Only seven selected state operations, two result masks and one inconsistent-property refusal were checked.",
+    "One explicit diagnostic rule is attached to a fresh native placement configuration; natural entry asPlacement methods do not carry edit rules.",
+    "The initial authored procedural-tree edit fixture was corrected after confirming its edit field is unknown native configuration.",
+    "No registry/state/pair sweep, complete output comparison, full suite or GitHub workflow was run.",
+    "Tile/custom/deferred adapters, continuation/cache integration, full mode sequencing and browser/GPU/assets/release qualification remain open."
+  ]
+}

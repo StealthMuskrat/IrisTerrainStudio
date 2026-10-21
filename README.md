@@ -106,7 +106,7 @@ Native `.iob` object resources can now be inspected from the explorer using the 
 For an isolated procedural tree or natural-object preview, open a biome or region and choose **Preview procedural object or tree**. Select its native entry and baked variant index; the configured entry seed is preserved exactly. The preview uses local object coordinates and matching local block assets. Automatic terrain scattering and full collision replay remain unfinished. See [development details](docs/DEVELOPMENT.md#isolated-native-procedural-variants).
 
 
-The same chooser can attempt **Single placement on terrain** at the selected chunk centre. It uses native placement conditions and source plans, replays touched destinations within a temporary 3 × 3 chunk window, and reports acceptance or rejection. The displayed volume remains the selected chunk. Native modded-platform state rotation is now connected for the development subset; edit merging, tile values and native structure obstacles remain unsupported. See [the supported placement subset](docs/DEVELOPMENT.md#native-single-procedural-placement).
+The same chooser can attempt **Single placement on terrain** at the selected chunk centre. It uses native placement conditions and source plans, replays touched destinations within a temporary 3 × 3 chunk window, and reports acceptance or rejection. The displayed volume remains the selected chunk. Native modded-platform state rotation is now connected for the development subset; tile values and native structure obstacles remain unsupported. Native edit merging is connected separately for explicit diagnostic placement rules; procedural entries do not expose edit rules. See [the supported placement subset](docs/DEVELOPMENT.md#native-single-procedural-placement).
 
 
 **Native procedural content · one source chunk · development** now runs native world-seed derivation, chance/density selection and tree/object placement for the selected source chunk. Neighboring source contributions and collision replay remain unfinished. Use natural entries without imported objects, ruins or cave anchors. See [the current source-pass scope](docs/DEVELOPMENT.md#native-one-source-procedural-scatter).
@@ -116,3 +116,6 @@ Use **Native procedural neighborhood · one chunk · development** to include th
 
 
 Native directional state rotation now runs the pinned modded-platform algorithm with exported property handles and native angle-segment math. A few selected axis/facing/sign/vine/wall/wire states and a fixed-yaw tree placement match the JVM reference; complete state/platform coverage remains unqualified. See [rotation scope and evidence](docs/DEVELOPMENT.md#native-directional-state-rotation).
+
+
+Native edit-state merging now runs the pinned platform merger with owned property handles and native partial-property masks. Seven selected merges and one explicit-rule oak placement match the JVM reference. This diagnostic does not add edit settings to native procedural entry types. See [merge scope and evidence](docs/DEVELOPMENT.md#native-edit-state-merging).

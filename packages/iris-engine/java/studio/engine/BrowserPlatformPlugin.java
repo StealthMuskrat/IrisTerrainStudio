@@ -18,9 +18,11 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     Variable callback=p.createVariable();InvokeInstruction factory=new InvokeInstruction();factory.setType(InvocationType.SPECIAL);factory.setMethod(new MethodReference("studio.engine.registry.RotationFailures","instance",ValueType.object("java.util.function.Consumer")));factory.setReceiver(callback);call.insertPrevious(factory);Variable[] arguments=call.getArguments().toArray(Variable[]::new);arguments[2]=callback;call.setArguments(arguments);callbacks++;
                 }}if(callbacks!=1)throw new IllegalStateException("Pinned native rotation failure callback changed");
             }
-            if(java.util.Set.of("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator","net.minecraft.world.level.block.state.properties.RotationSegment","net.minecraft.util.SegmentedAnglePrecision").contains(name)){
+            if(java.util.Set.of("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger","art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator","net.minecraft.world.level.block.state.properties.RotationSegment","net.minecraft.util.SegmentedAnglePrecision").contains(name)){
                 String[][] mappings={
                     {"art.arcane.volmlib.nativelib.minecraft26_2.modded.ModdedBlockState","studio.engine.registry.BrowserBlockState"},
+                    {"art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockResolver","studio.engine.registry.MergeResolver"},
+                    {"art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeBlockResolver$Parsed","studio.engine.registry.MergeResolver$Parsed"},
                     {"net.minecraft.world.level.block.state.BlockState","studio.engine.registry.RotationState"},
                     {"net.minecraft.world.level.block.state.StateHolder","studio.engine.registry.RotationState"},
                     {"net.minecraft.world.level.block.Block","studio.engine.registry.RotationState$Block"},
@@ -42,6 +44,18 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                         if(instruction instanceof PutFieldInstruction field&&field.getField().getClassName().equals(mapping[0]))field.setField(new FieldReference(mapping[1],field.getField().getFieldName()));
                     }}
                 }
+            }
+            if(name.equals("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger")){
+                int masks=0,handles=0;for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("studio.engine.registry.BrowserBlockState")){
+                    String target=call.getMethod().getName();if(target.equals("parsedProperties")){target="mergeProperties";masks++;}else if(target.equals("withHandle")){target="withMergedHandle";handles++;}else continue;
+                    call.setMethod(new MethodReference(call.getMethod().getClassName(),new MethodDescriptor(target,call.getMethod().getSignature())));
+                }}if(masks!=1||handles!=4)throw new IllegalStateException("Pinned native merger handle boundary changed: "+masks+","+handles);
+            }
+            if(name.equals("studio.engine.registry.WorkerStateMerging")){
+                int hooks=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("create")){
+                    Program p=new Program();p.createVariable();Variable resolver=p.createVariable(),merger=p.createVariable();BasicBlock b=p.createBasicBlock();ConstructInstruction construct=new ConstructInstruction();construct.setType("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger");construct.setReceiver(merger);b.add(construct);
+                    InvokeInstruction init=new InvokeInstruction();init.setType(InvocationType.SPECIAL);init.setMethod(new MethodReference("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateMerger","<init>",ValueType.object("studio.engine.registry.MergeResolver"),ValueType.VOID));init.setInstance(merger);init.setArguments(resolver);b.add(init);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(merger);b.add(exit);method.setProgram(p);hooks++;
+                }if(hooks!=1)throw new IllegalStateException("Native state-merger constructor boundary changed");
             }
             if(name.equals("art.arcane.iris.generation.mantle.MantleObjectComponent")){
                 replaceClass(cls,"art.arcane.iris.generation.mantle.ObjectSourcePlanCache","studio.engine.terrain.WorkerUnconnectedSourcePlans");
@@ -107,7 +121,11 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             }
             if(name.equals("art.arcane.iris.generation.block.TileData"))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Object tile-entity values");
             if(name.equals("art.arcane.iris.generation.block.IrisBlockData"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("getTile"))unavailable(method,"Object tile-entity material payloads");
-            if(name.equals("art.arcane.iris.generation.block.BlockDataMergeSupport"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("merge")&&method.parameterCount()==2&&method.parameterType(0).equals(ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState")))unavailable(method,"Object edit block-state merging");
+            if(name.equals("art.arcane.iris.generation.block.BlockDataMergeSupport")){
+                int hooks=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("merge")&&method.parameterCount()==2&&method.parameterType(0).equals(ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"))){
+                    Program p=new Program();p.createVariable();Variable base=p.createVariable(),update=p.createVariable(),result=p.createVariable();BasicBlock b=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.registry.WorkerStateMerging",method.getDescriptor()));call.setArguments(base,update);call.setReceiver(result);b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);hooks++;
+                }if(hooks!=1)throw new IllegalStateException("Pinned block-state merge boundary changed");
+            }
             if(name.equals("art.arcane.iris.structure.object.IrisObjectRotation")){
                 int hooks=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("rotate")&&method.parameterCount()==4&&method.parameterType(0).equals(ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"))){Program p=new Program();Variable self=p.createVariable(),state=p.createVariable(),x=p.createVariable(),y=p.createVariable(),z=p.createVariable(),result=p.createVariable();BasicBlock b=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerObjectStateHooks","rotate",ValueType.object(name),ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"),ValueType.INTEGER,ValueType.INTEGER,ValueType.INTEGER,ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState")));call.setArguments(self,state,x,y,z);call.setReceiver(result);b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);hooks++;}if(hooks!=1)throw new IllegalStateException("Pinned object state-rotation boundary changed");
             }

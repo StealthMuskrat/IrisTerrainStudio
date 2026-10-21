@@ -15,7 +15,7 @@ public final class RotationState {
         if(!getProperties().contains(property))throw studio.engine.UnsupportedPlatform.unavailable("Rotation property belongs to another block type");
         int index=Arrays.asList(owner.rotationType(state.type).order).indexOf(property.name);if(index<0)throw studio.engine.UnsupportedPlatform.unavailable("Missing native rotation property");return index;
     }
-    public Block getBlock(){return new Block(owner,state.type);}
+    public Block getBlock(){return owner.rotationBlock(state.type);}
     public static final class Block {
         final BrowserRegistries owner;final int type;Block(BrowserRegistries owner,int type){this.owner=owner;this.type=type;}
         public RotationState defaultBlockState(){return owner.rotationHandle(owner.rotationDefault(type));}

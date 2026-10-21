@@ -55,6 +55,12 @@ public final class BrowserEngine {
     @JSExport public static String paintFloatingChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,true,true);}
     @JSExport public static String paintCaveDecorationChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,true,true,true);}
     @JSExport public static String paintDepositChunk(int x,int z)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.TerrainCarvingComponent.paint(terrain,x,z,studio.engine.terrain.TerrainCarvingComponent.Stage.DEPOSITS);}
+    @JSExport public static String diagnosticStateMerge(String base,String update,boolean normalizeUpdate){
+        if(registry==null)throw new IllegalStateException("Install native registry first");
+        var original=registry.decodeBlockState(base);var changed=registry.decodeBlockState(update);
+        if(normalizeUpdate)changed=registry.withoutParsedMask(changed);
+        return art.arcane.iris.generation.block.BlockDataMergeSupport.merge(original,changed).key();
+    }
     @JSExport public static String diagnosticStateRotation(String key,int x,int y,int z){
         var rotation=new art.arcane.iris.structure.object.IrisObjectRotation();rotation.getXAxis().setEnabled(true);rotation.getYAxis().setEnabled(true);rotation.getZAxis().setEnabled(true);
         var result=studio.engine.terrain.WorkerObjectStateHooks.rotate(rotation,art.arcane.iris.spi.IrisPlatforms.get().registries().decodeBlockState(key),x,y,z);return result==null?null:result.key();
@@ -92,6 +98,12 @@ public final class BrowserEngine {
 
     @JSExport public static void registerPackResource(String path,String text){pack.register(path,text);}
     @JSExport public static void registerPackObject(String path,String bytes){pack.registerObject(path,bytes);}
+    /** An explicit native placement rule for development caller checks; it does not alter procedural entry settings. */
+    @JSExport public static String diagnosticProceduralPlacementEdit(int x,int z,String folder,String key,String family,int index,int variant,String decimalPlacementSeed,String editJson)throws java.io.IOException{
+        if(terrain==null)throw new IllegalStateException("Prepare native terrain first");if(editJson==null||editJson.length()>32768)throw new IllegalArgumentException("Diagnostic edit exceeds its text budget");
+        var edit=NativeConfigReader.readIrisObjectReplace(editJson);if(edit==null)throw new IllegalArgumentException("A native object edit rule is required");
+        return studio.engine.terrain.ProceduralPreview.place(pack,terrain,x,z,folder,key,family,index,variant,decimalPlacementSeed,edit);
+    }
     @JSExport public static String paintProceduralPlacementChunk(int x,int z,String folder,String key,String family,int index,int variant,String decimalPlacementSeed)throws java.io.IOException{if(terrain==null)throw new IllegalStateException("Prepare native terrain first");return studio.engine.terrain.ProceduralPreview.place(pack,terrain,x,z,folder,key,family,index,variant,decimalPlacementSeed);}
     @JSExport public static String previewProceduralObject(String folder,String key,String family,int index,int variant)throws java.io.IOException{return studio.engine.terrain.ProceduralPreview.render(pack,folder,key,family,index,variant);}
     @JSExport public static String openPack(){pack.open();return "{\"resources\":"+pack.resourceCount()+",\"compatibilityReady\":"+pack.compatibilityReady()+"}";}

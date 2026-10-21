@@ -30,6 +30,9 @@ A local pack-management server, browser editor, lossless JSON document model, We
 
 [Native directional state rotation](evidence/native-state-rotation-targeted-2026-10-20.json) now compiles the pinned modded rotation implementations with generated native property handles and unchanged native angle-segment math. Nine selected state operations, one matching-mask check and one unavailable-handle refusal pass. One fixed-yaw oak placement passes five material probes, native Y 35 and 95 journal cells through the real worker/client. Rotation metadata captures only 1,286 block types / 117 property layouts; no state or placement-pair sweep was run. Complete platform/state coverage, remaining state adapters, continuations/cache and full browser/release qualification remain pending.
 
+
+[Native edit-state merging](evidence/native-state-merge-targeted-2026-10-20.json) now executes the pinned platform merger with stable block identity, original parsed-property masks, opaque captured enum values and canonical normalization handles. Seven selected state merges, two result-mask checks and one inconsistent-metadata refusal pass. One tiny oak with an explicit diagnostic same-material edit passes five material probes, placement Y 35 and 95 journal cells against the original JVM host. Native procedural entry types do not expose object edit rules; this diagnostic does not add an authoring setting. Tile/custom adapters, continuations/cache and complete browser/release qualification remain pending. No broad suite or state/pair sweep was run.
+
 ## Remaining engine and application work
 
 1. [Explain the native all-style checksum mismatch (#15)](https://github.com/StealthMuskrat/IrisTerrainStudio/issues/15): establish the original fixture, full dependency and platform inputs, then qualify the dependency/build identity and release provenance. The tested noise source history and interpreter/JIT diagnostics reproduce identical outputs; the reference remains unqualified.

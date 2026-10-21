@@ -35,6 +35,16 @@ final class BrowserBlockState implements NativeBlockState {
     @Override public NativeBlockState withProperty(String name,String value){return owner.decodeBlockState(BlockStateKey.withProperty(key(),name,value));}
     public RotationState handle(){return owner.rotationHandle(state);}
     public Map<String,String> parsedProperties(){return parsed;}
+    public Map<RotationProperty,Comparable<?>> mergeProperties(){return mergeProperties(handle(),parsed);}
+    static Map<RotationProperty,Comparable<?>> mergeProperties(RotationState handle,Map<String,String> properties){
+        if(properties==null)return null;Map<RotationProperty,Comparable<?>> result=new java.util.LinkedHashMap<>();
+        for(var entry:properties.entrySet()){var property=handle.getProperties().stream().filter(value->value.name.equals(entry.getKey())).findFirst().orElseThrow(()->studio.engine.UnsupportedPlatform.unavailable("Missing native merge property"));result.put(property,property.parse(entry.getValue()));}return Map.copyOf(result);
+    }
+    public BrowserBlockState withMergedHandle(RotationState updated,Map<RotationProperty,Comparable<?>> properties){
+        Map<String,String> values=null;if(properties!=null){values=new java.util.LinkedHashMap<>();for(var entry:properties.entrySet())values.put(entry.getKey().name,entry.getKey().serialize(entry.getValue()));values=Map.copyOf(values);}
+        return withHandle(updated,values);
+    }
+    public static String serialize(RotationState handle){return handle.state.key;}
     public BrowserBlockState withHandle(RotationState updated,Map<String,String> properties){
         if(updated.owner!=owner)throw studio.engine.UnsupportedPlatform.unavailable("Rotation state belongs to another registry");
         return updated.state==state&&properties==parsed?this:owner.intern(updated.state,properties);

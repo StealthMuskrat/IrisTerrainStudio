@@ -31,9 +31,11 @@ public final class BrowserRegistries implements PlatformRegistries {
     private final Map<String,String> deep=new LinkedHashMap<>(),normal=new LinkedHashMap<>(),entityCategories=new LinkedHashMap<>();
     private final Map<String,List<NativeBlockProperty>> properties=new LinkedHashMap<>();
     private final Map<Integer,RotationState> rotationHandles=new HashMap<>();
+    private final Map<Integer,RotationState.Block> rotationBlocks=new HashMap<>();
     private final Map<Integer,List<RotationProperty>> rotationLayouts=new HashMap<>();
     BlockType rotationType(int type){return types.get(type);}
     State rotationDefault(int type){return states.get(types.get(type).defaultState);}
+    RotationState.Block rotationBlock(int type){return rotationBlocks.computeIfAbsent(type,index->new RotationState.Block(this,index));}
     RotationState rotationHandle(State state){return rotationHandles.computeIfAbsent(state.id,ignored->new RotationState(this,state));}
     RotationState rotationState(int type,String[] values){State state=byKey.get(canonical(type,values));if(state==null)throw studio.engine.UnsupportedPlatform.unavailable("Rotated state absent from native registry");return rotationHandle(state);}
     List<RotationProperty> rotationProperties(int type){return rotationLayouts.computeIfAbsent(type,index->{
@@ -104,10 +106,16 @@ public final class BrowserRegistries implements PlatformRegistries {
     }
     private static boolean validKey(String key){return key!=null&&key.matches("[a-z0-9_.-]+:[a-z0-9_./-]+");}
     String canonical(int type,String[] values){BlockType block=types.get(type);StringBuilder key=new StringBuilder(block.name);if(values.length>0){key.append('[');for(int i=0;i<values.length;i++){if(i>0)key.append(',');key.append(block.order[i]).append('=').append(values[i]);}key.append(']');}return key.toString();}
+    public NativeBlockState withoutParsedMask(NativeBlockState source){BrowserBlockState value=owned(source);return new BrowserBlockState(this,value.state,null);}
     public int faceSupport(String key){return ((BrowserBlockState)decodeBlockState(key)).state.faces;}
     public boolean isFaceSturdy(NativeBlockState state,int face){if(!(state instanceof BrowserBlockState value)||value.owner!=this||face<0||face>=6)throw new IllegalArgumentException("Face support requires an owned native state");return (value.state.faces&(1<<face))!=0;}
     BrowserBlockState intern(State state,Map<String,String> parsed){return interned.computeIfAbsent(state.id,id->new BrowserBlockState(this,state,parsed));}
     BrowserBlockState direct(State state){return intern(state,null);}
+    MergeResolver.Parsed resolveMergeCanonical(String key){
+        State state=byKey.get(key);if(state==null)throw studio.engine.UnsupportedPlatform.unavailable("Native merger normalization requires an owned canonical state");
+        Map<String,String> parsed=new LinkedHashMap<>();BlockType block=types.get(state.type);for(int i=0;i<block.order.length;i++)parsed.put(block.order[i],state.values[i]);
+        RotationState handle=rotationHandle(leafState(state));return new MergeResolver.Parsed(handle,BrowserBlockState.mergeProperties(handle,parsed));
+    }
     private BrowserBlockState strict(String text){
         if(text==null||text.length()>4096)throw new IllegalArgumentException("Invalid block-state text");
         StringReader reader=new StringReader(text);int start=reader.getCursor();while(reader.canRead()&&identifierCharacter(reader.peek()))reader.skip();String name=text.substring(start,reader.getCursor());int colon=name.indexOf(':');if(colon<0)name="minecraft:"+name;else if(colon==0)name="minecraft"+name;
@@ -119,13 +127,16 @@ public final class BrowserRegistries implements PlatformRegistries {
         }if(!reader.canRead()||reader.read()!=']')throw new IllegalArgumentException("Unclosed native properties");}
         if(reader.canRead())throw new IllegalArgumentException("Trailing native block-state content");State state=byKey.get(canonical(type,values));if(state==null)throw new IllegalArgumentException("Unknown native state combination");return intern(state,Map.copyOf(parsed));
     }
+    private State leafState(State state){
+        if(!types.get(state.type).leaf)return state;State updated=byKey.get(BlockStateKey.withProperty(state.key,"persistent",Boolean.toString(preventLeafDecay)));if(updated==null)throw studio.engine.UnsupportedPlatform.unavailable("Native leaf decay metadata is incomplete");return updated;
+    }
     private static boolean identifierCharacter(char c){return c>='a'&&c<='z'||c>='0'&&c<='9'||c=='_'||c==':'||c=='/'||c=='.'||c=='-';}
     private String normalize(BlockType type,String name,String raw){NativeBlockProperty property=properties.get(type.name).stream().filter(p->p.name().equals(name)).findFirst().orElseThrow();String value=raw;if(property.jsonType().equals("integer")){try{value=Integer.toString(Integer.parseInt(raw));}catch(NumberFormatException failure){throw new IllegalArgumentException("Invalid native integer property",failure);}}for(Object candidate:property.allowedValues())if(String.valueOf(candidate).equals(value))return value;throw new IllegalArgumentException("Unknown native property value");}
     @Override public NativeBlockState decodeBlockState(String key){return strict(key.trim());}
     @Override public NativeBlockState blockOrNull(String key){return blockOrNull(key,false);}
     @Override public NativeBlockState blockOrNull(String key,boolean warn){
         if(key==null)return null;String text=key.trim();if(text.startsWith("minecraft:cauldron[level="))text=text.replace(":cauldron[",":water_cauldron[");if(text.equals("minecraft:grass_path"))return direct(states.get(types.get(typeIds.get("minecraft:dirt_path")).defaultState));
-        String lower=text.toLowerCase(Locale.ROOT);BrowserBlockState state=create(lower);if(state==null)state=create("minecraft:"+lower);if(state==null)return null;BlockType type=types.get(state.state.type);if(type.leaf){State updated=byKey.get(BlockStateKey.withProperty(state.key(),"persistent",Boolean.toString(preventLeafDecay)));if(updated==null)throw new IllegalStateException("Native leaf decay metadata is incomplete");return intern(updated,state.parsed);}return state;
+        String lower=text.toLowerCase(Locale.ROOT);BrowserBlockState state=create(lower);if(state==null)state=create("minecraft:"+lower);if(state==null)return null;State updated=leafState(state.state);return updated==state.state?state:intern(updated,state.parsed);
     }
     private BrowserBlockState create(String text){try{return strict(text);}catch(IllegalArgumentException failure){int bracket=text.indexOf('[');return bracket<0?null:create(text.substring(0,bracket));}}
     @Override public NativeBlockState block(String key){NativeBlockState state=blockOrNull(key,true);return state==null?air():state;}

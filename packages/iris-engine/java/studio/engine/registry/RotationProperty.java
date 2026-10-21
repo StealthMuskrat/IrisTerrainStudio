@@ -30,13 +30,18 @@ public class RotationProperty {
         if(type==RotationTokens.Axis.class){for(var token:RotationTokens.Axis.values())if(token.getSerializedName().equals(value))return token;}
         if(type==RotationTokens.WallSide.class){for(var token:RotationTokens.WallSide.values())if(token.getSerializedName().equals(value))return token;}
         if(type==RotationTokens.RedstoneSide.class){for(var token:RotationTokens.RedstoneSide.values())if(token.getSerializedName().equals(value))return token;}
-        throw studio.engine.UnsupportedPlatform.unavailable("Native rotation requested an opaque property value: "+nativeValueClass);
+        if(type==Other.class)return new Other(this,value);
+        throw studio.engine.UnsupportedPlatform.unavailable("Unconnected native property value: "+nativeValueClass);
     }
     String serialize(Comparable<?> value){
         String result=value instanceof RotationTokens.Direction token?token.getSerializedName():value instanceof RotationTokens.Axis token?token.getSerializedName():value instanceof RotationTokens.WallSide token?token.getSerializedName():value instanceof RotationTokens.RedstoneSide token?token.getSerializedName():String.valueOf(value);
-        if(!serialized.contains(result)||!getValueClass().isInstance(value))throw studio.engine.UnsupportedPlatform.unavailable("Incompatible native rotation property value");return result;
+        if(!serialized.contains(result)||!getValueClass().isInstance(value)||value instanceof Other token&&token.property!=this)throw studio.engine.UnsupportedPlatform.unavailable("Incompatible native rotation property value");return result;
     }
-    private static final class Other{}
+    /** Captured opaque enum values can be copied; their enum behavior is not simulated. */
+    private record Other(RotationProperty property,String value) implements Comparable<Other>{
+        @Override public String toString(){return value;}
+        @Override public int compareTo(Other other){throw studio.engine.UnsupportedPlatform.unavailable("Opaque native property ordering");}
+    }
     public static final class BooleanProperty extends RotationProperty {BooleanProperty(String name,String kind,String valueClass,List<String> values){super(name,kind,valueClass,values);}}
     public static final class IntegerProperty extends RotationProperty {IntegerProperty(String name,String kind,String valueClass,List<String> values){super(name,kind,valueClass,values);}}
     public static final class EnumProperty extends RotationProperty {EnumProperty(String name,String kind,String valueClass,List<String> values){super(name,kind,valueClass,values);}}

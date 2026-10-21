@@ -50,8 +50,11 @@ public final class ProceduralPreview {
         WorkerProceduralMap.begin();try{var selected=select(pack,folder,key,family,index,variant);return serialize(selected.object(),family,index,variant,selected.poolSize(),Long.toString(seed(selected.placement())));}finally{WorkerProceduralMap.end();}
     }
     public static String place(MemoryPack pack,BrowserTerrainEngine engine,int x,int z,String folder,String key,String family,int index,int variant,String placementSeed)throws IOException{
+        return place(pack,engine,x,z,folder,key,family,index,variant,placementSeed,null);
+    }
+    public static String place(MemoryPack pack,BrowserTerrainEngine engine,int x,int z,String folder,String key,String family,int index,int variant,String placementSeed,art.arcane.iris.structure.object.IrisObjectReplace diagnosticEdit)throws IOException{
         WorkerProceduralMap.begin();try{
-            var selected=select(pack,folder,key,family,index,variant);var rng=new art.arcane.volmlib.util.math.RNG(Long.parseLong(placementSeed));var config=selected.placement().asPlacement();IrisObject object=config.scaleObject(rng,selected.object(),engine.getDimension());
+            var selected=select(pack,folder,key,family,index,variant);var rng=new art.arcane.volmlib.util.math.RNG(Long.parseLong(placementSeed));var config=selected.placement().asPlacement();if(diagnosticEdit!=null)config.getEdit().add(diagnosticEdit);IrisObject object=config.scaleObject(rng,selected.object(),engine.getDimension());
             if(object==null)throw new IllegalArgumentException("Native scale produced no object");
             var request=new TerrainCarvingComponent.Placement(object,config,rng,selected.placement().isPlausible());
             String result=TerrainCarvingComponent.place(engine,x,z,request);
