@@ -1583,6 +1583,205 @@
     "270,270,270": "rot_90_y_pos"
   },
   "capturedFaceMappings": 144,
+  "modelOffsets": {
+    "minecraft:mangrove_propagule": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:short_grass": {
+      "kind": "xyz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:fern": {
+      "kind": "xyz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:short_dry_grass": {
+      "kind": "xyz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:tall_dry_grass": {
+      "kind": "xyz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:tall_seagrass": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:dandelion": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:golden_dandelion": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:torchflower": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:poppy": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:blue_orchid": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:allium": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:azure_bluet": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:red_tulip": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:orange_tulip": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:white_tulip": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:pink_tulip": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:oxeye_daisy": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:cornflower": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:wither_rose": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:lily_of_the_valley": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:sunflower": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:lilac": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:rose_bush": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:peony": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:tall_grass": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:large_fern": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:pitcher_plant": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:bamboo_sapling": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:bamboo": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:warped_roots": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:nether_sprouts": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:crimson_roots": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:pointed_dripstone": {
+      "kind": "xz",
+      "horizontal": "3e000000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:sulfur_spike": {
+      "kind": "xz",
+      "horizontal": "3e000000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:small_dripleaf": {
+      "kind": "xyz",
+      "horizontal": "3e800000",
+      "vertical": "3dcccccd"
+    },
+    "minecraft:hanging_roots": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:open_eyeblossom": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    },
+    "minecraft:closed_eyeblossom": {
+      "kind": "xz",
+      "horizontal": "3e800000",
+      "vertical": "3e4ccccd"
+    }
+  },
+  "defaultStateOffsetMetadataReads": 1286,
+  "offsetCellsEvaluated": 0,
   "classifiedBlockTypes": 1286,
   "defaultSeedRule": "position",
   "seedRules": {
@@ -2924,5 +3123,5 @@
     "minecraft:zombie_head",
     "minecraft:zombie_wall_head"
   ],
-  "captureSourceSha256": "603a93fa7e67e17fa86c13cb2fbc47ebb96c2bc28f76e5be542b23c275487072"
+  "captureSourceSha256": "2e65853252a76dcc6c2bc1e3f8da42bdfe684d594f58d591b6b83f856a7c8c55"
 }

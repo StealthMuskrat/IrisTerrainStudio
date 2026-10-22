@@ -31,5 +31,5 @@ export class CellPalette{
 }
 // A constant white carrier lets vertex identity colors use the existing textured pipeline.
 export class CellAtlas extends TextureAtlas{
-  constructor(device){super(device,4);try{this.context.fillStyle='#fff';this.context.fillRect(0,0,4,4);device.queue.copyExternalImageToTexture({source:this.canvas},{texture:this.texture},[4,4]);}catch(error){this.dispose();throw error;}}
+  constructor(device){super(device,4);try{const pixels=new Uint8Array(4*4*4).fill(255);device.queue.writeTexture({texture:this.texture},pixels,{bytesPerRow:16,rowsPerImage:4},[4,4]);this.alpha.fill(255);}catch(error){this.dispose();throw error;}}
 }

@@ -1,3 +1,4 @@
+import{modelOffsetProfile,blockModelOffset}from'../resource-packs/model-offset.mjs';
 import{selectedModelParts}from'../resource-packs/model-selection.mjs';
 import{lookAt,perspective,multiply,inverse,transform,normalize,subtract}from'./math.mjs';
 import{VoxelVolume}from'./volume.mjs';
@@ -46,14 +47,14 @@ export class WorldRenderer{
     // Generated inputs are immutable. Reusing the exact committed input avoids another
     // complete block/biome validation scan during an appearance-only replacement.
     const reuse=input===this.volumeInput&&sameVoxelData(this.volume,input)&&this.volume.biomes===(input.biomes||null)&&this.volume.metadata===input.metadata;
-    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[];let session;
+    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[],offsetProfiles=[];let session;
     try{
       if(!cells)for(let i=0;i<volume.palette.length;i++){
-        try{if(volume.palette[i].air===true){models[i]=[];continue;}models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
+        try{if(volume.palette[i].air===true){models[i]=[];continue;}offsetProfiles[i]=modelOffsetProfile(volume.palette[i].id);models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
         catch(error){models[i]=[];diagnostics.push({block:volume.palette[i].id,message:error.message});}
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
-      const meshPalette=cells?.palette??volume.palette.map((block,index)=>({...block,solid:opaqueUnitCube(models[index])}));
+      const meshPalette=cells?.palette??volume.palette.map((block,index)=>({...block,modelOffset:offsetProfiles[index]??null,solid:!offsetProfiles[index]&&opaqueUnitCube(models[index])}));
       session=this.pendingMesh=new MeshSession(volume,models,meshPalette,{cellColors:cells?.cellColors,onProgress:progress=>this.onProgress?.(progress)});
       const mesh=await session.build(clip,id);
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
@@ -147,7 +148,7 @@ export class WorldRenderer{
     if(this.selectionCount){pass.setPipeline(this.selectionPipeline);pass.setVertexBuffer(0,this.selectionBuffer);pass.draw(this.selectionCount);}
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();const hit=this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});if(hit){const[x,y,z]=[hit.x,hit.y,hit.z].map((value,axis)=>value-this.volume.origin[axis]),model=this.models[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]],parts=Array.isArray(model)?[model]:selectedModelParts(model,hit.block,[hit.x,hit.y,hit.z]);hit.modelApplications=[...new Set(parts.flatMap(part=>part.map(quad=>quad.modelId)).filter(Boolean))];}return hit;}
+  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();const hit=this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});if(hit){const[x,y,z]=[hit.x,hit.y,hit.z].map((value,axis)=>value-this.volume.origin[axis]),model=this.models[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]],parts=Array.isArray(model)?[model]:selectedModelParts(model,hit.block,[hit.x,hit.y,hit.z]);hit.modelApplications=[...new Set(parts.flatMap(part=>part.map(quad=>quad.modelId)).filter(Boolean))];hit.modelOffset=blockModelOffset(this.meshPalette[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]].modelOffset,[hit.x,hit.y,hit.z]);}return hit;}
   configureNavigation(input){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     const next=navigationSettings({...this.navigation,...input});this.stopNavigation();this.navigation=next;return{...next};

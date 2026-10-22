@@ -421,5 +421,67 @@
         "axis": "!x|z"
       }
     }
+  ],
+  "offsets": [
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:short_grass"
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:poppy"
+      },
+      "position": [
+        -17,
+        64,
+        -33
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:pointed_dripstone"
+      },
+      "position": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:short_grass"
+      },
+      "position": [
+        10,
+        64,
+        -7
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:short_grass"
+      },
+      "position": [
+        10,
+        -64,
+        -7
+      ]
+    }
   ]
 }

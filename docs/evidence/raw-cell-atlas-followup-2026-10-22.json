@@ -1,0 +1,57 @@
+{
+  "scope": "raw-cell-atlas-upload-targeted",
+  "result": "pass",
+  "cells": 1,
+  "views": [
+    "blocks",
+    "biomes"
+  ],
+  "whiteCarrierPixels": 16,
+  "controlledUploadDevice": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "capturedAt": "2026-10-22",
+  "change": "CellAtlas now writes its opaque white carrier directly to the raw-pixel atlas and alpha plane; it no longer accesses removed canvas/context properties.",
+  "sourceFiles": [
+    {
+      "path": "packages/voxel-renderer/cell-view.mjs",
+      "sha256": "2ad1a941e3e7ccd0e716dcc148252fbe69f54a166974d913303b5755c00b5ea4"
+    },
+    {
+      "path": "tools/checks/cell-atlas-smoke.mjs",
+      "sha256": "3557bcf11c51a7b03e65b25eab8d01352b66ecedee94c745a5a2951a9471a18e"
+    }
+  ],
+  "browserDiagnostic": {
+    "browser": {
+      "playwright": "1.62.1",
+      "chromiumRevision": "1234",
+      "browserVersion": "151.0.7922.34",
+      "url": "https://storage.googleapis.com/chrome-for-testing-public/151.0.7922.34/linux64/chrome-linux64.zip",
+      "archiveBytes": 193282658,
+      "archiveSha256": "ae8736ac28bc69278551500f219fc749575648263c43ec5990749eff43b9fcf8"
+    },
+    "binaryVersionCommand": "Google Chrome for Testing 151.0.7922.34",
+    "temporaryDirectory": "owned workspace directory",
+    "defaultPlaywrightDownload": "CDN returned a 195-byte HTML Site Unavailable response; no ZIP accepted. Direct official Google archive was downloaded and extracted.",
+    "playwrightPersistentContext": {
+      "started": false,
+      "signal": "SIGTRAP",
+      "beforeNavigation": true
+    },
+    "minimalCliCdp": {
+      "started": false,
+      "signal": "SIGTRAP",
+      "devToolsEndpoint": false,
+      "stderrBytes": 0
+    },
+    "syscallTrace": "PTRACE_TRACEME / PTRACE_SETOPTIONS denied by execution environment",
+    "actualBrowserVerified": false,
+    "webGpuVerified": false
+  },
+  "requiredEngineDevelopmentDistribution": "pass",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "broadSuite": false,
+  "githubTests": false
+}

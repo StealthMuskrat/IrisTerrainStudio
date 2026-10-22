@@ -13,9 +13,12 @@ export function blockModelSeed(block,position,rule=visualSeedRule(block.id)){
   if(rule==='lower-half'){if(block.properties?.half==='upper')y=(y-1)|0;}
   else if(rule==='bed-source'){if(block.properties?.part==='foot'){const facing={north:[0,-1],south:[0,1],west:[-1,0],east:[1,0]}[block.properties?.facing];if(!facing)throw new Error('Bed model selection requires its native facing.');x=(x+facing[0])|0;z=(z+facing[1])|0;}}
   else if(rule!=='position')throw new Error('Unknown client visual seed rule.');
-  let seed=BigInt.asIntN(64,BigInt(Math.imul(x,3129871))^(BigInt(z)*116129781n)^BigInt(y));seed=BigInt.asIntN(64,seed*seed*42317861n+seed*11n);return seed>>16n;
+  return coordinateSeed(x,y,z);
 }
 export function selectedModelParts(plan,block,position){
   if(plan.kind!=='minecraft-model-plan'||!Array.isArray(plan.groups)||plan.groups.length>128)throw new Error('Invalid client model selection plan.');const random=new ClientModelRandom(blockModelSeed(block,position,plan.seedRule)),seed=plan.multipart?random.nextLong():null,result=[];
   for(const group of plan.groups){if(plan.multipart)random.setSeed(seed);let index=0;if(group.weighted){let choice=random.nextInt(group.totalWeight);for(;index<group.variants.length;index++){choice-=group.variants[index].weight;if(choice<0)break;}}const selected=group.variants[index];if(!selected||!Array.isArray(selected.quads))throw new Error('Client weighted model coverage is incomplete.');result.push(selected.quads);}return result;
 }
+
+function coordinateSeed(x,y,z){let seed=BigInt.asIntN(64,BigInt(Math.imul(x,3129871))^(BigInt(z)*116129781n)^BigInt(y));seed=BigInt.asIntN(64,seed*seed*42317861n+seed*11n);return seed>>16n;}
+export function positionModelSeed(position){if(!Array.isArray(position)||position.length!==3||!position.every(v=>Number.isInteger(v)&&v>=-2147483648&&v<=2147483647))throw new Error('Model offset requires signed whole-block coordinates.');return coordinateSeed(...position);}
