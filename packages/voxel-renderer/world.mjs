@@ -1,7 +1,8 @@
+import{selectedModelParts}from'../resource-packs/model-selection.mjs';
 import{lookAt,perspective,multiply,inverse,transform,normalize,subtract}from'./math.mjs';
 import{VoxelVolume}from'./volume.mjs';
 import{localClip,clipBounds,clipCenter,emptyClip}from'./clip.mjs';
-import{bakeBlock}from'./models.mjs';
+import{bakeBlockPlan}from'./models.mjs';
 import{TextureAtlas}from'../resource-packs/atlas.mjs';
 import{visibleMeshRanges}from'./frustum.mjs';
 import{MeshBufferStore}from'./mesh-buffers.mjs';
@@ -19,6 +20,7 @@ struct Output{@builtin(position) position:vec4f,@location(0) normal:vec3f,@locat
 // Only fully covered opaque unit-cube models can occlude a neighboring face here.
 // Other model shapes retain their faces until the exact Minecraft shape adapter is connected.
 function opaqueUnitCube(quads){
+  if(!Array.isArray(quads))return quads?.kind==='minecraft-model-plan'&&quads.groups.some(group=>group.variants.filter(row=>!group.weighted||row.weight>0).every(row=>opaqueUnitCube(row.quads)));
   const covered=new Set();for(const quad of quads){if(quad.transparency!=='opaque'||quad.positions.length!==4)continue;
     for(let axis=0;axis<3;axis++)for(const side of [0,1]){
       const rest=[0,1,2].filter(value=>value!==axis),corners=new Set();let valid=true;
@@ -47,7 +49,7 @@ export class WorldRenderer{
     const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[];let session;
     try{
       if(!cells)for(let i=0;i<volume.palette.length;i++){
-        try{if(volume.palette[i].air===true){models[i]=[];continue;}models[i]=await bakeBlock(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
+        try{if(volume.palette[i].air===true){models[i]=[];continue;}models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
         catch(error){models[i]=[];diagnostics.push({block:volume.palette[i].id,message:error.message});}
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
@@ -145,7 +147,7 @@ export class WorldRenderer{
     if(this.selectionCount){pass.setPipeline(this.selectionPipeline);pass.setVertexBuffer(0,this.selectionBuffer);pass.draw(this.selectionCount);}
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();return this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});}
+  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();const hit=this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});if(hit){const[x,y,z]=[hit.x,hit.y,hit.z].map((value,axis)=>value-this.volume.origin[axis]),model=this.models[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]],parts=Array.isArray(model)?[model]:selectedModelParts(model,hit.block,[hit.x,hit.y,hit.z]);hit.modelApplications=[...new Set(parts.flatMap(part=>part.map(quad=>quad.modelId)).filter(Boolean))];}return hit;}
   configureNavigation(input){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     const next=navigationSettings({...this.navigation,...input});this.stopNavigation();this.navigation=next;return{...next};

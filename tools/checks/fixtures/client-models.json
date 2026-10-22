@@ -1,0 +1,425 @@
+{
+  "transforms": [
+    {
+      "x": 0,
+      "y": 90,
+      "z": 0,
+      "face": "up",
+      "uv": [
+        2,
+        5
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 0,
+      "y": 90,
+      "z": 0,
+      "face": "north",
+      "uv": [
+        1,
+        14
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 90,
+      "y": 0,
+      "z": 0,
+      "face": "north",
+      "uv": [
+        3,
+        12
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 90,
+      "y": 90,
+      "z": 0,
+      "face": "east",
+      "uv": [
+        14,
+        2
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 90,
+      "face": "south",
+      "uv": [
+        6,
+        11
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 90,
+      "face": "up",
+      "uv": [
+        4,
+        9
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": 90,
+      "y": 180,
+      "z": 270,
+      "face": "west",
+      "uv": [
+        2,
+        13
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    },
+    {
+      "x": -90,
+      "y": 450,
+      "z": 360,
+      "face": "down",
+      "uv": [
+        11,
+        3
+      ],
+      "point": [
+        0.125,
+        0.75,
+        0.375
+      ]
+    }
+  ],
+  "selections": [
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        -1,
+        0,
+        -1
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        0,
+        0,
+        -1
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        1,
+        0,
+        -1
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        -29999984,
+        -64,
+        29999984
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        1234567,
+        256,
+        -2345678
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_door",
+        "properties": {
+          "half": "upper"
+        }
+      },
+      "position": [
+        -7,
+        65,
+        13
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:sunflower",
+        "properties": {
+          "half": "upper"
+        }
+      },
+      "position": [
+        -7,
+        65,
+        13
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:red_bed",
+        "properties": {
+          "part": "foot",
+          "facing": "west"
+        }
+      },
+      "position": [
+        -7,
+        65,
+        13
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:red_bed",
+        "properties": {
+          "part": "head",
+          "facing": "west"
+        }
+      },
+      "position": [
+        -7,
+        65,
+        13
+      ],
+      "multipart": false,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            2,
+            0,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "multipart": true,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        },
+        {
+          "weighted": false,
+          "weights": [
+            1
+          ]
+        },
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "position": [
+        -17,
+        64,
+        -33
+      ],
+      "multipart": true,
+      "groups": [
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        },
+        {
+          "weighted": false,
+          "weights": [
+            1
+          ]
+        },
+        {
+          "weighted": true,
+          "weights": [
+            1,
+            3
+          ]
+        }
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "block": {
+        "id": "minecraft:oak_log",
+        "properties": {
+          "axis": "x"
+        }
+      },
+      "when": {
+        "axis": "!x|z"
+      }
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_log",
+        "properties": {
+          "axis": "y"
+        }
+      },
+      "when": {
+        "axis": "!x|z"
+      }
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_log",
+        "properties": {
+          "axis": "z"
+        }
+      },
+      "when": {
+        "axis": "!x|z"
+      }
+    }
+  ]
+}

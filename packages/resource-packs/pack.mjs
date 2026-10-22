@@ -1,3 +1,4 @@
+import { quadrant } from './model-transform.mjs';
 import { decodeTexturePng } from './texture-pixels.mjs';
 import { resolvePackTarget } from './target-format.mjs';
 import { resourceFilter } from './resource-filter.mjs';
@@ -37,7 +38,7 @@ function matchesWhen(condition, state) {
   if (!condition) return true;
   if (condition.OR) return condition.OR.some(c => matchesWhen(c, state));
   if (condition.AND) return condition.AND.every(c => matchesWhen(c, state));
-  return Object.entries(condition).every(([key, value]) => String(value).split('|').includes(String(state[key])));
+  return Object.entries(condition).every(([key,value])=>{if(!Object.hasOwn(state,key))throw new Error(`Multipart condition references unknown state property ${key}.`);return String(value).split('|').some(term=>{if(!term||term==='!')throw new Error('Empty multipart condition term.');return term.startsWith('!')?String(state[key])!==term.slice(1):String(state[key])===term;});});
 }
 function variantMatches(key, state) { return !key || key.split(',').every(part => { const [name, value] = part.split('='); return value?.split('|').includes(String(state[name])); }); }
 export class ResourcePackStack {
@@ -73,21 +74,15 @@ export class ResourcePackStack {
     if (!value) throw new Error(`Missing texture ${reference} in ${model.id}.`);
     return identifier(value).id;
   }
-  blockModels(block, choices) {
-    const id = identifier(block.id), state = block.properties || {};
-    if (['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(id.id)) return [];
-    const definition = this.json(`assets/${id.namespace}/blockstates/${id.path}.json`); if (!definition) throw new Error(`Missing blockstate ${id.id}.`);
-    const applications = [];
-    if (definition.variants) { const candidates = Object.entries(definition.variants).filter(([key]) => variantMatches(key,state)); if (candidates.length !== 1) throw new Error(`Blockstate ${id.id} has ${candidates.length} matching variants.`); applications.push(candidates[0][1]); }
-    if (definition.multipart) for (const part of definition.multipart) if (matchesWhen(part.when,state)) applications.push(part.apply);
-    return applications.map((application, index) => {
-      let entry = application;
-      if (Array.isArray(entry)) { if (entry.length !== 1 && choices?.[index] === undefined) throw new Error(`Weighted models for ${id.id} require the engine's exact model selection.`); entry = entry[choices?.[index] ?? 0]; }
-      if (!entry?.model) throw new Error(`Blockstate ${id.id} has an invalid model application.`);
-      if (![0,90,180,270].includes(entry.x || 0) || ![0,90,180,270].includes(entry.y || 0)) throw new Error(`Unsupported blockstate rotation for ${id.id}.`);
-      return { model: this.resolveModel(entry.model), x: entry.x || 0, y: entry.y || 0, uvlock: !!entry.uvlock };
-    });
+  blockModelGroups(block){
+    const id=identifier(block.id),state=block.properties||{};if(['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(id.id))return{multipart:false,groups:[]};
+    const definition=this.json(`assets/${id.namespace}/blockstates/${id.path}.json`);if(!definition)throw new Error(`Missing blockstate ${id.id}.`);let applications=[],multipart=false;
+    if(definition.variants){const candidates=Object.entries(definition.variants).filter(([key])=>variantMatches(key,state));if(candidates.length>1)throw new Error(`Blockstate ${id.id} has overlapping matching variants.`);if(candidates.length)applications=[candidates[0][1]];else if(!definition.multipart)throw new Error(`Blockstate ${id.id} has no matching variants.`);}
+    if(!applications.length&&definition.multipart){if(!Array.isArray(definition.multipart))throw new Error(`Invalid multipart blockstate ${id.id}.`);multipart=true;for(const part of definition.multipart)if(matchesWhen(part.when,state))applications.push(part.apply);}
+    if(!definition.variants&&!definition.multipart)throw new Error(`Blockstate ${id.id} has no model definition.`);if(applications.length>128)throw new Error('Blockstate exceeds its 128-selector model budget.');
+    let count=0;const groups=applications.map(application=>{const weighted=Array.isArray(application),entries=weighted?application:[application];if(!entries.length||entries.length>128||(count+=entries.length)>512)throw new Error('Blockstate exceeds its bounded model-candidate budget.');let totalWeight=0;const variants=entries.map(entry=>{if(!entry||typeof entry!=='object'||!entry.model)throw new Error(`Invalid model application in ${id.id}.`);const weight=weighted?(entry.weight??1):1;if(!Number.isInteger(weight)||weight<0||weight>2147483647||(totalWeight+=weight)>2147483647)throw new Error(`Invalid model weights in ${id.id}.`);if(entry.uvlock!==undefined&&typeof entry.uvlock!=='boolean')throw new Error('Model uvlock must be a boolean.');return{weight,model:this.resolveModel(entry.model),x:quadrant(entry.x),y:quadrant(entry.y),z:quadrant(entry.z),uvlock:entry.uvlock===true};});if(weighted&&totalWeight===0)throw new Error(`Blockstate ${id.id} has no positive model weight.`);return{weighted,totalWeight,variants};});return{multipart,groups};
   }
+  blockModels(block,choices){return this.blockModelGroups(block).groups.map((group,index)=>{if(group.weighted&&group.variants.length!==1&&choices?.[index]===undefined)throw new Error(`Weighted models for ${block.id} require contextual client selection.`);const choice=choices?.[index]??0;if(!Number.isInteger(choice)||choice<0||choice>=group.variants.length)throw new Error('Invalid explicit model choice.');return group.variants[choice];});}
   async bitmap(name){
     this.requireOpen();const id=identifier(name);
     if(!this.bitmaps.has(id.id)){

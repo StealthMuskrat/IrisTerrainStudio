@@ -1,4 +1,4 @@
-import{localClip,emptyClip}from'./clip.mjs';
+import{localClip,emptyClip}from'./clip.mjs';import{selectedModelParts}from'../resource-packs/model-selection.mjs';
 const directions={north:[0,0,-1],south:[0,0,1],west:[-1,0,0],east:[1,0,0],up:[0,1,0],down:[0,-1,0]};
 // Typed pages avoid retaining millions of boxed numbers while building a mesh.
 class Vertices {
@@ -65,10 +65,10 @@ self.onmessage=async({data})=>{
         stats.rebuilt++;
         const opaque=new Vertices(),transparent=new Vertices(),pickOpaque=new PickRecords(),pickTransparent=new PickRecords(),section={section:base.map((value,axis)=>(value+origin[axis])/16),opaque:range(),transparent:range()};let count=0;
         for(let y=Math.max(sy,minimum[1]);y<Math.min(sy+16,maximum[1]);y++)for(let z=Math.max(sz,minimum[2]);z<Math.min(sz+16,maximum[2]);z++)for(let x=Math.max(sx,minimum[0]);x<Math.min(sx+16,maximum[0]);x++){
-          stats.cells++;const owner=x+width*(z+depth*y),index=blocks[owner],block=palette[index];if(!models[index]?.length)continue;
+          stats.cells++;const owner=x+width*(z+depth*y),index=blocks[owner],block=palette[index],model=models[index];if(!model||Array.isArray(model)&&!model.length)continue;const parts=Array.isArray(model)?[model]:selectedModelParts(model,block,[x+origin[0],y+origin[1],z+origin[2]]);
           let cellColor;
           if(input.cellColors){const colorIndex=input.cellColors.indices?.[owner]??index,at=colorIndex*4;if(at+4>input.cellColors.palette.length)throw new Error('A visible cell references a missing identity color.');cellColor=input.colorRows.get(colorIndex);if(!cellColor){cellColor=Array.from(input.cellColors.palette.subarray(at,at+4));input.colorRows.set(colorIndex,cellColor);}}
-          for(const quad of models[index]){
+          for(const part of parts)for(const quad of part){
             if(quad.cull){const d=directions[quad.cull],nx=x+d[0],ny=y+d[1],nz=z+d[2];if(inside(nx,ny,nz)){const neighbor=palette[blocks[nx+width*(nz+depth*ny)]];if(neighbor.solid===true||block.cullSameMaterial===true&&neighbor.id===block.id)continue;}}
             if(++count+faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');
             const color=cellColor??quad.color,blend=quad.transparency==='blend',target=blend?transparent:opaque,bounds=blend?section.transparent:section.opaque,offset=[x-center[0],y-center[1],z-center[2]];bounds.count+=6;
