@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-22",
+  "scope": "source-preserving structural JSON operations, inspector actions, schema additions and edit ownership",
+  "fixture": {
+    "authoredBytes": 172,
+    "arrayEntries": 3,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "source-preserving add/remove/replace, insertion, exact array duplication/moves and escaped property rename",
+    "BOM/CRLF, unknown values, escaped string spelling, unsafe prototype names, long integers and decimal tokens remain intact",
+    "invalid pointers/positions, duplicate keys, root removal and nesting refusals before publication",
+    "attached-schema suggestions/defaults are explicit; ordinary validation still reports required/collection constraints",
+    "actual dialog actions publish one undoable edit; invalid input/root changes and stale resource/schema/read-only ownership refuse",
+    "reparsed but unchanged saved resources retain working render-stamped controls",
+    "actual inspector exposes collection/primitive actions; saved controls work after reparse and stale field handlers cannot overwrite another edit",
+    "actual asynchronous schema import rejects obsolete reads, serializes saves to the captured category, rejects duplicate/non-schema roots and validates boolean false schemas"
+  ],
+  "workspaceSha256": {
+    "packages/iris-config/document.mjs": "f53f4141c66b6ef0e689292abd1c25d2c788bfab6b4a8babfd78bab50fcb94db",
+    "apps/web/lib/json-tools.mjs": "1d70e39b440a654ca3287208b13f6d4ac04f0e2ba9caf0041590f19e10d25aee",
+    "apps/web/main.mjs": "b2352b5c6d9216499bed8ce4f01ea599736513d88c81d5522dff4e8d316ca451",
+    "apps/web/styles.css": "2d2fb05cd0cfb7d13cbebc30062af2d5481307da1f7974352cb5bb7bb1991515"
+  },
+  "realBrowserVerified": false,
+  "nativeSchemaQualified": false,
+  "complete": false,
+  "limits": "Small authored JSON and controlled Node DOM/dialog hosts only. No native build, terrain generation, registry/state enumeration, GPU work, broad suite or GitHub workflow. Real browser layout/focus/modal/storage and full schema/release qualification remain pending. Suggestions cover up to 300 direct resolved schema properties; unknown fields remain editable without invented defaults.",
+  "relatedTargetedChecks": [
+    {
+      "command": "node tools/checks/editor-invariants.mjs",
+      "result": "pass",
+      "scope": "Exact decimal/schema constraints and one small deleted-resource restore/overwrite-conflict case."
+    }
+  ]
+}
