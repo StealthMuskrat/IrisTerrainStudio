@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-22",
+  "scope": "bounded resource string-match exploration, open-edit mutation warnings and JSON location navigation",
+  "fixture": {
+    "jsonSources": 3,
+    "sourceBytes": 221,
+    "assetNames": 1,
+    "paginationMatches": 33,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "saved/open source scopes, exact path/ID/basename candidates, ambiguity and escaped JSON pointers",
+    "incoming self exclusion, search/paging, no asset reads and unchanged numeric source tokens",
+    "bounded files/bytes/nodes/links/aliases, duplicate refusal, atomic per-file evidence and cancelled stale reads",
+    "actual reference dialog filters/changes direction, requires explicit candidate choice and guards closed/stale actions",
+    "mutation inspection waits for capture, warns on incomplete inputs, supports cancellation and never treats a stale confirmation as approval",
+    "actual validation and Go to JSON actions select exact value/syntax spans without edits, including escaped keys and 64-bit numeric tokens",
+    "source links reject changed buffer owner/version/value; readonly navigation does not invoke terrain generation",
+    "actual rename/delete are gated by captured open-reference review and independently retains the server saved-file warning"
+  ],
+  "workspaceSha256": {
+    "packages/iris-resources/references.mjs": "33f3bb7e8e3526dfc41dc0b8690088e6c9636e4b0d736b6b0d87fc66b45e76a7",
+    "packages/iris-config/document.mjs": "c222e8ef7cc381478cbaf20bcae0bb2026bf9c764ec91e36e05f646ced56d4e6",
+    "apps/web/lib/reference-tools.mjs": "f64cb29f1fdaddadb9993d0c157281299569673b05b6cc00cffe880d89c0d4ae",
+    "apps/web/lib/json-navigation.mjs": "04788d7595852a2e9884ff4ba8addff61a5412481763ee8d6f42e28ad5b1fade",
+    "apps/web/main.mjs": "8a23420771900853f762315606be7de31a225bb68c6969638a259b82040fdec7",
+    "apps/web/index.html": "3a1ee1ce485253a18ac11a2a863787127c18aac675ffd56d9d211cda6398a31c",
+    "apps/web/styles.css": "39fb5f4b36e7e9d11656449785222b72f5f632eb098b1e00d961a7e96e2696f3"
+  },
+  "realBrowserVerified": false,
+  "referenceSemanticsQualified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Small authored sources and controlled Node dialog/input/application hosts only. String equality supplies possible candidates, not native field validity or missing-reference proof. Incomplete/ambiguous captures are labelled and mutation review remains explicit. No native build/generation, asset decoding, registry/state sweep, GPU work, broad suite or GitHub workflow. Real browser focus/layout/modal/selection and complete native/schema/client/release qualification remain pending.",
+  "relatedTargetedChecks": [
+    {
+      "command": "node tools/checks/edit-workspace-smoke.mjs",
+      "result": "pass",
+      "scope": "Existing two-file workspace/save/rename/delete ownership check; reference review is stubbed there and exercised by this batch; historical evidence preserved."
+    }
+  ]
+}

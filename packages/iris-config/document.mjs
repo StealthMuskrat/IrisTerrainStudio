@@ -12,12 +12,14 @@ export function stringify(value, depth = 0) {
   return (array ? '[' : '{') + '\n' + entries.map(([key, v]) => inner + (array ? '' : JSON.stringify(key) + ': ') + stringify(v, depth + 1)).join(',\n') + '\n' + pad + (array ? ']' : '}');
 }
 export class JsonDocument {
-  constructor(text) {
+  constructor(text,{maxNodes=Infinity}={}) {
+    if(maxNodes!==Infinity&&(!Number.isSafeInteger(maxNodes)||maxNodes<1))throw new Error('Invalid JSON node budget.');let parsedNodes=0;
     this.text = text; this.nodes = new Map(); this.issues = []; let cursor = text.charCodeAt(0) === 0xfeff ? 1 : 0;
     const whitespace = () => { while (/[\x20\t\r\n]/.test(text[cursor] || '\0')) cursor++; };
-    const fail = message => { const error = new SyntaxError(message); error.offset = cursor; error.line = text.slice(0, cursor).split('\n').length; error.column = cursor - text.lastIndexOf('\n', cursor - 1); throw error; };
+    const fail = message => { const error = new SyntaxError(message); error.offset = cursor;error.nodeCount=parsedNodes; error.line = text.slice(0, cursor).split('\n').length; error.column = cursor - text.lastIndexOf('\n', cursor - 1); throw error; };
     const string = () => { const start = cursor++; for (; cursor < text.length; cursor++) { if (text[cursor] === '\\') { cursor++; continue; } if (text[cursor] === '"') { cursor++; try { return JSON.parse(text.slice(start, cursor)); } catch { fail('Invalid JSON string.'); } } } fail('Unterminated JSON string.'); };
     const parse = (pointer, depth = 0) => {
+      if(++parsedNodes>maxNodes)fail('Configuration exceeds its node budget.');
       if (depth > 100) fail('Configuration nesting exceeds 100 levels.');
       whitespace(); const start = cursor; let value, type, children = [];
       const char = text[cursor];
@@ -42,7 +44,7 @@ export class JsonDocument {
       else { const token = text.slice(cursor).match(/^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/); if (!token) fail('Expected a JSON value.'); value = new JsonNumber(token[0]); type = 'number'; cursor += token[0].length; }
       const node = { pointer, start, end: cursor, type, value, children }; this.nodes.set(pointer, node); return node;
     };
-    this.root = parse(''); whitespace(); if (cursor !== text.length) fail('Unexpected content after the JSON value.'); this.value = this.root.value;
+    this.root = parse(''); whitespace(); if (cursor !== text.length) fail('Unexpected content after the JSON value.'); this.value = this.root.value;this.nodeCount=parsedNodes;
   }
   replace(pointer, value) {
     return this.replaceRaw(pointer,stringify(value, pointerParts(pointer).length));
