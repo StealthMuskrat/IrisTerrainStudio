@@ -1,6 +1,7 @@
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import { constants } from 'node:fs';
+import { isUtf8 } from 'node:buffer';
 import { createHash, randomUUID } from 'node:crypto';
 import { resourcePath, jsonPath, packId, JSON_LIMIT, FILE_LIMIT, ARCHIVE_LIMIT, ENTRY_LIMIT } from '../../packages/shared/paths.mjs';
 import { readZip, writeZip } from '../../packages/shared/zip.mjs';
@@ -120,28 +121,41 @@ export class PackStore {
     jsonPath(relative); const directory = await this.internal(pack, ['backups', createHash('sha256').update(relative).digest('hex')]); if (!directory) return [];
     return (await this.backupRecords(directory)).filter(row=>row.path===relative).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
   }
+  async backupRecord(directory,file) {
+    const handle=await fs.open(path.join(directory,file),constants.O_RDONLY|(constants.O_NOFOLLOW||0)).catch(error=>{if(error.code==='ENOENT')throw new StoreError(404,'Backup not found.');if(error.code==='ELOOP')throw new StoreError(403,'Backup files cannot be symbolic links.');throw error;});
+    try {
+      const stat=await handle.stat();if(!stat.isFile()||stat.size>8192)throw new StoreError(422,'Invalid backup metadata.');
+      let row;try{row=JSON.parse(await handle.readFile('utf8'));jsonPath(row.path);}catch{throw new StoreError(422,'Invalid backup metadata.');}
+      if(file!==row.id+'.json'||!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>JSON_LIMIT||!/^"[a-f0-9]{64}"$/.test(row.etag)||typeof row.createdAt!=='string'||!Number.isFinite(Date.parse(row.createdAt)))throw new StoreError(422,'Invalid backup metadata.');
+      return{id:row.id,path:row.path,bytes:row.bytes,createdAt:row.createdAt,etag:row.etag};
+    }finally{await handle.close();}
+  }
   async backupRecords(directory) {
     const files = await fs.readdir(directory).catch(error => { if (error.code === 'ENOENT') return []; throw error; }); const result = [];
     for (const file of files.filter(name => /^\d+-[a-f0-9-]{36}\.json$/.test(name))) {
-      const handle = await fs.open(path.join(directory,file),constants.O_RDONLY|(constants.O_NOFOLLOW||0));
-      try {
-        const stat=await handle.stat();if(!stat.isFile()||stat.size>8192)throw new StoreError(422,'Invalid backup metadata.');
-        const row=JSON.parse(await handle.readFile('utf8'));jsonPath(row.path);
-        if(file!==row.id+'.json'||!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>JSON_LIMIT||!/^"[a-f0-9]{64}"$/.test(row.etag)||!Number.isFinite(Date.parse(row.createdAt)))throw new StoreError(422,'Invalid backup metadata.');
-        result.push({id:row.id,path:row.path,bytes:row.bytes,createdAt:row.createdAt,etag:row.etag});
-      } finally { await handle.close(); }
+      result.push(await this.backupRecord(directory,file));
+      if(result.length>50000)throw new StoreError(413,'Resource history exceeds the listing budget.');
     }
     return result;
   }
-  async restore(pack, relative, id, expected) {
-    const backup = (await this.backups(pack, relative)).find(row => row.id === id); if (!backup) throw new StoreError(404, 'Backup not found.');
-    const directory = await this.internal(pack, ['backups', createHash('sha256').update(relative).digest('hex')]);
-    const handle=await fs.open(path.join(directory,id+'.data'),constants.O_RDONLY|(constants.O_NOFOLLOW||0));
+  async readBackup(pack, relative, id) {
+    try{jsonPath(relative);}catch(error){throw new StoreError(400,error.message);}
+    if(typeof id!=='string'||!/^\d+-[a-f0-9-]{36}$/.test(id))throw new StoreError(400,'Invalid backup identifier.');
+    const directory=await this.internal(pack,['backups',createHash('sha256').update(relative).digest('hex')]);
+    if(!directory)throw new StoreError(404,'Backup not found.');
+    const backup=await this.backupRecord(directory,id+'.json');if(backup.path!==relative)throw new StoreError(404,'Backup not found.');
+    const handle=await fs.open(path.join(directory,id+'.data'),constants.O_RDONLY|(constants.O_NOFOLLOW||0)).catch(error=>{if(error.code==='ENOENT')throw new StoreError(404,'Backup data is unavailable.');if(error.code==='ELOOP')throw new StoreError(403,'Backup files cannot be symbolic links.');throw error;});
     try {
       const stat=await handle.stat();if(!stat.isFile()||stat.size!==backup.bytes||stat.size>JSON_LIMIT)throw new StoreError(422,'Invalid backup data.');
-      const data=await handle.readFile();if(digest(data)!==backup.etag)throw new StoreError(422,'Backup data differs from its saved checksum.');
-      return this.save(pack,relative,data.toString('utf8'),expected,expected==='*');
+      const data=await handle.readFile();if(data.length!==backup.bytes||digest(data)!==backup.etag)throw new StoreError(422,'Backup data differs from its saved checksum.');
+      if(!isUtf8(data))throw new StoreError(422,'Backup data is not valid UTF-8.');
+      return {data,etag:backup.etag,backup};
     } finally { await handle.close(); }
+  }
+  async restore(pack, relative, id, expected, expectedBackup) {
+    const backup=await this.readBackup(pack,relative,id);
+    if(expectedBackup!==undefined&&expectedBackup!==backup.etag)throw new StoreError(409,'The saved backup changed. Review it again before restoring.');
+    return this.save(pack,relative,backup.data.toString('utf8'),expected,expected==='*');
   }
   async export(pack) { const entries = new Map(); for (const row of (await this.resources(pack)).resources) { if (row.readOnly) throw new StoreError(422, 'Pack export does not follow symbolic links.'); entries.set(resourcePath(row.path), (await this.read(pack, row.path)).data); } return writeZip(entries); }
   async import(id, archive, { stripRoot = false } = {}) {

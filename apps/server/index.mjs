@@ -53,8 +53,9 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
         }
         if (method === 'GET' && url.pathname === '/api/references') return json(response, 200, { references: await store.references(pack, relative) });
         if (method === 'POST' && url.pathname === '/api/operation') return json(response, 200, await store.operation(pack, JSON.parse((await body(request)).toString('utf8'))));
+        if (method === 'GET' && url.pathname === '/api/backup') { const result=await store.readBackup(pack,relative,url.searchParams.get('id')); response.writeHead(200,{'Content-Type':'text/plain; charset=utf-8','Content-Length':result.data.length,'ETag':result.etag,'Cache-Control':'no-store'}); return response.end(result.data); }
         if (method === 'GET' && url.pathname === '/api/backups') return json(response, 200, { backups: await store.backups(pack, relative) });
-        if (method === 'POST' && url.pathname === '/api/restore') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 200, await store.restore(pack, relative, data.id, request.headers['if-none-match']==='*'?'*':request.headers['if-match'])); }
+        if (method === 'POST' && url.pathname === '/api/restore') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 200, await store.restore(pack, relative, data.id, request.headers['if-none-match']==='*'?'*':request.headers['if-match'],data.backupEtag)); }
         if (method === 'GET' && url.pathname === '/api/export') { const archive = await store.export(pack); response.writeHead(200, { 'Content-Type': 'application/zip', 'Content-Disposition': `attachment; filename="${pack}.zip"`, 'Content-Length': archive.length, 'Cache-Control': 'no-store' }); return response.end(archive); }
         if (method === 'POST' && url.pathname === '/api/import') return json(response, 201, await store.import(pack, await body(request, ARCHIVE_LIMIT), { stripRoot: url.searchParams.get('stripRoot') === 'true' }));
         throw new StoreError(404, 'Pack operation not found.');
