@@ -34,5 +34,6 @@ export function validateEdit(record,{allowCreate=false}={}){
 // Serialize same-resource draft writes, including save/discard cleanup after older writes.
 export class DraftQueue{
   constructor(write){this.write=write;this.pending=new Map();}
+  async settle(key){if(key!==undefined){await this.pending.get(key);return;}await Promise.all([...this.pending.values()]);}
   put(key,value){const captured=value?{...value}:undefined,prior=this.pending.get(key)??Promise.resolve(),next=prior.catch(()=>{}).then(()=>this.write('drafts',key,captured));this.pending.set(key,next);next.finally(()=>{if(this.pending.get(key)===next)this.pending.delete(key);}).catch(()=>{});return next;}
 }

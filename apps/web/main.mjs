@@ -1,6 +1,8 @@
 import {navigationSettings} from '/packages/voxel-renderer/navigation.mjs';
 import {CameraTools} from './lib/camera-tools.mjs';
 import {JsonTools} from './lib/json-tools.mjs';
+import {DraftTools} from './lib/draft-tools.mjs';
+import {draftRecord,sameDraft} from './lib/draft-library.mjs';
 import {ChangeTools} from './lib/change-tools.mjs';
 import {editorTextToSource} from './lib/source-editor.mjs';
 import {ViewLibrary,previewSetup,cameraBookmark} from './lib/view-library.mjs';
@@ -11,7 +13,7 @@ import {ReferenceTools} from './lib/reference-tools.mjs';
 import {jsonSelection,selectJsonText} from './lib/json-navigation.mjs';
 import {EditWorkspace,DraftQueue,editorSnapshot,validateEdit} from './lib/edit-workspace.mjs';
 import { StudioApi, ApiError } from './lib/api.mjs';
-import { localGet, localSet, localBatch, localTextureSnapshot } from './lib/local-store.mjs';
+import { localGet, localSet, localBatch, localTextureSnapshot, localDraftSnapshot } from './lib/local-store.mjs';
 import { TextureLibrary } from './lib/texture-library.mjs';
 import { MapTools } from './lib/map-tools.mjs';
 import { capturePreviewInputs,previewDescription } from './lib/preview-inputs.mjs';
@@ -67,6 +69,7 @@ const searchTools=new SearchTools({element,field,copy,ask,getContext:referenceCo
 const viewLibrary=new ViewLibrary({read:()=>localGet('settings','view-library'),write:(value,expectedViewConfig)=>localBatch([{store:'settings',key:'view-library',value}],{expectedViewConfig})});
 const viewTools=new ViewTools({library:viewLibrary,element,field,copy,ask,getPack:()=>state.pack,getDialogSequence:()=>dialogSequence,capture:captureSavedView,apply:applySavedView,download,onError:errorMessage});
 const changeTools=new ChangeTools({element,field,copy,ask,getContext:()=>{const edit=activeEdit();return edit?{...edit,revision:state.revision}:null;},read:(pack,path)=>api.read(pack,path),commit:applyDiskReview,download,onError:errorMessage});
+const draftTools=new DraftTools({element,copy,field,ask,read:async()=>{await draftQueue.settle();return localDraftSnapshot();},readOne:async key=>{await draftQueue.settle(key);return localGet('drafts',key);},write:async(changes,expectedDrafts)=>{await Promise.all(expectedDrafts.map(guard=>draftQueue.settle(guard.key)));return localBatch(changes,{expectedDrafts});},recover:recoverLocalDraft,download,onError:errorMessage});
 function download(blob,name) { const url = URL.createObjectURL(blob), link = element('a',{href:url,download:name}); document.body.append(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(url),2000); }
 const pretty = name => name.replace(/([a-z\d])([A-Z])/g,'$1 $2').replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
 const formatBytes = bytes => bytes >= 1024*1024 ? (bytes/1024/1024).toFixed(1)+' MiB' : bytes >= 1024 ? (bytes/1024).toFixed(1)+' KiB' : bytes+' B';
@@ -115,8 +118,22 @@ async function closeEdit(record){
 }
 async function showOpenEdits(){
   editorIdle();const list=element('ul',{class:'modal-list'}),rows=editWorkspace.entries(activeEdit());for(const row of rows)list.append(element('li',{},element('div',{class:'list-info'},element('strong',{text:row.pack+'/'+row.path}),element('small',{text:row.text!==row.baseText?'Unsaved changes':'Saved buffer'})),element('button',{type:'button',class:'text-button',text:'Open',onclick:async()=>{closeDialog?.(null);try{await activateEdit(row);}catch(error){errorMessage(error);}}})));
-  await ask('Open resource edits',[copy('Open buffers stay in this browser session across resource and pack switches. Each keeps its own undo history. Save all applies to the current pack. Dirty buffers are never evicted to admit another resource.'),rows.length?list:copy('No open JSON resources.'),copy('Inactive buffers admit at most 16 resources / 64 MiB of counted source, undo and schema text. Clean buffers can be retired at that limit. Local drafts remain separate recovery copies.')],{submit:null,cancel:'Close',wide:true});
+  await ask('Open resource edits',[copy('Open buffers stay in this browser session across resource and pack switches. Each keeps its own undo history. Save all applies to the current pack. Dirty buffers are never evicted to admit another resource.'),element('button',{type:'button',class:'quiet-button',text:'Local draft recovery…',onclick:()=>showLocalDrafts().catch(errorMessage)}),rows.length?list:copy('No open JSON resources.'),copy('Inactive buffers admit at most 16 resources / 64 MiB of counted source, undo and schema text. Clean buffers can be retired at that limit. Local drafts remain separate recovery copies.')],{submit:null,cancel:'Close',wide:true});
 }
+async function recoverLocalDraft(row,current=()=>true){
+  editorIdle();const draft=draftRecord(row.key,row.value),pack=draft.pack,path=draft.path;
+  if(state.pack!==pack)await openPack(pack);if(!current())throw new DOMException('Draft recovery was cancelled.','AbortError');if(state.pack!==pack||state.catalogPack!==pack)throw new Error('Open the matching pack before recovering this draft.');
+  const existing=historyEdit(pack,path);if(existing){closeDialog?.(null);await activateEdit(existing);toast('Opened the existing buffer. Its edits and undo history were kept.');return;}
+  const location=editorLocation(),request=resourceLoadSequence;
+  await draftQueue.settle(row.key);const[result,schema,currentDraft]=await Promise.all([api.read(pack,path).catch(error=>{if(error.status===404)return null;throw error;}),localGet('settings','schema/'+pack+'/'+category(path).id).catch(()=>null),localGet('drafts',row.key)]);
+  editorIdle();if(!current())throw new DOMException('Draft recovery was cancelled.','AbortError');if(resourceLoadSequence!==request||['pack','path','owner','text','revision'].some(key=>location[key]!==editorLocation()[key]))throw new Error('The open editor changed. Review the draft again.');if(!sameDraft(currentDraft,row.expected))throw new Error('This local draft changed. Refresh drafts before recovering.');
+  const resource=state.catalog.byPath.get(path);if(resource?.readOnly||resource&&!resource.editable)throw new Error('This resource is read-only.');
+  const attachedSchema=schema?.text?new JsonDocument(schema.text).value:schema??null;
+  stashActiveEdit();cancelPreview();schemaLoadSequence++;resourceLoadSequence++;clearTimeout(state.rawTimer);clearTimeout(state.draftTimer);if(state.objectUrl){URL.revokeObjectURL(state.objectUrl);state.objectUrl=null;}
+  state.bufferOwner=Symbol(path);state.selected=resource??{path,editable:true,size:draft.value.text.length};state.fieldsOpen=new Set(['']);state.text=draft.value.text;state.baseText=draft.value.baseText;state.etag=result?draft.value.baseEtag:'*';state.history=new EditHistory(state.baseText);if(state.text!==state.baseText)state.history.push(state.text);state.schema=attachedSchema;state.revision++;parseDocument();renderInspector();renderExplorer();
+  toast(result?'Recovered local source. Save checks the original version against disk.':'Recovered source for an absent file. Save will require recreation review.');
+}
+async function showLocalDrafts(){editorIdle();flushHistory();const sequence=dialogSequence,edit=activeEdit();if(edit&&dirty()){clearTimeout(state.draftTimer);await persistEditDraft(edit);}if(dialogSequence!==sequence)throw new DOMException('Draft recovery opening was superseded.','AbortError');await draftTools.open();}
 async function readPreviewResource(pack,path){const active=activeEdit(),record=active?.pack===pack&&active.path===path?active:editWorkspace.peek(pack,path);return record&&record.text!==record.baseText?{text:record.text,etag:record.etag}:api.read(pack,path);}
 function previewResourceRows(){const rows=new Map(state.catalog.resources.map(row=>[row.path,row]));for(const record of editWorkspace.dirty(activeEdit(),state.pack))if(!rows.has(record.path))rows.set(record.path,{path:record.path,editable:true});return[...rows.values()];}
 function referenceContext(){
@@ -752,7 +769,7 @@ function workspaceShortcut(event){
 function wire(){cameraTools.wire();
   bind('map-range','click',()=>mapTools.rangeDialog());bind('map-legend','click',()=>mapTools.legend());bind('map-inspect','click',()=>mapTools.inspect());
   for(const id of ['section-axis','section-mode','section-position'])bind(id,'change',applySection);bind('frame-section','click',()=>state.world?.reset());bind('focus-point','click',focusWorldPoint);
-  bind('pack-select','change',event=>event.target.value?openPack(event.target.value):undefined);bind('pack-menu','click',packMenu);bind('import-pack','click',()=>{$('pack-file').click();});bind('empty-open','click',packMenu);bind('refresh','click',refreshResources);bind('resource-search','input',renderExplorer);bind('add-resource','click',createResource);bind('save','click',saveResource);bind('save-all','click',saveAllResources);bind('open-edits','click',showOpenEdits);bind('duplicate-resource','click',duplicateResource);bind('rename-resource','click',renameResource);bind('delete-resource','click',deleteResource);bind('resource-history','click',showHistory);bind('review-changes','click',reviewResourceChanges);bind('show-references','click',showReferences);bind('go-to-json','click',goToJsonPointer);bind('search-pack-json','click',searchPackJson);bind('find-source','click',findReplaceSource);bind('settings','click',settingsDialog);bind('textures','click',textureDialog);
+  bind('pack-select','change',event=>event.target.value?openPack(event.target.value):undefined);bind('pack-menu','click',packMenu);bind('import-pack','click',()=>{$('pack-file').click();});bind('empty-open','click',packMenu);bind('refresh','click',refreshResources);bind('resource-search','input',renderExplorer);bind('add-resource','click',createResource);bind('save','click',saveResource);bind('save-all','click',saveAllResources);bind('open-edits','click',showOpenEdits);bind('local-drafts','click',showLocalDrafts);bind('duplicate-resource','click',duplicateResource);bind('rename-resource','click',renameResource);bind('delete-resource','click',deleteResource);bind('resource-history','click',showHistory);bind('review-changes','click',reviewResourceChanges);bind('show-references','click',showReferences);bind('go-to-json','click',goToJsonPointer);bind('search-pack-json','click',searchPackJson);bind('find-source','click',findReplaceSource);bind('settings','click',settingsDialog);bind('textures','click',textureDialog);
   bind('form-mode','click',()=>{flushHistory();parseDocument();state.mode='form';renderInspector();});bind('json-mode','click',()=>{state.mode='json';renderInspector();});bind('undo','click',()=>{flushHistory();if(state.history?.canUndo)setText(state.history.undo(),{history:false});});bind('redo','click',()=>{flushHistory();if(state.history?.canRedo)setText(state.history.redo(),{history:false});});
   bind('pack-file','change',async event=>{const file=event.target.files[0];event.target.value='';if(file)await importArchive(file);});bind('pack-directory','change',async event=>{const files=[...event.target.files];event.target.value='';await importDirectory(files);});
   bind('texture-file','change',async event=>{const file=event.target.files[0],options={...textureImportOptions};event.target.value='';if(!file)return;message('Loading local rendering pack…');await textureLibrary.add(file,options);await rebuildTextureStack();if(!closeDialog)await textureDialog();});
