@@ -1,16 +1,13 @@
 import{emptyRenderProfile}from'../resource-packs/render-inputs.mjs';
 import{clientSin,clientCos,clientAtan2}from'../resource-packs/client-math.mjs';
+import{rectangleCovered}from'../resource-packs/face-shapes.mjs';
 const F=Math.fround,EPS=1e-7,OFFS=F(.001),MAX=F(8/9),steps=[[0,0,-1],[1,0,0],[0,0,1],[-1,0,0],[0,1,0],[0,-1,0]],opposite=[2,3,0,1,5,4];
 export const fluidTextureNames=kind=>kind==='water'?['minecraft:block/water_still','minecraft:block/water_flow','minecraft:block/water_overlay']:kind==='lava'?['minecraft:block/lava_still','minecraft:block/lava_flow']:[];
 export async function prepareFluidMaterials(stack,atlas,kinds){const result={};for(const kind of new Set(kinds)){if(kind==='empty')continue;const names=fluidTextureNames(kind);if(!names.length)throw new Error('Unknown fluid model '+kind);const textures=await Promise.all(names.map(name=>atlas.add(name,stack)));result[kind]={still:textures[0],flow:textures[1],overlay:textures[2]??null,transparency:textures.some(t=>t.transparency==='blend')?'blend':textures.some(t=>t.transparency==='cutout')?'cutout':'opaque'};}return result;}
-function covers(rects,height){
-  if(!rects.length)return false;const xs=[0,1,...rects.flatMap(r=>[Math.max(0,Math.min(1,r[0])),Math.max(0,Math.min(1,r[2]))])].sort((a,b)=>a-b);
-  for(let i=1;i<xs.length;i++){if(xs[i]-xs[i-1]<EPS)continue;const x=(xs[i]+xs[i-1])/2,intervals=rects.filter(r=>x>=r[0]-EPS&&x<=r[2]+EPS).map(r=>[r[1],r[3]]).sort((a,b)=>a[0]-b[0]);let covered=0;for(const[a,b]of intervals){if(a>covered+EPS)break;covered=Math.max(covered,b);}if(covered<height-EPS)return false;}return true;
-}
 export function fluidFaceOccluded(profile,direction,height){
   const rects=profile.faces[opposite[direction]];if(!rects.length)return false;
   // The original full-cube fast path also occludes sub-full upward surfaces only at height 1.
-  if(direction===4&&height<1-EPS)return false;return covers(rects,direction>=4?1:height);
+  if(direction===4&&height<1-EPS)return false;return rectangleCovered([0,0,1,direction>=4?1:height],rects);
 }
 export function fluidFlow(self,sample){
   let x=0,z=0;for(let d=0;d<4;d++){const[dx,,dz]=steps[d],neighbor=sample(dx,0,dz);if(neighbor.fluid!=='empty'&&neighbor.fluid!==self.fluid)continue;let height=neighbor.height,distance=0;

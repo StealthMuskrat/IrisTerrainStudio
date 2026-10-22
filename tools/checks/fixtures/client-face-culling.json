@@ -1,0 +1,16 @@
+[
+  {"block":{"id":"minecraft:glass"},"neighbor":{"id":"minecraft:glass"},"direction":"north"},
+  {"block":{"id":"minecraft:glass"},"neighbor":{"id":"minecraft:tinted_glass"},"direction":"north"},
+  {"block":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"neighbor":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"direction":"east"},
+  {"block":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"neighbor":{"id":"minecraft:oak_slab","properties":{"type":"top"}},"direction":"east"},
+  {"block":{"id":"minecraft:stone"},"neighbor":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"direction":"north"},
+  {"block":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"neighbor":{"id":"minecraft:stone"},"direction":"north"},
+  {"block":{"id":"minecraft:short_grass"},"neighbor":{"id":"minecraft:oak_slab","properties":{"type":"bottom"}},"direction":"north"},
+  {"block":{"id":"minecraft:mangrove_roots"},"neighbor":{"id":"minecraft:mangrove_roots"},"direction":"up"},
+  {"block":{"id":"minecraft:mangrove_roots"},"neighbor":{"id":"minecraft:mangrove_roots"},"direction":"north"},
+  {"block":{"id":"minecraft:glass_pane","properties":{"east":"true"}},"neighbor":{"id":"minecraft:glass_pane","properties":{"west":"true"}},"direction":"east"},
+  {"block":{"id":"minecraft:glass_pane","properties":{"east":"false"}},"neighbor":{"id":"minecraft:glass_pane","properties":{"west":"true"}},"direction":"east"},
+  {"block":{"id":"minecraft:glass_pane"},"neighbor":{"id":"minecraft:glass_pane"},"direction":"up"},
+  {"block":{"id":"minecraft:oak_leaves"},"neighbor":{"id":"minecraft:jungle_leaves"},"direction":"north"},
+  {"block":{"id":"minecraft:oak_leaves"},"neighbor":{"id":"minecraft:jungle_leaves"},"direction":"north","cutoutLeaves":false}
+]
