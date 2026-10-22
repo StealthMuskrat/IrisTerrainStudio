@@ -305,6 +305,7 @@ function renderInspector() {
   if(state.document && (findStyles(state.document).length||/^snippet\/style\//.test(state.selected?.path)))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview a noise style',onclick:()=>chooseNoiseStyle({resource:true}).catch(errorMessage)}));
   if(state.document&&/^(biomes|regions)\//.test(state.selected.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview procedural object or tree',onclick:()=>chooseProceduralPreview().catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('expressions/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this expression',onclick:()=>{state.styleSelection={pack:state.pack,path:state.selected.path,expressionResource:true};state.noiseStyle=`Expression: ${resourceId(state.selected.path)}`;$('field-mode').value='iris-style2d';$('noise-style').hidden=false;$('noise-style').textContent=state.noiseStyle;setView('map');regenerate().catch(errorMessage);}}));
+  if(state.document&&state.selected?.path.startsWith('dimensions/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect hydrology column',onclick:()=>inspectHydrologyColumn().catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('dimensions/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Inspect dimension image bindings',onclick:()=>sampleDimensionBindings().catch(errorMessage)}));
   if(state.document&&/^image-maps\//.test(state.selected?.path))holder.prepend(element('button',{class:'quiet-button compact',text:'Sample this image map',onclick:()=>sampleNativeImageMap().catch(errorMessage)}));
   if(state.document&&state.selected?.path.startsWith('generators/'))holder.prepend(element('button',{class:'quiet-button compact',text:'Preview this generator',onclick:()=>{if(!state.document)return;$('field-mode').value='iris-generator';$('noise-style').hidden=true;setView('map');regenerate().catch(errorMessage);}}));
@@ -332,6 +333,29 @@ async function importLocalSchema(file){
 function imageMapDetails(resource){
   if(!resource.mapType)return[];
   return[copy(`${resource.mapType} · ${resource.sampling} · outside: ${resource.outOfBounds} · alpha: ${resource.alphaPolicy}`),copy(`${resource.sourceColorMode} source · ${resource.sourceBitDepth}-bit · ${resource.sourceChannels} channels · alpha ${resource.minimumAlpha}–${resource.maximumAlpha}`),copy(`${resource.clippedPixelCount} clipped pixels · ${resource.unknownColorPixelCount} unknown-color pixels`)];
+}
+async function inspectHydrologyColumn(){
+  if(!state.pack||!state.selected?.path.startsWith('dimensions/'))return;
+  flushHistory();parseDocument();if(!state.document)throw new Error('Correct this JSON before inspecting hydrology.');
+  cancelPreview();const pack=state.pack,path=state.selected.path,revision=state.revision,request=++previewRequest,current=()=>request===previewRequest&&pack===state.pack&&revision===state.revision&&path===state.selected?.path;
+  const seed=element('input',{'aria-label':'Hydrology seed',value:$('seed').value}),x=element('input',{'aria-label':'Hydrology world X',type:'number',step:1,value:Math.floor(Number($('coordinate-x').value))}),z=element('input',{'aria-label':'Hydrology world Z',type:'number',step:1,value:Math.floor(Number($('coordinate-z').value))});
+  let result,running=false;
+  try{
+    const accepted=await ask('Inspect hydrology column',[copy('Sample one whole-block coordinate using the current unsaved dimension and other open edits. This reports native planning and height data; complete hydrology terrain and map previews remain unfinished.'),field('Seed',seed),field('World X',x),field('World Z',z)],{submit:'Inspect',read:()=>{
+      const point=[Number(x.value),Number(z.value)];if(!x.value.trim()||!z.value.trim()||!point.every(value=>Number.isSafeInteger(value)&&Math.abs(value)<=29_999_984))throw new Error('Use whole-block coordinates within ±29,999,984.');return{seed:seed.value,x:point[0],z:point[1]};
+    },onSubmit:async input=>{
+      if(!current())throw new Error('The source changed. Open this inspection again.');running=true;
+      try{
+        const snapshot=await captureNativePack(previewResourceRows(),name=>readPreviewResource(pack,name),{readBinary:name=>api.readBinary(pack,name),current,override:{path,text:state.text}});if(!current())throw new DOMException('Hydrology inspection cancelled.','AbortError');
+        result=await generation.sampleHydrologyColumn(snapshot,resourceId(path),input.seed,input.x,input.z);if(!current())throw new DOMException('Hydrology inspection cancelled.','AbortError');
+      }finally{running=false;}
+    }});
+    if(!accepted||!current())return;
+  }finally{if(running&&request===previewRequest){previewRequest++;generation.cancel();}}
+  const column=result.column,bits=new DataView(new ArrayBuffer(8));bits.setBigUint64(0,BigInt('0x'+column.heightBits));const worldHeight=bits.getFloat64(0)+column.worldMinY;
+  const rows=column.layers?.map(layer=>`${layer.featureType} · ${layer.featureId}\n  World bed Y ${layer.bedY+column.worldMinY} · fluid head Y ${layer.fluidHeadY+column.worldMinY}\n  Channel ${layer.channel?'yes':'no'} · shore ${layer.shore?'yes':'no'} · terrain owned ${layer.terrainOwned?'yes':'no'} · fluid owned ${layer.fluidOwned?'yes':'no'}\n  Profile ${layer.profile??'(none)'} · biome ${layer.biome??'(none)'}`)||[];
+  const save=element('button',{type:'button',class:'quiet-button',text:'Download column JSON',onclick:()=>{if(current())download(new Blob([JSON.stringify(result,null,2)+'\n'],{type:'application/json'}),'hydrology-column.json');else toast('The source changed. Inspect this column again.',true);}});
+  await ask('Native hydrology column',[copy(`${result.dimension} · seed ${result.seed} · X ${column.x}, Z ${column.z} · world surface Y ${worldHeight} · biome ${column.biome}`),element('pre',{class:'modal-copy',text:rows.length?rows.join('\n\n'):'No hydrology layers at this coordinate.'}),copy('Layer heights in this view use world Y. The JSON preserves original internal Y and minimum world Y. This single-column result does not qualify full terrain generation.'),save],{submit:null,cancel:'Close'});if(current())message('Native hydrology-column inspection finished.');
 }
 async function sampleDimensionBindings(){
   if(!state.pack||!state.selected?.path.startsWith('dimensions/'))return;

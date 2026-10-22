@@ -14,7 +14,7 @@ public final class TerrainLayerDiagnostic {
     }
     public static String metadata(Engine engine)throws IOException{
         StringWriter output=new StringWriter();try(JsonWriter writer=new JsonWriter(output)){
-            writer.beginObject();writer.name("minHeight").value(engine.getMinHeight());writer.name("maxHeight").value(engine.getMaxHeight());writeMetadata(writer,engine);writer.name("terrainParityVerified").value(false);writer.endObject();
+            writer.beginObject();writer.name("minHeight").value(engine.getMinHeight());writer.name("maxHeight").value(engine.getMaxHeight());writer.name("hydrologyActive").value(engine.getComplex().getHydrologyRuntime()!=null);writeMetadata(writer,engine);writer.name("terrainParityVerified").value(false);writer.endObject();
         }return output.toString();
     }
     public static String column(Engine engine,int x,int z)throws IOException{

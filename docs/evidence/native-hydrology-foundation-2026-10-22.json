@@ -1,0 +1,328 @@
+{
+  "scope": "native-hydrology-column-development",
+  "result": "pass",
+  "fixtures": 1,
+  "seeds": 1,
+  "columns": 2,
+  "unsupportedPreview": {
+    "actualWorkerCode": true,
+    "provisionalTerrainRefused": true,
+    "contextReleased": true,
+    "freshContextRecovery": true
+  },
+  "authoringTransport": {
+    "actualWorkerAndClient": true,
+    "selectedPoolCompared": true,
+    "snapshotAndModuleIdentity": true,
+    "contextReleased": true,
+    "invalidCoordinatesAndSeedRefused": true,
+    "cancellation": {
+      "controlledHost": true,
+      "synchronousWorkerTerminated": true,
+      "requestRejected": true
+    }
+  },
+  "results": [
+    {
+      "scope": "native-hydrology-column-development",
+      "x": 10,
+      "z": -7,
+      "worldMinY": 0,
+      "settingsFingerprintPortable": false,
+      "tileSize": 256,
+      "publicationRadius": 36,
+      "available": true,
+      "present": true,
+      "heightBits": "404f800000000000",
+      "biome": "floor",
+      "naturalHeight": 64,
+      "seaLevel": 16,
+      "ocean": false,
+      "parentBiome": "floor",
+      "layers": [
+        {
+          "featureId": "67d0a0e0691113b3",
+          "featureType": "STANDING_POOL",
+          "courseId": "8d3de91a6913dcc2",
+          "segmentId": "bda24c58b6246d33",
+          "bedY": 63,
+          "fluidHeadY": 64,
+          "ceilingY": 64,
+          "channel": true,
+          "shore": false,
+          "grading": false,
+          "terrainOwned": true,
+          "fluidOwned": true,
+          "connectedFluid": true,
+          "fallingFluid": false,
+          "receivingPool": false,
+          "oceanApron": false,
+          "profile": "lava_pool",
+          "biome": "floor"
+        }
+      ],
+      "terrainParityVerified": false,
+      "admittedRoots": 4,
+      "admission": {
+        "planningCalls": 4,
+        "carvingChunks": 0,
+        "chargedCells": 0
+      },
+      "workerRuntimeSettingsFingerprint": "bf0394bbd215f3b3",
+      "nativeRuntimeSettingsFingerprint": "c9d93b4afe6d4634"
+    },
+    {
+      "scope": "native-hydrology-column-development",
+      "x": -17,
+      "z": -33,
+      "worldMinY": 0,
+      "settingsFingerprintPortable": false,
+      "tileSize": 256,
+      "publicationRadius": 36,
+      "available": true,
+      "present": false,
+      "heightBits": "4050000000000000",
+      "biome": "floor",
+      "terrainParityVerified": false,
+      "admittedRoots": 0,
+      "admission": {
+        "planningCalls": 0,
+        "carvingChunks": 0,
+        "chargedCells": 0
+      },
+      "workerRuntimeSettingsFingerprint": "bf0394bbd215f3b3",
+      "nativeRuntimeSettingsFingerprint": "c9d93b4afe6d4634"
+    }
+  ],
+  "resources": [
+    {
+      "path": "dimensions/terrain3d.json",
+      "sha256": "90f5bbe8eece03c31cd2fcb01fefc8dad377fbea089ab4888e74f01ea652727f"
+    },
+    {
+      "path": "regions/floor.json",
+      "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+    },
+    {
+      "path": "biomes/floor.json",
+      "sha256": "24c913e5e334b855658f8b02fc242b1809a31853f1c5f3576d53474028fe0fd8"
+    },
+    {
+      "path": "generators/flat.json",
+      "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    }
+  ],
+  "wasmSha256": "623255de7ec6140758a7dab23f7f9303cc45bb446c7c9b41bd19106b2517b515",
+  "manifestWasmSha256": "623255de7ec6140758a7dab23f7f9303cc45bb446c7c9b41bd19106b2517b515",
+  "referenceKey": "23e25defa4cd096170a646aba84beb8d038ee58c942fd162c1df63495a1ffce8",
+  "settingsFingerprintComparison": {
+    "compared": false,
+    "reason": "Original native settings fingerprint includes record hashes of enum values; Java Enum.hashCode is an identity hash. Both runtime-local values are retained, and shared/persistent hydrology caching is unavailable."
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "sourceSha256": "1d41557b2e64e75595138b01bd5a33abe91214f0bf2a91c14ff0e3a49e1d00ba",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "sourceArchiveRefreshedAfterClientTransport": true,
+  "wasmUnchangedDuringTransportWork": true,
+  "engineExports": 78,
+  "nativeInputProfile": "terrain-no-eco-items",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "platformSourceServerJarSha256": "2488c374c69e4828d2088fbc258c3fde0851e57f02f3a1cebbe5c191b1a21a9b",
+  "platformServices": {
+    "scope": "native-hydrology-column-development",
+    "declaredHeapBytes": 536870912,
+    "maximumPlanningRoots": 32,
+    "maximumPlanningCalls": 64,
+    "maximumSparseCarvingChunks": 256,
+    "maximumCarvingInputCells": 16777216,
+    "settingsFingerprintScope": "runtime-local-enum-identity",
+    "sharedCache": false,
+    "persistence": false,
+    "fullTerrainHydrology": false
+  },
+  "carvingInputCoverage": {
+    "linked": true,
+    "executedBySelectedFixture": false,
+    "admittedChunks": 0,
+    "chargedCells": 0,
+    "budgetRefusalQualified": false
+  },
+  "jdkEnumReferenceSha256": "e641dca90bc2877d97cc996bd3701984ecec5924f9eb8d5067c5712d026b77e7",
+  "baseline": {
+    "scope": "restored-native-engine-installation-targeted",
+    "result": "pass",
+    "fixtures": 1,
+    "seeds": 1,
+    "scalarPoints": 2,
+    "blockProbes": 3,
+    "expected": [
+      [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock"
+        ],
+        [
+          8,
+          127,
+          8,
+          "minecraft:air"
+        ],
+        [
+          15,
+          255,
+          15,
+          "minecraft:air"
+        ]
+      ],
+      [
+        {
+          "height": "4062400000000000",
+          "biome": "ledges"
+        },
+        {
+          "height": "405f400000000000",
+          "biome": "ledges"
+        }
+      ]
+    ],
+    "blocks": 1286,
+    "states": 35723,
+    "wasmSha256": "623255de7ec6140758a7dab23f7f9303cc45bb446c7c9b41bd19106b2517b515",
+    "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "terrainParityVerified": false
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "73784eca12926ca171e6a14e755e87abef6123c0e25bb6060d9a19715a6a6c09"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "5f46dc7762e385cadb64edac4817b18e2b9f41b660387fc99d807bfdcd26cc78"
+    },
+    {
+      "path": "packages/iris-engine/client.mjs",
+      "sha256": "ec3a4465ab19bd5156a91cd02a7ca01db4d91b95c80531b5eb3965eddd06a134"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "9ce7fd43d9b619b3b2c0546f03bae29889de8c455ce3f4118e22859122e2bdac"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "5c33cbe20899ceb7e80ef510fc04a2c3d1ebd3c7ee2dea0953ae2c435e3b8f29"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/HydrologyDiagnostic.java",
+      "sha256": "2daa79ebdd88d7be01201edc93771e63aded1d2d36f59b48a9ca0138a7a4e754"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/HydrologyPlatformPlugin.java",
+      "sha256": "47ab2b6d08d0a103cec0a2808e2ee3ae923fa632b130a190dff0f56d2d80550b"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyBudget.java",
+      "sha256": "1c5ca78e9028d6b8ca055211d10ed7695b16c417dc237eb25f29429b910ae83d"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyCompletion.java",
+      "sha256": "9a2f23d5ffa9e8590669921d2daef08a9b08eff70979a9cae7d7c47b2835039f"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyDispatch.java",
+      "sha256": "ef15497c0c390b1c2b63bea8746131c205d6de8c357d038c190dbbcd81d008f5"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyMatter.java",
+      "sha256": "96eb521c5b68675f3ff4e7b33a894dc8379180453b443c3d4185adc9a7334ce3"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyRejectedException.java",
+      "sha256": "dd3ecda63ea740248f9c1fdaf36504644f6a77fb75a31d31da0f24ab5a97adc5"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyStore.java",
+      "sha256": "abc2bc7f4d4ecf90396c9446a4eca7c44ec1d6342064fd67a6101e3fbc52be87"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java",
+      "sha256": "6fe06a9e47d7fc296669b0398a0f6ec4540b24d69cd824657eca97200864618c"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java",
+      "sha256": "4e9bb3ecb6c33c8f083ed59f2929eec1029503e9e7b9c0dcdfb7c3cda8e0e878"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerSemaphore.java",
+      "sha256": "f25f3a67f10a6a686051771def6aaebefadc0e163846c122d2da17351253584d"
+    },
+    {
+      "path": "packages/iris-engine/resources/META-INF/services/org.teavm.vm.spi.TeaVMPlugin",
+      "sha256": "bc0b8ad3788e8f7cdc801ce7722ded6f7fbd7fc3ced24f95e63948b99038dee2"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "94112586b23302a6efc05c7148401a6b6e1dbc1214a12db27db022c8492d2fda"
+    },
+    {
+      "path": "tools/checks/native-hydrology-smoke.mjs",
+      "sha256": "89ca51797231031413c3dc5ccc1037b7a286f133b42da643f41d4f700a31464d"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "bd9b23eefeaa0da634fc60966bbc95a9b3b7087da00f05407fe5467c7999fd6d"
+    },
+    {
+      "path": "tools/engine-build/bundle-source.py",
+      "sha256": "a6f6c9cb172436ad3f3b9d514ec38988018eb2a4bd90b92c266f0c37e90ecd62"
+    }
+  ],
+  "checks": {
+    "strictAdvancedCompilation": true,
+    "wasmVmValidation": true,
+    "selectedNativeColumnComparison": true,
+    "actualWorkerClientTransport": true,
+    "provisionalPreviewRefusalAndRecovery": true,
+    "controlledCancellation": true,
+    "fullSuiteRun": false,
+    "registryOrStateOrVolumeSweep": false,
+    "githubTestWorkflowRun": false
+  },
+  "limitations": [
+    "Standing pool only; flowing/underground/regional rivers and complete options are not qualified.",
+    "Linked sparse carving-input adapter was not executed by these selected samples.",
+    "Shared/persistent hydrology caches and saved-world services refuse.",
+    "Complete native hydrology matter/material stage and map remain unavailable; ordinary hydrology terrain previews refuse.",
+    "UI action is implemented; actual browser dialog/download/worker execution and WebGPU remain unverified.",
+    "Original runtime settings fingerprints are process-local and are excluded from semantic column comparison; original values are retained.",
+    "Native checksum/dependency/reference, full engine lifecycle, remaining rendering adapters/authorized F8thful assets and release gates remain open."
+  ],
+  "releaseMatchVerified": false
+}

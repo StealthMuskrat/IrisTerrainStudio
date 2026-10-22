@@ -48,6 +48,12 @@ export class GenerationClient extends EventTarget {
     this.cancel();const worker=this.worker('iris'),id=++this.sequence;
     return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject,kind:'sample-dimension-image-maps'});worker.postMessage({kind:'sample-dimension-image-maps',id,snapshot,name,points});});
   }
+  sampleHydrologyColumn(snapshot,name,seed,x,z){
+    if(typeof name!=='string'||!name||![x,z].every(value=>Number.isSafeInteger(value)&&Math.abs(value)<=29_999_984))return Promise.reject(new Error('Choose a dimension and whole-block X, Z coordinates within ±29,999,984.'));
+    let normalized;try{normalized=numericSeed(seed);}catch(error){return Promise.reject(error);}
+    this.cancel();const worker=this.worker('iris'),id=++this.sequence;
+    return new Promise((resolve,reject)=>{this.requests.set(id,{worker,resolve,reject,kind:'sample-hydrology-column'});worker.postMessage({kind:'sample-hydrology-column',id,snapshot,name,seed:normalized,x,z});});
+  }
   cancel(){
     this.revision++;
     if(this.pending){
@@ -58,6 +64,12 @@ export class GenerationClient extends EventTarget {
         for(const[id,request]of this.requests)if(request.worker===pending.worker){request.reject(error);this.requests.delete(id);}
       }else pending.worker.postMessage({kind:'cancel',id:pending.id});
       pending.reject(error);
+    }
+    // Native planning is synchronous: cancellation must stop its worker rather than queue a message.
+    for(const request of this.requests.values())if(request.kind==='sample-hydrology-column'){
+      const error=new DOMException('Hydrology inspection cancelled.','AbortError');request.worker.terminate();
+      for(const[kind,worker]of this.workers)if(worker===request.worker)this.workers.delete(kind);
+      for(const[id,owned]of this.requests)if(owned.worker===request.worker){owned.reject(error);this.requests.delete(id);}
     }
     for(const[id,request]of this.requests)if(request.kind==='inspect-pack'||request.kind==='sample-image-map'||request.kind==='sample-dimension-image-maps'){request.worker.postMessage({kind:'cancel',id});request.reject(new DOMException('Resource inspection cancelled.','AbortError'));this.requests.delete(id);}
   }

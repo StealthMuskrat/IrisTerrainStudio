@@ -47,6 +47,8 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add('upstream/Brigadier/'+name,source.read(name))
     add('upstream/Brigadier/LICENSE.txt',(root/'tools/engine-build/BRIGADIER-LICENSE.txt').read_bytes())
     with zipfile.ZipFile(jdk / 'lib/src.zip') as source:
+        # Read-only reference for original hydrology record/enum fingerprint identity.
+        add('reference/OpenJDK/java.base/java/lang/Enum.java', source.read('java.base/java/lang/Enum.java'))
         for name in ('java.base/java/lang/Math.java','java.base/java/util/SplittableRandom.java', 'java.base/java/util/random/RandomGenerator.java', 'java.base/jdk/internal/util/random/RandomSupport.java'):
             add('upstream/OpenJDK/' + name, source.read(name))
         # Raster-model references only; AWT/ImageIO are not compiled into the worker module.

@@ -4,7 +4,7 @@ As of 2026-10-22. **Local application implementation is in progress. Native/brow
 
 ## Completion audit and current batch
 
-The project remains in development. The latest batch connects native upper dimensions and dimension stacks, and prepares a verified local vanilla asset baseline. These close implementation gaps without promoting development evidence to full support or release parity.
+The project remains in development. The current work connects a native hydrology planning/authoring diagnostic, following native upper/stack dimensions and verified local vanilla asset preparation. These close implementation gaps without promoting development evidence to full support or release parity.
 
 - Original upper/stack context factories and stack stage registration now compile through a concrete-host type boundary. Original terrain contexts, layout/blend and material/physical-biome actuators execute. Overworld registers five terrain stages when stacked; the three simple modes register their native stack and custom stages. Unknown/imported/custom/hydrology/history paths still refuse where their adapters are unavailable.
 - Worker layer contexts have explicit height/reference/cache bounds and failure/release cleanup. Volume metadata identifies layers; scalar fields remain host-dimension samples. Standalone cave/component diagnostics refuse stacks because their intermediate ordering is incomplete.
@@ -13,7 +13,9 @@ The project remains in development. The latest batch connects native upper dimen
 
 The previous [runtime/installation audit](evidence/runtime-installation-completion-audit-2026-10-22.json) restored the pinned development tools and matching engine/registry, added installation integrity/status, preview admission, clean distribution staging and a native placement grouping capture with 1,156 calls rather than 1,653,796. Its focused checks passed. Full reference/release provenance, the native checksum discrepancy, hydrology/transforms/history/custom services, remaining Minecraft rendering adapters and real browser/GPU qualification are still open. Local Chrome exits before navigation in this environment; no browser pass is claimed.
 
-The next milestone is native hydrology/platform integration and verified Minecraft rendering semantics using the local baseline. Comprehensive program verification remains deferred until implementation is complete.
+A subsequent native hydrology foundation batch links the original runtime, planner, rasterizer and containment inputs to an explicit bounded column diagnostic and an unsaved dimension inspector/download. Actual worker/client transport, refusal of incomplete terrain previews, release/recovery and controlled cancellation pass. The selected samples admit zero carving inputs, so that linked boundary remains unqualified. The full hydrology map and matter stage remain unavailable. Original cache settings fingerprints are labeled runtime-local because record hashes include enum identities; both values remain in evidence. See the [boundary](research/HYDROLOGY_WORKER_BOUNDARY.md) and [focused evidence](evidence/native-hydrology-foundation-2026-10-22.json).
+
+The next milestone is complete native hydrology matter/preview integration and verified Minecraft rendering semantics using the local baseline. Comprehensive program verification remains deferred until implementation is complete.
 
 ## Implemented
 

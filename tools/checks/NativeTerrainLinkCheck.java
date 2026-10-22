@@ -63,6 +63,17 @@ public final class NativeTerrainLinkCheck {
                         var columns=new JsonArray();var diagnostic=Class.forName("studio.engine.terrain.TerrainLayerDiagnostic").getMethod("column",Engine.class,int.class,int.class);
                         for(var point:request.getAsJsonArray("layerColumns")){var xy=point.getAsJsonArray();columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,xy.get(0).getAsInt(),xy.get(1).getAsInt())));}pack.add(columns);
                     }
+                    if(request.has("hydrologyCheck")){
+                        openHydrologyReferenceHost(engine,directory);
+                        var hydrology=engine.getComplex().getHydrologyRuntime();if(hydrology==null)throw new IllegalStateException("No native hydrology runtime");
+                        var columns=new JsonArray();var diagnostic=Class.forName("studio.engine.hydrology.HydrologyDiagnostic").getMethod("sample",Engine.class,int.class,int.class);
+                        if(request.getAsJsonObject("hydrologyCheck").has("pickPool")){
+                            var tile=hydrology.tile(new art.arcane.iris.generation.hydrology.HydrologyTileKey(0,0));
+                            var selected=tile.footprint().columns().values().stream().filter(c->c.layers().stream().anyMatch(l->l.feature().type()==art.arcane.iris.generation.hydrology.HydrologyFeatureType.STANDING_POOL&&l.channel()&&l.fluidOwned())).findFirst().orElseThrow(()->new IllegalStateException("Native fixture produced no standing pool"));
+                            columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,selected.x(),selected.z())));
+                        }
+                        for(var point:request.getAsJsonObject("hydrologyCheck").getAsJsonArray("points")){var xy=point.getAsJsonArray();columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,xy.get(0).getAsInt(),xy.get(1).getAsInt())));}pack.add(columns);
+                    }
                     if(request.has("registeredOverworldCheck"))pack.add(registeredOverworldCheck(engine,request.getAsJsonObject("registeredOverworldCheck"),directory,registries));
                     if(request.has("terrainModeCheck"))pack.add(terrainModeCheck(engine,request.getAsJsonObject("terrainModeCheck"),registries));
                     if(request.has("physicalBiomeChecks"))pack.add(physicalBiomeChecks(engine,request.getAsJsonArray("physicalBiomeChecks")));
@@ -92,6 +103,20 @@ public final class NativeTerrainLinkCheck {
             }
         }finally{IrisPlatforms.unbind();IrisServices.clear();}
         Files.writeString(Path.of(args[1]),gson.toJson(result));
+    }
+    private static void openHydrologyReferenceHost(Engine engine,Path directory)throws Exception{
+        art.arcane.iris.world.storage.matter.IrisMatterSupport.ensureRegistered();
+        var adapter=(art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter<art.arcane.volmlib.util.matter.Matter>)Proxy.newProxyInstance(NativeTerrainLinkCheck.class.getClassLoader(),new Class<?>[]{art.arcane.volmlib.util.mantle.runtime.MantleDataAdapter.class},(self,method,args)->switch(method.getName()){
+            case "createSection"->new art.arcane.volmlib.util.matter.IrisMatter(16,16,16);
+            case "get"->{var slice=((art.arcane.volmlib.util.matter.Matter)args[0]).getSlice((Class<?>)args[4]);yield slice==null?null:slice.get((int)args[1],(int)args[2],(int)args[3]);}
+            case "iterate"->{var slice=((art.arcane.volmlib.util.matter.Matter)args[0]).getSlice((Class<?>)args[1]);if(slice!=null)slice.iterate((art.arcane.volmlib.util.function.Consumer4)args[2]);yield null;}
+            default->throw new UnsupportedOperationException(method.toString());
+        });
+        var memory=new MemoryCaveMantle(directory,engine.getHeight(),adapter);
+        var host=new IrisEngineMantle(engine,directory.resolve("native-terrain-mantle")){
+            @Override public art.arcane.volmlib.util.mantle.runtime.Mantle<art.arcane.volmlib.util.matter.Matter> getMantle(){return memory;}
+            void releaseUnusedBacking()throws Exception{super.getMantle().close();}
+        };host.releaseUnusedBacking();caveHost=host;
     }
     private static JsonObject registeredOverworldCheck(Engine engine,JsonObject request,Path directory,PlatformRegistries registries)throws Exception{
         art.arcane.iris.world.storage.matter.IrisMatterSupport.ensureRegistered();

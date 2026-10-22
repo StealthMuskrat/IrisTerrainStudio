@@ -66,12 +66,25 @@ function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris re
 self.onmessage=async({data})=>{
   if(data.kind==='release-context'){active=0;const loaded=runtime&&await runtime.catch(()=>null);if(loaded&&active===0)clearContext(loaded.api);return;}
   if(data.kind==='cancel'){if(active===data.id)active=0;return;}
-  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map'&&data.kind!=='sample-dimension-image-maps')return;
-  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack'||data.kind==='sample-image-map'||data.kind==='sample-dimension-image-maps')active=id;
+  if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map'&&data.kind!=='sample-dimension-image-maps'&&data.kind!=='sample-hydrology-column')return;
+  const id=data.id; if(data.kind==='generate'||data.kind==='inspect-pack'||data.kind==='sample-image-map'||data.kind==='sample-dimension-image-maps'||data.kind==='sample-hydrology-column')active=id;
   let apiForCleanup;
   try {
     const {api,manifest}=await engine();apiForCleanup=api;
     if(data.kind==='info'){self.postMessage({kind:'info',id,info:{styles:JSON.parse(api.noiseStyles()),manifest}});return;}
+    if(data.kind==='sample-hydrology-column'){
+      if(active!==id)return;
+      if(typeof data.name!=='string'||!data.name||![data.x,data.z].every(value=>Number.isSafeInteger(value)&&Math.abs(value)<=29_999_984)||typeof data.seed!=='string'||data.seed.length>20||!/^(-?(?:0|[1-9]\d*))$/.test(data.seed)||BigInt(data.seed)<-(1n<<63n)||BigInt(data.seed)>(1n<<63n)-1n)throw new Error('Supply a dimension, signed 64-bit decimal seed and whole-block X, Z coordinates within ±29,999,984.');
+      if(typeof api.sampleHydrologyColumn!=='function')throw new Error('Rebuild the local Iris engine to enable native hydrology-column inspection.');
+      await registry(api,manifest);if(active!==id)return;clearContext(api);let info;
+      try{
+        const snapshotSha256=await terrainContextKey({packSnapshot:data.snapshot,dimensionKey:data.name,seed:data.seed},manifest);if(active!==id)return;
+        if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;
+        api.openPack();api.prepareTerrain(data.name,data.seed);const column=JSON.parse(api.sampleHydrologyColumn(data.x,data.z));
+        info={scope:'native-hydrology-column-development',dimension:data.name,seed:data.seed,snapshotSha256,wasmSha256:manifest.wasmSha256,column,terrainParityVerified:false,completePipeline:false};
+      }finally{if(active===id)clearContext(api);}
+      if(active===id)self.postMessage({kind:'info',id,info});return;
+    }
     if(data.kind==='sample-dimension-image-maps'){
       if(active!==id)return;
       if(typeof data.name!=='string'||!data.name||!Array.isArray(data.points)||data.points.length<1||data.points.length>16||data.points.some(point=>!Array.isArray(point)||point.length!==2||!point.every(Number.isFinite)))throw new Error('Supply one to sixteen finite X, Z coordinate pairs.');
@@ -130,6 +143,7 @@ self.onmessage=async({data})=>{
       self.postMessage({kind:'result',id,result},transfers);
     };
     if(options.packSnapshot&&!contextReused){if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
+    if(terrainInfo?.hydrologyActive)throw new Error('Complete hydrology terrain previews are not connected. The explicit native hydrology-column diagnostic remains development-only.');
     if(['procedural-placement','procedural-source','procedural-neighborhood'].includes(options.field)){
       const neighbors=options.field==='procedural-neighborhood',scatter=neighbors||options.field==='procedural-source',p=options.procedural,chunk=JSON.parse(neighbors?api.paintProceduralNeighborhoodChunk(Math.floor(x/16)*16,Math.floor(z/16)*16):scatter?api.paintProceduralSourceChunk(Math.floor(x/16)*16,Math.floor(z/16)*16):api.paintProceduralPlacementChunk(Math.floor(x/16)*16,Math.floor(z/16)*16,p.folder,p.key,p.family,p.index,p.variant,seed));
       if(chunk.scope!==(neighbors?'native-procedural-neighborhood-development':scatter?'native-procedural-source-scatter-development':'native-procedural-placement-development')||!Number.isInteger(chunk.height)||chunk.height<16||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>65536||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height||chunk.cells.some(value=>!Number.isInteger(value)||value<0||value>=chunk.palette.length)||(!neighbors&&!Number.isInteger(chunk.placedY))||(!scatter&&(!chunk.placement||chunk.placement.automaticScatter!==false||chunk.placement.crossSourceCollisionReplay!==false)))throw new Error('Native procedural placement output is incomplete.');
