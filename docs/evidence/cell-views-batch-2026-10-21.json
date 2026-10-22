@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-21",
+  "scope": "explicit block-ID/physical-biome diagnostic cell views, palette legend and cached rendering mode ownership",
+  "fixture": {
+    "storedCells": 4,
+    "occupiedCells": 3,
+    "fullFaces": 14,
+    "sliceFaces": 6,
+    "palettePageBoundary": 70,
+    "generatedTerrainCells": 0,
+    "resourceTexturePixels": 0
+  },
+  "checks": [
+    "explicit cell modes need no block assets; air is omitted and nonair unit extents are neighbor-culled",
+    "per-cell physical biome colors distinguish the same block ID; picking retains original blocks/biomes/coordinates",
+    "negative section alignment, clipping and cached return preserve identity colors without resending cell data",
+    "missing biome/color data refuses explicitly; textured mode retains missing-asset diagnostics without cell fallback",
+    "cell identity draw uniforms bypass texture lighting; palette keys deduplicate/search/page without scanning cells",
+    "application mode changes persist locally and reuse generated data; active cell meshes ignore irrelevant pack replacement",
+    "closed legends reject stale input, failed mesh publication rolls preferences back, and pending cell results survive pack changes"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/cell-view.mjs": "d14013d838c7ff08a6790625dfbefbbe7764518ab404b63208bf1b961d4e45fc",
+    "packages/voxel-renderer/mesh-session.mjs": "d0fd31886ff861c97f5e099b4b3eb9a465b821c4235454a2e9501272a25d859b",
+    "packages/voxel-renderer/mesh-worker.mjs": "d3cbff9e80f8e57a1efdeedbb2d4003d891651a6b5b34ff71d34f39657d4b3a3",
+    "packages/voxel-renderer/world.mjs": "b32916303cb3735c595fef8fc5f622d709c8a6e805f2e7d521421c2775d7cd1a",
+    "apps/web/main.mjs": "c84831b4b88ef9b1a5821d7506ae621102eba728284d6a5871bc8fd05d1aec6d",
+    "apps/web/index.html": "8f4a5ae7010b5e2f28cf729bd6a54389beeeaaee87eeb3137be1cc2601daef00",
+    "tools/checks/cell-views-smoke.mjs": "301aa0020679d0e28c3c9c7bd9aba07ab04c05851c56d9c4428f5c253f08cd87"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "minecraftAppearanceVerified": false,
+  "performanceMeasured": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Diagnostic unit-cell extents and stable identity colors describe actual retained voxels/physical biomes; they do not reproduce Minecraft models, fluids, foliage colors or lighting. Controlled canvas/device/DOM and real Node mesh worker transfers only. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. Actual GPU/browser/appearance/performance qualification remains pending."
+}
