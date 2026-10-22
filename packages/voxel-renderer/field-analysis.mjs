@@ -1,0 +1,42 @@
+import{FieldIndex}from'./field-data.mjs';
+import{writeZip}from'../shared/zip.mjs';
+export const ANALYSIS_LIMITS=Object.freeze({samples:262144,profile:4096,exportBytes:64*1024*1024,metadataBytes:64*1024});
+const bitView=new DataView(new ArrayBuffer(8)),encoder=new TextEncoder(),decimal=value=>Object.is(value,-0)?'-0':String(value),pause=()=>new Promise(resolve=>setTimeout(resolve,0));
+export{decimal as sampleDecimal};
+export function sampleBits(value){bitView.setFloat64(0,value,false);return'0x'+bitView.getBigUint64(0,false).toString(16).padStart(16,'0');}
+export function sampleWindow(index,bounds={row:0,column:0,rows:index.data.height,columns:index.data.width}){
+  if(!(index instanceof FieldIndex))throw new Error('Open retained map samples before analysing them.');const{row,column,rows,columns}=bounds;
+  if(![row,column,rows,columns].every(Number.isSafeInteger)||row<0||column<0||rows<1||columns<1||row+rows>index.data.height||column+columns>index.data.width)throw new Error('Choose a complete sample window inside the retained map.');if(rows*columns>ANALYSIS_LIMITS.samples)throw new Error('Sample windows admit 262,144 cells. Choose a smaller window.');return{row,column,rows,columns};
+}
+function guard(current){if(!current())throw new DOMException('Retained map operation cancelled or its data changed.','AbortError');}
+function accumulator(index){
+  let count=0,min=Infinity,max=-Infinity,scale=0,sum=0,correction=0;const categories=new Map();
+  return{add(value){count++;if(index.categories){categories.set(value,(categories.get(value)??0)+1);return;}min=Math.min(min,value);max=Math.max(max,value);const magnitude=Math.abs(value);if(magnitude>scale){const factor=scale/magnitude;sum*=factor;correction*=factor;scale=magnitude;}const term=scale?value/scale:0,total=sum+term;correction+=Math.abs(sum)>=Math.abs(term)?sum-total+term:term-total+sum;sum=total;},result(){return index.categories?{count,kind:'categorical',categories:[...categories].map(([id,count])=>({index:id,key:index.data.categories[id],count})).sort((a,b)=>b.count-a.count||a.index-b.index)}:{count,kind:'scalar',min,max,mean:scale*Math.max(-1,Math.min(1,(sum+correction)/count))};}};
+}
+export async function windowStatistics(index,bounds,{current=()=>true,yieldControl=pause,onProgress=()=>{}}={}){
+  const window=sampleWindow(index,bounds),stats=accumulator(index);let done=0;guard(current);
+  for(let row=window.row;row<window.row+window.rows;row++)for(let column=window.column;column<window.column+window.columns;column++){stats.add(index.sample(row,column).value);if(++done%2048===0){onProgress(done,window.rows*window.columns);await yieldControl();guard(current);}}
+  guard(current);return{window,...stats.result()};
+}
+export function sampleTransect(index,start,end){
+  const a=index.sample(start.row,start.column),b=index.sample(end.row,end.column),samples=[],stats=accumulator(index);let row=a.row,column=a.column,dx=Math.abs(b.column-a.column),dy=-Math.abs(b.row-a.row),sx=column<b.column?1:-1,sy=row<b.row?1:-1,error=dx+dy,distance=0,previous;
+  for(;;){if(samples.length===ANALYSIS_LIMITS.profile)throw new Error('Transect exceeds 4,096 stored samples.');const sample=index.sample(row,column);if(previous)distance+=Math.hypot(sample.x-previous.x,sample.z-previous.z);samples.push({...sample,distance});stats.add(sample.value);previous=sample;if(row===b.row&&column===b.column)break;const twice=2*error;if(twice>=dy){error+=dy;column+=sx;}if(twice<=dx){error+=dx;row+=sy;}}
+  return{start:{row:a.row,column:a.column},end:{row:b.row,column:b.column},length:distance,samples,statistics:stats.result(),method:'Bresenham stored-cell path; distances follow sample centres. No interpolation.'};
+}
+function labels(source,keys){const result={};for(const key of keys){const value=source?.[key];if(value===undefined)continue;if(typeof value==='string'||typeof value==='boolean'||typeof value==='number'&&Number.isFinite(value)||value===null)result[key]=value;else if(typeof value==='bigint')result[key]=String(value);}return result;}
+export function mapSourceMetadata(index,inputs){
+  const source=labels(index.data,['field','scope','sourceScope','sourceCommit','completePipeline','seed','style','dimensionKey','x','y','z','span','depth','width','height']),generationInputs=labels(inputs,['pack','revision','request','field','style','seed','x','y','z','span','width','height','dimensionKey','resource','studioLayout']);if(inputs?.procedural)generationInputs.procedural=labels(inputs.procedural,['key','family','index','variant']);
+  const result={source,generationInputs,coordinateConvention:'Sample centres: x - span/2 + (column + 0.5)*span/width; z - depth/2 + (row + 0.5)*depth/height. Original map row/column indices are retained.',valueEncoding:'Decimal strings round-trip finite Float64 values, including -0. value_bits is a 0x-prefixed, 16-digit, big-endian IEEE-754 binary64 bit pattern. Categorical values are original palette indices.',qualification:'Retained development samples only. Labels do not contain a reproducible pack snapshot or establish complete engine/reference parity.'};if(encoder.encode(JSON.stringify(result)).length>ANALYSIS_LIMITS.metadataBytes)throw new Error('Map source labels exceed the 64 KiB metadata limit.');return result;
+}
+export async function exportMapSamples(index,{bounds,transect,format='csv',inputs,current=()=>true,yieldControl=pause,onProgress=()=>{}}={}){
+  if(!['csv','json'].includes(format))throw new Error('Choose CSV bundle or sample JSON.');const window=transect?null:sampleWindow(index,bounds);let profile=null;if(transect)profile=sampleTransect(index,transect.start,transect.end);const total=profile?.samples.length??window.rows*window.columns,used=new Set(),metadata={format:'iris-terrain-studio-map-samples',version:1,...mapSourceMetadata(index,inputs),selection:profile?{kind:'transect',start:profile.start,end:profile.end,length:profile.length,method:profile.method}:{kind:'window',...window},sampleCount:total};
+  const parts=[];let bytes=0,done=0,chunk='',first=true;const add=text=>{const encoded=encoder.encode(text);if((bytes+=encoded.length)>ANALYSIS_LIMITS.exportBytes)throw new Error('Map sample export exceeds 64 MiB. Choose a smaller selection.');parts.push(encoded);};guard(current);if(format==='csv')add('row,column,x,z,y,value,value_bits,category_index,distance\r\n');
+  const append=sample=>{if(sample.category!==null)used.add(sample.value);const value=decimal(sample.value),bits=sampleBits(sample.value),record={row:sample.row,column:sample.column,x:decimal(sample.x),z:decimal(sample.z),y:sample.y===null?null:decimal(sample.y),value,value_bits:bits,category_index:sample.category===null?null:sample.value,distance:sample.distance===undefined?null:decimal(sample.distance)};
+    chunk+=format==='csv'?[sample.row,sample.column,record.x,record.z,record.y??'',value,bits,record.category_index??'',record.distance??''].join(',')+'\r\n':(first?'':',\n')+JSON.stringify(record);first=false;if(chunk.length>65536){add(chunk);chunk='';}
+  };
+  const tick=async()=>{onProgress(done,total);await yieldControl();guard(current);};
+  if(profile){for(const sample of profile.samples){append(sample);if(++done%2048===0)await tick();}}else for(let row=window.row;row<window.row+window.rows;row++)for(let column=window.column;column<window.column+window.columns;column++){append(index.sample(row,column));if(++done%2048===0)await tick();}
+  if(chunk)add(chunk);metadata.categories=[...used].sort((a,b)=>a-b).map(id=>({index:id,key:index.data.categories[id]}));guard(current);const prefix=format==='json'?JSON.stringify(metadata).slice(0,-1)+',"samples":[\n':JSON.stringify(metadata,null,2)+'\n',encoded=encoder.encode(prefix),suffix=format==='json'?encoder.encode('\n]}\n'):new Uint8Array();if(bytes+encoded.length+suffix.length>ANALYSIS_LIMITS.exportBytes)throw new Error('Map sample export with category metadata exceeds 64 MiB. Choose a smaller selection.');
+  if(format==='json')return{blob:new Blob([encoded,...parts,suffix],{type:'application/json'}),name:profile?'map-transect.json':'map-samples.json',metadata};
+  const csv=new Uint8Array(bytes);let at=0;for(const part of parts){csv.set(part,at);at+=part.length;}guard(current);const archive=writeZip(new Map([['samples.csv',csv],['metadata.json',encoded]]));if(archive.length>ANALYSIS_LIMITS.exportBytes)throw new Error('Map CSV bundle exceeds 64 MiB including ZIP overhead.');return{blob:new Blob([archive],{type:'application/zip'}),name:profile?'map-transect-csv.zip':'map-samples-csv.zip',metadata};
+}
