@@ -2,6 +2,20 @@
 
 As of 2026-10-22. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
 
+## Completion audit and current batch
+
+The request is now to finish the project. Development is focused on the remaining engine, rendering, installation and release blockers. The application must not be described as complete while these gates remain open.
+
+- Runtime status now checks bounded installed file handles and SHA-256 values, the pinned Iris source identity and matching registry platform inputs. Status never promotes development artifacts to qualified terrain.
+- Preview controls admit only installed field requirements; an unavailable native registry blocks pack generation while an installed standalone style module can still run. Unsupported hydrology remains unavailable. A refreshable status panel preserves editing and retained previews.
+- The laboratory worker now executes the exact checked runtime/Wasm buffers. Denied session storage no longer prevents application construction or in-memory token entry.
+- Distribution builds stage a clean copy, remove stale files, include runtime documentation and a usable start script, record installation checks and preserve the previous copy on a failed required-engine build. Overlapping builds refuse. Required-engine and release build modes fail explicitly.
+- The pinned local JDK is recognized by native preflight. The explicit browser native-input profile was rebuilt successfully without test tasks or a registry/state/pair sweep. The browser Wasm module and a matching native development registry are restored; production pins and parity flags remain unresolved.
+- Registry placement capture now uses the exact source-guarded native input groups: 1,156 native evaluations across 34 groups replace 1,653,796 native pair calls. Twenty selected native pairs and changed-source refusal pass. The required registry data was exported once; no exhaustive placement/state comparison ran. [Method and proof](research/NATIVE_PLACEMENT_CAPTURE.md).
+- The focused runtime/packaging check and standalone distribution HTTP check pass. The restored module matches three native scalar samples and one seed derivation in the linkage check. One upstream terrain fixture/seed additionally matches two exact height/biome points and three selected block positions against Java using the matching restored registry. Local Chrome 151 and the historically recorded Chrome 155 executable both exit with SIGTRAP before navigation in this environment; no real browser/GPU verification is claimed.
+
+The next milestone is completing the unfinished native terrain and Minecraft rendering adapters using the restored development module and matching registry. Full program verification remains reserved for completed implementation. See the [batch evidence](evidence/runtime-installation-completion-audit-2026-10-22.json) and development notes for exact checks and limitations.
+
 ## Implemented
 
 - Initial empty-repository audit and preservation of the complete user specification.
@@ -133,7 +147,7 @@ A local pack-management server, browser editor, lossless JSON document model, We
 
 ## Evidence and limitations
 
-Earlier development evidence used Node 24.19.0 and a verified Temurin 25.0.4.1+1 JDK, Gradle 9.5.1 and Maven 3.10.0. On 2026-10-22 the transient checkout was restored from the committed checkpoint; the native tool/input caches were not recaptured or requalified in the resource-navigation batch. CI provisions Java 25.0.4.1+1 and now compiles the actual Iris core. Of 15 native noise/seed tests, one fails: expected checksum `5059606393854142913`, actual `3659164368724912644`. The candidate is therefore not a qualified reference. Browser primitive/RNG experiments pass; The new Iris module has a focused native/Node Wasm export check; complete browser CNG/SeedManager coverage, GPU visualization and terrain comparison remain unproved.
+Earlier development evidence used Node 24.19.0 and a verified Temurin 25.0.4.1+1 JDK, Gradle 9.5.1 and Maven 3.10.0. On 2026-10-22 the transient checkout was restored from the committed checkpoint. The completion audit restored the pinned Java/Gradle/Maven tools and captured the explicit browser native-input profile again; those development inputs remain unqualified for release. CI provisions Java 25.0.4.1+1 and now compiles the actual Iris core. Of 15 native noise/seed tests, one fails: expected checksum `5059606393854142913`, actual `3659164368724912644`. The candidate is therefore not a qualified reference. Browser primitive/RNG experiments pass; The new Iris module has a focused native/Node Wasm export check; complete browser CNG/SeedManager coverage, GPU visualization and terrain comparison remain unproved.
 
 No production-reference capture or Iris browser exporter exists yet. Experimental primitive captures and compiler/toolchain provenance are available in [the successful CI run](https://github.com/StealthMuskrat/IrisTerrainStudio/actions/runs/39430229610); the committed summary preserves hashes and results, while full run artifacts have 30-day retention. The production lock still has explicit nulls for unresolved dependencies, schemas, registries and assets. Release prerequisites remain blocked.
 

@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { timingSafeEqual } from 'node:crypto';
 import { PackStore, StoreError } from './pack-store.mjs';
+import {runtimeStatusReader} from './runtime-status.mjs';
 import { ARCHIVE_LIMIT, JSON_LIMIT, resourcePath } from '../../packages/shared/paths.mjs';
 
 const repository = fileURLToPath(new URL('../../', import.meta.url));
@@ -24,6 +25,7 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
   if (!loopback && token.length < 32) throw new Error('Set IRIS_STUDIO_TOKEN to at least 32 characters before binding to a non-loopback address.');
   const store = new PackStore(root); await store.initialize();
   const lock = JSON.parse(await fs.readFile(path.join(repository, 'upstream.lock.json'), 'utf8'));
+  const runtimeStatus=runtimeStatusReader(repository);
   const server = http.createServer(async (request, response) => {
     headers(response);
     try {
@@ -35,8 +37,7 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
         if (!authenticated(request, token)) throw new StoreError(401, 'Enter the server access token to open packs.');
         const pack = url.searchParams.get('pack'), relative = url.searchParams.get('path');
         if (method === 'GET' && url.pathname === '/api/status') {
-          let engine; try { engine = JSON.parse(await fs.readFile(path.join(repository, 'apps/web/engine/iris-generated/manifest.json'), 'utf8')); } catch { engine = { available: false, reason: 'The Iris browser generation engine is not installed.' }; }
-          return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine: {...engine, available:!!engine.wasmSha256, terrainAvailable:false}, authenticated: !!token });
+          return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine:await runtimeStatus(), authenticated: !!token });
         }
         if (method === 'GET' && url.pathname === '/api/packs') return json(response, 200, { packs: await store.packs() });
         if (method === 'POST' && url.pathname === '/api/packs') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 201, await store.create(data.id)); }

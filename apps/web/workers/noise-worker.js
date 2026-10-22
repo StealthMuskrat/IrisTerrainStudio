@@ -4,12 +4,14 @@ async function engine() {
     const response = await fetch('/app/engine/generated/manifest.json');
     if (!response.ok) throw new Error('The native noise module is not installed. Run npm run engine:install with the verified noise experiment archive.');
     const manifest = await response.json();
-    if (manifest.scope !== 'volmlib-primitive-portability' || !manifest.wasmSha256) throw new Error('The installed noise module has invalid provenance.');
-    const wasmResponse = await fetch('/app/engine/generated/probe.wasm'); if (!wasmResponse.ok) throw new Error('The compiled noise module is missing.');
-    const bytes = await wasmResponse.arrayBuffer(), actual = [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(b => b.toString(16).padStart(2, '0')).join('');
-    if (actual !== manifest.wasmSha256) throw new Error('The compiled noise module checksum differs from its manifest.');
-    importScripts('/app/engine/generated/probe.wasm-runtime.js');
-    const loaded = await TeaVM.wasmGC.load('/app/engine/generated/probe.wasm');
+    if (manifest.scope !== 'volmlib-primitive-portability' || !/^[a-f0-9]{64}$/.test(manifest.wasmSha256) || !/^[a-f0-9]{64}$/.test(manifest.runtimeSha256)) throw new Error('The installed noise module has invalid provenance.');
+    const [bytes,script]=await Promise.all(['probe.wasm','probe.wasm-runtime.js'].map(async name=>{
+      const response=await fetch('/app/engine/generated/'+name,{cache:'no-cache'});if(!response.ok)throw new Error('The native noise module is missing '+name+'.');return response.arrayBuffer();
+    }));
+    const digest=async data=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',data))].map(b=>b.toString(16).padStart(2,'0')).join('');
+    if(await digest(bytes)!==manifest.wasmSha256||await digest(script)!==manifest.runtimeSha256)throw new Error('The native noise module differs from its manifest.');
+    const runtimeUrl=URL.createObjectURL(new Blob([script],{type:'text/javascript'}));
+    let loaded;try{importScripts(runtimeUrl);loaded=await TeaVM.wasmGC.load(bytes);}finally{URL.revokeObjectURL(runtimeUrl);}
     if (!(loaded.instance instanceof WebAssembly.Instance) || typeof loaded.exports.sample !== 'function') throw new Error('This browser cannot run the Wasm GC noise module.');
     return { loaded, manifest };
   })().catch(error => { runtime = null; throw error; });

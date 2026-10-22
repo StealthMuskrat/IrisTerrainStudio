@@ -1,8 +1,8 @@
 export async function readSourceResponse(response) { const data=await response.arrayBuffer();let text;try{text=new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(data);}catch{throw new Error('The resource is not valid UTF-8.');}return{text,etag:response.headers.get('etag')}; }
 export class ApiError extends Error { constructor(status, value) { super(value.error || `Request failed (${status}).`); this.status = status; this.details = value.details; } }
 export class StudioApi {
-  constructor() { this.token = sessionStorage.getItem('iris-studio-token') || ''; }
-  setToken(token) { this.token = token; if (token) sessionStorage.setItem('iris-studio-token', token); else sessionStorage.removeItem('iris-studio-token'); }
+  constructor() { this.token='';try{this.token=sessionStorage.getItem('iris-studio-token')||'';}catch{} }
+  setToken(token) { this.token = token;try{if (token) sessionStorage.setItem('iris-studio-token', token); else sessionStorage.removeItem('iris-studio-token');}catch{} }
   async request(endpoint, { query = {}, method = 'GET', headers = {}, body, raw = false } = {}) {
     const url = new URL('/api/' + endpoint, location.origin); for (const [key, value] of Object.entries(query)) if (value !== undefined && value !== null) url.searchParams.set(key, value);
     const response = await fetch(url, { method, headers: { ...(this.token ? { Authorization: 'Bearer ' + this.token } : {}), ...headers }, body });

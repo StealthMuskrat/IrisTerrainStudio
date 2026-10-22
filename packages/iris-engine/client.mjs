@@ -1,6 +1,15 @@
 export class UnsupportedGenerationError extends Error { constructor(message, feature) { super(message); this.name='UnsupportedGenerationError';this.feature=feature; } }
 export function numericSeed(value) { const text=String(value).trim();if(!/^-?(?:0|[1-9]\d*)$/.test(text))throw new Error('The native engine needs a signed 64-bit decimal seed.');const number=BigInt(text);if(number<-(1n<<63n)||number>(1n<<63n)-1n)throw new Error('Seed is outside the signed Java long range.');return number.toString(); }
 const laboratory=new Set(['lab-white2d','lab-perlin2d','lab-perlin3d']),irisStyles=new Set(['procedural-object','iris-style2d','iris-style3d','iris-generator','iris-continent','iris-region-control','regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','procedural-source','procedural-neighborhood','material-finish-stage','subterrain-finish-stage','procedural-placement','caves']);
+export function generationAvailability(installation,field){
+  if(!laboratory.has(field)&&!irisStyles.has(field))return{available:false,reason:'This preview field is not connected to the native browser runtime.'};
+  if(!installation)return{available:false,reason:'Check the server runtime status before generating.'};
+  const engine=laboratory.has(field)?installation.laboratory:installation;
+  if(engine?.available!==true)return{available:false,reason:engine?.reason||'The browser generation module is unavailable.'};
+  const packField=irisStyles.has(field)&&!field.startsWith('iris-');
+  if(packField&&installation.registry?.available!==true)return{available:false,reason:installation.registry?.reason||'The native browser registry is unavailable.'};
+  return{available:true,reason:''};
+}
 function resultBytes(result){return result.volume?result.volume.blocks.byteLength+(result.volume.biomes?.cells.byteLength||0):result.values.byteLength;}
 export class GenerationClient extends EventTarget {
   constructor(){super();this.workers=new Map();this.revision=0;this.sequence=0;this.pending=null;this.requests=new Map();this.cache=new Map();this.cacheBytes=0;this.maxCacheBytes=48*1024*1024;}
