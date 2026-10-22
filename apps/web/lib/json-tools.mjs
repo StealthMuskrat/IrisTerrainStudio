@@ -1,3 +1,4 @@
+import{sourceEditor}from'./source-editor.mjs';
 import{JsonDocument,stringify}from'../../../packages/iris-config/document.mjs';
 import{propertySchema}from'../../../packages/iris-config/schema.mjs';
 import{pointerParts}from'../../../packages/shared/paths.mjs';
@@ -15,10 +16,10 @@ export class JsonTools{
     const owner=this.capture(node,stamp);node=owner.document.nodes.get(node.pointer);const parent=node.pointer?owner.document.parent(node.pointer):null,{element,field,copy}=this;
     const choices=[['edit','Edit JSON value'],...(parent?.type==='object'?[['rename','Rename property']]:[]),...(parent?.type==='array'?[['duplicate','Duplicate array entry'],['move','Move array entry']]:[]),...(parent?[['remove','Remove value']]:[])];
     const action=element('select',{'aria-label':'JSON action'},...choices.map(([value,text])=>element('option',{value,text})));action.value='edit';
-    const raw=element('textarea',{class:'fragment-editor',required:true,spellcheck:'false','aria-label':'JSON value'});raw.value=owner.text.slice(node.start,node.end);
+    const fragment=sourceEditor(element,owner.text.slice(node.start,node.end),{class:'fragment-editor',required:true,'aria-label':'JSON value'}),raw=fragment.node;
     const name=element('input',{type:'text',value:pointerParts(node.pointer).at(-1)??'','aria-label':'New property name'}),position=element('input',{type:'number',min:1,max:parent?.children.length??1,step:1,value:String((parent?.children.indexOf(node)??0)+1),'aria-label':'New array position'}),body=element('div');
     const draw=()=>{const operation=action.value;body.replaceChildren(...(operation==='edit'?[field('JSON value',raw,'Edit only this value. Other property and number tokens are preserved.')]:operation==='rename'?[field('New property name',name),copy('Only this property name changes. String values and resource references are not rewritten.')]:operation==='move'?[field('New position (1–'+parent.children.length+')',position),copy('Other entries keep their relative order and original JSON values.')]:operation==='duplicate'?[copy('Insert an exact copy immediately after this entry. Schema uniqueness or size constraints can still require changes before saving.')]:[copy('Remove '+node.pointer+' and its contents? Unknown values inside this selection will also be removed.')]));};action.addEventListener('change',draw);draw();
-    await this.ask('Edit '+(node.pointer||'resource JSON'),[field('Action',action),body],{submit:'Apply edit',wide:true,read:()=>({action:action.value,raw:raw.value,key:name.value,position:position.value}),onSubmit:value=>{
+    await this.ask('Edit '+(node.pointer||'resource JSON'),[field('Action',action),body],{submit:'Apply edit',wide:true,read:()=>({action:action.value,raw:action.value==='edit'?fragment.read():'',key:name.value,position:position.value}),onSubmit:value=>{
       this.current(owner);let text;
       switch(value.action){case'edit':text=owner.document.replaceRaw(node.pointer,value.raw);break;case'rename':if(!choices.some(([key])=>key==='rename'))throw new Error('Choose an object property.');text=owner.document.rename(node.pointer,value.key);break;case'duplicate':text=owner.document.duplicate(node.pointer);break;case'move':if(!value.position.trim())throw new Error('Enter an array position.');text=owner.document.move(node.pointer,Number(value.position)-1);break;case'remove':text=owner.document.remove(node.pointer);break;default:throw new Error('Choose a JSON action.');}
       this.publish(owner,text,parent?.pointer??'');

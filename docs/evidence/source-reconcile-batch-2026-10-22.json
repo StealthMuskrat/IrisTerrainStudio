@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-22",
+  "scope": "source-preserving textarea edits, three-way review/suggestions, undoable disk reload and guarded deleted-resource recovery",
+  "fixture": {
+    "authoredFiles": 1,
+    "initialBytes": 98,
+    "smallMergeCases": 6,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "disjoint scalar/object additions/removals, adjacent source ranges, escaped keys and already-applied changes preserve exact source tokens",
+    "overlapping atomic arrays/scalars and invalid/duplicate inputs withhold suggestions; textarea edits preserve BOM/mixed unchanged newlines and use existing inserted-line style",
+    "actual raw/fragment textarea paths retain original line endings, unknown fields and exact number tokens",
+    "actual versioned local file conflict uses an explicitly chosen complete suggestion; reload changes no disk file and preserves undo; stale/cancelled reviews retain newer edits",
+    "deleted-file recreation uses the absent-path condition; a competing create forces a second review and cannot be overwritten; confirmed recreation succeeds"
+  ],
+  "workspaceSha256": {
+    "packages/iris-config/merge.mjs": "dd1d7f559d090c510bf1640494b5e39b820b36e37ed66e54f279916a0c4c50b5",
+    "apps/web/lib/source-editor.mjs": "54a99da8133e7a6d31d2f59a53fbbf42ee016fce7ac743da330d448533ec9211",
+    "apps/web/lib/change-tools.mjs": "dfe9fc50de9ca80cb60c256a8f66407f5dfd50c5086a6a4c87fad5e5b12f877f",
+    "apps/web/lib/json-tools.mjs": "e8469a315c016e516838844e9ab1b513cdbb9a3275c5427ef9ef1b9b368b9997",
+    "apps/web/lib/edit-workspace.mjs": "521ce9574c8b66206b613633134be18b59598c7bf233da30c479063e4e3f0890",
+    "apps/web/main.mjs": "98f547edca45c6ac35388e1e77bf290f321ff08d2b97dadcad8be689206223fd",
+    "apps/web/index.html": "1991642f4983b37c75ee5b43937bf390b7424a955613a0fa61289f894b6e5ae7",
+    "apps/web/styles.css": "40f6ae876fe82d1192467ba4201f03961c5ae48eb5d2ef61fa0f62dbfb7e008e"
+  },
+  "realBrowserVerified": false,
+  "indexedDbVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "One tiny actual PackStore file, six small structural cases and controlled Node textarea/modal/application hosts. Suggestions are bounded proposals, not authoritative semantic/native merges; arrays and type changes remain atomic, source trivia/order follows disk and no partial candidate is published on conflict. Manual reviewed source remains available. Native textarea focus/input/IME/undo/newline/paste/layout/network interleaving, browser/IndexedDB/multi-tab and native/client/release qualification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}
