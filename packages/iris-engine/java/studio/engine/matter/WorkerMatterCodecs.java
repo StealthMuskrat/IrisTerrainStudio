@@ -10,6 +10,7 @@ public final class WorkerMatterCodecs {
     public static synchronized void ensureRegistered(){
         if(registered)return;
         IrisMatter.registerSliceType(new StringMatter());IrisMatter.registerSliceType(new MarkerMatter());IrisMatter.registerSliceType(new CavernMatter());
+        IrisMatter.registerSliceType(new UpdateMatter());IrisMatter.registerSliceType("art.arcane.iris.engine.hydrology.cave.HydrologyCaveCell",new HydrologyCaveMatter());
         IrisMatter.registerSliceType(new ObjectContinuationMatter());IrisMatter.registerSliceType(new PlatformBlockMatter());
         IrisMatter.registerSliceType("art.arcane.iris.core.link.Identifier",new IdentifierMatter());
         IrisMatter.registerSliceType("art.arcane.iris.util.project.matter.PreObjectMatterCell",new PreObjectMatter());
@@ -23,6 +24,8 @@ public final class WorkerMatterCodecs {
         else if(type==art.arcane.iris.generation.mantle.ObjectContinuationBundle.class)result=new ObjectContinuationMatter(w,h,d);
         else if(type==art.arcane.volmlib.nativelib.terrain.NativeBlockState.class)result=new PlatformBlockMatter(w,h,d);
         else if(type==art.arcane.iris.integration.Identifier.class)result=new IdentifierMatter(w,h,d);
+        else if(type==art.arcane.iris.generation.hydrology.cave.HydrologyCaveCell.class)result=new HydrologyCaveMatter(w,h,d);
+        else if(type==MatterUpdate.class)result=new UpdateMatter(w,h,d);
         else if(type==PreObjectMatterCell.class)result=new PreObjectMatter(w,h,d);
         else if(type==art.arcane.iris.generation.decoration.tree.TreeBlockMaterial.class)result=new TreeBlockMaterialMatter(w,h,d);
         else throw studio.engine.UnsupportedPlatform.unavailable("Native Matter slice codec: "+type.getName());

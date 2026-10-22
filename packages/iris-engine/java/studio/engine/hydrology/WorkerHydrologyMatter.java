@@ -16,12 +16,19 @@ public final class WorkerHydrologyMatter implements AutoCloseable {
     private boolean bound,runtime,storage;
     private WorkerHydrologyMatter(BrowserTerrainEngine engine){this.engine=engine;}
     public static WorkerHydrologyMatter open(BrowserTerrainEngine engine,int x,int z){
+        if(active!=null)throw new IllegalStateException("Nested hydrology matter scope");
         var owned=new WorkerHydrologyMatter(engine);
         try{
             WorkerMatterRuntime.begin(engine);owned.runtime=true;
             owned.host=new IrisEngineMantle(engine,(java.nio.file.Path)null);engine.bindNativeMatter(owned.host);owned.bound=true;
             WorkerCaveStorage.begin(engine.getHeight(),x>>4,z>>4,256);owned.storage=true;active=owned;return owned;
         }catch(RuntimeException|Error failure){try{owned.close();}catch(RuntimeException|Error cleanup){failure.addSuppressed(cleanup);}throw failure;}
+    }
+    /** Borrow the existing registered mode's host/storage; this scope owns only hydrology admission. */
+    public static WorkerHydrologyMatter attach(BrowserTerrainEngine engine,IrisEngineMantle host){
+        if(active!=null)throw new IllegalStateException("Nested hydrology matter scope");
+        if(engine.getMantle()!=host||WorkerCaveStorage.getWorldHeight(null)!=engine.getHeight())throw new IllegalStateException("Hydrology matter requires its prepared native mode host");
+        var owned=new WorkerHydrologyMatter(engine);owned.host=host;active=owned;return owned;
     }
     public static int admittedChunks(){return active==null?0:active.carvingChunks.size();}
     public static long chargedCells(){return active==null?0:(long)active.carvingChunks.size()*active.engine.getHeight()*256;}

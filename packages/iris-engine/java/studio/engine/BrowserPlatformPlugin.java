@@ -154,7 +154,21 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     }else if(!retained.contains(method.getName())&&!method.getName().startsWith("lambda$getComponents$")&&!method.getName().startsWith("lambda$getDisabledFlags$")&&!method.getName().startsWith("lambda$registerComponent$")&&!(method.getName().equals("<init>")&&method.parameterCount()==2)&&method.getProgram()!=null)unavailable(method,"Native mantle service "+method.getName()+" outside registered terrain planning");
                 }
             }
-            if(name.equals("art.arcane.iris.generation.mantle.MantleHydrologyComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("generateLayer"))unavailable(method,"Native hydrology execution");
+            if(name.equals("art.arcane.iris.generation.mantle.MantleHydrologyComponent")){
+                int handles=0,heights=0,publicationGuards=0;
+                for(MethodHolder method:cls.getMethods()){
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.mantle.MantleWriter")&&ref.getName().equals("getMantle")){target="getMantle";handles++;}
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("getWorldHeight")){target="getWorldHeight";heights++;}
+                        if(target!=null)redirectHostCall(call,target);
+                        if(method.getName().equals("compilePublication")&&ref.getClassName().equals(name)&&ref.getName().equals("sampleColumns")){
+                            InvokeInstruction guard=new InvokeInstruction();guard.setType(InvocationType.SPECIAL);guard.setMethod(new MethodReference("studio.engine.hydrology.WorkerHydrologyBudget","admitPublication",ValueType.object("java.util.Map"),ValueType.INTEGER,ValueType.VOID));guard.setArguments(call.getReceiver(),p.variableAt(3));call.insertNext(guard);publicationGuards++;
+                        }
+                    }
+                }if(handles!=3||heights!=2||publicationGuards!=1)throw new IllegalStateException("Pinned hydrology publication storage boundary changed: "+handles+","+heights+","+publicationGuards);
+            }
             if(name.equals("art.arcane.iris.generation.mantle.MantleFloatingObjectComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().startsWith("tryPlace")||method.getName().equals("interiorColumns"))unavailable(method,"Imported floating object placement");
             if(name.equals("art.arcane.iris.generation.mantle.IrisStructureComponent"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("placeFromPlacement"))unavailable(method,"Imported conventional structure placement");
             if(name.equals("art.arcane.iris.generation.stage.IrisCustomModifier")){

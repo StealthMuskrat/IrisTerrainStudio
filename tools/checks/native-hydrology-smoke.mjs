@@ -6,18 +6,14 @@ import {spawn} from 'node:child_process';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash,webcrypto} from 'node:crypto';
 import assert from 'node:assert/strict';
+import {hydrologyFixture} from './hydrology-fixture.mjs';
 import {GenerationClient} from '../../packages/iris-engine/client.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url)),local=path.join(root,'.local-tools');
 const directory=await fs.mkdtemp(path.join(local,'native-hydrology-'));
 await fs.rm(path.join(local,'native-hydrology-smoke-results.json'),{force:true});
 try{
   const pack=path.join(directory,'pack'),flat=JSON.parse(await fs.readFile(path.join(root,'.upstream/Iris/probe/src/test/resources/terrain3d-pack/generators/flat.json'),'utf8'));
-  const resources={
-    'dimensions/terrain3d.json':{name:'Hydrology fixture',version:1,mode:{type:'OVERWORLD'},regions:['floor'],environment:'NORMAL',dimensionHeight:{min:0,max:128},logicalHeight:128,fluidHeight:16,caveProfile:{enabled:false},riverPolicy:{surfacePools:['lava_pool'],surfaceSourceDensity:0,surfaceSourceSpacing:32,surfaceCoastalOutlets:0,surfaceInlandOutlets:0},hydrology:{rivers:{enabled:true,routing:{tileSize:256,sampleSpacing:64,maximumRouteLength:256,minimumSurfaceCourseLength:0,minimumUndergroundCourseLength:0,oceanOutlets:false,inlandOutlets:[],maximumCoastalOutletsPerTile:0,regional:{enabled:false}},surface:{enabled:false,sources:{density:0,minimumSpacing:32}},underground:{enabled:false,sources:{density:0,minimumSpacing:32}},grottos:{coastal:{enabled:false,seaCaves:{enabled:false}},inland:{enabled:false}}},surfacePools:[{id:'lava_pool',fluidPalette:{palette:[{block:'minecraft:lava'}]},density:8,spacing:32,minimumRadius:2,maximumRadius:2,depth:2}]}},
-    'regions/floor.json':{name:'Floor',landBiomes:['floor'],seaBiomes:['floor'],shoreBiomes:['floor']},
-    'biomes/floor.json':{name:'Floor',derivative:'minecraft:plains',vanillaDerivative:'minecraft:plains',layers:[{palette:[{block:'minecraft:stone'}]}],generators:[{generator:'flat',min:48,max:48}]},
-    'generators/flat.json':flat
-  };
+  const resources=hydrologyFixture(flat);
   for(const[name,value]of Object.entries(resources)){const filename=path.join(pack,name);await fs.mkdir(path.dirname(filename),{recursive:true});await fs.writeFile(filename,JSON.stringify(value));}
   const captures=await Promise.all(['registry-inputs.json','iris-inputs.json'].map(name=>fs.readFile(path.join(local,name),'utf8').then(JSON.parse))),classes=path.join(local,'registry-classes');
   const classpath=[path.join(local,'layer-kernel-classes'),path.join(local,'browser-engine/target/classes'),path.join(local,'rotation-classes'),classes,...new Set(captures.flatMap(c=>c.classpath.map(e=>e.path)))].join(path.delimiter),java=process.env.IRIS_JAVA_HOME||path.join(local,'jdk-25.0.4.1+1');

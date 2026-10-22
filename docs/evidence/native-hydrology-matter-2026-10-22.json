@@ -1,0 +1,308 @@
+{
+  "scope": "native-hydrology-registered-overworld-targeted",
+  "result": "pass",
+  "fixtures": 1,
+  "seeds": 1,
+  "blockProbes": 12,
+  "physicalBiomeProbes": 12,
+  "results": [
+    {
+      "field": "overworld-terrain",
+      "probes": [
+        [
+          10,
+          62,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          63,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          64,
+          9,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          65,
+          9,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          9,
+          64,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          0,
+          64,
+          0,
+          "minecraft:stone",
+          "minecraft:plains"
+        ]
+      ],
+      "hydrology": {
+        "nativeComponentFlag": true,
+        "wetSources": 0,
+        "fallingFluids": 0,
+        "dryAir": 0,
+        "sealGuards": 75,
+        "fluidUpdates": 0,
+        "completePipeline": false
+      },
+      "admission": {
+        "planningRoots": 4,
+        "planningCalls": 4,
+        "carvingChunks": 0,
+        "chargedCarvingInputCells": 0,
+        "publicationLayerCellsCharged": 15488
+      }
+    },
+    {
+      "field": "overworld-mode",
+      "probes": [
+        [
+          10,
+          62,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          63,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          64,
+          9,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          10,
+          65,
+          9,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          9,
+          64,
+          9,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          0,
+          64,
+          0,
+          "minecraft:stone",
+          "minecraft:plains"
+        ]
+      ],
+      "hydrology": {
+        "nativeComponentFlag": true,
+        "wetSources": 0,
+        "fallingFluids": 0,
+        "dryAir": 0,
+        "sealGuards": 75,
+        "fluidUpdates": 0,
+        "completePipeline": false
+      },
+      "admission": {
+        "planningRoots": 4,
+        "planningCalls": 4,
+        "carvingChunks": 0,
+        "chargedCarvingInputCells": 0,
+        "publicationLayerCellsCharged": 15488
+      }
+    }
+  ],
+  "referenceKey": "575ab415ddab300c0b62502f1bea2b8a89345113aa58f0c7b63debe5289596e2",
+  "actualWorkerClient": true,
+  "clientCacheReuse": true,
+  "olderModuleRefused": true,
+  "unsupportedIntermediateRefused": true,
+  "failedPreviewCleanup": {
+    "sessionId": "1",
+    "activeLeases": 0,
+    "scopeBound": false
+  },
+  "recoveryAndRelease": true,
+  "resources": [
+    {
+      "path": "dimensions/terrain3d.json",
+      "sha256": "90f5bbe8eece03c31cd2fcb01fefc8dad377fbea089ab4888e74f01ea652727f"
+    },
+    {
+      "path": "regions/floor.json",
+      "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+    },
+    {
+      "path": "biomes/floor.json",
+      "sha256": "24c913e5e334b855658f8b02fc242b1809a31853f1c5f3576d53474028fe0fd8"
+    },
+    {
+      "path": "generators/flat.json",
+      "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    }
+  ],
+  "wasmSha256": "213049879656c793c69e795e3a8ed6166d72b4249ecb0d32c454aeae3e21395e",
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "nativeInputProfile": "terrain-no-eco-items",
+  "sourceSha256": "238bd2188c949bf9f452153eb0368dd7b988d1f8f5a8ec5e466789baad4d5379",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "platform": {
+    "scope": "native-hydrology-column-development",
+    "declaredHeapBytes": 536870912,
+    "maximumPlanningRoots": 32,
+    "maximumPlanningCalls": 64,
+    "maximumSparseCarvingChunks": 256,
+    "maximumCarvingInputCells": 16777216,
+    "maximumPublicationLayerCells": 1048576,
+    "settingsFingerprintScope": "runtime-local-enum-identity",
+    "registeredOverworldMatter": true,
+    "registeredOverworldTransport": true,
+    "sharedCache": false,
+    "persistence": false,
+    "fullTerrainHydrology": false
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "7a4b06e1e008e8f5fcae1589f311ad791db15eb1b6703037a6a8e24e48a74c36"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "16ef0e863c6e77d55b103d01373abb4f07640df3912831ef170ff857c1ff0ada"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/HydrologyMatterSnapshot.java",
+      "sha256": "d623ffc8af5eeacaa34bef273453fe73b00793b9b7c5892bcc9043c03ff89244"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyBudget.java",
+      "sha256": "a3a61b617140de634bb854e07d6ec05e0e2d3581c8323dfa677f1162de8396d8"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyMatter.java",
+      "sha256": "6a471607ba17efed12a10628eee19f25aec10e08d3d793ea698ab92fedbed224"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/matter/WorkerMatterCodecs.java",
+      "sha256": "68997f830dcb5730e29823583b3bb26150ea25b596490aea3459d24121efb908"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/OverworldTerrainStage.java",
+      "sha256": "6ccbed4ca9156b2dba1cd073cc45013d2843e1ac0997461cf7c36aa6a334e3c5"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java",
+      "sha256": "3d87c47673b7fbc7d02c1d5bdbcf04bc45bb38dabde450a92af405c165824109"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "c995865cf756117e83f71c1bb617cb00534f65deda596c20c78c4a97e3d02fed"
+    },
+    {
+      "path": "tools/checks/hydrology-fixture.mjs",
+      "sha256": "94039c3deeeff29ed59732d440cc53301d521c0e8104d61875eaa2d0d1c32c69"
+    },
+    {
+      "path": "tools/checks/native-hydrology-matter-smoke.mjs",
+      "sha256": "c3b667233e33d5190dea7652f4d07e4a5c9c2b6bad01ff5985f37aafaf566591"
+    },
+    {
+      "path": "tools/checks/native-hydrology-smoke.mjs",
+      "sha256": "bac4ec70abc87be06e5ae973c8e959c406f59a239ccce29049410b6569e31d17"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "d7752504cf83bb81aed6579800851128a15e4b040ccbe11c92804abf13468c02"
+    }
+  ],
+  "originalSources": [
+    {
+      "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/mantle/MantleHydrologyComponent.java",
+      "sha256": "0fb111f29ec19b97ae64cd5d6f48ae7bce59b3de96082c1284b5507ce6d7d89a"
+    },
+    {
+      "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/world/storage/matter/HydrologyCaveMatter.java",
+      "sha256": "b8fd7676f133c63d3037a2bbcf3643c9fb9e532d6664b02ec73c2ac759ccec5b"
+    },
+    {
+      "path": ".upstream/VolmLib/shared/src/main/java/art/arcane/volmlib/util/matter/slices/UpdateMatter.java",
+      "sha256": "8967622456041c358bc88cf505d349c0bff44d2252773595fbd94a3a7f8acbfc"
+    }
+  ],
+  "compilerBoundary": {
+    "nativeStorageHandles": 3,
+    "nativeStorageHeights": 2,
+    "publicationAdmissionHooks": 1,
+    "nativeAlgorithmsRetained": true
+  },
+  "checks": {
+    "strictAdvancedCompilation": true,
+    "actualWasmVmValidation": true,
+    "selectedNativeBlockAndBiomeComparison": true,
+    "nativePublicationCounts": true,
+    "expressionFailureConfirmedInNativeLog": true,
+    "fullSuiteRun": false,
+    "stateOrVolumeComparison": false,
+    "githubTestWorkflowRun": false
+  },
+  "coverage": {
+    "standingPool": true,
+    "sealGuardMatter": true,
+    "fluidUpdates": false,
+    "wetOrFallingCaveMatter": false,
+    "sparseContainmentInputExecution": false,
+    "publicationBudgetRefusal": false
+  },
+  "inputRecovery": {
+    "reason": "Workspace maintenance removed the prior checkout/native inputs.",
+    "priorPlatformSourceServerJarSha256": "2488c374c69e4828d2088fbc258c3fde0851e57f02f3a1cebbe5c191b1a21a9b",
+    "platformSourceServerJarSha256": "a488d15f96528a935bd0860dceb84f46777551be15d1203b65bab5916bb5a35d",
+    "serverJarByteEqualToPrior": false,
+    "reasonForBinaryDifferenceQualified": false,
+    "registryBrowserInput": {
+      "sha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+      "bytes": 7090104
+    },
+    "normalizedRegistryByteEqualToPrior": true,
+    "nativePlacementEvaluations": 1156,
+    "nativePlacementGroups": 34,
+    "fullRegistryRecreatedAsRequiredRuntimeInput": true
+  },
+  "limitations": [
+    "One small pool and seed with selected cells only; complete terrain/options and real browser/GPU remain unqualified.",
+    "The linked sparse containment and update marker adapters do not execute in this fixture; their output/refusal remain unqualified.",
+    "Projected layer-cell admission is a resource policy, not an actual sample count or a performance/heap guarantee.",
+    "Separate intermediate hydrology paths and the map remain unavailable; original registered Overworld ordering is required.",
+    "Shared/persistent hydrology caches, history/REAL/world lifecycle, active custom services and imported placement retain existing restrictions.",
+    "Native reference/dependency/checksum provenance, remaining Minecraft rendering/authorized assets and final release gates remain open."
+  ],
+  "fullEngineLifecycle": false,
+  "releaseMatchVerified": false
+}

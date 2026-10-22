@@ -32,7 +32,7 @@ public final class NativeTerrainLinkCheck {
                 case"blockOrNull"->resolver.getOrNull((String)values[0]);case"block"->resolver.get((String)values[0]);case"air"->resolver.getAir();case"decodeBlockState"->NativeBlockResolver.strictParse(((String)values[0]).trim());case"blockTypeKeys"->access.blockKeys();default->{try{yield NativeRegistryAccess.class.getMethod(method.getName(),method.getParameterTypes()).invoke(access,values);}catch(NoSuchMethodException failure){throw new UnsupportedOperationException(method.toString(),failure);}}
             });
             IrisPlatforms.bind((IrisPlatform)Proxy.newProxyInstance(IrisPlatform.class.getClassLoader(),new Class<?>[]{IrisPlatform.class},(self,method,values)->switch(method.getName()){case"supportsMatterWorldIo"->InvocationHandler.invokeDefault(self,method,values);case"platformName"->"native-terrain-reference";case"minecraftVersion"->"26.3";case"registries"->registries;case"log","msg"->{System.err.println(Arrays.toString(values));yield null;}case"reportError"->throw new IllegalStateException(Arrays.toString(values));default->throw new UnsupportedOperationException(method.toString());}));
-            if(singlePlacement!=null||request.has("registeredOverworldCheck"))art.arcane.iris.structure.object.IrisObjectRotation.bindPlatformRotator((art.arcane.iris.structure.object.IrisObjectRotation.StateRotator)Class.forName("art.arcane.iris.modded.ModdedStateRotator").getConstructor().newInstance());
+            if(singlePlacement!=null||request.has("registeredOverworldCheck")||request.has("registeredOverworldChecks"))art.arcane.iris.structure.object.IrisObjectRotation.bindPlatformRotator((art.arcane.iris.structure.object.IrisObjectRotation.StateRotator)Class.forName("art.arcane.iris.modded.ModdedStateRotator").getConstructor().newInstance());
             if(singlePlacement!=null&&singlePlacement.has("edit"))art.arcane.iris.generation.block.BlockDataMergeSupport.bindPlatformMerger(new NativeStateMerger(resolver)::merge);
             var decorators=new art.arcane.iris.modded.ModdedDecoratorHooks();art.arcane.iris.generation.decoration.DecoratorPlatformHooks.bind(decorators,decorators);
             for(JsonElement entry:request.getAsJsonArray("packs")){
@@ -75,6 +75,7 @@ public final class NativeTerrainLinkCheck {
                         for(var point:request.getAsJsonObject("hydrologyCheck").getAsJsonArray("points")){var xy=point.getAsJsonArray();columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,xy.get(0).getAsInt(),xy.get(1).getAsInt())));}pack.add(columns);
                     }
                     if(request.has("registeredOverworldCheck"))pack.add(registeredOverworldCheck(engine,request.getAsJsonObject("registeredOverworldCheck"),directory,registries));
+                    if(request.has("registeredOverworldChecks"))for(var check:request.getAsJsonArray("registeredOverworldChecks"))pack.add(registeredOverworldCheck(engine,check.getAsJsonObject(),directory,registries));
                     if(request.has("terrainModeCheck"))pack.add(terrainModeCheck(engine,request.getAsJsonObject("terrainModeCheck"),registries));
                     if(request.has("physicalBiomeChecks"))pack.add(physicalBiomeChecks(engine,request.getAsJsonArray("physicalBiomeChecks")));
                     if(request.has("subterrainCheck")){try{pack.add(subterrainCheck(engine,directory,registries,gson,request.get("subterrainCheck").getAsBoolean()));}finally{data.unregisterEngine(engine);}continue;}
@@ -149,7 +150,9 @@ public final class NativeTerrainLinkCheck {
                 else{var layers=engine.getDimensionStackContext().getLayout(x+1,z+1).layersBottomToTop();heights=new int[]{0,layers.get(0).contentTopY()+1,layers.get(1).localBaseY()+1,layers.getLast().clippedSurfaceY()};}
                 for(int index=0;index<heights.length;index++){var row=new JsonArray();row.add(index==0?0:1);row.add(Math.clamp(heights[index],0,engine.getHeight()-1));row.add(index==0?0:1);controls.add(row);}
             }
-            var output=new JsonObject();JsonArray probes=new JsonArray();for(JsonElement value:controls){var xyz=value.getAsJsonArray();int lx=xyz.get(0).getAsInt(),y=xyz.get(1).getAsInt(),lz=xyz.get(2).getAsInt();var row=xyz.deepCopy();row.add(blocks.getRaw(lx,y,lz).key());row.add(biomes.getRaw(lx,y,lz).key());probes.add(row);}output.add("probes",probes);
+            var output=new JsonObject();
+            if(request.has("hydrologyPublication")&&request.get("hydrologyPublication").getAsBoolean())output.add("hydrology",JsonParser.parseString((String)Class.forName("studio.engine.hydrology.HydrologyMatterSnapshot").getMethod("describe",art.arcane.volmlib.util.mantle.runtime.MantleChunk.class,int.class).invoke(null,memory.prepare(x>>4,z>>4),engine.getHeight())));
+            JsonArray probes=new JsonArray();for(JsonElement value:controls){var xyz=value.getAsJsonArray();int lx=xyz.get(0).getAsInt(),y=xyz.get(1).getAsInt(),lz=xyz.get(2).getAsInt();var row=xyz.deepCopy();row.add(blocks.getRaw(lx,y,lz).key());row.add(biomes.getRaw(lx,y,lz).key());probes.add(row);}output.add("probes",probes);
             if(generate){
                 var centre=memory.prepare(x>>4,z>>4);int[] counts={0,0,0,0};Set<String> tags=new HashSet<>();
                 for(int section=0;section<engine.getHeight()/16;section++)if(centre.exists(section)){
