@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-22",
+  "scope": "metadata-first ZIP/folder review, import plans/layout and shared publication path checks",
+  "fixture": {
+    "preservedFiles": 3,
+    "preservedBytes": 76,
+    "omittedMetadataFiles": 1,
+    "syntheticRangeOnlyExtent": 2097152,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "ZIP metadata inspection uses two bounded range reads with no content inflation; reviewed keep/strip layouts and manifest preserve explicit source/destination paths",
+    "folder metadata admission precedes content reads, reserved Studio metadata is explicitly listed/omitted, exact binary/BOM/CRLF/64-bit source survives ZIP preparation and cancellation stops before upload",
+    "duplicate/case/Unicode aliases, file/directory conflicts, world paths, mixed root removal and oversized files refuse using tiny metadata cases",
+    "actual PackStore import/export preserves three exact files and excluded/unknown content, existing packs remain intact, corrupt content and aliases reject before publication, staged cleanup and concurrent create/import locking pass",
+    "controlled import UI previews/export plans before upload, binds confirmed name/layout/original ZIP, cancels folder preparation on close, avoids navigation after an already submitted closed import, and suppresses late inspection publication",
+    "actual app post-import handoff refuses navigation when a successor dialog opens and reports committed success separately from a listing/open failure"
+  ],
+  "workspaceSha256": {
+    "packages/shared/zip-index.mjs": "8969185fa439327fcc39e186871734d8d69e9c86ac07d3e342dae411bfe72175",
+    "packages/iris-resources/pack-import.mjs": "f03ca42ed61d88f93f5c35dc78187f0f8c28cbd8133f3b1b7faa4360adbb2b70",
+    "apps/web/lib/import-tools.mjs": "ab9e7b9a23e052ce577603aa835fc19e502149d0cbe9716d7ba80a83d8f963d0",
+    "apps/web/main.mjs": "96e0a69b69de46a97e6ad78d123e3280d0f8fc302b6a8c18da9cb5ab047a365c",
+    "apps/server/pack-store.mjs": "ecdfd8647ca29a46d527b08d45955bc59423cbc45aa5779282c5867e4fadf33b"
+  },
+  "realBrowserVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Three tiny pack files, one omitted metadata record, a synthetic range-only file extent with no large payload, actual local PackStore and controlled modal/application hosts. ZIP inspection is preliminary metadata only; the server independently checks actual header/decompression/CRC/path content before staging. Input limits remain 20,000 entries / 64 MiB per file / 256 MiB archive-expanded payload; central-directory inspection admits 32 MiB and browser review pages contain 32 rows. Selected-folder ZIP preparation is in memory and cancellable between file reads; full heap/large-input performance and real browser Blob/file/folder/layout/upload/network qualification remain pending. App create/import share a pack-name lock within one server instance; direct external filesystem writers/multiple server processes remain outside that coordination. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

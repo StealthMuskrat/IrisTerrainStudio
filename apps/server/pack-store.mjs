@@ -5,6 +5,7 @@ import { isUtf8 } from 'node:buffer';
 import { createHash, randomUUID } from 'node:crypto';
 import { resourcePath, jsonPath, packId, JSON_LIMIT, FILE_LIMIT, ARCHIVE_LIMIT, ENTRY_LIMIT } from '../../packages/shared/paths.mjs';
 import { readZip, writeZip } from '../../packages/shared/zip.mjs';
+import {importPlan} from '../../packages/iris-resources/pack-import.mjs';
 import { JsonDocument } from '../../packages/iris-config/document.mjs';
 export class StoreError extends Error { constructor(status, message, details) { super(message); this.status = status; this.details = details; } }
 const digest = data => '"' + createHash('sha256').update(data).digest('hex') + '"';
@@ -31,7 +32,7 @@ export class PackStore {
     return current;
   }
   async packs() { return (await fs.readdir(this.root, { withFileTypes: true })).filter(entry => entry.isDirectory() && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(entry.name)).map(entry => ({ id: entry.name, name: entry.name })).sort((a, b) => a.id.localeCompare(b.id)); }
-  async create(id) { packId(id); await fs.mkdir(path.join(this.root, id)).catch(error => { if (error.code === 'EEXIST') throw new StoreError(409, 'A pack with that name already exists.'); throw error; }); return { id, name: id }; }
+  async create(id) { packId(id); return this.withLock('pack/'+id,async()=>{await fs.mkdir(path.join(this.root,id)).catch(error=>{if(error.code==='EEXIST')throw new StoreError(409,'A pack with that name already exists.');throw error;});return{id,name:id};}); }
   async resources(pack) {
     const base = await this.safe(pack), results = []; let total = 0;
     const walk = async (directory, prefix = '') => {
@@ -159,10 +160,10 @@ export class PackStore {
   }
   async export(pack) { const entries = new Map(); for (const row of (await this.resources(pack)).resources) { if (row.readOnly) throw new StoreError(422, 'Pack export does not follow symbolic links.'); entries.set(resourcePath(row.path), (await this.read(pack, row.path)).data); } return writeZip(entries); }
   async import(id, archive, { stripRoot = false } = {}) {
-    packId(id); const files = await readZip(archive); if (!files.size) throw new StoreError(422, 'The archive contains no files.');
-    const top = [...new Set([...files.keys()].map(name => name.split('/')[0]))]; if (stripRoot && (top.length !== 1 || [...files.keys()].some(name => !name.includes('/')))) throw new StoreError(422, 'Removing a root folder requires exactly one enclosing folder.');
+    try{packId(id);}catch(error){throw new StoreError(400,error.message);}let files,plan;
+    try{files=await readZip(archive);plan=importPlan([...files].map(([path,data])=>({path,size:data.length})),{stripRoot});}catch(error){throw new StoreError(422,error.message);}
     const stage = path.join(this.root, '.iris-terrain-studio-import-' + randomUUID()); await fs.mkdir(stage);
-    try { for (const [original, data] of files) { const relative = resourcePath(stripRoot ? original.slice(original.indexOf('/') + 1) : original); const target = path.join(stage, ...relative.split('/')); await fs.mkdir(path.dirname(target), { recursive: true }); await fs.writeFile(target, data, { flag: 'wx' }); } await this.withLock('pack/' + id, async () => { if (await fs.lstat(path.join(this.root, id)).catch(() => null)) throw new StoreError(409, 'A pack with that name already exists.'); await fs.rename(stage, path.join(this.root, id)); }); } finally { await fs.rm(stage, { recursive: true, force: true }); }
+    try { for (const row of plan.rows) { const data=files.get(row.source),relative=row.path; const target = path.join(stage, ...relative.split('/')); await fs.mkdir(path.dirname(target), { recursive: true }); await fs.writeFile(target, data, { flag: 'wx' }); } await this.withLock('pack/' + id, async () => { if (await fs.lstat(path.join(this.root, id)).catch(() => null)) throw new StoreError(409, 'A pack with that name already exists.'); await fs.rename(stage, path.join(this.root, id)); }); } finally { await fs.rm(stage, { recursive: true, force: true }); }
     return { id, files: files.size, bytes: [...files.values()].reduce((sum, data) => sum + data.length, 0) };
   }
 }
