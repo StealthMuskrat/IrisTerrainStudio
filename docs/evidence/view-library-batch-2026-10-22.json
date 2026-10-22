@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-22",
+  "scope": "named preview controls, bound 3D cameras, optional browser persistence and portable view-library import/export",
+  "fixture": {
+    "initialEntries": 2,
+    "sourceLocatorBytes": 28,
+    "volumeBoundsOnly": [
+      2,
+      1,
+      1
+    ],
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "session/remembered CRUD, exact entered long seed/pose bundle round trip, import deduplication/fresh IDs and unknown/duplicate/invalid input refusal",
+    "queued publication waits for storage, quota/stale-tab/revision failure preserves entries, retry merges session views and external settings",
+    "actual shared storage guard preserves view/texture conflict identities, waits for both guards and rolls back failed transactions",
+    "actual app capture/apply restores controls without generation or replacing retained data, retains source seed labels, applies matching camera bounds and refuses pack/resource/pointer/pending-volume mismatches",
+    "controlled library UI creates session entries; cancelled import and superseded first-load dialog cannot reopen a successor modal"
+  ],
+  "workspaceSha256": {
+    "apps/web/lib/view-library.mjs": "6eb0ef1b92e7c7db00bb4812b273dfc9aae795bccd32fd0d74d9644e7da153b6",
+    "apps/web/lib/view-tools.mjs": "50455d31824a536569272e94650b0b924a60d13c164aa4e69937450f0402de3e",
+    "apps/web/lib/local-store.mjs": "aa03914c054a35e304f75b15de8145436dd50a2384dea91d6a5bfb3b818a53f4",
+    "apps/web/main.mjs": "9e03abd864bd1428930045775824da6f418961ca2b0f538d12898f82015a5ce4",
+    "apps/web/index.html": "9dee27d9aec9919e77c6aba9176d5936a874eefba443bb4db38a7b3c83d5b55a",
+    "apps/web/styles.css": "71072a367900ff255d30f9dd7f3fed33ef26c17f849b025eaf3cd62a349d8b62"
+  },
+  "realBrowserVerified": false,
+  "indexedDbDurabilityVerified": false,
+  "webGpuVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Two small setup/camera entries, one tiny JSON resource locator, volume metadata only and controlled Node storage/modal/application/renderer hosts. Saved views do not include pack content, drafts, generated data, rendering assets or native qualification. Camera bookmarks require matching volume bounds; preview setups omit live procedural selections. Real browser layout/focus/storage/multi-tab/quota/durability, GPU/view agreement and complete native/client/release verification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

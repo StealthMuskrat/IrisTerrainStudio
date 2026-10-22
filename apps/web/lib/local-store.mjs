@@ -7,14 +7,17 @@ export async function localGet(store, key) { const db = await open(); return new
 export async function localSet(store, key, value) { return localBatch([{store,key,value}]); }
 export async function localKeys(store) { const db = await open(); return new Promise((resolve, reject) => { const request = db.transaction(store, 'readonly').objectStore(store).getAllKeys(); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }); }
 export async function localBatch(changes,options={}){
-  const captured=structuredClone(changes),guarded=Object.hasOwn(options,'expectedTextureConfig'),expected=structuredClone(options.expectedTextureConfig);if(!captured.length)return;
-  if(captured.some(change=>!['drafts','settings','resource-packs'].includes(change.store)))throw new Error('Unknown browser-local store.');
+  const captured=structuredClone(changes),guards=[];
+  for(const [option,key,name,label]of[['expectedTextureConfig','texture-library','TextureLibraryConflict','Saved rendering packs changed in another tab. Retry saved packs before saving.'],['expectedViewConfig','view-library','ViewLibraryConflict','Saved views changed in another tab. Retry saved views before saving.']])if(Object.hasOwn(options,option))guards.push({key,name,label,expected:structuredClone(options[option])});
+  if(!captured.length)return;if(captured.some(change=>!['drafts','settings','resource-packs'].includes(change.store)))throw new Error('Unknown browser-local store.');
   const db=await open();return new Promise((resolve,reject)=>{
-    const stores=[...new Set([...captured.map(change=>change.store),...(guarded?['settings']:[])])],tx=db.transaction(stores,'readwrite');let failure;tx.oncomplete=()=>resolve();tx.onerror=()=>reject(failure??tx.error??new Error('Browser-local save failed.'));tx.onabort=()=>reject(failure??tx.error??new Error('Browser-local save aborted.'));
-    const apply=()=>{try{for(const {store,key,value}of captured){const target=tx.objectStore(store);if(value===undefined)target.delete(key);else target.put(value,key);}}catch(error){failure=error;tx.abort();reject(error);}};
-    if(guarded){const request=tx.objectStore('settings').get('texture-library');request.onsuccess=()=>{try{if(JSON.stringify(request.result)!==JSON.stringify(expected)){failure=new Error('Saved rendering packs changed in another tab. Retry saved packs before saving.');failure.name='TextureLibraryConflict';tx.abort();return;}apply();}catch(error){failure=error;tx.abort();reject(error);}};}else apply();
+    const stores=[...new Set([...captured.map(change=>change.store),...(guards.length?['settings']:[])])],tx=db.transaction(stores,'readwrite');let failure;tx.oncomplete=()=>resolve();tx.onerror=()=>reject(failure??tx.error??new Error('Browser-local save failed.'));tx.onabort=()=>reject(failure??tx.error??new Error('Browser-local save aborted.'));
+    const fail=error=>{failure=error;tx.abort();};
+    const apply=()=>{try{for(const {store,key,value}of captured){const target=tx.objectStore(store);if(value===undefined)target.delete(key);else target.put(value,key);}}catch(error){fail(error);}};
+    if(guards.length){let pending=guards.length;for(const guard of guards){const request=tx.objectStore('settings').get(guard.key);request.onsuccess=()=>{if(failure)return;try{if(JSON.stringify(request.result)!==JSON.stringify(guard.expected)){const error=new Error(guard.label);error.name=guard.name;fail(error);return;}if(--pending===0)apply();}catch(error){fail(error);}};}}else apply();
   });
 }
+
 export async function localTextureSnapshot(){
   const db=await open();return new Promise((resolve,reject)=>{
     const tx=db.transaction(['settings','resource-packs'],'readonly'),config=tx.objectStore('settings').get('texture-library'),store=tx.objectStore('resource-packs'),keys=store.getAllKeys(),values=store.getAll();
