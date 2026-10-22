@@ -17,6 +17,8 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     private final WorkerCarvingMantle mantle=new WorkerCarvingMantle(this);
     private final art.arcane.iris.world.IrisWorld world;
     private IrisComplex complex;
+    private DimensionStackContext stack;
+    private UpperDimensionContext upper;
     private art.arcane.iris.generation.mantle.WorkerObjectSession objectSession,nativeObjectSession;private boolean closed;
     public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(){return objectSession(nativeMatter!=null);}
     public art.arcane.iris.generation.mantle.WorkerObjectSession objectSession(boolean registeredMode){
@@ -31,18 +33,30 @@ public final class BrowserTerrainEngine extends EngineBoundary {
         finally{
             try{if(complex!=null)complex.close();}
             finally{
-                complex=null;nativeMatter=null;
+                complex=null;stack=null;upper=null;nativeMatter=null;
                 try{data.unregisterEngine(this);}
                 finally{try{if(objectSession!=null)objectSession.close();}finally{objectSession=null;try{if(nativeObjectSession!=null)nativeObjectSession.close();}finally{nativeObjectSession=null;}}}
             }
         }
     }
     public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
-        if(dimension.hasUpperDimension()||dimension.hasDimensionStack())throw new UnsupportedOperationException("Upper dimensions and dimension stacks are not connected in the worker terrain runtime");
         this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
+        admitHeight(dimension);
+        if(dimension.hasDimensionStack()&&(dimension.getDimensionStack().getDimensions()==null||dimension.getDimensionStack().getDimensions().size()>16))throw new IllegalArgumentException("Dimension stack exceeds its sixteen-layer worker budget");
         world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(seed).build();
         WorkerTerrainPlatform.install(registry);
-        try{complex=new IrisComplex(this);data.registerEngine(this);}
+        try{
+            if(dimension.hasDimensionStack())for(String key:dimension.getDimensionStack().getDimensions())if(key!=null&&!key.isBlank()){
+                IrisDimension layer=key.equals(dimension.getLoadKey())?dimension:data.getDimensionLoader().load(key);if(layer!=null)admitHeight(layer);
+            }
+            if(dimension.hasUpperDimension()&&!dimension.getUpperDimension().equals(dimension.getLoadKey())){
+                IrisDimension layer=data.getDimensionLoader().load(dimension.getUpperDimension(),false);if(layer!=null)admitHeight(layer);
+            }
+            complex=new IrisComplex(this);
+            // Same native assembly order as EngineRuntimeBuilder. Only the concrete host type differs.
+            var kernel=new NativeLayerKernel();stack=kernel.createDimensionStackContext(this);upper=kernel.createUpperContext(this);
+            data.registerEngine(this);
+        }
         catch(RuntimeException|Error failure){try{release();}catch(RuntimeException|Error cleanup){failure.addSuppressed(cleanup);}throw failure;}
     }
     public void bindNativeMatter(art.arcane.iris.generation.mantle.EngineMantle host){if(nativeMatter!=null||host.getEngine()!=this||closed)throw new IllegalStateException("Native matter host ownership mismatch");nativeMatter=host;}
@@ -62,7 +76,12 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public boolean isStudio(){return false;}
     @Override public boolean isClosed(){return closed;}
     @Override public int getCacheID(){return System.identityHashCode(this);}
-    @Override public UpperDimensionContext getUpperContext(){return null;}
+    @Override public UpperDimensionContext getUpperContext(){return upper;}
+    @Override public DimensionStackContext getDimensionStackContext(){return stack;}
+    public boolean layered(){return upper!=null||stack!=null;}
+    private static void admitHeight(IrisDimension dimension){long height=(long)dimension.getMaxHeight()-dimension.getMinHeight();if(height<1||height>4096)throw new IllegalArgumentException("Dimension height exceeds the worker's 1–4096 block budget");}
+    public void registerLayerStages(EngineMode mode){new NativeLayerKernel().registerDimensionStack(this,mode,stack);}
+    public art.arcane.iris.generation.context.ChunkContext chunkContext(int x,int z){return new art.arcane.iris.generation.context.ChunkContext(x,z,getComplex(),getGenerationSessionId(),false,art.arcane.iris.generation.context.ChunkContext.PrefillPlan.NO_CAVE,metrics,stack);}
     @Override public IrisBiome getFocus(){String key=dimension.getFocus();if(key==null||key.trim().isEmpty())return null;IrisBiome biome=data.getBiomeLoader().load(key);return biome==null||biome.isCompatExcluded()?null:biome;}
     @Override public IrisRegion getFocusRegion(){String key=dimension.getFocusRegion();if(key==null||key.trim().isEmpty())return null;IrisRegion region=data.getRegionLoader().load(key);return region==null||region.isCompatExcluded()?null:region;}
 }

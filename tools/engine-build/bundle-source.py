@@ -28,7 +28,7 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add(str(filename.relative_to(root)), filename.read_bytes())
     for filename in sorted((root/'.local-tools/rotation-sources').rglob('*.java')):
         add('generated/rotation/'+str(filename.relative_to(root/'.local-tools/rotation-sources')),filename.read_bytes())
-    for name in ('rotation-inputs.json','rotation-properties.json','noise-cache-identity.json','expression-math-inputs.json'):
+    for name in ('rotation-inputs.json','rotation-properties.json','noise-cache-identity.json','expression-math-inputs.json','layer-kernel-inputs.json'):
         add('platform-inputs/'+name,(root/'.local-tools'/name).read_bytes())
     with zipfile.ZipFile(root/'.local-tools/engine-jars/native-rotation.jar') as rotation:
         for name in ('net/minecraft/world/level/block/state/properties/RotationSegment.class','net/minecraft/util/SegmentedAnglePrecision.class'):

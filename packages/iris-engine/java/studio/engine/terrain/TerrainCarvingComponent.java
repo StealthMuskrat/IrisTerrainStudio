@@ -36,6 +36,7 @@ public final class TerrainCarvingComponent {
     public static String paint(BrowserTerrainEngine engine,int x,int z,Stage stage)throws IOException{return paint(engine,x,z,stage,null);}
     private static String paint(BrowserTerrainEngine engine,int x,int z,Stage stage,Placement placement)throws IOException {
         boolean post=stage.ordinal()>=Stage.POST.ordinal(),floating=stage.ordinal()>=Stage.FLOATING.ordinal(),decorate=stage.ordinal()>=Stage.CAVE_DECORATION.ordinal();
+        if(engine.getDimensionStackContext()!=null)throw studio.engine.UnsupportedPlatform.unavailable("Use registered mode generation for dimension-stack content and material ordering");
         if(post&&!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Material preview outside the native Overworld mode");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Carving component window exceeds worker bounds");
         boolean neighbors=stage==Stage.NEIGHBOR_SCATTER,scatter=stage==Stage.SOURCE_SCATTER,content=placement!=null||scatter||neighbors;

@@ -35,19 +35,20 @@ public final class OverworldTerrainStage {
             var passes=host.getComponents();for(var pass:passes)if(pass.passChunkRadius()>3)throw studio.engine.UnsupportedPlatform.unavailable("Native terrain pass exceeds its bounded prepared window");
             if(generate)objectPass=engine.objectSession().begin(engine);
             WorkerCaveStorage.begin(height,cx,cz,49);for(int dx=-3;dx<=3;dx++)for(int dz=-3;dz<=3;dz++)WorkerCaveStorage.select(cx+dx,cz+dz);WorkerCaveStorage.select(cx,cz);
-            mode=new ModeOverworld(engine);if(mode.getTerrainStages().size()!=4||mode.getStages().size()!=9)throw new IllegalStateException("Pinned Overworld stage registration changed");
+            mode=new ModeOverworld(engine);engine.registerLayerStages(mode);int terrainStages=engine.getDimensionStackContext()==null?4:5;
+            if(mode.getTerrainStages().size()!=terrainStages||mode.getStages().size()!=9)throw new IllegalStateException("Pinned Overworld stage registration changed");
             var blocks=new ArrayHunk<NativeBlockState>(16,height,16);blocks.fill(IrisPlatforms.get().registries().air());var biomes=new ArrayHunk<NativeBiome>(16,height,16);
             try(var lease=engine.acquireGenerationLease("browser_overworld_terrain")){
                 if(generate){
                     observer=new RegisteredModeObserver(mode,engine,lease.sessionId());
-                    mode.generate(x,z,blocks,biomes,false,lease.sessionId());observer.verify(4,9);
+                    mode.generate(x,z,blocks,biomes,false,lease.sessionId());observer.verify(terrainStages,9);
                 }else{
-                    var context=new ChunkContext(x,z,engine.getComplex(),lease.sessionId(),true,ChunkContext.PrefillPlan.NO_CAVE,engine.getMetrics());
+                    var context=new ChunkContext(x,z,engine.getComplex(),lease.sessionId(),true,ChunkContext.PrefillPlan.NO_CAVE,engine.getMetrics(),engine.getDimensionStackContext());
                     try(var scope=IrisContext.open(engine,lease.sessionId(),context)){mode.generateTerrain(x,z,blocks,biomes,false,context);if(!context.isNaturalTerrain())throw new IllegalStateException("Overworld terrain prefix entered content phase");}
                 }
             }catch(GenerationSessionException failure){throw new IOException("Native terrain-matter session failed",failure);}
             String result=TerrainPaintStage.serialize(engine,x,z,blocks,generate?"native-overworld-mode-generation-development":"native-overworld-registered-terrain-development",biomes);
-            String metadata=",\"registeredTerrainStages\":4,\"registeredContentStages\":9,\"executedTerrainStages\":4,\"executedContentStages\":"+(generate?9:0)+",\"nativeContentPhase\":"+generate+",\"maximumWriterAccess\":"+WorkerMatterRuntime.maximumAccess()+",\"matterWindow\":"+WorkerCaveStorage.flagWindow()+",\"activeLeasesAfter\":"+engine.getGenerationSessions().activeLeases();
+            String metadata=",\"registeredTerrainStages\":"+terrainStages+",\"registeredContentStages\":9,\"executedTerrainStages\":"+terrainStages+",\"executedContentStages\":"+(generate?9:0)+",\"nativeContentPhase\":"+generate+",\"maximumWriterAccess\":"+WorkerMatterRuntime.maximumAccess()+",\"matterWindow\":"+WorkerCaveStorage.flagWindow()+",\"activeLeasesAfter\":"+engine.getGenerationSessions().activeLeases();
             if(generate){
                 WorkerCaveStorage.retainContinuations(engine.objectSession().continuations(engine),engine);
                 metadata+=",\"componentFlags\":"+WorkerCaveStorage.componentFlags()+",\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"objectTags\":"+WorkerCaveStorage.objectTags()+",\"cache\":"+engine.objectSession().statistics(engine)+",\"caveSearch\":"+WorkerProceduralMap.caveSearchStatistics();

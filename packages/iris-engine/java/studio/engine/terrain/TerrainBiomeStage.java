@@ -28,7 +28,7 @@ public final class TerrainBiomeStage {
     public static String slice(BrowserTerrainEngine engine,int x,int worldY,int z)throws IOException {
         int height=engine.getHeight();
         if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999984||Math.abs((long)z)>29999984||height<1||height>4096||worldY<engine.getMinHeight()||worldY>=engine.getMaxHeight())throw new IllegalArgumentException("Native biome stage exceeds worker chunk or world-Y bounds");
-        ArrayHunk<NativeBiome> biomes=paint(engine,x,z,new ChunkContext(x,z,engine.getComplex(),false));
+        ArrayHunk<NativeBiome> biomes=paint(engine,x,z,engine.chunkContext(x,z));
         LinkedHashMap<String,Integer> palette=new LinkedHashMap<>();int[] cells=new int[256];int y=worldY-engine.getMinHeight();
         for(int localZ=0;localZ<16;localZ++)for(int localX=0;localX<16;localX++){
             NativeBiome biome=biomes.getRaw(localX,y,localZ);

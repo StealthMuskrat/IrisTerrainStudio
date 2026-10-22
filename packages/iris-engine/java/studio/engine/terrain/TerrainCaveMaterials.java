@@ -13,6 +13,7 @@ import java.io.IOException;
 /** Native paint and carve-modifier stages with a dimension-profile-only marker window. */
 public final class TerrainCaveMaterials {
     public static String paint(BrowserTerrainEngine engine,int x,int z)throws IOException {
+        if(engine.getDimensionStackContext()!=null)throw studio.engine.UnsupportedPlatform.unavailable("Use registered mode generation for dimension-stack cave and material ordering");
         int height=engine.getHeight();if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999968||Math.abs((long)z)>29999968||height<16||height>4096||(height&15)!=0)throw new IllegalArgumentException("Cave material window exceeds worker bounds");
         var profile=engine.getDimension().getCaveProfile();if(profile==null||!profile.isEnabled())throw new IllegalArgumentException("The dimension cave profile is disabled");
         if(!engine.getComplex().getSubterrainPlanner().isEmpty())throw studio.engine.UnsupportedPlatform.unavailable("Subterrain material generation in the dimension cave stage");

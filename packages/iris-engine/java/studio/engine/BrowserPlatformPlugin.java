@@ -13,6 +13,21 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
     public void install(TeaVMHost host) {
         host.add((cls, context) -> {
             String name = cls.getName();
+            if(name.equals("art.arcane.iris.generation.runtime.DimensionStackContext")){
+                for(String[] mapping:new String[][]{{"com.github.benmanes.caffeine.cache.Cache","studio.engine.terrain.WorkerLayerLayoutCache"},{"com.github.benmanes.caffeine.cache.Caffeine","studio.engine.terrain.WorkerLayerLayoutCache$Builder"}}){replaceClass(cls,mapping[0],mapping[1]);replaceDeclarations(cls,mapping[0],mapping[1]);}
+            }
+            if(name.equals("art.arcane.iris.generation.stage.IrisDimensionStackActuator")){
+                int handles=0,chunks=0;
+                for(MethodHolder method:cls.getMethods()){
+                    Program p=method.getProgram();if(p==null)continue;
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call){
+                        MethodReference ref=call.getMethod();String target=null;
+                        if(ref.getClassName().equals("art.arcane.iris.generation.mantle.EngineMantle")&&ref.getName().equals("getMantle")){target="getMantle";handles++;}
+                        else if(ref.getClassName().equals("art.arcane.volmlib.util.mantle.runtime.Mantle")&&ref.getName().equals("useChunk")){target="useChunk";chunks++;}
+                        if(target!=null)redirectHostCall(call,target);
+                    }
+                }if(handles!=2||chunks!=2)throw new IllegalStateException("Pinned dimension-stack metadata storage boundary changed");
+            }
             if(name.equals("art.arcane.iris.modded.ModdedStateRotator")){
                 int callbacks=0;for(MethodHolder method:cls.getMethods()){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator")&&call.getMethod().getName().equals("rotate")){
                     Variable callback=p.createVariable();InvokeInstruction factory=new InvokeInstruction();factory.setType(InvocationType.SPECIAL);factory.setMethod(new MethodReference("studio.engine.registry.RotationFailures","instance",ValueType.object("java.util.function.Consumer")));factory.setReceiver(callback);call.insertPrevious(factory);Variable[] arguments=call.getArguments().toArray(Variable[]::new);arguments[2]=callback;call.setArguments(arguments);callbacks++;
@@ -89,7 +104,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                     }
                 }if(hosts!=1)throw new IllegalStateException("Pinned object cache ownership constructor changed");
                 int searches=0;for(MethodHolder method:cls.getMethods()){
-                    if(java.util.Set.of("loadObjectSize","placeObject","placeCaveObject","placeUpperObjects").contains(method.getName()))unavailable(method,"Imported object lookup/placement outside guarded procedural previews");
+                    if(java.util.Set.of("loadObjectSize","placeObject","placeCaveObject","placeUpperObject").contains(method.getName()))unavailable(method,"Imported object lookup/placement outside guarded procedural previews");
                     if(method.getName().equals("findCavePlacementAnchor")){
                         if(method.parameterCount()!=11||!method.parameterType(7).equals(ValueType.INTEGER))throw new IllegalStateException("Pinned cave-anchor search boundary changed");
                         Program p=method.getProgram();InvokeInstruction guard=new InvokeInstruction();guard.setType(InvocationType.SPECIAL);guard.setMethod(new MethodReference("studio.engine.terrain.WorkerProceduralMap","admitCaveSearch",ValueType.INTEGER,ValueType.VOID));guard.setArguments(p.variableAt(8));p.basicBlockAt(0).getFirstInstruction().insertPrevious(guard);searches++;
@@ -342,7 +357,6 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 else if(method.getName().equals("kernels")){Program p=new Program();p.createVariable();Variable value=p.createVariable();BasicBlock block=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerTerrainPlatform","scalarKernels",ValueType.object("art.arcane.iris.generation.simd.SimdKernels")));call.setReceiver(value);block.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(value);block.add(exit);method.setProgram(p);}
                 else if(method.getProgram()!=null)unavailable(method,"JVM vector-module discovery");
             }
-            if(java.util.Set.of("art.arcane.iris.generation.runtime.UpperDimensionContext","art.arcane.iris.generation.runtime.DimensionStackContext").contains(name))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Upper or stacked dimension runtime");
             if(name.equals("java.util.TemplateCollections$NEtriesMap")){
                 FieldHolder data=cls.getField("data");ValueType entries=ValueType.arrayOf(ValueType.object("java.util.Map$Entry"));if(data==null||!data.getType().equals(entries))throw new IllegalStateException("Pinned immutable-map storage changed");int changed=0;
                 for(MethodHolder method:cls.getMethods())if(method.getName().equals("get")){

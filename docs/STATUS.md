@@ -4,17 +4,16 @@ As of 2026-10-22. **Local application implementation is in progress. Native/brow
 
 ## Completion audit and current batch
 
-The request is now to finish the project. Development is focused on the remaining engine, rendering, installation and release blockers. The application must not be described as complete while these gates remain open.
+The project remains in development. The latest batch connects native upper dimensions and dimension stacks, and prepares a verified local vanilla asset baseline. These close implementation gaps without promoting development evidence to full support or release parity.
 
-- Runtime status now checks bounded installed file handles and SHA-256 values, the pinned Iris source identity and matching registry platform inputs. Status never promotes development artifacts to qualified terrain.
-- Preview controls admit only installed field requirements; an unavailable native registry blocks pack generation while an installed standalone style module can still run. Unsupported hydrology remains unavailable. A refreshable status panel preserves editing and retained previews.
-- The laboratory worker now executes the exact checked runtime/Wasm buffers. Denied session storage no longer prevents application construction or in-memory token entry.
-- Distribution builds stage a clean copy, remove stale files, include runtime documentation and a usable start script, record installation checks and preserve the previous copy on a failed required-engine build. Overlapping builds refuse. Required-engine and release build modes fail explicitly.
-- The pinned local JDK is recognized by native preflight. The explicit browser native-input profile was rebuilt successfully without test tasks or a registry/state/pair sweep. The browser Wasm module and a matching native development registry are restored; production pins and parity flags remain unresolved.
-- Registry placement capture now uses the exact source-guarded native input groups: 1,156 native evaluations across 34 groups replace 1,653,796 native pair calls. Twenty selected native pairs and changed-source refusal pass. The required registry data was exported once; no exhaustive placement/state comparison ran. [Method and proof](research/NATIVE_PLACEMENT_CAPTURE.md).
-- The focused runtime/packaging check and standalone distribution HTTP check pass. The restored module matches three native scalar samples and one seed derivation in the linkage check. One upstream terrain fixture/seed additionally matches two exact height/biome points and three selected block positions against Java using the matching restored registry. Local Chrome 151 and the historically recorded Chrome 155 executable both exit with SIGTRAP before navigation in this environment; no real browser/GPU verification is claimed.
+- Original upper/stack context factories and stack stage registration now compile through a concrete-host type boundary. Original terrain contexts, layout/blend and material/physical-biome actuators execute. Overworld registers five terrain stages when stacked; the three simple modes register their native stack and custom stages. Unknown/imported/custom/hydrology/history paths still refuse where their adapters are unavailable.
+- Worker layer contexts have explicit height/reference/cache bounds and failure/release cleanup. Volume metadata identifies layers; scalar fields remain host-dimension samples. Standalone cave/component diagnostics refuse stacks because their intermediate ordering is incomplete.
+- Four small authored packs, one seed, eight native columns and sixteen selected block/physical-biome probes match Java through the actual module and worker/client code under Node. Rejected configurations and recovery are checked. No registry/state/pair or whole-chunk comparison ran. Actual browser/GPU and complete options remain unqualified. [Layer evidence](evidence/native-dimension-layers-2026-10-22.json).
+- An offline local asset tool verifies the official Minecraft 26.3 client identity and embedded format 97.1, retaining original assets in a deterministic local ZIP with provenance. The existing pack loader resolves three selected dependency roots/26 files; wrong input preserves existing output. No assets are redistributed. F8thful and remaining client rendering adapters are still needed. [Asset evidence](evidence/local-vanilla-assets-2026-10-22.json).
 
-The next milestone is completing the unfinished native terrain and Minecraft rendering adapters using the restored development module and matching registry. Full program verification remains reserved for completed implementation. See the [batch evidence](evidence/runtime-installation-completion-audit-2026-10-22.json) and development notes for exact checks and limitations.
+The previous [runtime/installation audit](evidence/runtime-installation-completion-audit-2026-10-22.json) restored the pinned development tools and matching engine/registry, added installation integrity/status, preview admission, clean distribution staging and a native placement grouping capture with 1,156 calls rather than 1,653,796. Its focused checks passed. Full reference/release provenance, the native checksum discrepancy, hydrology/transforms/history/custom services, remaining Minecraft rendering adapters and real browser/GPU qualification are still open. Local Chrome exits before navigation in this environment; no browser pass is claimed.
+
+The next milestone is native hydrology/platform integration and verified Minecraft rendering semantics using the local baseline. Comprehensive program verification remains deferred until implementation is complete.
 
 ## Implemented
 
@@ -143,7 +142,7 @@ A local pack-management server, browser editor, lossless JSON document model, We
 3. Build a Java 25 reference harness and capture upstream noise results, including raw IEEE-754 bits. Preserve existing upstream noise/seed tests.
 4. Continue the compiled Iris NoiseStyle/CNG, configured-style, SeedManager and standalone-generator bridge into browser pack resources and dimension selection; qualify complete coverage after implementation.
 5. Extend the connected native compatibility, region/biome and procedural-height path through connected terrain painting, native cave profile/component selection and material/post resolution into the remaining native chunk stages. Image-map coverage beyond the stated PNG subset, complete expression/math conformance, real browser qualification of scalar/voxel float-cache persistence, remaining binary/image resources, complete subterrain options/interactions, custom registry contributions and the remaining platform adapters remain outstanding.
-6. Obtain authorized local F8thful and vanilla asset inputs for compatibility inspection.
+6. Obtain the supplied authorized F8thful input, resolve target-format overlays/filters and complete Minecraft rendering adapters. The verified local vanilla preparation path is available.
 
 ## Evidence and limitations
 

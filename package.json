@@ -20,6 +20,7 @@
     "release:check": "node tools/check-project.mjs --release",
     "engine:setup": "node tools/engine-build/setup.mjs",
     "engine:registry": "node tools/engine-build/registry.mjs",
-    "engine:schemas": "node tools/engine-build/schemas.mjs"
+    "engine:schemas": "node tools/engine-build/schemas.mjs",
+    "assets:vanilla": "python3 tools/assets/prepare-vanilla.py"
   }
 }
