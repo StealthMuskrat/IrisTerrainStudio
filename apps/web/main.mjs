@@ -7,6 +7,8 @@ import {ChangeTools} from './lib/change-tools.mjs';
 import {editorTextToSource} from './lib/source-editor.mjs';
 import {ViewLibrary,previewSetup,cameraBookmark} from './lib/view-library.mjs';
 import {ViewTools} from './lib/view-tools.mjs';
+import {ProblemTools} from './lib/problem-tools.mjs';
+import {PROBLEM_LIMITS} from '/packages/iris-resources/pack-problems.mjs';
 import {SearchTools} from './lib/search-tools.mjs';
 import {HistoryTools,restoreEditPlan,sameEdit} from './lib/history-tools.mjs';
 import {ReferenceTools} from './lib/reference-tools.mjs';
@@ -66,6 +68,7 @@ const jsonTools=new JsonTools({element,field,copy,ask,getContext:()=>({pack:stat
 const referenceTools=new ReferenceTools({element,field,copy,ask,getContext:referenceContext,read:(context,path)=>Promise.resolve(context.overrides.get(path)??api.read(context.pack,path)),reveal:openReferenceValue,close:()=>closeDialog?.(null),onError:errorMessage});
 const historyTools=new HistoryTools({api,element,copy,field,ask,getPack:()=>state.pack,getEdit:historyEdit,canRestore:(pack,path)=>!category(path).excluded&&!state.catalog.byPath.get(path)?.readOnly,restore:restoreHistoryVersion,download,onError:errorMessage});
 const searchTools=new SearchTools({element,field,copy,ask,getContext:referenceContext,getEditContext:searchEditContext,read:(context,path)=>Promise.resolve(context.overrides.get(path)??api.read(context.pack,path)),reveal:openTextSearchMatch,revealEdit:(owner,row)=>revealSourceMatch(row,{expected:owner}),commit:applySourceReplacement,close:()=>closeDialog?.(null),onError:errorMessage});
+const problemTools=new ProblemTools({element,field,copy,ask,getContext:problemContext,read:readProblemSource,reveal:openProblemSource,close:()=>closeDialog?.(null),download,onError:errorMessage});
 const viewLibrary=new ViewLibrary({read:()=>localGet('settings','view-library'),write:(value,expectedViewConfig)=>localBatch([{store:'settings',key:'view-library',value}],{expectedViewConfig})});
 const viewTools=new ViewTools({library:viewLibrary,element,field,copy,ask,getPack:()=>state.pack,getDialogSequence:()=>dialogSequence,capture:captureSavedView,apply:applySavedView,download,onError:errorMessage});
 const changeTools=new ChangeTools({element,field,copy,ask,getContext:()=>{const edit=activeEdit();return edit?{...edit,revision:state.revision}:null;},read:(pack,path)=>api.read(pack,path),commit:applyDiskReview,download,onError:errorMessage});
@@ -140,6 +143,29 @@ function referenceContext(){
   const rows=new Map(state.catalog.resources.map(row=>[row.path,row])),overrides=new Map();for(const record of editWorkspace.entries(activeEdit(),state.pack)){overrides.set(record.path,{text:record.text,etag:record.etag,owner:record.owner});rows.set(record.path,{...rows.get(record.path),path:record.path,size:undefined,readOnly:false});}
   return{pack:state.pack,listingPack:state.catalogPack,revision:state.revision,catalog:state.catalog,rows:[...rows.values()],overrides};
 }
+function problemContext(){const context=referenceContext();context.schemaSequence=schemaLoadSequence;context.schemaRecords=new Map(editWorkspace.entries(activeEdit(),state.pack).map(record=>[record.path,record]));context.schemaCache=new Map();context.schemaTextCache=new Map();context.schemaBytes=0;return context;}
+function problemSchemaInput(context,value,{raw=false,cache=true}={}){
+  if(value===null||value===undefined)return{schemaText:null};if(cache&&!raw&&context.schemaTextCache.has(value))return context.schemaTextCache.get(value);
+  const text=raw?value:stringify(value),bytes=typeof text==='string'?text.length*2:Infinity;let result;
+  if(bytes>PROBLEM_LIMITS.schemaBytes)result={schemaError:'Attached schema exceeds 256 KiB of counted UTF-16 text.'};else if(context.schemaBytes+bytes>PROBLEM_LIMITS.schemaTotalBytes)result={schemaError:'Captured schemas exceed the 2 MiB counted payload budget.'};else{context.schemaBytes+=bytes;result={schemaText:text};}
+  if(cache&&!raw)context.schemaTextCache.set(value,result);return result;
+}
+async function readProblemSource(context,path){
+  const opened=context.overrides.get(path),record=context.schemaRecords.get(path),source=opened??await api.read(context.pack,path);
+  if(record)return{...source,...problemSchemaInput(context,record.schema),schemaSource:record.schema===null||record.schema===undefined?null:'Captured open-buffer schema'};
+  const id=category(path).id;if(!context.schemaCache.has(id)){
+    if(context.schemaCache.size>=PROBLEM_LIMITS.schemaCategories)return{...source,schemaError:'Captured schema category limit reached (64).',schemaSource:'Browser category schema not read'};
+    context.schemaCache.set(id,localGet('settings','schema/'+context.pack+'/'+id).then(saved=>({...problemSchemaInput(context,saved?.text??saved,{raw:typeof saved?.text==='string',cache:false}),schemaSource:saved===null||saved===undefined?null:'Captured browser schema for '+id})).catch(error=>({schemaError:'Browser schema could not be read: '+error.message,schemaSource:'Browser category schema unavailable'})));
+  }
+  return{...source,...await context.schemaCache.get(id)};
+}
+async function openProblemSource(context,row){
+  editorIdle();if(!problemTools.isCurrent(context))throw new Error('Source or schema inputs changed. Check JSON again.');const target=state.catalog.byPath.get(row.path)??(context.overrides.has(row.path)&&{path:row.path,editable:true});if(!target)throw new Error('The inspected resource is no longer listed.');
+  await openResource(target);if(state.pack!==context.pack||state.selected?.path!==row.path)throw new Error('The selected resource changed. Check JSON again.');const captured=context.overrides.get(row.path);
+  if(row.owner?state.bufferOwner!==row.owner||state.text!==captured?.text:!row.etag||state.etag!==row.etag||dirty())throw new Error('The inspected source version changed. Check JSON again.');
+  revealSourceMatch({start:row.start,end:row.end},{expected:editorLocation()});
+}
+async function showPackProblems(){editorIdle();flushHistory();await problemTools.open();}
 function editorLocation(){return{pack:state.pack,path:state.selected?.path,owner:state.bufferOwner,text:state.text,revision:state.revision};}
 function revealJsonPointer(pointer='',{expected,offset,matchValue}={}){
   if(!state.selected?.editable)throw new Error('Open a JSON resource before navigating its values.');
@@ -183,12 +209,12 @@ async function goToJsonPointer(){
 async function openPack(id) {
   if(id===state.pack)return;try{stashActiveEdit();}catch(error){$('pack-select').value=state.pack;throw error;}
   cancelPreview({clear:true});resourceLoadSequence++;state.proceduralSelection=null;if(['procedural-object','procedural-placement'].includes($('field-mode').value))$('field-mode').value='terrain-stage';$('field-mode').querySelector('option[value="procedural-placement"]').hidden=true;$('field-mode').querySelector('option[value="procedural-object"]').hidden=true;state.pack=id;state.bufferOwner=null;state.selected=null;state.document=null;state.history=null;state.text='';state.baseText='';state.etag='';state.schema=null;state.revision++;
-  state.catalog=new ResourceCatalog();state.catalogPack=null;$('search-pack-json').disabled=true;renderExplorer();
+  state.catalog=new ResourceCatalog();state.catalogPack=null;$('search-pack-json').disabled=true;$('pack-problems').disabled=true;renderExplorer();
   $('pack-select').value=id;await localSet('settings','last-pack',id).catch(()=>{});if(state.pack!==id)return;await refreshResources();if(state.pack!==id)return;renderInspector();message(`Opened ${id}.`);
 }
 async function refreshResources() {
   if(!state.pack){state.catalog=new ResourceCatalog();state.catalogPack='';renderExplorer();return;}
-  const pack=state.pack,request=++catalogLoadSequence,data=await api.resources(pack);if(state.pack!==pack||request!==catalogLoadSequence)return;state.catalog=new ResourceCatalog(data.resources);state.catalogPack=pack;renderExplorer();$('search-pack-json').disabled=false;$('resource-count').textContent=String(data.resources.length);$('pack-status').textContent=state.pack;
+  const pack=state.pack,request=++catalogLoadSequence,data=await api.resources(pack);if(state.pack!==pack||request!==catalogLoadSequence)return;state.catalog=new ResourceCatalog(data.resources);state.catalogPack=pack;renderExplorer();$('search-pack-json').disabled=false;$('pack-problems').disabled=false;$('resource-count').textContent=String(data.resources.length);$('pack-status').textContent=state.pack;
   const selected=$('dimension-select').value;const dimensions=data.resources.filter(row=>row.path.startsWith('dimensions/')&&row.path.endsWith('.json'));
   $('dimension-select').replaceChildren(element('option',{value:'',text:'Select dimension'}),...dimensions.map(row=>element('option',{value:row.path,text:resourceId(row.path)})));if(dimensions.some(row=>row.path===selected))$('dimension-select').value=selected;else if(dimensions.length===1)$('dimension-select').value=dimensions[0].path;
 }
@@ -230,7 +256,7 @@ function renderValidation() {
   if((state.issues?.length||0)>30)panel.append(element('div',{class:'validation-message',text:`${state.issues.length-30} more issues.`}));
 }
 function updateDocumentState() {
-  renderEditorTabs();const changed=dirty();$('save').disabled=editorWriteBusy||!changed||!editable()||!state.document||state.issues?.some(issue=>issue.severity==='error');$('undo').disabled=!state.history?.canUndo;$('redo').disabled=!state.history?.canRedo;$('document-state').textContent=changed?'Unsaved changes':state.selected?'Saved on disk':'No changes';$('document-state').classList.toggle('dirty',changed);$('show-references').hidden=!state.selected;$('go-to-json').disabled=!state.selected?.editable;$('find-source').disabled=!state.selected?.editable||!state.bufferOwner;$('review-changes').disabled=!state.selected?.editable||!state.bufferOwner;$('search-pack-json').disabled=!state.pack||state.catalogPack!==state.pack;
+  renderEditorTabs();const changed=dirty();$('save').disabled=editorWriteBusy||!changed||!editable()||!state.document||state.issues?.some(issue=>issue.severity==='error');$('undo').disabled=!state.history?.canUndo;$('redo').disabled=!state.history?.canRedo;$('document-state').textContent=changed?'Unsaved changes':state.selected?'Saved on disk':'No changes';$('document-state').classList.toggle('dirty',changed);$('show-references').hidden=!state.selected;$('go-to-json').disabled=!state.selected?.editable;$('find-source').disabled=!state.selected?.editable||!state.bufferOwner;$('review-changes').disabled=!state.selected?.editable||!state.bufferOwner;$('search-pack-json').disabled=!state.pack||state.catalogPack!==state.pack;$('pack-problems').disabled=!state.pack||state.catalogPack!==state.pack;
 }
 function scheduleDraft(){
   clearTimeout(state.draftTimer);const owner=state.bufferOwner;state.draftTimer=setTimeout(()=>{if(!owner||state.bufferOwner!==owner)return;persistEditDraft(activeEdit()).catch(()=>message('Local draft storage is unavailable. Save the resource to keep your changes.',true));},350);
@@ -769,7 +795,7 @@ function workspaceShortcut(event){
 function wire(){cameraTools.wire();
   bind('map-range','click',()=>mapTools.rangeDialog());bind('map-legend','click',()=>mapTools.legend());bind('map-inspect','click',()=>mapTools.inspect());
   for(const id of ['section-axis','section-mode','section-position'])bind(id,'change',applySection);bind('frame-section','click',()=>state.world?.reset());bind('focus-point','click',focusWorldPoint);
-  bind('pack-select','change',event=>event.target.value?openPack(event.target.value):undefined);bind('pack-menu','click',packMenu);bind('import-pack','click',()=>{$('pack-file').click();});bind('empty-open','click',packMenu);bind('refresh','click',refreshResources);bind('resource-search','input',renderExplorer);bind('add-resource','click',createResource);bind('save','click',saveResource);bind('save-all','click',saveAllResources);bind('open-edits','click',showOpenEdits);bind('local-drafts','click',showLocalDrafts);bind('duplicate-resource','click',duplicateResource);bind('rename-resource','click',renameResource);bind('delete-resource','click',deleteResource);bind('resource-history','click',showHistory);bind('review-changes','click',reviewResourceChanges);bind('show-references','click',showReferences);bind('go-to-json','click',goToJsonPointer);bind('search-pack-json','click',searchPackJson);bind('find-source','click',findReplaceSource);bind('settings','click',settingsDialog);bind('textures','click',textureDialog);
+  bind('pack-select','change',event=>event.target.value?openPack(event.target.value):undefined);bind('pack-menu','click',packMenu);bind('import-pack','click',()=>{$('pack-file').click();});bind('empty-open','click',packMenu);bind('refresh','click',refreshResources);bind('resource-search','input',renderExplorer);bind('add-resource','click',createResource);bind('save','click',saveResource);bind('save-all','click',saveAllResources);bind('open-edits','click',showOpenEdits);bind('local-drafts','click',showLocalDrafts);bind('duplicate-resource','click',duplicateResource);bind('rename-resource','click',renameResource);bind('delete-resource','click',deleteResource);bind('resource-history','click',showHistory);bind('review-changes','click',reviewResourceChanges);bind('show-references','click',showReferences);bind('go-to-json','click',goToJsonPointer);bind('search-pack-json','click',searchPackJson);bind('pack-problems','click',showPackProblems);bind('find-source','click',findReplaceSource);bind('settings','click',settingsDialog);bind('textures','click',textureDialog);
   bind('form-mode','click',()=>{flushHistory();parseDocument();state.mode='form';renderInspector();});bind('json-mode','click',()=>{state.mode='json';renderInspector();});bind('undo','click',()=>{flushHistory();if(state.history?.canUndo)setText(state.history.undo(),{history:false});});bind('redo','click',()=>{flushHistory();if(state.history?.canRedo)setText(state.history.redo(),{history:false});});
   bind('pack-file','change',async event=>{const file=event.target.files[0];event.target.value='';if(file)await importArchive(file);});bind('pack-directory','change',async event=>{const files=[...event.target.files];event.target.value='';await importDirectory(files);});
   bind('texture-file','change',async event=>{const file=event.target.files[0],options={...textureImportOptions};event.target.value='';if(!file)return;message('Loading local rendering pack…');await textureLibrary.add(file,options);await rebuildTextureStack();if(!closeDialog)await textureDialog();});

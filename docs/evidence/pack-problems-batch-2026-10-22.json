@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-22",
+  "scope": "explicit bounded pack JSON diagnostics, attached-schema coverage, exact source handoff and portable metadata report",
+  "fixture": {
+    "authoredSources": 3,
+    "sourceBytes": 62,
+    "actualNodeWorkers": 1,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "three tiny sources run through the actual worker module: root/syntax/duplicate and exact schema locations, unknown large-number tokens untouched, attached-schema coverage separate from no-schema sources",
+    "portable metadata report excludes full source/schema text and symbols; file/finding admission, failed reads and cancelled capture are explicit instead of reporting a clear pack",
+    "controlled timeout terminates synchronous work, next check starts a fresh worker, late results cannot settle it, simultaneous requests refuse and close rejects pending work",
+    "controlled problems dialog runs only on explicit request, filters captured schema findings, exports a report, navigates a selected issue and suppresses cancelled/stale-schema publication",
+    "actual app reader uses captured open text/schema without a disk read, caches saved category schema once, and issue handoff accepts owned source but refuses a changed saved ETag"
+  ],
+  "workspaceSha256": {
+    "packages/iris-resources/pack-problems.mjs": "474de0570e83ea2866576b4f530e4c5548f049c805a78eea987e880ee4047353",
+    "apps/web/lib/problem-client.mjs": "0616a1da7311bc73aac85e67d73a9c8c1af01bea1db77a489fe1ec5f9f29593a",
+    "apps/web/lib/problem-worker.mjs": "dbce753adb02a6724a44f542a32632658f1f4647030956a20ed2aa3c764bd4c8",
+    "apps/web/lib/problem-tools.mjs": "bbbcdf6c7bcf17600d337ad6f6ae04fb99f18ab06c8529468b4aab7dc2bbb8d0",
+    "apps/web/main.mjs": "d2bc5083cf89fd8f329c022a1c81913fb1f548700c18661b1ca96b1d99458800",
+    "apps/web/index.html": "7048fa8a684462424195d14c42ba8fbdf6f110b6bbb5cf92e979819e1b73287e"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Three tiny sources and one authored attached schema, actual Node worker module and controlled DOM/editor/timeout hosts only. JSON checks use bounded parsing and the existing partial local schema validator, not native engine/reference validation. Missing/failed schema coverage and all capture omissions remain explicit. Per-source worker response timeout is an interruption policy, not a performance result. Actual browser worker startup/termination/layout/focus/network/IndexedDB/multi-tab and full native/client/release verification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}
