@@ -63,6 +63,10 @@ public final class NativeTerrainLinkCheck {
                         var columns=new JsonArray();var diagnostic=Class.forName("studio.engine.terrain.TerrainLayerDiagnostic").getMethod("column",Engine.class,int.class,int.class);
                         for(var point:request.getAsJsonArray("layerColumns")){var xy=point.getAsJsonArray();columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,xy.get(0).getAsInt(),xy.get(1).getAsInt())));}pack.add(columns);
                     }
+                    if(request.has("surfaceHydrologyMapChecks")){
+                        openHydrologyReferenceHost(engine,directory);var type=Class.forName("studio.engine.hydrology.SurfaceHydrologyMap");var sample=type.getMethod("sample",Engine.class,double.class,double.class,double.class,int.class,int.class);
+                        for(var value:request.getAsJsonArray("surfaceHydrologyMapChecks")){var row=value.getAsJsonObject();pack.add(JsonParser.parseString((String)sample.invoke(null,engine,row.get("x").getAsDouble(),row.get("z").getAsDouble(),row.get("span").getAsDouble(),row.get("width").getAsInt(),row.get("height").getAsInt())));}
+                    }
                     if(request.has("hydrologyCheck")){
                         openHydrologyReferenceHost(engine,directory);
                         var hydrology=engine.getComplex().getHydrologyRuntime();if(hydrology==null)throw new IllegalStateException("No native hydrology runtime");

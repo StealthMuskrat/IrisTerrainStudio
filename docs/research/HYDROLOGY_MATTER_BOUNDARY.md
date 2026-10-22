@@ -14,7 +14,7 @@ A hydrology scope borrows the registered mode's existing native host and prepare
 
 Actual native publication counts and worker planning/carving admission metadata accompany existing typed block and physical-biome volume transport. Counts inspect published sparse matter slices; they do not compare all terrain cells or qualify performance. Shared/persistent hydrology caches, saved-world services, native history/REAL/world lifecycle, active custom contributions and imported placements retain their existing restrictions.
 
-Only registered Overworld routes admit active hydrology. Separate scalar/material/cave/procedural intermediate previews continue to refuse because their setup and ordering do not publish the complete native prerequisites. The hydrology map remains unavailable. The existing one-column dimension inspector remains a separate development diagnostic. Native voxel data can be inspected independently of the unfinished client fluid/tint rendering adapters.
+Only registered Overworld routes admit active hydrology. Separate scalar/material/cave/procedural intermediate previews continue to refuse because their setup and ordering do not publish the complete native prerequisites. A separate surface-feature planning map is now connected; it does not replace the registered material stages. The existing one-column dimension inspector remains a separate development diagnostic. Native voxel data can be inspected independently of the unfinished client fluid/tint rendering adapters.
 
 ## Qualification
 

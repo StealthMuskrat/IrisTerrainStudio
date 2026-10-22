@@ -1,0 +1,218 @@
+{
+  "scope": "native-surface-hydrology-map-targeted",
+  "result": "pass",
+  "fixtures": 1,
+  "seeds": 1,
+  "distinctSamples": 5,
+  "windows": 3,
+  "results": [
+    {
+      "request": {
+        "x": 10.5,
+        "z": -7,
+        "span": 6,
+        "width": 3,
+        "height": 1
+      },
+      "categories": [
+        "No primary surface feature",
+        "SURFACE_POOL",
+        "RIFFLE",
+        "CASCADE",
+        "WATERFALL",
+        "MOUTH",
+        "STANDING_POOL"
+      ],
+      "values": [
+        0,
+        6,
+        6
+      ],
+      "admission": {
+        "admittedPlanningRoots": 4,
+        "admittedPlanningCalls": 4,
+        "admittedCarvingChunks": 0,
+        "chargedCarvingInputCells": 0
+      },
+      "preparedSampleChunks": 1
+    },
+    {
+      "request": {
+        "x": -16.25,
+        "z": -32.25,
+        "span": 1,
+        "width": 1,
+        "height": 1
+      },
+      "categories": [
+        "No primary surface feature",
+        "SURFACE_POOL",
+        "RIFFLE",
+        "CASCADE",
+        "WATERFALL",
+        "MOUTH",
+        "STANDING_POOL"
+      ],
+      "values": [
+        0
+      ],
+      "admission": {
+        "admittedPlanningRoots": 4,
+        "admittedPlanningCalls": 4,
+        "admittedCarvingChunks": 0,
+        "chargedCarvingInputCells": 0
+      },
+      "preparedSampleChunks": 1
+    },
+    {
+      "request": {
+        "x": -0.25,
+        "z": -0.25,
+        "span": 1,
+        "width": 1,
+        "height": 1
+      },
+      "categories": [
+        "No primary surface feature",
+        "SURFACE_POOL",
+        "RIFFLE",
+        "CASCADE",
+        "WATERFALL",
+        "MOUTH",
+        "STANDING_POOL"
+      ],
+      "values": [
+        0
+      ],
+      "admission": {
+        "admittedPlanningRoots": 4,
+        "admittedPlanningCalls": 4,
+        "admittedCarvingChunks": 0,
+        "chargedCarvingInputCells": 0
+      },
+      "preparedSampleChunks": 1
+    }
+  ],
+  "referenceKey": "fd96065a847fce0e1bee0fab1ca1c330271ca8174f38cc958cf367a521ee8142",
+  "actualWorkerClient": true,
+  "clientCacheReuse": true,
+  "coordinateRule": "floor-world-block-at-grid-center",
+  "boundsAndInactiveRefused": true,
+  "recoveryAndRelease": true,
+  "directApiCleanup": {
+    "sessionId": "1",
+    "activeLeases": 0,
+    "scopeBound": false
+  },
+  "controlledCancellation": true,
+  "resources": [
+    {
+      "path": "dimensions/terrain3d.json",
+      "sha256": "90f5bbe8eece03c31cd2fcb01fefc8dad377fbea089ab4888e74f01ea652727f"
+    },
+    {
+      "path": "regions/floor.json",
+      "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+    },
+    {
+      "path": "biomes/floor.json",
+      "sha256": "24c913e5e334b855658f8b02fc242b1809a31853f1c5f3576d53474028fe0fd8"
+    },
+    {
+      "path": "generators/flat.json",
+      "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    }
+  ],
+  "wasmSha256": "dd0d15377a8f768153440364251fac99458a280e083ed3f43337fc4922795660",
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "nativeInputProfile": "terrain-no-eco-items",
+  "platformSourceServerJarSha256": "a488d15f96528a935bd0860dceb84f46777551be15d1203b65bab5916bb5a35d",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "sourceSha256": "db9b12cd1c091e23da9271b7136e5539a4384760e058ea5c18275fcbcf97ceb3",
+  "engineExports": 79,
+  "surfaceMapLimits": {
+    "maximumSamplesPerAxis": 256,
+    "maximumWindowAxisBlocks": 256,
+    "coordinateMargin": 29999984
+  },
+  "nativeSelection": "original-primarySurfaceLayer",
+  "nativeSampling": "floor-world-block-at-grid-center",
+  "storedMapExport": {
+    "result": "pass",
+    "storedSamples": 3,
+    "generatedNewSamples": false,
+    "nativeSampling": {
+      "scope": "native-surface-hydrology-map-development",
+      "selection": "original-primarySurfaceLayer",
+      "sampling": "floor-world-block-at-grid-center"
+    },
+    "wasmSha256": "dd0d15377a8f768153440364251fac99458a280e083ed3f43337fc4922795660"
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/web/index.html",
+      "sha256": "2ef79901b3e4c537509901527f3bf0c0f8728fd6365f61379b7c389968b0ed31"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "1db26f47d109d8f2b86a67bda8ae320ebfe4892e1f66801d55b675b9c7b8c161"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "1ae5608b4f84218f1d5771b921e9a723f8446c2ac09e37b40079b98a544babf8"
+    },
+    {
+      "path": "packages/iris-engine/client.mjs",
+      "sha256": "b3cbc43f9ffbb2f83b9d0b15f480e758d7601c1cea87150a2abe37e85d80b062"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "c53019df05646ecff59720a8ddafd5377697b81cf1ffddbe83ff6698b4c0c5a3"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/SurfaceHydrologyMap.java",
+      "sha256": "5d7a8b3804c3542db9b7dab60f0e3fc6750f4bbeb8af9a626582c4967638bd70"
+    },
+    {
+      "path": "packages/voxel-renderer/field-analysis.mjs",
+      "sha256": "8a0f78bef4fb460236b91b5084d9233bfb47aa45b5d22b14220e1d885b8e9407"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "09db7b121c11e673950c5dcc64aff4b05a6b25989c50ccd5400fcc9edcd88c29"
+    },
+    {
+      "path": "tools/checks/native-hydrology-map-smoke.mjs",
+      "sha256": "3f8a4003eef3dc9ba61927a13d9aad4892814d31e5c26e27f12dce7353a97961"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "6779aff2e9ffcd7ca768e84d2e8301a053ef71ecb9723cdb61924e371d84158e"
+    }
+  ],
+  "checks": {
+    "strictAdvancedCompilation": true,
+    "actualWasmVmValidation": true,
+    "actualWorkerClientTransport": true,
+    "fullSuiteRun": false,
+    "blockStateOrVolumeComparison": false,
+    "registryReexportForMapBatch": false,
+    "githubTestWorkflowRun": false
+  },
+  "limitations": [
+    "Host-dimension primary surface feature types only; no underground/deep-fluid view or fluid simulation.",
+    "A feature category can include shore/grading columns without fluid.",
+    "One authored pack/seed, five selected samples and a three-cell stored export only.",
+    "Native cached snapshots must be available; root/call and sparse-carving limits still apply and can refuse configurations.",
+    "Sparse containment, all feature/options/interactions, actual browser/UI/map/export/GPU and full engine/rendering/release qualification remain open.",
+    "Earlier registered-mode publication checks retain their preceding module identity; no repeated cross-feature suite ran."
+  ],
+  "fullEngineLifecycle": false,
+  "releaseMatchVerified": false
+}
