@@ -1,4 +1,4 @@
-import{lookAt,perspective,multiply,inverse,transform,normalize,subtract,cross}from'./math.mjs';
+import{lookAt,perspective,multiply,inverse,transform,normalize,subtract}from'./math.mjs';
 import{VoxelVolume}from'./volume.mjs';
 import{localClip,clipBounds,clipCenter,emptyClip}from'./clip.mjs';
 import{bakeBlock}from'./models.mjs';
@@ -9,6 +9,7 @@ import{MeshPicker}from'./picking.mjs';
 import{MeshSession}from'./mesh-session.mjs';
 import{createSelectionPipeline}from'./selection.mjs';
 import{voxelViewMode,prepareCellView,CellAtlas}from'./cell-view.mjs';
+import{navigationSettings,cameraEye,zoomCamera,cameraBasis,rotateCamera,translateCamera,advanceCamera,MOTION_CODES,cameraView,cameraFromView}from'./navigation.mjs';
 const source=`
 struct Camera{matrix:mat4x4f,eye:vec4f};@group(0) @binding(0)var<uniform> camera:Camera;@group(0) @binding(1)var atlas:texture_2d<f32>;@group(0) @binding(2)var nearest:sampler;
 struct Output{@builtin(position) position:vec4f,@location(0) normal:vec3f,@location(1) color:vec4f,@location(2) uv:vec2f,@location(3) distance:f32};
@@ -32,7 +33,7 @@ export class WorldRenderer{
     this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
     this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'}});
     this.selectionPipeline=createSelectionPipeline(gpu.device,this.pipeline.getBindGroupLayout(0),gpu.format);
-    this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;if(this.volume&&this.atlas.update(time))this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
+    this.navigation=navigationSettings();this.motionKeys=new Set();this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;const moved=this.stepNavigation(time),animated=this.volume&&this.atlas.update(time);if(moved||animated)this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
     }catch(error){this.dispose();throw error;}
   }
   bind(){this.bindGroup=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler}]});}
@@ -73,12 +74,13 @@ export class WorldRenderer{
     const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.meshStats=mesh.stats;this.clip=clip;this.draw();return mesh.faces;
   }
   focus(world){
+    this.stopNavigation();
     if(!this.volume)throw new Error('Generate a stored voxel volume before focusing the camera.');
     const bounds=clipBounds(this.volume,this.clip);
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){if(this.disposed)return;this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.cellColors=null;this.mode='textured';this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){if(this.disposed)return;this.stopNavigation();this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.cellColors=null;this.mode='textured';this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   uploadMesh(mesh){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     this.buffers??=new MeshBufferStore(this.gpu.device);
@@ -122,11 +124,12 @@ export class WorldRenderer{
     this.sortEye=eye.slice();this.sortRanges=key;
   }
   reset(){
+    this.stopNavigation();
     let target=[0,0,0],distance=90;
     if(this.volume){const bounds=clipBounds(this.volume,this.clip);if(!emptyClip(bounds)){const center=clipCenter(this.volume,this.clip),dimensions=[this.volume.width,this.volume.height,this.volume.depth];target=center.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);distance=Math.min(4096,Math.max(2,...bounds.max.map((value,axis)=>(value-bounds.min[axis])*1.65)));}}
     this.camera={yaw:Math.PI*.25,pitch:.55,distance,target};this.draw();
   }
-  matrices(){const c=this.camera,eye=[c.target[0]+Math.sin(c.yaw)*Math.cos(c.pitch)*c.distance,c.target[1]+Math.sin(c.pitch)*c.distance,c.target[2]+Math.cos(c.yaw)*Math.cos(c.pitch)*c.distance],matrix=multiply(perspective(Math.PI/3,this.canvas.width/Math.max(this.canvas.height,1),.1,8192),lookAt(eye,c.target));return{eye,matrix};}
+  matrices(){const c=this.camera,eye=cameraEye(c),matrix=multiply(perspective(Math.PI/3,this.canvas.width/Math.max(this.canvas.height,1),.1,8192),lookAt(eye,c.target));return{eye,matrix};}
   draw(){
     if(this.disposed)return;
     const rect=this.canvas.getBoundingClientRect();if(rect.width<1||rect.height<1||this.disposed)return;
@@ -143,27 +146,56 @@ export class WorldRenderer{
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
   inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();return this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});}
+  configureNavigation(input){
+    if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
+    const next=navigationSettings({...this.navigation,...input});this.stopNavigation();this.navigation=next;return{...next};
+  }
+  stopNavigation(){this.motionKeys?.clear();this.navigationTime=null;this.cancelNavigationDrag?.();}
+  stepNavigation(time){
+    if(!this.volume||!this.motionKeys?.size){this.navigationTime=null;return false;}
+    const rect=this.canvas.getBoundingClientRect();if(rect.width<1||rect.height<1){this.stopNavigation();return false;}
+    const previous=this.navigationTime;this.navigationTime=time;
+    return previous==null?false:advanceCamera(this.camera,this.motionKeys,(time-previous)/1000,this.navigation??navigationSettings());
+  }
+  cameraView(){if(!this.volume||this.disposed)throw new Error('Display stored voxels before editing the camera.');return cameraView(this.volume,this.camera);}
+  setCameraView(view){
+    if(!this.volume||this.disposed)throw new Error('Display stored voxels before editing the camera.');
+    const camera=cameraFromView(this.volume,view);this.stopNavigation();this.camera=camera;this.draw();
+  }
   controls(){
-    this.inputAbort?.abort();this.inputAbort=new AbortController();let drag=null,moved=false;
+    this.inputAbort?.abort();this.inputAbort=new AbortController();this.motionKeys??=new Set();let drag=null,moved=false;
     const listen=(name,callback,options={})=>this.canvas.addEventListener(name,callback,{...options,signal:this.inputAbort.signal});
-    this.inputAbort.signal.addEventListener('abort',()=>{if(drag&&this.canvas.hasPointerCapture?.(drag.pointerId))this.canvas.releasePointerCapture(drag.pointerId);drag=null;},{once:true});
-    listen('pointerdown',event=>{drag={x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,pointerId:event.pointerId,shift:event.shiftKey||event.button===1};this.canvas.focus({preventScroll:true});moved=false;this.canvas.setPointerCapture(event.pointerId);});
+    this.cancelNavigationDrag=()=>{if(drag&&this.canvas.hasPointerCapture?.(drag.pointerId))this.canvas.releasePointerCapture(drag.pointerId);drag=null;};
+    this.inputAbort.signal.addEventListener('abort',()=>this.stopNavigation(),{once:true});
+    listen('pointerdown',event=>{if(drag||event.isPrimary===false||event.button>1)return;drag={x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,pointerId:event.pointerId,shift:event.shiftKey||event.button===1};this.canvas.focus({preventScroll:true});moved=false;this.canvas.setPointerCapture(event.pointerId);});
     listen('pointermove',event=>{
       if(!drag||event.pointerId!==drag.pointerId)return;const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
       if(Math.hypot(event.clientX-drag.startX,event.clientY-drag.startY)>3)moved=true;
-      if(drag.shift){const{eye}=this.matrices(),forward=normalize(subtract(this.camera.target,eye)),right=normalize(cross(forward,[0,1,0])),up=cross(right,forward),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);this.camera.target=this.camera.target.map((v,i)=>v-right[i]*dx*scale+up[i]*dy*scale);}
-      else{this.camera.yaw-=dx*.007;this.camera.pitch=Math.max(-1.5,Math.min(1.5,this.camera.pitch+dy*.007));}
+      if(drag.shift){const{right,up}=cameraBasis(this.camera),scale=this.camera.distance/Math.max(this.canvas.clientHeight,1);translateCamera(this.camera,right.map((value,axis)=>-value*dx*scale+up[axis]*dy*scale));}
+      else rotateCamera(this.camera,-dx*.007,dy*.007,this.navigation?.mode);
       drag.x=event.clientX;drag.y=event.clientY;this.draw();
     });
     listen('pointerup',event=>{
       if(!drag||event.pointerId!==drag.pointerId)return;
       try{if(!moved&&event.button===0){const hit=this.inspect(event.clientX,event.clientY);this.select(hit);this.onInspect?.(hit);}}
-      catch(error){this.onError?.(error);}finally{drag=null;}
+      catch(error){this.onError?.(error);}finally{this.cancelNavigationDrag();}
     });
-    listen('pointercancel',()=>{drag=null;});
-    listen('wheel',event=>{event.preventDefault();this.camera.distance=Math.max(1,Math.min(4096,this.camera.distance*Math.exp(event.deltaY*.001)));this.draw();},{passive:false});
-    listen('keydown',event=>{if(event.key==='Escape'&&this.selection){event.preventDefault();event.stopPropagation();this.clearSelection();}});
+    listen('pointercancel',()=>this.cancelNavigationDrag());listen('lostpointercapture',()=>{drag=null;});
+    listen('wheel',event=>{event.preventDefault();zoomCamera(this.camera,Math.exp(Math.max(-1000,Math.min(1000,event.deltaY))*.001),this.navigation?.mode,this.navigation?.speed);this.draw();},{passive:false});
+    listen('keydown',event=>{
+      if(event.key==='Escape'){const active=this.motionKeys.size>0||!!drag||!!this.selection;this.stopNavigation();if(active){event.preventDefault();event.stopPropagation();this.clearSelection();}return;}
+      if(event.ctrlKey||event.metaKey||event.altKey){this.stopNavigation();return;}if(event.target&&event.target!==this.canvas||!this.volume)return;
+      const code=event.code;if(MOTION_CODES.has(code)&&(this.navigation?.mode==='fly'||code.startsWith('Arrow'))){event.preventDefault();this.motionKeys.add(code);}
+      else if(code==='Home'){event.preventDefault();this.stopNavigation();this.reset();}
+      else if(event.key==='+'||event.key==='-'||event.key==='='){event.preventDefault();zoomCamera(this.camera,event.key==='-'?1.1:1/1.1,this.navigation?.mode,this.navigation?.speed);this.draw();}
+    });
+    listen('keyup',event=>{this.motionKeys.delete(event.code);if(!this.motionKeys.size)this.navigationTime=null;});
+    listen('blur',()=>this.stopNavigation());
+    const host=this.canvas.ownerDocument?.defaultView,doc=this.canvas.ownerDocument;
+    host?.addEventListener('keyup',event=>{this.motionKeys.delete(event.code);if(!this.motionKeys.size)this.navigationTime=null;},{signal:this.inputAbort.signal});
+    host?.addEventListener('blur',()=>this.stopNavigation(),{signal:this.inputAbort.signal});
+    doc?.addEventListener('visibilitychange',()=>{if(doc.hidden)this.stopNavigation();},{signal:this.inputAbort.signal});
     listen('contextmenu',event=>event.preventDefault());
   }
-  dispose(){if(this.disposed)return;this.disposed=true;this.inputAbort?.abort();this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.cellColors=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer?.disconnect();this.buffers?.dispose();this.uniform?.destroy();this.depth?.destroy();this.atlas?.dispose();this.context?.unconfigure();this.ranges=[];this.transparentCenters=null;this.transparentOrder=null;this.sortedIndices=null;this.transparentIndices=null;this.opaque=null;this.transparent=null;this.onInspect=null;this.onError=null;this.onProgress=null;this.onDiagnostics=null;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.stopNavigation();this.inputAbort?.abort();this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.cellColors=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer?.disconnect();this.buffers?.dispose();this.uniform?.destroy();this.depth?.destroy();this.atlas?.dispose();this.context?.unconfigure();this.ranges=[];this.transparentCenters=null;this.transparentOrder=null;this.sortedIndices=null;this.transparentIndices=null;this.opaque=null;this.transparent=null;this.onInspect=null;this.onError=null;this.onProgress=null;this.onDiagnostics=null;}
 }

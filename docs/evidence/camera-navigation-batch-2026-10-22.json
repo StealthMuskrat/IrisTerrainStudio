@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-22",
+  "scope": "retained-volume orbit/free-fly navigation, keyboard controls, speed preferences and exact camera authoring",
+  "fixture": {
+    "storedVoxels": 2,
+    "generatedCells": 0,
+    "sourcePixels": 0
+  },
+  "checks": [
+    "free look holds the eye; orbit holds the target; normalized flight/vertical/boost movement, bounded frame delta and camera range",
+    "keyboard look, orbit movement refusal, fly dolly and finite navigation settings",
+    "negative world-coordinate camera round trip and failed edits preserve the current camera",
+    "real canvas key/pointer controls, click versus drag, focus/visibility/rebind cancellation, pause clamp, dolly and frame section",
+    "actual camera settings/dialog validation, offline preferences, live-world/volume guards and browser-local persistence; stored voxel data unchanged"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/navigation.mjs": "3ece290c1394a6d8c62e7df62d53334b6a5ed165b38b5a7fdf16a7198af3fee8",
+    "packages/voxel-renderer/world.mjs": "7e8768db00e2b2fbb3a2af47db8ba672470d5da2528ae25c0eb10112f1e14c49",
+    "apps/web/lib/camera-tools.mjs": "015eebb99c118ac022a3ff26f49d78a0fa756636ac89280560c8df3f31a0ad11",
+    "apps/web/main.mjs": "326820a6bcecb18f0c82f4d53d3cb024ebf22dec3f8d493fae24010feb8b4d9f",
+    "apps/web/index.html": "ae5e30a34573550ace3e9afa1d6bc8c35fba5b215c3867a79c16fe8ebf4d7678",
+    "apps/web/styles.css": "86b6e001a573bc0b2745b0e6d512ff7d4be2c49f56b6f3771522027ea534b760"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "performanceMeasured": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Controlled Node input, renderer-method and dialog hosts only. No native build, terrain generation, mesh rebuild, registry/state sweep, broad suite or GitHub workflow. Actual browser focus/layout, keyboard layouts, GPU appearance and performance remain unqualified.",
+  "relatedTargetedChecks": [
+    {
+      "command": "node tools/checks/gpu-recovery-smoke.mjs",
+      "result": "pass",
+      "fixture": "Two stored voxels / two map samples; navigation preference handoff and camera availability on loss included; historical evidence preserved."
+    },
+    {
+      "command": "node tools/checks/model-picking-smoke.mjs",
+      "result": "pass",
+      "fixture": "Two stored cells / two faces; existing click, drag, selection and picking behavior; historical evidence preserved."
+    }
+  ]
+}
