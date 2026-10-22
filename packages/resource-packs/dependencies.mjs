@@ -1,6 +1,8 @@
 import { identifier } from './pack.mjs';
 import { ASSET_LIMITS, BUNDLE_MANIFEST, assetCurrent, assetJson } from './bundle.mjs';
 import { resourcePath, isPlainObject } from '../shared/paths.mjs';
+import { blockRenderingInputs } from './render-inputs.mjs';
+import { parseMaterial } from './material.mjs';
 
 const air=new Set(['minecraft:air','minecraft:cave_air','minecraft:void_air']);
 const notice=/(?:^|\/)(?:(?:licen[cs]es?|legal|notices?)\/|(?:licen[cs]e|copying|notice|credits|copyright|authors|readme)(?:[._-][^/]*)?$)/i;
@@ -33,7 +35,7 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
     const metadata=stack.metadataSource(path);if(metadata){add(path+'.mcmeta',metadata.pack,metadata.sourcePath);assetJson(files.get(path+'.mcmeta'),path+'.mcmeta');}
   }
   function recordError(context,error){if(error.name==='AbortError')throw error;if(errors.length<128)errors.push({context,message:error.message});else throw new Error('Dependency inspection stopped after 128 errors.');}
-  function directTexture(value,context){if(typeof value!=='string')throw new Error(`Invalid texture reference in ${context}.`);if(!value.startsWith('#'))texture(value);}
+  function directTexture(value,context){if(typeof value==='string'&&value.startsWith('#'))return;texture(parseMaterial(value,identifier).sprite);}
   function model(name,ancestors=[]){
     guard();const id=identifier(name).id;
     if(ancestors.includes(id)||ancestors.length>=32)throw new Error(`Model parent cycle or depth limit: ${[...ancestors,id].join(' → ')}`);
@@ -44,7 +46,7 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
     if(raw.parent!==undefined){if(typeof raw.parent!=='string'||raw.parent.startsWith('builtin/')||raw.parent.startsWith('minecraft:builtin/'))throw new Error(`Model ${id} requires an unsupported built-in model adapter.`);parent=model(raw.parent,[...ancestors,id]);}
     if(raw.textures!==undefined){object(raw.textures,`textures in ${id}`);for(const value of Object.values(raw.textures))directTexture(value,id);}
     if(raw.elements!==undefined&&!Array.isArray(raw.elements))throw new Error(`Invalid elements in ${id}.`);
-    for(const element of raw.elements??[]){object(element,`element in ${id}`);for(const face of Object.values(object(element.faces??{},`faces in ${id}`))){object(face,`face in ${id}`);directTexture(face.texture,id);}}
+    for(const element of raw.elements??[]){object(element,`element in ${id}`);for(const face of Object.values(object(element.faces??{},`faces in ${id}`))){object(face,`face in ${id}`);if(typeof face.texture!=='string'||!face.texture.length)throw new Error(`Invalid face texture slot in ${id}.`);}}
     // Parent variables can be supplied by children. Resolve aliases only in the complete root model.
     const merged={...parent,...raw,id,textures:{...parent.textures,...raw.textures},elements:raw.elements??parent.elements??[]};models.set(id,merged);chains.set(id,[id,...(parent.id?chains.get(parent.id):[])]);return merged;
   }
@@ -64,6 +66,10 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
   warnings.push('Target 26.3 / format 97.1 overlay/filter resolution is applied. Complete model semantics and client rendering parity remain unqualified. All model candidates are retained without weighted selection.');
   if(!errors.length)for(let index=0;index<roots.length;index++){
     const root=roots[index],block={id:root,candidates:[]};blocks.push(block);try{
+      const rendering=blockRenderingInputs(root);block.fluids=rendering?.fluids??[];block.colormaps=[...new Set((rendering?.tints??[]).map(rule=>rule.kind==='lower-grass'?'grass':rule.kind).filter(kind=>['grass','foliage','dry_foliage'].includes(kind)))];
+      for(const kind of block.colormaps)texture('minecraft:colormap/'+kind);
+      for(const kind of block.fluids)for(const suffix of kind==='water'?['still','flow','overlay']:['still','flow'])texture(`minecraft:block/${kind}_${suffix}`);
+      if(rendering?.invisible)continue;
       const definition=json(idPath(root,'blockstates','.json'));let count=0;
       if(definition.variants!==undefined)for(const value of Object.values(object(definition.variants,`variants in ${root}`))){application(value,root,block);count++;}
       if(definition.multipart!==undefined){if(!Array.isArray(definition.multipart))throw new Error(`Invalid multipart in ${root}.`);for(const part of definition.multipart){application(object(part,`multipart in ${root}`).apply,root,block);count++;}}

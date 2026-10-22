@@ -10,14 +10,14 @@ async function bakeApplications(block,stack,atlas,applications,tints){
   const quads=[];
   for(const application of applications)for(const part of application.model.elements){
     const a=part.from,b=part.to;if(!Array.isArray(a)||!Array.isArray(b)||a.length!==3||b.length!==3||![...a,...b].every(Number.isFinite))throw new Error(`Invalid model element in ${application.model.id}.`);
-    for(const[name,face]of Object.entries(part.faces||{})){const definition=faces[name];if(!definition)throw new Error('Unknown model face: '+name);const texture=await atlas.add(stack.texture(application.model,face.texture),stack);let points=definition.points(a,b).map(point=>point.map(v=>v/16));
+    for(const[name,face]of Object.entries(part.faces||{})){const definition=faces[name];if(!definition)throw new Error('Unknown model face: '+name);const material=stack.material?.(application.model,face.texture)??{sprite:stack.texture(application.model,face.texture),forceTranslucent:false},texture=await atlas.add(material.sprite,stack);let points=definition.points(a,b).map(point=>point.map(v=>v/16));
       if(part.rotation){const r=part.rotation;if(![-45,-22.5,0,22.5,45].includes(r.angle)||!Array.isArray(r.origin))throw new Error(`Unsupported element rotation in ${application.model.id}.`);points=points.map(p=>rotate(p,r.axis,r.angle,r.origin.map(n=>n/16),!!r.rescale));}
       const rotation=modelRotation(application.x,application.y,application.z);points=points.map(p=>rotateModelPoint(p,rotation));const n=normal(points);
       const uv=face.uv||defaultUv(name,a,b);if(!Array.isArray(uv)||uv.length!==4||!uv.every(Number.isFinite))throw new Error(`Invalid face UV in ${application.model.id}.`);
       const turns=quadrant(face.rotation)/90;const corners=[[uv[0],uv[1]],[uv[0],uv[3]],[uv[2],uv[3]],[uv[2],uv[1]]],mapped=Array.from({length:4},(_,i)=>{const c=corners[(i+turns)%4],locked=faceUv(name,c[0],c[1],rotation,application.uvlock);return[texture.uv[0]+locked[0]*(texture.uv[2]-texture.uv[0]),texture.uv[1]+locked[1]*(texture.uv[3]-texture.uv[1])];});
-      let color=[1,1,1,1];if(face.tintindex!==undefined&&face.tintindex>=0){if(!tints?.[face.tintindex])throw new Error(`Block ${block.id} needs an authoritative biome tint.`);color=tints[face.tintindex];}
+      let color=[1,1,1,1],tintIndex=null;if(face.tintindex!==undefined&&face.tintindex>=0){if(!Number.isInteger(face.tintindex))throw new Error('Model tint index must be a whole number.');if(tints?.[face.tintindex])color=tints[face.tintindex];else tintIndex=face.tintindex;}
       let cull=null;if(face.cullface&&faces[face.cullface]){let v=faces[face.cullface].normal;v=rotateModelVector(v,rotation);cull=direction(v);}
-      quads.push({positions:points,normal:n,uv:mapped,color,cull,transparency:texture.transparency,modelId:application.model.id});
+      quads.push({positions:points,normal:n,uv:mapped,color,tintIndex,cull,transparency:material.forceTranslucent?'blend':texture.transparency,modelId:application.model.id});
     }
   }
   return quads;

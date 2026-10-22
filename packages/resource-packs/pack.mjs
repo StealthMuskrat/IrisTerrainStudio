@@ -1,4 +1,5 @@
 import { quadrant } from './model-transform.mjs';
+import { parseMaterial } from './material.mjs';
 import { decodeTexturePng } from './texture-pixels.mjs';
 import { resolvePackTarget } from './target-format.mjs';
 import { resourceFilter } from './resource-filter.mjs';
@@ -68,12 +69,14 @@ export class ResourcePackStack {
     const model = { ...parent, ...json, textures: { ...parent.textures, ...json.textures }, id: id.id, elements: json.elements ?? parent.elements ?? [] };
     this.models.set(id.id, model); return model;
   }
-  texture(model, reference) {
-    const seen = new Set(); let value = reference;
+  material(model, reference) {
+    if(typeof reference!=='string'||!reference.length)throw new Error(`Invalid texture slot in ${model.id}.`);
+    const seen = new Set(); let value = model.textures?.[reference.startsWith('#')?reference.slice(1):reference];
     while (typeof value === 'string' && value.startsWith('#')) { if (seen.has(value)) throw new Error(`Texture reference cycle in ${model.id}.`); seen.add(value); value = model.textures?.[value.slice(1)]; }
     if (!value) throw new Error(`Missing texture ${reference} in ${model.id}.`);
-    return identifier(value).id;
+    return parseMaterial(value,identifier);
   }
+  texture(model,reference){return this.material(model,reference).sprite;}
   blockModelGroups(block){
     const id=identifier(block.id),state=block.properties||{};if(['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(id.id))return{multipart:false,groups:[]};
     const definition=this.json(`assets/${id.namespace}/blockstates/${id.path}.json`);if(!definition)throw new Error(`Missing blockstate ${id.id}.`);let applications=[],multipart=false;

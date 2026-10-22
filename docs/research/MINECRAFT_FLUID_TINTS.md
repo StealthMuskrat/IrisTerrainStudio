@@ -1,0 +1,29 @@
+# Native fluid surfaces, biome colors and materials
+
+The renderer now uses Minecraft 26.3 client input metadata rather than placeholder fluid cubes or a palette-wide biome color. The local input is the official client JAR with SHA-256 `4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d`. No client classes, source, textures, models or colormaps are committed. The rendering metadata records numerical/identity facts, source hashes and compact native property domains.
+
+`tools/engine-build/client-render-inputs.mjs` is an explicit development capture. It reads each of the 35,723 native states once to extract fluid kind/height/falling, solid/render flags, native face-occlusion rectangles and full-face support. These reduce to 570 shared profiles and 108 face shapes across 1,286 block types. There is no state-pair evaluation, terrain generation or parity claim in this extraction. A lossless mixed-radix encoding replaces repeated property strings without native execution. Subsequent previews resolve only their stored palette entries; the capture is not run by the application or by routine checks.
+
+The input also retains the registered block tint source kinds, the small native redstone/stem color tables, the original biome-noise permutation and original trigonometric lookup tables. Sixty-seven built-in biome climate/effect records and the recursively expanded fluid-flow block tag come from the same verified client. Unknown block states or biome keys refuse the affected rendering path with diagnostics.
+
+## Fluid geometry
+
+`fluids.mjs` follows the original `FluidRenderer` and `FlowingFluid` decisions: same-fluid suppression, self/neighbor face occlusion, full and weighted corner heights, falling flow, still/flowing UV selection, original atan/sine/cosine math, surface/side offsets, glass/leaves overlays and explicit back faces. Native state metadata distinguishes solid height contributors from render occluders and flow blockers. Waterlogged blocks retain both their ordinary model and fluid surface. Invisible water/lava/bubble-column states do not require a substitute block model.
+
+The actual mesh worker selects fluid surfaces from neighboring stored states. Clipping exposes cut faces while retaining the complete stored samples for flow and height. Beyond the stored volume, the display has an exposed boundary; it does not query or invent additional terrain. Fluid render and pick vertices retain their original voxel owner, including waterlogged blocks with displaced ordinary models. Section caching retains bounded rendering diagnostics. There is no fluid update or gameplay simulation.
+
+## Colors and material declarations
+
+Tint indices now survive model baking and resolve per visible stored cell. This includes lower-half sampling for tall grass, biome grass/foliage/dry-foliage/water colors, dark-forest and coordinate-dependent swamp modifiers, constant leaf/lily-pad colors and native property-dependent redstone/stem colors. Raw selected-pack colormap pixels feed the native climate lookup. Missing maps or biome metadata omit the affected tinted geometry and report the cause, rather than assigning a made-up color.
+
+The current explicit preview mode is **stored physical biome, blend radius zero**. The resource-pack dialog and voxel inspector disclose this choice. Minecraft client biome jitter and configurable neighborhood averaging are not implemented or qualified by this batch.
+
+Format-97.1 material declarations accept an identifier or `{ "sprite": "…", "force_translucent": true }`. Parent/child slot aliases resolve before material classification. Face strings name texture slots with or without the leading `#`, as in the original client. Forced translucent materials enter the transparent stream even with opaque source pixels. Dependency export retains these material sprites, fluid textures/sidecars and the required colormaps. Invisible fluid roots bypass blockstate-model lookup.
+
+Both render pipelines now allow equal-depth fragments so coplanar cutout overlays can draw after their base face. The transparent pipeline culls back-facing triangles; original fluid back faces are explicitly emitted, avoiding the double blend caused by drawing both windings with culling disabled. Actual WebGPU rasterization remains unverified here. The existing Studio directional light/fog shader is not a native lightmap/AO/environment-light implementation.
+
+## Focused evidence and limits
+
+[Evidence](../evidence/client-fluid-tints-2026-10-22.json) compares five tiny neighborhoods against the original client's actual fluid tesselator: isolated source, sloped water with slab occlusion, waterlogged slab with glass/leaves overlays, falling lava and a covered column. Flow doubles and binary32 vertex/UV results match. The reference uses controlled material/sprite carriers without initializing native images or a GPU. Fourteen original tint source/color/sampling-position cases and three native material-slot resolutions match using authored colormaps. Two actual worker cells verify dynamic tint, fluid picking and a clipped rebuild. Tiny dependency records verify fluid/material asset closure. A separate selection from the verified local client exercises actual grass/water PNG decode, contextual grass model baking, colormap loading and animated raw atlas uploads through a controlled device. Asset bytes stay local; evidence retains only hashes/counts. This is not GPU rasterization evidence.
+
+No broad suite, terrain-volume comparison, state-pair sweep or GitHub workflow ran. The native Wasm is unchanged. Full face-shape/geometry/selector coverage, biome jitter/blending, mipmaps, native lighting/material/GPU behavior, browser/UI qualification, required F8thful input and native/reference/release gates remain outstanding. The previously documented official Chrome startup failure still blocks real browser checks; this batch does not relabel Node checks as browser execution.

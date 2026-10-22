@@ -4,6 +4,9 @@ import{lookAt,perspective,multiply,inverse,transform,normalize,subtract}from'./m
 import{VoxelVolume}from'./volume.mjs';
 import{localClip,clipBounds,clipCenter,emptyClip}from'./clip.mjs';
 import{bakeBlockPlan}from'./models.mjs';
+import{blockRenderProfile}from'../resource-packs/render-inputs.mjs';
+import{prepareBiomeTints}from'../resource-packs/biome-tints.mjs';
+import{prepareFluidMaterials}from'./fluids.mjs';
 import{TextureAtlas}from'../resource-packs/atlas.mjs';
 import{visibleMeshRanges}from'./frustum.mjs';
 import{MeshBufferStore}from'./mesh-buffers.mjs';
@@ -33,8 +36,8 @@ function opaqueUnitCube(quads){
 function sameVoxelData(a,b){return !!a&&!!b&&a.blocks===b.blocks&&a.palette===b.palette&&a.width===b.width&&a.height===b.height&&a.depth===b.depth&&Array.isArray(b.origin)&&b.origin.length===3&&a.origin.every((value,axis)=>value===b.origin[axis]);}
 export class WorldRenderer{
   constructor(canvas,gpu){this.canvas=canvas;this.gpu=gpu;this.context=canvas.getContext('webgpu');if(!this.context)throw new Error('A WebGPU world canvas could not be created.');try{this.context.configure({device:gpu.device,format:gpu.format,alphaMode:'opaque'});this.camera={yaw:Math.PI*.25,pitch:.55,distance:90,target:[0,0,0]};this.volume=null;this.mode='textured';this.atlas=new TextureAtlas(gpu.device);this.uniform=gpu.device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});const module=gpu.device.createShaderModule({code:source,label:'Voxel block model shader'}),vertex={module,entryPoint:'vertex',buffers:[{arrayStride:48,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'},{shaderLocation:2,offset:24,format:'float32x4'},{shaderLocation:3,offset:40,format:'float32x2'}]}]};
-    this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
-    this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less'}});
+    this.pipeline=gpu.device.createRenderPipeline({layout:'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less-equal'}});
+    this.transparentPipeline=gpu.device.createRenderPipeline({layout:this.pipeline.getBindGroupLayout(0)?gpu.device.createPipelineLayout({bindGroupLayouts:[this.pipeline.getBindGroupLayout(0)]}):'auto',vertex,fragment:{module,entryPoint:'fragment',targets:[{format:gpu.format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'less-equal'}});
     this.selectionPipeline=createSelectionPipeline(gpu.device,this.pipeline.getBindGroupLayout(0),gpu.format);
     this.navigation=navigationSettings();this.motionKeys=new Set();this.bind();this.controls();this.observer=new ResizeObserver(()=>this.draw());this.observer.observe(canvas);this.frame=0;this.animate=time=>{if(this.disposed)return;const moved=this.stepNavigation(time),animated=this.volume&&this.atlas.update(time);if(moved||animated)this.draw();this.frame=requestAnimationFrame(this.animate);};this.frame=requestAnimationFrame(this.animate);
     }catch(error){this.dispose();throw error;}
@@ -47,21 +50,23 @@ export class WorldRenderer{
     // Generated inputs are immutable. Reusing the exact committed input avoids another
     // complete block/biome validation scan during an appearance-only replacement.
     const reuse=input===this.volumeInput&&sameVoxelData(this.volume,input)&&this.volume.biomes===(input.biomes||null)&&this.volume.metadata===input.metadata;
-    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[],offsetProfiles=[];let session;
+    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[],offsetProfiles=[],renderProfiles=[];let session,tintInput,fluidMaterials;
     try{
       if(!cells)for(let i=0;i<volume.palette.length;i++){
-        try{if(volume.palette[i].air===true){models[i]=[];continue;}offsetProfiles[i]=modelOffsetProfile(volume.palette[i].id);models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
+        try{renderProfiles[i]=blockRenderProfile(volume.palette[i]);if(volume.palette[i].air===true||renderProfiles[i].renderShape==='INVISIBLE'){models[i]=[];continue;}offsetProfiles[i]=modelOffsetProfile(volume.palette[i].id);models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
         catch(error){models[i]=[];diagnostics.push({block:volume.palette[i].id,message:error.message});}
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
-      const meshPalette=cells?.palette??volume.palette.map((block,index)=>({...block,modelOffset:offsetProfiles[index]??null,solid:!offsetProfiles[index]&&opaqueUnitCube(models[index])}));
-      session=this.pendingMesh=new MeshSession(volume,models,meshPalette,{cellColors:cells?.cellColors,onProgress:progress=>this.onProgress?.(progress)});
+      if(!cells){tintInput=await prepareBiomeTints(stack,volume);fluidMaterials={};for(const kind of new Set(renderProfiles.filter(Boolean).map(p=>p.fluid).filter(kind=>kind!=='empty'))){try{Object.assign(fluidMaterials,await prepareFluidMaterials(stack,atlas,[kind]));}catch(error){diagnostics.push({block:'minecraft:fluid/'+kind,message:error.message});}}}
+      if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
+      const meshPalette=cells?.palette??volume.palette.map((block,index)=>({...block,renderProfile:renderProfiles[index]??null,modelOffset:offsetProfiles[index]??null,solid:!offsetProfiles[index]&&opaqueUnitCube(models[index])}));
+      session=this.pendingMesh=new MeshSession(volume,models,meshPalette,{cellColors:cells?.cellColors,tintInput,fluidMaterials,onProgress:progress=>this.onProgress?.(progress)});
       const mesh=await session.build(clip,id);
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;
       const sameVolume=sameVoxelData(this.volume,volume);
       this.meshSession?.dispose();this.meshSession=session;this.pendingMesh=null;
-      this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.volumeInput=input;this.models=models;this.meshPalette=meshPalette;this.mode=mode;this.cellColors=cells?.cellColors;this.clip=clip;this.diagnostics=diagnostics;
+      diagnostics.push(...(mesh.diagnostics??[]));this.atlas.dispose();this.atlas=atlas;this.bind();this.volume=volume;this.volumeInput=input;this.models=models;this.meshPalette=meshPalette;this.mode=mode;this.cellColors=cells?.cellColors;this.clip=clip;this.diagnostics=diagnostics;this.assetDiagnostics=diagnostics.slice(0,diagnostics.length-(mesh.diagnostics?.length??0));this.tintInput=tintInput;this.fluidMaterials=fluidMaterials;
       this.faces=mesh.faces;this.meshStats=mesh.stats;if(sameVolume)this.draw();else this.reset();this.onDiagnostics?.(diagnostics);return diagnostics;
     }catch(error){atlas.dispose();session?.dispose();if(this.pendingMesh===session)this.pendingMesh=null;throw error;}
   }
@@ -71,10 +76,10 @@ export class WorldRenderer{
     const volume=this.volume,clip=localClip(volume,input);this.cancelMesh();const id=this.job;
     const before=clipBounds(volume,this.clip),after=clipBounds(volume,clip);
     if(before.min.every((value,axis)=>value===after.min[axis]&&before.max[axis]===after.max[axis]))return this.faces;
-    const session=this.meshSession??=new MeshSession(volume,this.models,this.meshPalette,{cellColors:this.cellColors,onProgress:progress=>this.onProgress?.(progress)});
+    const session=this.meshSession??=new MeshSession(volume,this.models,this.meshPalette,{cellColors:this.cellColors,tintInput:this.tintInput,fluidMaterials:this.fluidMaterials,onProgress:progress=>this.onProgress?.(progress)});
     const mesh=await session.build(clip,id);
     if(this.job!==id||this.disposed||this.volume!==volume)throw new DOMException('Voxel meshing cancelled.','AbortError');
-    const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.meshStats=mesh.stats;this.clip=clip;this.draw();return mesh.faces;
+    const picker=new MeshPicker(volume,mesh);this.uploadMesh(mesh);this.picker=picker;this.faces=mesh.faces;this.meshStats=mesh.stats;this.clip=clip;this.diagnostics=[...(this.assetDiagnostics??[]),...(mesh.diagnostics??[])];this.onDiagnostics?.(this.diagnostics);this.draw();return mesh.faces;
   }
   focus(world){
     this.stopNavigation();
@@ -83,7 +88,7 @@ export class WorldRenderer{
     if(!Array.isArray(world)||world.length!==3||!world.every(Number.isFinite)||emptyClip(bounds)||world.some((value,axis)=>value<this.volume.origin[axis]+bounds.min[axis]||value>=this.volume.origin[axis]+bounds.max[axis]))throw new Error('Choose a point inside the visible stored cross-section.');
     const dimensions=[this.volume.width,this.volume.height,this.volume.depth];this.camera.target=world.map((value,axis)=>value-this.volume.origin[axis]-dimensions[axis]/2);this.camera.distance=Math.min(this.camera.distance,48);this.draw();
   }
-  clear(){if(this.disposed)return;this.stopNavigation();this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.cellColors=null;this.mode='textured';this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
+  clear(){if(this.disposed)return;this.stopNavigation();this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.meshStats=null;this.volume=null;this.volumeInput=null;this.picker=null;this.clearSelection(false);this.models=null;this.meshPalette=null;this.cellColors=null;this.tintInput=null;this.fluidMaterials=null;this.assetDiagnostics=null;this.mode='textured';this.clip=null;this.ranges=[];this.diagnostics=[];this.faces=0;this.upload('opaque',new Float32Array());this.upload('transparent',new Float32Array());this.draw();}
   uploadMesh(mesh){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     this.buffers??=new MeshBufferStore(this.gpu.device);
@@ -148,7 +153,7 @@ export class WorldRenderer{
     if(this.selectionCount){pass.setPipeline(this.selectionPipeline);pass.setVertexBuffer(0,this.selectionBuffer);pass.draw(this.selectionCount);}
     pass.end();this.gpu.device.queue.submit([encoder.finish()]);
   }
-  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();const hit=this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});if(hit){const[x,y,z]=[hit.x,hit.y,hit.z].map((value,axis)=>value-this.volume.origin[axis]),model=this.models[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]],parts=Array.isArray(model)?[model]:selectedModelParts(model,hit.block,[hit.x,hit.y,hit.z]);hit.modelApplications=[...new Set(parts.flatMap(part=>part.map(quad=>quad.modelId)).filter(Boolean))];hit.modelOffset=blockModelOffset(this.meshPalette[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]].modelOffset,[hit.x,hit.y,hit.z]);}return hit;}
+  inspect(clientX,clientY){if(this.disposed||!this.volume||!this.picker)return null;const rect=this.canvas.getBoundingClientRect(),{matrix}=this.matrices(),inv=inverse(matrix),x=(clientX-rect.left)/rect.width*2-1,y=1-(clientY-rect.top)/rect.height*2,near=transform(inv,[x,y,0,1]),far=transform(inv,[x,y,1,1]),offset=[this.volume.origin[0]+this.volume.width/2,this.volume.origin[1]+this.volume.height/2,this.volume.origin[2]+this.volume.depth/2];const alphaCache=new Map();const hit=this.picker.raycast(near.slice(0,3).map((v,i)=>v+offset[i]),normalize(subtract(far.slice(0,3),near.slice(0,3))),4096,{alpha:(u,v)=>this.atlas.sampleAlpha(u,v,alphaCache)});if(hit){const[x,y,z]=[hit.x,hit.y,hit.z].map((value,axis)=>value-this.volume.origin[axis]),model=this.models[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]],parts=Array.isArray(model)?[model]:selectedModelParts(model,hit.block,[hit.x,hit.y,hit.z]);hit.modelApplications=[...new Set(parts.flatMap(part=>part.map(quad=>quad.modelId)).filter(Boolean))];const profile=this.meshPalette[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]].renderProfile;if(profile?.fluid&&profile.fluid!=='empty'&&this.fluidMaterials?.[profile.fluid]){hit.fluid=profile.fluid;hit.modelApplications.push('minecraft:fluid/'+profile.fluid);}hit.tintMode=this.tintInput?.mode??null;hit.modelOffset=blockModelOffset(this.meshPalette[this.volume.blocks[x+this.volume.width*(z+this.volume.depth*y)]].modelOffset,[hit.x,hit.y,hit.z]);}return hit;}
   configureNavigation(input){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     const next=navigationSettings({...this.navigation,...input});this.stopNavigation();this.navigation=next;return{...next};
@@ -200,5 +205,5 @@ export class WorldRenderer{
     doc?.addEventListener('visibilitychange',()=>{if(doc.hidden)this.stopNavigation();},{signal:this.inputAbort.signal});
     listen('contextmenu',event=>event.preventDefault());
   }
-  dispose(){if(this.disposed)return;this.disposed=true;this.stopNavigation();this.inputAbort?.abort();this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.cellColors=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer?.disconnect();this.buffers?.dispose();this.uniform?.destroy();this.depth?.destroy();this.atlas?.dispose();this.context?.unconfigure();this.ranges=[];this.transparentCenters=null;this.transparentOrder=null;this.sortedIndices=null;this.transparentIndices=null;this.opaque=null;this.transparent=null;this.onInspect=null;this.onError=null;this.onProgress=null;this.onDiagnostics=null;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.stopNavigation();this.inputAbort?.abort();this.picker=null;this.clearSelection(false);cancelAnimationFrame(this.frame);this.cancelMesh();this.meshSession?.dispose();this.meshSession=null;this.models=null;this.meshPalette=null;this.cellColors=null;this.tintInput=null;this.fluidMaterials=null;this.assetDiagnostics=null;this.volume=null;this.volumeInput=null;this.meshStats=null;this.observer?.disconnect();this.buffers?.dispose();this.uniform?.destroy();this.depth?.destroy();this.atlas?.dispose();this.context?.unconfigure();this.ranges=[];this.transparentCenters=null;this.transparentOrder=null;this.sortedIndices=null;this.transparentIndices=null;this.opaque=null;this.transparent=null;this.onInspect=null;this.onError=null;this.onProgress=null;this.onDiagnostics=null;}
 }
