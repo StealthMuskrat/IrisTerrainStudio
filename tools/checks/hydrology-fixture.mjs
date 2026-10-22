@@ -5,3 +5,13 @@ export function hydrologyFixture(flat){return {
     'biomes/floor.json':{name:'Floor',derivative:'minecraft:plains',vanillaDerivative:'minecraft:plains',layers:[{palette:[{block:'minecraft:stone'}]}],generators:[{generator:'flat',min:48,max:48}]},
     'generators/flat.json':flat
   };}
+
+// One independent contained deep pool per tile, in an authored solid floor.
+export function deepHydrologyFixture(flat){
+  const source=hydrologyFixture(flat),dimension=source['dimensions/terrain3d.json'];
+  dimension.name='Contained deep-fluid fixture';
+  dimension.riverPolicy.surfacePools=[];
+  dimension.hydrology.surfacePools=[];
+  dimension.hydrology.deepFluids=[{id:'deep_lava',fluidPalette:{palette:[{block:'minecraft:lava'}]},density:1,spacing:256,height:{min:20,max:20},horizontalRadius:2,verticalRadius:2,channelWidth:1,depth:1,headroom:1,containedPools:true,shortChannels:false}];
+  return source;
+}

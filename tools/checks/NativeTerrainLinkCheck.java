@@ -71,9 +71,10 @@ public final class NativeTerrainLinkCheck {
                         openHydrologyReferenceHost(engine,directory);
                         var hydrology=engine.getComplex().getHydrologyRuntime();if(hydrology==null)throw new IllegalStateException("No native hydrology runtime");
                         var columns=new JsonArray();var diagnostic=Class.forName("studio.engine.hydrology.HydrologyDiagnostic").getMethod("sample",Engine.class,int.class,int.class);
-                        if(request.getAsJsonObject("hydrologyCheck").has("pickPool")){
+                        if(request.getAsJsonObject("hydrologyCheck").has("pickPool")||request.getAsJsonObject("hydrologyCheck").has("pickFeature")){
+                            var feature=request.getAsJsonObject("hydrologyCheck").has("pickFeature")?art.arcane.iris.generation.hydrology.HydrologyFeatureType.valueOf(request.getAsJsonObject("hydrologyCheck").get("pickFeature").getAsString()):art.arcane.iris.generation.hydrology.HydrologyFeatureType.STANDING_POOL;
                             var tile=hydrology.tile(new art.arcane.iris.generation.hydrology.HydrologyTileKey(0,0));
-                            var selected=tile.footprint().columns().values().stream().filter(c->c.layers().stream().anyMatch(l->l.feature().type()==art.arcane.iris.generation.hydrology.HydrologyFeatureType.STANDING_POOL&&l.channel()&&l.fluidOwned())).findFirst().orElseThrow(()->new IllegalStateException("Native fixture produced no standing pool"));
+                            var selected=tile.footprint().columns().values().stream().filter(c->c.layers().stream().anyMatch(l->l.feature().type()==feature&&l.channel()&&l.fluidOwned())).findFirst().orElseThrow(()->new IllegalStateException("Native fixture produced no occupied "+feature));
                             columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,selected.x(),selected.z())));
                         }
                         for(var point:request.getAsJsonObject("hydrologyCheck").getAsJsonArray("points")){var xy=point.getAsJsonArray();columns.add(JsonParser.parseString((String)diagnostic.invoke(null,engine,xy.get(0).getAsInt(),xy.get(1).getAsInt())));}pack.add(columns);

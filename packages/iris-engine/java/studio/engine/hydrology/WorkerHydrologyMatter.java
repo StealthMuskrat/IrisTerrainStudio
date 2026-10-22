@@ -32,6 +32,12 @@ public final class WorkerHydrologyMatter implements AutoCloseable {
     }
     public static int admittedChunks(){return active==null?0:active.carvingChunks.size();}
     public static long chargedCells(){return active==null?0:(long)active.carvingChunks.size()*active.engine.getHeight()*256;}
+    /** Exact admitted input identities, distinct from the registered scheduler's 7x7 window. */
+    public static String carvingInputChunks()throws java.io.IOException{
+        if(active==null)throw new IllegalStateException("Hydrology input metadata requires its owned scope");
+        var keys=new java.util.ArrayList<Long>(active.carvingChunks);keys.sort(java.util.Comparator.<Long>comparingInt(key->(int)(key>>32)).thenComparingInt(key->(int)(long)key));
+        var output=new java.io.StringWriter();try(var writer=new com.google.gson.stream.JsonWriter(output)){writer.beginArray();for(long key:keys)writer.beginArray().value((int)(key>>32)).value((int)key).endArray();writer.endArray();}return output.toString();
+    }
     public static Object storageHandle(Object handle){WorkerCaveStorage.getWorldHeight(null);return handle;}
     public static void prepareCarvingInput(int x,int z){
         if(active==null)throw studio.engine.UnsupportedPlatform.unavailable("Hydrology carving outside its owned matter scope");

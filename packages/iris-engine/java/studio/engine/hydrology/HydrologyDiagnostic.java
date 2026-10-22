@@ -25,6 +25,15 @@ public final class HydrologyDiagnostic {
                         writer.name("bedY").value(layer.bedY());writer.name("fluidHeadY").value(layer.fluidHeadY());writer.name("ceilingY").value(layer.ceilingY());writer.name("channel").value(layer.channel());writer.name("shore").value(layer.shore());writer.name("grading").value(layer.grading());writer.name("terrainOwned").value(layer.terrainOwned());writer.name("fluidOwned").value(layer.fluidOwned());writer.name("connectedFluid").value(layer.connectedFluid());writer.name("fallingFluid").value(layer.fallingFluid());writer.name("receivingPool").value(layer.receivingPool());writer.name("oceanApron").value(layer.oceanApron());writer.name("profile").value(layer.profileKey());writer.name("biome").value(layer.biomeKey());writer.endObject();
                     }writer.endArray();
                 }
+                // Native indexed plan lookup; report summaries, never walk the action/precondition cells.
+                var plans=runtime.cavePlansIn(x,z,x+1,z+1);
+                writer.name("containment").beginObject();writer.name("selection").value("native-publication-halo");writer.name("totalPlans").value(plans.size());writer.name("maximumReportedPlans").value(128);writer.name("truncated").value(plans.size()>128);writer.name("plans").beginArray();
+                for(int index=0;index<Math.min(plans.size(),128);index++){
+                    var plan=plans.get(index);var source=plan.source();
+                    writer.beginObject();writer.name("sourceId").value(Long.toUnsignedString(source.sourceId(),16));writer.name("mode").value(source.mode().name());writer.name("accepted").value(plan.accepted());writer.name("rejection").value(plan.rejection().name());writer.name("actions").value(plan.actions().size());writer.name("baselinePreconditions").value(plan.baselinePreconditions().size());writer.name("touchesColumn").value(plan.intersectsActions(x,z,x+1,z+1));writer.name("waterHeadY").value(source.waterHeadY());
+                    writer.name("entry").beginArray().value(source.entry().x()).value(source.entry().y()).value(source.entry().z()).endArray();writer.name("target").beginArray().value(source.target().x()).value(source.target().y()).value(source.target().z()).endArray();
+                    if(plan.arbitrationWinnerSourceId().isPresent())writer.name("arbitrationWinnerSourceId").value(Long.toUnsignedString(plan.arbitrationWinnerSourceId().getAsLong(),16));writer.endObject();
+                }writer.endArray();writer.endObject();
                 writer.name("admittedRoots").value(WorkerHydrologyBudget.roots());writer.name("admittedPlanningCalls").value(WorkerHydrologyBudget.calls());writer.name("admittedCarvingChunks").value(WorkerHydrologyMatter.admittedChunks());writer.name("chargedCarvingInputCells").value(WorkerHydrologyMatter.chargedCells());writer.name("terrainParityVerified").value(false);writer.endObject();
             }return output.toString();
         }catch(art.arcane.iris.generation.runtime.GenerationSessionException failure){throw new IOException("Hydrology diagnostic generation lease failed",failure);}

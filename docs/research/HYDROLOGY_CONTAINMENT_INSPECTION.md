@@ -1,0 +1,17 @@
+# Native containment and publication inspection
+
+The dimension's existing hydrology column inspector now includes summaries of original native cave plans from `IrisHydrologyRuntime.cavePlansIn(x,z,x+1,z+1)`. This method returns plans from the native publication halo, including neighboring features; it does not filter to mutations at the chosen block. Each summary retains source identity, mode, acceptance/rejection, arbitration winner where present, entry/target/head coordinates, action/precondition counts and the original indexed `intersectsActions` result for the chosen column. The response reports at most 128 plans, with total count and explicit truncation. It does not enumerate action/precondition cells or rerun a replacement containment algorithm. Existing planning/input budgets and lease/storage cleanup still apply. The dialog converts displayed coordinates to world Y; downloaded JSON preserves native internal Y and world minimum Y.
+
+Publication metadata now includes counts per populated internal section and original fluid profile. These reuse the existing sparse-matter iteration; they add no terrain probes or second cell pass. The stored voxel inspector displays destination-chunk totals, the section containing the selected block and profile totals. Section totals do not imply the selected cell has a hydrology action. `fluidSimulationExecuted` remains false: native publication and Minecraft fluid ticking are separate operations.
+
+## Carving inputs and scheduling windows
+
+A contained deep-fluid fixture exposed a worker transport refusal: original native planning prepares CARVED inputs in other tiles, beyond the registered mode's 7×7 scheduling window. Those valid input flags were rejected by the former fixed-window validator, even though native publication succeeded.
+
+The owned hydrology scope now reports exact distinct carving-input chunk identities, sorted by X/Z, alongside its existing conservative input-cell charge. The worker admits outlying CARVED rows only when their coordinates appear in that list. It verifies unique bounded coordinates, count/charge consistency and the existing 256-chunk/16,777,216-cell limits. Content/planned flags remain restricted to the scheduling window. Matter-window and component-flag diagnostics reject duplicate rows. No scheduler radius, native carving/publication algorithm or content-writing scope is enlarged.
+
+## Focused qualification
+
+One authored solid-floor pack, one independent deep-lava pool per native tile and seed 1 exercise the original containment input loader, original CARVED generation, accepted cave plans and wet/dry/guard publication. The selected column and six block/physical-biome probes per registered Overworld path are compared against the original JVM paths through the actual Wasm module and worker/client code. The fixture is deliberately tiny; no volume/state sweep runs. Stored malformed metadata checks exercise refusal without additional native terrain generation.
+
+See [containment evidence](../evidence/native-hydrology-containment-2026-10-22.json) for module/source identities, selected outputs, exact admission and results. Falling fluids, fluid-update execution, rejected cave decisions, input-budget refusal, all options/interactions and real browser/GPU/UI behavior remain unqualified by this fixture. Earlier surface/map evidence retains its recorded module identities. Full program verification follows completed implementation.
