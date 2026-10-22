@@ -17,7 +17,7 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
   if(roots.length>ASSET_LIMITS.roots)throw new Error('Dependency inspection is limited to 4096 distinct block types.');
   if(stack.packs.length>128)throw new Error('Dependency inspection is limited to 128 resource packs.');
   const files=new Map(),records=new Map(),models=new Map(),chains=new Map(),textures=new Set(),blocks=[],errors=[],warnings=[],sourceIndices=new Map(stack.packs.map((pack,index)=>[pack,index]));
-  const sources=stack.packs.map((pack,index)=>({index,name:pack.name,archiveSha256:pack.digest,kind:pack.metadata.studioRenderingBundle?'studio-bundle':'minecraft-resource-pack',pack:pack.metadata.pack??null}));
+  const sources=stack.packs.map((pack,index)=>({index,name:pack.name,archiveSha256:pack.digest,kind:pack.metadata.studioRenderingBundle?'studio-bundle':'minecraft-resource-pack',pack:pack.metadata.pack??null,target:pack.target}));
   let bytes=0,references=0;
   function guard(){stack.requireOpen();assetCurrent(isCurrent);if(++references>MAX_REFERENCES)throw new Error('Rendering dependencies exceed the 32768-reference budget.');}
   function add(path,pack,sourcePath=path,kind='asset'){
@@ -26,11 +26,11 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
     if(files.size>=ASSET_LIMITS.files||bytes+input.length>ASSET_LIMITS.bytes)throw new Error('Rendering dependencies exceed the 8192-file / 64 MiB budget.');
     files.set(path,input.slice());bytes+=input.length;records.set(path,{path,source:sourceIndices.get(pack),sourcePath,kind,bytes:input.length});
   }
-  function required(path){guard();const pack=stack.find(path);if(!pack)throw new Error(`Missing required asset: ${path}`);add(path,pack);return files.get(path);}
+  function required(path){guard();const source=stack.resolve(path);if(!source)throw new Error(`Missing required asset: ${path}`);add(path,source.pack,source.sourcePath);return files.get(path);}
   function json(path){return assetJson(required(path),path);}
   function texture(name){
     guard();const path=idPath(name,'textures','.png');if(textures.has(path))return;textures.add(path);required(path);
-    const metadata=stack.find(path+'.mcmeta');if(metadata){add(path+'.mcmeta',metadata);assetJson(files.get(path+'.mcmeta'),path+'.mcmeta');}
+    const metadata=stack.metadataSource(path);if(metadata){add(path+'.mcmeta',metadata.pack,metadata.sourcePath);assetJson(files.get(path+'.mcmeta'),path+'.mcmeta');}
   }
   function recordError(context,error){if(error.name==='AbortError')throw error;if(errors.length<128)errors.push({context,message:error.message});else throw new Error('Dependency inspection stopped after 128 errors.');}
   function directTexture(value,context){if(typeof value!=='string')throw new Error(`Invalid texture reference in ${context}.`);if(!value.startsWith('#'))texture(value);}
@@ -61,8 +61,7 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
       }catch(error){recordError(entry.model,error);}
     }
   }
-  for(const pack of stack.packs){if(pack.metadata.overlays!==undefined||pack.metadata.filter!==undefined)errors.push({context:pack.name,message:'Resource-pack overlays and filters require a target-format adapter; dependency capture cannot flatten them.'});}
-  warnings.push('Target Minecraft pack formats, complete model semantics and client rendering parity are unqualified. All candidate models are retained without weighted selection.');
+  warnings.push('Target 26.3 / format 97.1 overlay/filter resolution is applied. Complete model semantics and client rendering parity remain unqualified. All model candidates are retained without weighted selection.');
   if(!errors.length)for(let index=0;index<roots.length;index++){
     const root=roots[index],block={id:root,candidates:[]};blocks.push(block);try{
       const definition=json(idPath(root,'blockstates','.json'));let count=0;
@@ -79,5 +78,5 @@ export async function inspectRenderingDependencies(stack,blockTypes,{isCurrent=(
     catch(error){recordError(pack.name,error);}
   }
   assetCurrent(isCurrent);
-  return{files,report:{format:'iris-terrain-studio-dependency-report',version:1,roots,blocks,sources,files:[...records.values()].sort((a,b)=>a.path.localeCompare(b.path)),counts:{blockTypes:roots.length,models:models.size,textures:textures.size,files:files.size,bytes},errors,warnings,complete:false}};
+  return{files,report:{format:'iris-terrain-studio-dependency-report',version:1,roots,blocks,sources,files:[...records.values()].sort((a,b)=>a.path.localeCompare(b.path)),target:{minecraftVersion:'26.3',resourceFormat:[97,1],resolved:true},counts:{blockTypes:roots.length,models:models.size,textures:textures.size,files:files.size,bytes},errors,warnings,complete:false}};
 }

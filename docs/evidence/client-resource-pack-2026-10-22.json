@@ -1,0 +1,407 @@
+{
+  "scope": "minecraft-client-resource-resolution-animation-targeted",
+  "result": "pass",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "referenceKey": "baa6d979495348d65a5236867fb7c3399778ab35d4bb19d2bcb4686381d0e76c",
+  "overlays": [
+    {
+      "accepted": true,
+      "selected": [
+        "current"
+      ]
+    },
+    {
+      "accepted": true,
+      "selected": [
+        "first",
+        "last"
+      ]
+    },
+    {
+      "accepted": false
+    },
+    {
+      "accepted": false
+    }
+  ],
+  "formats": [
+    {
+      "accepted": true,
+      "range": [
+        [
+          97,
+          0
+        ],
+        [
+          97,
+          2147483647
+        ]
+      ]
+    },
+    {
+      "accepted": false
+    },
+    {
+      "accepted": true,
+      "range": [
+        [
+          15,
+          0
+        ],
+        [
+          15,
+          0
+        ]
+      ]
+    },
+    {
+      "accepted": false
+    },
+    {
+      "accepted": false
+    }
+  ],
+  "filters": [
+    [
+      true,
+      true,
+      true,
+      false,
+      false
+    ],
+    [
+      true,
+      true,
+      false
+    ]
+  ],
+  "animations": [
+    {
+      "width": 2,
+      "height": 2,
+      "states": [
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 250
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 750
+        },
+        {
+          "frame": 1,
+          "index": 1,
+          "next": 2,
+          "progress": 0
+        },
+        {
+          "frame": 1,
+          "index": 1,
+          "next": 2,
+          "progress": 250
+        },
+        {
+          "frame": 2,
+          "index": 2,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 0
+        }
+      ]
+    },
+    {
+      "width": 2,
+      "height": 4,
+      "states": [
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 1,
+          "progress": 0
+        },
+        {
+          "frame": 1,
+          "index": 1,
+          "next": 2,
+          "progress": 0
+        },
+        {
+          "frame": 2,
+          "index": 2,
+          "next": 0,
+          "progress": 0
+        }
+      ]
+    },
+    {
+      "width": 2,
+      "height": 2,
+      "states": [
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        }
+      ]
+    },
+    {
+      "width": 2,
+      "height": 2,
+      "states": [
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        }
+      ]
+    },
+    {
+      "width": 2,
+      "height": 2,
+      "states": [
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 2,
+          "progress": 0
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 2,
+          "progress": 500
+        },
+        {
+          "frame": 1,
+          "index": 2,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 1,
+          "index": 2,
+          "next": 0,
+          "progress": 333
+        },
+        {
+          "frame": 1,
+          "index": 2,
+          "next": 0,
+          "progress": 666
+        },
+        {
+          "frame": 2,
+          "index": 0,
+          "next": 0,
+          "progress": 0
+        },
+        {
+          "frame": 2,
+          "index": 0,
+          "next": 0,
+          "progress": 500
+        },
+        {
+          "frame": 0,
+          "index": 0,
+          "next": 2,
+          "progress": 0
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "present": true,
+      "text": "last-layer",
+      "frametime": null
+    },
+    {
+      "present": true,
+      "text": "override-pixels",
+      "frametime": null
+    },
+    {
+      "present": false
+    },
+    {
+      "present": false
+    },
+    {
+      "present": true,
+      "text": "own-value",
+      "frametime": null
+    },
+    {
+      "present": true,
+      "text": "own-masked-value",
+      "frametime": null
+    }
+  ],
+  "dependencyExport": {
+    "sourceOverlayPathRetained": true,
+    "lowerTextureMetadataExcluded": true,
+    "reopenedBytesMatch": true,
+    "files": 4
+  },
+  "textures": {
+    "authoredPngs": 5,
+    "decodedPixels": 9,
+    "rawRgbaAndHiddenColor": true,
+    "paletteAndGrayTransparency": true,
+    "sixteenBitHighBytes": true,
+    "irisPackedGrayDefaultUnchanged": true,
+    "controlledUploadDevice": true,
+    "interpolatedAlphaAndGutters": true,
+    "tickOnlyUpdates": true,
+    "repeatedFramesAndRestore": true,
+    "ownedDecodeCache": true,
+    "metadataFailureRecovery": true,
+    "admissionWithoutLargeAllocation": true,
+    "disposedPendingAtlasRefused": true,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "clientLock": "tools/assets/minecraft-client.lock.json",
+  "sourceFiles": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "a7e70961bda3ec7499c703f7b1183b896f6a5fb7a2ae4a4a35277e2db1a44ea1"
+    },
+    {
+      "path": "packages/iris-engine/png.mjs",
+      "sha256": "4dd0fbc7bb874ceb7dd502714540e868a23e934c9c9a01e4b4d92f9858174205"
+    },
+    {
+      "path": "packages/resource-packs/pack.mjs",
+      "sha256": "9af5eff83d125d1dbdfc47c8ca6f534c1693f37eb2d4e8006bd6d06c2aeaddae"
+    },
+    {
+      "path": "packages/resource-packs/target-format.mjs",
+      "sha256": "69bdee58c9271c8f47fe6da8e1780e43d25711b6f3454666d4379f25d55475b5"
+    },
+    {
+      "path": "packages/resource-packs/resource-filter.mjs",
+      "sha256": "fc2bcb0a3a1a32341520c905055041c414c9ab14d0ef2f8b77ee084cc370f0e1"
+    },
+    {
+      "path": "packages/resource-packs/texture-animation.mjs",
+      "sha256": "a17286959f43b53fe255f4c2c1ebd71d13455e694d35d51160ce443bb46e2344"
+    },
+    {
+      "path": "packages/resource-packs/texture-pixels.mjs",
+      "sha256": "bf67ea0b30cf5273d3f7d6b67460d86480007dc170fc020373233ce0b2484a72"
+    },
+    {
+      "path": "packages/resource-packs/atlas.mjs",
+      "sha256": "f095c1c498e1f772daff567c06e02bb31914ec28348aa0390e6573228937aa46"
+    },
+    {
+      "path": "packages/resource-packs/dependencies.mjs",
+      "sha256": "88acd4472598aa928a385c338fbf05cfdc582d0be9ed5738b5896405aee5e54b"
+    },
+    {
+      "path": "packages/resource-packs/bundle.mjs",
+      "sha256": "2d60ac1b9f92f5838165e2d995ca8c700e0b52d9021940efcc5aff9ab64250fd"
+    },
+    {
+      "path": "tools/checks/MinecraftClientAssetCheck.java",
+      "sha256": "7aca5cba54adbb5a65a5132f6f34deff09d8f87addb720f2fde7bb557ba66f15"
+    },
+    {
+      "path": "tools/checks/client-resource-pack-smoke.mjs",
+      "sha256": "8ca0bd400dce7337301c9df800307113778448c5869cf59545f06fef831df013"
+    },
+    {
+      "path": "tools/checks/texture-pipeline-checks.mjs",
+      "sha256": "639c3a0b6bf49f4e49a66eeba1744cfde0135c5d99291a8b0614fd0d5e31dba8"
+    },
+    {
+      "path": "tools/checks/texture-pipeline-smoke.mjs",
+      "sha256": "3e9b93fe06133d7e6678f42e89302d0ac7660b81642a514611cbeaefed9f5a2b"
+    },
+    {
+      "path": "tools/checks/fixtures/client-assets.json",
+      "sha256": "15022a3f262e0c6934a97d8680a63b95b9001514f47d57c766269b2cba5efd2c"
+    }
+  ],
+  "unchangedNativeWasmSha256": "09673f10fa8c639952dcc885a4c328a11f86b8ece4b3b07261d36cf37aa2442a",
+  "refreshedCorrespondingSourceSha256": "61231b4235c461c9332b83f8b90a5db9f7ee1c9a262596e3e13e03cd9cdb9ff4",
+  "nativeReferenceScope": "Original client metadata codecs, OverlayedPackResources/MultiPackResourceManager and animation state tick. Animation image/GPU constructor bypassed; shader channel blend is inspected, not executed on a native GPU.",
+  "limits": {
+    "filterRules": 128,
+    "filterAtoms": 256,
+    "filterAlternatives": 64,
+    "filterCharacters": 1024,
+    "overlayEntries": 256,
+    "animationFrames": 4096,
+    "retainedDecodedPixelsBytes": 67108864
+  },
+  "remaining": [
+    "Additional Java regex syntax",
+    "Profile/HDR/APNG PNG semantics",
+    "Weighted/contextual models, UV lock, fluid/tint and material semantics",
+    "GPU interpolation precision, mipmapping and actual browser/UI behavior",
+    "Full native/reference/release gates"
+  ],
+  "validation": {
+    "focusedCommand": "node tools/checks/client-resource-pack-smoke.mjs",
+    "requiredEngineDevelopmentBuild": "pass",
+    "githubTests": false,
+    "broadSuite": false,
+    "terrainGeneration": false
+  }
+}

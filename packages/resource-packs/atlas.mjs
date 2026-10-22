@@ -1,12 +1,11 @@
-import{textureAnimation,animationFrame}from'./texture-animation.mjs';
+import{textureAnimation,animationState}from'./texture-animation.mjs';
+import{textureFramePixels}from'./texture-pixels.mjs';
 export class TextureAtlas {
   constructor(device,size=2048){
     this.device=device;this.size=Math.min(size,device.limits.maxTextureDimension2D);
     if(!Number.isSafeInteger(this.size)||this.size<4)throw new Error('Invalid texture atlas dimensions.');
-    this.canvas=new OffscreenCanvas(this.size,this.size);this.context=this.canvas.getContext('2d',{willReadFrequently:true});
-    if(!this.context)throw new Error('A texture decoding canvas is unavailable.');this.context.imageSmoothingEnabled=false;
-    this.entries=new Map();this.pending=new Map();this.x=1;this.y=1;this.rowHeight=0;this.disposed=false;
-    this.texture=device.createTexture({size:[this.size,this.size,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST|GPUTextureUsage.RENDER_ATTACHMENT});
+    this.alpha=new Uint8Array(this.size*this.size);this.entries=new Map();this.pending=new Map();this.x=1;this.y=1;this.rowHeight=0;this.disposed=false;this.epoch=null;this.tick=-1;
+    this.texture=device.createTexture({size:[this.size,this.size,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});
     this.sampler=device.createSampler({magFilter:'nearest',minFilter:'nearest',mipmapFilter:'nearest'});
   }
   async add(name,stack){
@@ -16,52 +15,31 @@ export class TextureAtlas {
     try{return await pending;}finally{if(this.pending.get(name)===pending)this.pending.delete(name);}
   }
   async load(name,stack){
-    const{bitmap,animation}=await stack.bitmap(name);if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
-    const plan=textureAnimation(bitmap.width,bitmap.height,animation,this.size),width=plan.width,height=plan.height;
+    const raster=await stack.bitmap(name);if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
+    const plan=textureAnimation(raster.width,raster.height,raster.animation,this.size),width=plan.width,height=plan.height;
     let x=this.x,y=this.y,rowHeight=this.rowHeight;
-    if(x+width+1>this.size){x=1;y+=rowHeight;rowHeight=0;}
-    if(y+height+1>this.size)throw new Error('The texture atlas is full. Use a smaller resource pack.');
-    const entry={name,bitmap,x,y,...plan,frame:0,uv:[x/this.size,y/this.size,(x+width)/this.size,(y+height)/this.size]};
-    // Classify only referenced frames, once each. Later alpha changes must not require remeshing.
+    if(x+width+1>this.size){x=1;y+=rowHeight;rowHeight=0;}if(y+height+1>this.size)throw new Error('The texture atlas is full. Use a smaller resource pack.');
+    const entry={name,pixels:raster.pixels,sourceWidth:raster.width,sourceHeight:raster.height,x,y,...plan,frame:0,progress:0,renderKey:plan.frames[0].index+'/static',uv:[x/this.size,y/this.size,(x+width)/this.size,(y+height)/this.size]};
     let transparent=false,partial=false;
-    for(const index of new Set(plan.frames.map(frame=>frame.index))){
-      this.draw(entry,index);const pixels=this.context.getImageData(x,y,width,height).data;
-      for(let at=3;at<pixels.length;at+=4){transparent||=pixels[at]<255;partial||=pixels[at]>0&&pixels[at]<255;}
-      if(partial)break;
-    }
+    for(const index of new Set(plan.frames.map(frame=>frame.index))){const pixels=textureFramePixels(entry,index);for(let at=3;at<pixels.length;at+=4){transparent||=pixels[at]<255;partial||=pixels[at]>0&&pixels[at]<255;}if(partial)break;}
+    if(plan.interpolate&&transparent&&plan.frames.some(frame=>frame.time>1))partial=true;
     entry.transparency=partial?'blend':transparent?'cutout':'opaque';this.upload(entry,plan.frames[0].index);
-    // Commit atlas space only after metadata, reads and initial upload succeed.
     this.entries.set(name,entry);this.x=x+width+2;this.y=y;this.rowHeight=Math.max(rowHeight,height+2);return entry;
   }
-  draw(entry,index){
-    const columns=entry.bitmap.width/entry.width,sx=index%columns*entry.width,sy=Math.floor(index/columns)*entry.height;
-    this.context.clearRect(entry.x,entry.y,entry.width,entry.height);
-    this.context.drawImage(entry.bitmap,sx,sy,entry.width,entry.height,entry.x,entry.y,entry.width,entry.height);
-  }
-  upload(entry,index){
-    this.draw(entry,index);const{x,y,width:w,height:h}=entry,c=this.context;
-    // Duplicate the four edge rows/columns and corners into the allocated one-pixel gutter.
-    // Clear the old border first so transparent frames erase earlier opaque pixels.
-    c.clearRect(x-1,y-1,w+2,1);c.clearRect(x-1,y+h,w+2,1);c.clearRect(x-1,y,1,h);c.clearRect(x+w,y,1,h);
-    {
-      for(const[sy,dy]of[[y,y-1],[y+h-1,y+h]])c.drawImage(this.canvas,x,sy,w,1,x,dy,w,1);
-      for(const[sx,dx]of[[x,x-1],[x+w-1,x+w]])c.drawImage(this.canvas,sx,y,1,h,dx,y,1,h);
-      for(const[sx,dx]of[[x,x-1],[x+w-1,x+w]])for(const[sy,dy]of[[y,y-1],[y+h-1,y+h]])c.drawImage(this.canvas,sx,sy,1,1,dx,dy,1,1);
-    }
-    this.device.queue.copyExternalImageToTexture({source:this.canvas,origin:[x-1,y-1]},{texture:this.texture,origin:[x-1,y-1]},[w+2,h+2]);
+  upload(entry,index,next=index,progress=0){
+    const pixels=textureFramePixels(entry,index,next,progress),width=entry.width+2,height=entry.height+2,x=entry.x-1,y=entry.y-1;
+    this.device.queue.writeTexture({texture:this.texture,origin:[x,y]},pixels,{bytesPerRow:width*4,rowsPerImage:height},[width,height]);
+    for(let row=0;row<height;row++)for(let column=0;column<width;column++)this.alpha[(y+row)*this.size+x+column]=pixels[(row*width+column)*4+3];
   }
   pause(){this.paused=true;}
   sampleAlpha(u,v,cache){
-    if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
-    if(!Number.isFinite(u)||!Number.isFinite(v))throw new Error('Picking requires finite atlas coordinates.');
-    const x=Math.min(this.size-1,Math.max(0,Math.floor(u*this.size))),y=Math.min(this.size-1,Math.max(0,Math.floor(v*this.size)));
-    const key=x+y*this.size;if(cache?.has(key))return cache.get(key);
-    const value=this.context.getImageData(x,y,1,1).data[3]/255;cache?.set(key,value);return value;
+    if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');if(!Number.isFinite(u)||!Number.isFinite(v))throw new Error('Picking requires finite atlas coordinates.');
+    const x=Math.min(this.size-1,Math.max(0,Math.floor(u*this.size))),y=Math.min(this.size-1,Math.max(0,Math.floor(v*this.size))),key=x+y*this.size;if(cache?.has(key))return cache.get(key);const value=this.alpha[key]/255;cache?.set(key,value);return value;
   }
   update(time){
-    if(this.disposed||this.paused)return false;let changed=false;
-    for(const entry of this.entries.values())if(entry.frames.length>1){const frame=animationFrame(entry,time);if(frame!==entry.frame){if(entry.frames[frame].index!==entry.frames[entry.frame].index){this.upload(entry,entry.frames[frame].index);changed=true;}entry.frame=frame;}}
-    return changed;
+    if(this.disposed||this.paused)return false;if(!Number.isFinite(time)||time<0)throw new Error('Texture animation time must be finite and nonnegative.');
+    this.epoch??=time;const elapsed=Math.max(0,time-this.epoch),tick=Math.floor(elapsed/50);if(tick===this.tick)return false;this.tick=tick;let changed=false;
+    for(const entry of this.entries.values())if(entry.frames.length>1){const state=animationState(entry,elapsed),key=state.index+'/'+(state.progress>0&&state.index!==state.next?state.next+':'+state.progress:'static');if(key!==entry.renderKey){this.upload(entry,state.index,state.next,state.progress);entry.renderKey=key;changed=true;}entry.frame=state.frame;entry.progress=state.progress;}return changed;
   }
-  dispose(){if(this.disposed)return;this.disposed=true;this.texture.destroy();this.entries.clear();this.pending.clear();this.canvas.width=1;this.canvas.height=1;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.texture.destroy();this.entries.clear();this.pending.clear();this.alpha=null;}
 }

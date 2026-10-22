@@ -29,7 +29,7 @@ export async function writeRenderingBundle(capture,{isCurrent=()=>true}={}){
   assetCurrent(isCurrent);
   const manifest={format:'iris-terrain-studio-rendering-bundle',version:1,roots:report.roots,blocks:report.blocks,sources:report.sources,files,
     scope:'All model candidates for the listed block types; original JSON, PNG and metadata bytes. No block-state enumeration or model selection.',
-    qualification:{minecraftPackFormatResolved:false,clientRenderingParity:false,complete:false},warnings:report.warnings};
+    target:report.target??null,qualification:{minecraftPackFormatResolved:report.target?.resolved===true,clientRenderingParity:false,complete:false},warnings:report.warnings};
   const json=encoder.encode(JSON.stringify(manifest,null,2));if(json.length>ASSET_LIMITS.json)throw new Error('Rendering-bundle manifest exceeds 2 MiB.');
   entries.set(BUNDLE_MANIFEST,json);const zip=writeZip(entries);
   if(zip.length>ASSET_LIMITS.bytes)throw new Error('Rendering-bundle ZIP exceeds 64 MiB, including metadata.');

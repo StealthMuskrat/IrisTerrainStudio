@@ -7,7 +7,8 @@ function prediction(filter,left,up,diagonal){
   if(filter===1)return left;if(filter===2)return up;if(filter===3)return Math.floor((left+up)/2);
   if(filter===4){const p=left+up-diagonal,a=Math.abs(p-left),b=Math.abs(p-up),c=Math.abs(p-diagonal);return a<=b&&a<=c?left:b<=c?up:diagonal;}return 0;
 }
-export async function decodeNativePng(input){
+export async function decodeNativePng(input,{packedGrayTransparency='jdk'}={}){
+  if(!['jdk','png'].includes(packedGrayTransparency))throw new Error('Unknown packed grayscale transparency policy.');
   if(!(input instanceof Uint8Array)||input.length<33||input.length>8*1024*1024)throw new Error('PNG exceeds its 8 MiB input budget or is truncated.');
   const bytes=input,view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),signature=[137,80,78,71,13,10,26,10];
   if(signature.some((value,index)=>bytes[index]!==value))throw new Error('Native image source must be PNG.');
@@ -78,7 +79,7 @@ export async function decodeNativePng(input){
           // Preserve that reader behavior, including comparison to the original unscaled key.
           const rasterValue=packedKey?Math.floor((value*255+Math.floor((2**bitDepth-1)/2))/(2**bitDepth-1)):value;
           if(sampleBytes===2)samples[target+b*2]=rasterValue>>>8;samples[target+b*sampleBytes+sampleBytes-1]=rasterValue&255;
-          if(key&&rasterValue!==key[b])match=false;
+          if(key&&(packedKey&&packedGrayTransparency==='png'?value:rasterValue)!==key[b])match=false;
         }
         if(key)for(let b=0;b<sampleBytes;b++)samples[target+inputChannels*sampleBytes+b]=match?0:255;
       }

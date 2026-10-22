@@ -1,3 +1,6 @@
+import { decodeTexturePng } from './texture-pixels.mjs';
+import { resolvePackTarget } from './target-format.mjs';
+import { resourceFilter } from './resource-filter.mjs';
 import { readZip } from '../shared/zip.mjs';
 import { BUNDLE_MANIFEST, readRenderingBundle, assetDigest, assetJson } from './bundle.mjs';
 const MAX_BITMAP_BYTES=64*1024*1024,MAX_TEXTURE_PIXELS=4_194_304;
@@ -20,10 +23,14 @@ export class MinecraftResourcePack {
     if (!entries.has('pack.mcmeta')) throw new Error('The ZIP must contain pack.mcmeta at its root. Choose a Minecraft resource pack.');
     const metadata=assetJson(entries.get('pack.mcmeta'),'pack.mcmeta');
     if (!metadata.pack||typeof metadata.pack!=='object'||Array.isArray(metadata.pack)) throw new Error('Resource-pack metadata has no pack definition.');
+    resolvePackTarget(metadata,{requireFormat:true});
     const digest = await assetDigest(input);
     return new MinecraftResourcePack(name, entries, metadata, digest);
   }
-  constructor(name, entries, metadata, digest) { this.name = name; this.entries = entries; this.metadata = metadata; this.digest = digest; this.expandedBytes=[...entries.values()].reduce((sum,bytes)=>sum+bytes.byteLength,0); this.jsonCache = new Map(); }
+  constructor(name, entries, metadata, digest) { this.name = name; this.entries = entries; this.metadata = metadata; this.digest = digest; this.expandedBytes=[...entries.values()].reduce((sum,bytes)=>sum+bytes.byteLength,0); this.jsonCache = new Map(); this.target=resolvePackTarget(metadata); this.filter=resourceFilter(metadata.filter); this.overlayDirectories=this.target.overlays.filter(row=>row.applicable).map(row=>row.directory).reverse(); }
+  assetPath(path){if(path.startsWith('assets/'))for(const directory of this.overlayDirectories){const candidate=directory+'/'+path;if(this.entries.has(candidate))return candidate;}return this.entries.has(path)?path:null;}
+  assetBytes(path){const source=this.assetPath(path);return source===null?null:this.entries.get(source);}
+  assetJson(path){const source=this.assetPath(path);return source===null?null:this.json(source);}
   json(path) { if (!this.entries.has(path)) return null; if (!this.jsonCache.has(path)) { const bytes = this.entries.get(path); if (bytes.length > 2 * 1024 * 1024) throw new Error(`Model definition is too large: ${path}`); try { this.jsonCache.set(path, JSON.parse(new TextDecoder().decode(bytes))); } catch { throw new Error(`Invalid resource-pack JSON: ${path}`); } } return this.jsonCache.get(path); }
 }
 function matchesWhen(condition, state) {
@@ -34,11 +41,22 @@ function matchesWhen(condition, state) {
 }
 function variantMatches(key, state) { return !key || key.split(',').every(part => { const [name, value] = part.split('='); return value?.split('|').includes(String(state[name])); }); }
 export class ResourcePackStack {
-  constructor(packs = []) { this.packs = packs; this.models = new Map(); this.bitmaps = new Map(); this.diagnostics = new Map(); this.bitmapBytes=0; this.disposed=false; }
+  constructor(packs = []) { this.packs = packs; this.models = new Map(); this.bitmaps = new Map(); this.diagnostics = new Map(); this.bitmapBytes=0; this.disposed=false; this.resolved=new Map(); }
   requireOpen(){if(this.disposed)throw new DOMException('Resource-pack stack disposed.','AbortError');}
-  find(path) { this.requireOpen();for (let i = this.packs.length - 1; i >= 0; i--){const pack=this.packs[i];if(pack.metadata.overlays!==undefined||pack.metadata.filter!==undefined)throw new Error(`Resource-pack overlays and filters require a target-format adapter: ${pack.name}`);if(pack.entries.has(path))return pack;} return null; }
-  json(path) { return this.find(path)?.json(path) ?? null; }
-  bytes(path) { return this.find(path)?.entries.get(path) ?? null; }
+  resolve(path){
+    this.requireOpen();if(this.resolved.has(path))return this.resolved.get(path);
+    const location=/^assets\/([a-z0-9_.-]+)\/(.+)$/.exec(path);let result=null;
+    for(let index=this.packs.length-1;index>=0;index--){const pack=this.packs[index],sourcePath=pack.assetPath(path);if(sourcePath!==null){result={pack,sourcePath,index};break;}if(location&&pack.filter(location[1],location[2]))break;}
+    this.resolved.set(path,result);return result;
+  }
+  find(path){return this.resolve(path)?.pack??null;}
+  json(path){const source=this.resolve(path);return source?source.pack.json(source.sourcePath):null;}
+  bytes(path){const source=this.resolve(path);return source?source.pack.entries.get(source.sourcePath):null;}
+  metadataSource(path){
+    const provider=this.resolve(path);if(!provider)return null;const metadata=path+'.mcmeta',location=/^assets\/([a-z0-9_.-]+)\/(.+)$/.exec(metadata);
+    for(let index=this.packs.length-1;index>=provider.index;index--){const pack=this.packs[index],sourcePath=pack.assetPath(metadata);if(sourcePath!==null)return{pack,sourcePath,index};if(location&&pack.filter(location[1],location[2]))break;}return null;
+  }
+  metadata(path){const source=this.metadataSource(path);return source?source.pack.json(source.sourcePath):null;}
   resolveModel(name, stack = []) {
     this.requireOpen();const id = identifier(name); if (this.models.has(id.id)) return this.models.get(id.id);
     if (stack.includes(id.id) || stack.length > 32) throw new Error(`Model parent cycle: ${[...stack,id.id].join(' → ')}`);
@@ -81,23 +99,24 @@ export class ResourcePackStack {
   async loadBitmap(id){
     const path=`assets/${id.namespace}/textures/${id.path}.png`,bytes=this.bytes(path);
     if(!bytes)throw new Error(`Missing texture ${id.id}.`);
-    const dimensions=textureDimensions(bytes,id.id),metadata=this.json(path+'.mcmeta');
+    const dimensions=textureDimensions(bytes,id.id),metadata=this.metadata(path);
     const animation=metadata&&Object.hasOwn(metadata,'animation')?metadata.animation:null;
     if(metadata&&Object.hasOwn(metadata,'animation')&&(animation===null||typeof animation!=='object'||Array.isArray(animation)))throw new Error(`Texture ${id.id} animation metadata must be an object.`);
     if(this.bitmapBytes+dimensions.bytes>MAX_BITMAP_BYTES)throw new Error('Resource-pack textures exceed the 64 MiB decoded bitmap budget.');
     // Admission includes pending decodes so concurrent texture requests cannot bypass the limit.
-    this.bitmapBytes+=dimensions.bytes;let bitmap;
+    this.bitmapBytes+=dimensions.bytes;
     try{
-      bitmap=await createImageBitmap(new Blob([bytes],{type:'image/png'}),{premultiplyAlpha:'none'});
+      const raster=await decodeTexturePng(bytes);
       if(this.disposed)throw new DOMException('Resource-pack stack disposed during image decoding.','AbortError');
-      if(bitmap.width!==dimensions.width||bitmap.height!==dimensions.height)throw new Error(`Texture ${id.id} decoded dimensions differ from its PNG header.`);
-      return{bitmap,animation,decodedBytes:dimensions.bytes};
-    }catch(error){bitmap?.close();this.bitmapBytes-=dimensions.bytes;throw error;}
+      if(raster.width!==dimensions.width||raster.height!==dimensions.height)throw new Error(`Texture ${id.id} decoded dimensions differ from its PNG header.`);
+      return{...raster,animation,decodedBytes:dimensions.bytes};
+    }catch(error){this.bitmapBytes-=dimensions.bytes;throw error;}
   }
+
   dispose(){
     if(this.disposal)return this.disposal;
-    this.disposed=true;const pending=[...this.bitmaps.values()];this.bitmaps.clear();this.models.clear();
-    this.disposal=Promise.allSettled(pending.map(async promise=>{const entry=await promise;entry.bitmap.close();this.bitmapBytes-=entry.decodedBytes;})).then(()=>{});
+    this.disposed=true;const pending=[...this.bitmaps.values()];this.bitmaps.clear();this.models.clear();this.resolved.clear();
+    this.disposal=Promise.allSettled(pending.map(async promise=>{const entry=await promise;this.bitmapBytes-=entry.decodedBytes;entry.pixels=null;})).then(()=>{});
     return this.disposal;
   }
 }
