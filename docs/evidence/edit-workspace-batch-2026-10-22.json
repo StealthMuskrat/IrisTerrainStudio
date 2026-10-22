@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-22",
+  "scope": "retained multi-resource edit buffers, current-pack Save All, draft/write ownership and unsaved preview inputs",
+  "fixture": {
+    "authoredFiles": 2,
+    "initialBytes": 82,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "inactive admission preserves dirty buffers on failure, evicts only clean buffers and restores independent history",
+    "bounded counted payload, read-only/root/duplicate/schema preflight, owner-checked save publication and ordered draft cleanup",
+    "actual resource switching retains unsaved files/independent history without a reread; all open unsaved native inputs are captured",
+    "Save All preflights every captured resource before writes, uses actual atomic/versioned PackStore saves and stays within the current pack",
+    "partial conflicts retain their buffers, successful siblings are reported and connection failure leaves later writes unattempted",
+    "late PUT response keeps newer text dirty, serial draft cleanup retains it, and explicit conflict merge uses the current disk token",
+    "rename/delete preserve newer in-flight input; explicit close clears its owner before delayed draft cleanup",
+    "cancelled draft recovery preserves the recovery copy and explicit recovery restores a separately undoable buffer",
+    "cross-pack switches/tab selection preserve edits, dirty indicators cover inactive buffers and actual saves retain backups"
+  ],
+  "workspaceSha256": {
+    "apps/web/lib/edit-workspace.mjs": "7e966c0edbe1ea8a218ea83fb3037ec8c17ba08ca3f031809825b88db1dcfca9",
+    "apps/web/main.mjs": "9ec7520bfc4f6aaaf73e78cd37905d3b8635d403c1b37da410a775e6993f2b28",
+    "apps/web/index.html": "a21ad07b4d5534eb80876f4fb1aa0a38e3e57b0106e5189c26e675f44c50e189",
+    "apps/web/styles.css": "a63a33a4dda7c1f76b72348fa4688a89b71d2a2f39354ea935250db2db565e67"
+  },
+  "realBrowserVerified": false,
+  "indexedDbVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Two small authored files, real local PackStore and controlled Node application/DOM/storage hosts only. No native build/generation, registry/state enumeration, GPU work, broad suite or GitHub workflow. Inactive source/history/schema text accounting is conservative payload accounting, not a measured JS heap limit. Multi-file writes are independently atomic and versioned, not one transaction. Real browser focus/layout/storage/multi-tab behavior and full native/release qualification remain pending.",
+  "relatedTargetedChecks": [
+    {
+      "command": "node tools/checks/structural-editing-smoke.mjs",
+      "result": "pass",
+      "scope": "Existing small structural/inspector/import check; historical evidence preserved."
+    }
+  ]
+}
