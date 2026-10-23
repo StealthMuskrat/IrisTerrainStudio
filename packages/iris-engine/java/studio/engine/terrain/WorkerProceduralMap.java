@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 package studio.engine.terrain;
 import java.util.HashMap;
+import java.util.Map;
 import java.io.File;
 
 /** Original HashMap behavior with a per-preview allocation budget for native procedural canvases. */
@@ -23,6 +24,14 @@ public final class WorkerProceduralMap<K,V> extends HashMap<K,V> {
         if(!active)throw new IllegalStateException("Native procedural canvas requires an owned preview");
         if(!containsKey(key)&&++entries>262144)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
         return super.put(key,value);
+    }
+    @Override public void putAll(Map<? extends K,? extends V> values){
+        if(!active)throw new IllegalStateException("Native procedural canvas requires an owned preview");
+        int added=0;for(K key:values.keySet())if(!containsKey(key))added++;
+        if(added>262144-entries)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
+        entries+=added;
+        // Preserve HashMap.putAll capacity/iteration behavior; repeated put calls can change it.
+        super.putAll(values);
     }
     /** Browser workers have no server marker file; preserve the native JVM-property query. */
     public static String debugSpec(){String value=System.getProperty("iris.goldendebug");return value==null||value.isBlank()?null:value;}

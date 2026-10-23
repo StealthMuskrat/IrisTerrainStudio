@@ -28,11 +28,11 @@ public final class ProceduralSourcePreview {
     }
     private static void check(IrisProceduralObjects objects,int[] attempts){
         if(objects==null)return;
-        if(objects.getRuins()!=null&&!objects.getRuins().isEmpty())throw unsupported("Procedural ruins");
         for(var entry:objects.getAllPlacements()){
             if(entry==null)throw unsupported("Null procedural placement");
             if((attempts[0]+=Math.max(1,entry.getDensity()))>64||entry.getDensity()>64)throw unsupported("More than 64 configured procedural attempts in the source preview");
             if(ProceduralPreview.variants(entry)>8)throw unsupported("More than eight baked variants per procedural entry");
+            ProceduralPreview.admit(entry);
             IrisObjectPlacement placement=entry.asPlacement();
             if(!placement.getAllowedCollisions().isEmpty()||!placement.getForbiddenCollisions().isEmpty())throw unsupported("Cross-source procedural collision rules");
         }
