@@ -1145,3 +1145,7 @@ The October 22 stable release supersedes 4.3.4. The bridge now pins its exact so
 ## Supplied rendering defaults
 
 The provided F8thful archive now has an exact recorded identity and an optimized local installation with the pinned vanilla fallback. All block definitions, dependencies and original metadata survive; inactive overlays and unrelated assets are omitted. Repeated blockstate applications share dependency resolution. The native named missing atlas sprite is distinguished from missing asset files. Selected actual models/animation/raw mips and one stored worker/picking cell pass without a state sweep. See [scope](research/F8THFUL_DEFAULTS.md). Missing-input statements in earlier checkpoint records describe their original state.
+
+## Current native reference assertion
+
+The dedicated checksum command compiles and runs exactly the original upstream all-style assertion against the pinned 4.3.5 inputs. It verifies source and artifact identities, records captured class-file identities and returns a failing process status. The assertion still fails with the historical aggregate; this neither attributes the cause nor qualifies release provenance. Full suites and historical captures are not repeated. See [current native evidence](evidence/native-noise-checksum-4.3.5-2026-10-23.json).

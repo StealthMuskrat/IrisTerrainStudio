@@ -86,7 +86,7 @@ The [deployment guide](docker/README.md) covers Docker Compose, persistent pack 
 
 The [specification](docs/SPECIFICATION.md) is authoritative. Work locally, use small focused checks for changed behavior, and reserve comprehensive verification for completed implementation. GitHub workflows are manual. Checkpoint pushes do not certify completion.
 
-The historical native 4.3.4 audit passed 14 of 15 noise/seed tests; its original expected all-style checksum differs from the observed result. The [investigation](docs/research/NATIVE_CHECKSUM_DIAGNOSTICS.md) remains unresolved, and that result is not relabeled as a 4.3.5 pass. The updated bridge compiles and selected original JVM/Wasm/worker comparisons pass; shipping dependencies and complete supported-terrain qualification remain unproved.
+The historical native 4.3.4 audit passed 14 of 15 noise/seed tests. The unchanged checksum assertion now also fails against the pinned 4.3.5 development inputs: expected `5059606393854142913`, observed `3659164368724912644`. Exactly that one assertion was run; no full 4.3.5 native-suite result is claimed. The [investigation and current evidence](docs/research/NATIVE_CHECKSUM_DIAGNOSTICS.md) remain unresolved. The updated bridge compiles and selected original JVM/Wasm/worker comparisons pass; shipping dependencies and complete supported-terrain qualification remain unproved.
 
 The optional separately pinned [noise laboratory](tools/portability-probe/README.md) can be installed with `npm run engine:install -- /path/to/noise-rng-evidence.zip`. Its primitive/RNG evidence is distinct from qualification of the application engine.
 
