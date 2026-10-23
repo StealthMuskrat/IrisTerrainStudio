@@ -7,6 +7,7 @@ import java.io.*;
 /** Reports original native contexts in internal Y coordinates, with the world-Y origin explicit. */
 public final class TerrainLayerDiagnostic {
     public static void writeMetadata(JsonWriter writer,Engine engine)throws IOException{
+        writer.name("environment").value(engine.getDimension().getEnvironment().name());
         var upper=engine.getUpperContext();var stack=engine.getDimensionStackContext();
         writer.name("upperDimension").value(upper==null?null:upper.getDimension().getLoadKey());
         writer.name("dimensionStackLayers").value(stack==null?0:stack.getLayersBottomToTop().size());

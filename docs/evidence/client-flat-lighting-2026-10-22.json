@@ -1,0 +1,138 @@
+{
+  "date": "2026-10-22",
+  "scope": "native flat cardinal colors, retained environment metadata and explicit stored-physical-biome box averages",
+  "result": "pass",
+  "reference": {
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "captureSourceSha256": "5f760b492b977b5da11a4b7cd8f1dde0d4e45d0fb60ae877825d9aee36806d53",
+    "nativeClassSha256": {
+      "net/minecraft/world/level/CardinalLighting": "9d1751628881ddd1f8c590c9e9b22c2a272a3323698d1a3e0741426100cad35d",
+      "net/minecraft/client/renderer/block/BlockModelLighter": "8f92a2bedd737a126855365b66e8a5c345daba174bbd4538e979644b26b39904",
+      "com/mojang/blaze3d/vertex/QuadInstance": "e4d8acbd41619149e586c6df68189bb9d0767f27188d1eab4a3e1b4a9e9be948",
+      "net/minecraft/util/ARGB": "03cc9d35c6482408a96fdec73db7ab71ffb1b52e39b3b6fa7cb6e23fed126fee",
+      "net/minecraft/client/resources/model/cuboid/FaceBakery": "c1a8bb6832ac68382de60ba6a1116c5f0c4d8413c36b6f7abeabec01c4b48550",
+      "net/minecraft/client/multiplayer/ClientLevel": "7d69f81d39e64a679b51f745211619204073167d59b149d9de683e10eb2d97ba"
+    }
+  },
+  "fluidReference": {
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "captureSourceSha256": "15d003a3abd2ccd3cddda084b47bb4b0d405f09aad9bb067a606ad0ab50d9e4c",
+    "requestSha256": "5eca526b028b3f751e59a4c01ffc0d7b241afa4f7b95c23e7ebf97a4189be90f",
+    "nativeClassSha256": {
+      "net/minecraft/client/renderer/block/FluidRenderer": "c75cdf2727b0b7813c75dcf2cbe5762f2779bff492b509ef47d3c7551c43856f"
+    }
+  },
+  "focusedRendering": {
+    "scope": "native-flat-lighting-stored-biome-blend-targeted",
+    "result": "pass",
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "nativeClassSha256": {
+      "net/minecraft/world/level/CardinalLighting": "9d1751628881ddd1f8c590c9e9b22c2a272a3323698d1a3e0741426100cad35d",
+      "net/minecraft/client/renderer/block/BlockModelLighter": "8f92a2bedd737a126855365b66e8a5c345daba174bbd4538e979644b26b39904",
+      "com/mojang/blaze3d/vertex/QuadInstance": "e4d8acbd41619149e586c6df68189bb9d0767f27188d1eab4a3e1b4a9e9be948",
+      "net/minecraft/util/ARGB": "03cc9d35c6482408a96fdec73db7ab71ffb1b52e39b3b6fa7cb6e23fed126fee",
+      "net/minecraft/client/resources/model/cuboid/FaceBakery": "c1a8bb6832ac68382de60ba6a1116c5f0c4d8413c36b6f7abeabec01c4b48550",
+      "net/minecraft/client/multiplayer/ClientLevel": "7d69f81d39e64a679b51f745211619204073167d59b149d9de683e10eb2d97ba",
+      "net/minecraft/client/renderer/block/FluidRenderer": "c75cdf2727b0b7813c75dcf2cbe5762f2779bff492b509ef47d3c7551c43856f"
+    },
+    "modelColors": 28,
+    "directionDecisions": 4,
+    "biomeAverages": 3,
+    "fluidFixtures": 2,
+    "fluidVertices": 88,
+    "actualWorker": {
+      "snapshotTransport": true,
+      "modelAndFluidColors": true,
+      "clipCache": true,
+      "pickingOwnerRetained": true,
+      "missingHaloReported": true
+    },
+    "budgets": {
+      "sampleLimit": 4000000,
+      "cacheEntries": 32768,
+      "explicitFailure": true
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientQuartSampling": false,
+    "worldLightmap": false,
+    "ambientOcclusion": false,
+    "clientRenderingParity": false,
+    "terrainParityVerified": false
+  },
+  "controlledApplication": {
+    "result": "pass",
+    "retainedVolume": true,
+    "cameraRetained": true,
+    "generationCalls": 0,
+    "rendererOption": true,
+    "busyRefusal": true,
+    "renderFailureRollback": true,
+    "preferenceSaved": true,
+    "closedDialogRefusal": true,
+    "browserVerified": false
+  },
+  "nativeEnvironment": {
+    "result": "pass",
+    "nativeEnvironments": [
+      "NORMAL",
+      "NETHER"
+    ],
+    "workerEnvironment": "NETHER",
+    "workerVolume": [
+      16,
+      16,
+      16
+    ],
+    "checkedVoxelValues": 0,
+    "wasmSha256": "69c92caa9450aee3a5c579a6c30e3b619f1899e08922d5efa448c43a541c5470",
+    "sourceSha256": "bbde4958d78646893f6d43d9ae2ad95124c0ee5ebd9cec5be01c9a6b0ae616a0",
+    "terrainParityVerified": false,
+    "browserVerified": false
+  },
+  "diagnosticViews": {
+    "result": "pass",
+    "storedCells": 4,
+    "occupiedCells": 3,
+    "unlitIdentityColors": true,
+    "clippingPickingAndModeOwnership": true,
+    "historicalEvidenceRetained": true
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "133579fc8ff808162e126e3ae39b0f826819733c024f17bed0f40b99de7ea35e",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java": "0ab024d40857e3e969721d6d418636665df5d56f234879117344fef9146717f1",
+    "packages/voxel-renderer/flat-lighting.mjs": "08f95d6bc78e88ca4e1404f0c9a02ee49df4997528b1bb22ff5d909c1b53a222",
+    "packages/voxel-renderer/fluids.mjs": "b30276bfd217599bb5513ce98d406987681c68a3dedae4da6e0adf6029c7cdbe",
+    "packages/voxel-renderer/mesh-worker.mjs": "ac60e5657114b217a59479a2a951613f61abc449586587617fa9b08ae77876b3",
+    "packages/voxel-renderer/mesh-session.mjs": "65ff7baa0ecd4a36e557949b69eefc821180b3f55cbd60b6a77d7611014eae52",
+    "packages/voxel-renderer/world.mjs": "c48bf32085b824049f52354d2c9941090dc038e3afad2037376f6dfb0dc93958",
+    "packages/resource-packs/biome-tints.mjs": "b4f36be87f9c8e7b7232e47e31c625e27c174aa49f75cdeb175185cd4ab2ca6e",
+    "tools/checks/MinecraftFlatLightingCheck.java": "5f760b492b977b5da11a4b7cd8f1dde0d4e45d0fb60ae877825d9aee36806d53",
+    "tools/checks/MinecraftFluidTintCheck.java": "15d003a3abd2ccd3cddda084b47bb4b0d405f09aad9bb067a606ad0ab50d9e4c",
+    "tools/checks/capture-client-flat-lighting.py": "db51b289a0cc59102e6cdc2f8a6d21285c0df551b4fa026c99119b46bb1d7db1",
+    "tools/checks/capture-client-fluid-lighting.py": "ba3a384fefc71e9eba64cd155f125320d0b2c36a0d45dd82b3b2c53d9ce27479",
+    "tools/checks/client-flat-lighting-smoke.mjs": "59544f5e4a857d5edeaac9f78f9fa51ed398447bacc55cf542276e2793eb7890",
+    "tools/checks/biome-blend-ui-smoke.mjs": "06d525d62c4f0bc5a7441bd5d199db59e6a757b09798a4c8f1da24558f03151b",
+    "tools/checks/native-environment-smoke.mjs": "8c4b30069ab49d2875f3ae4610ff6060ada30d1470a3a38624f52ea1aedc01cc",
+    "tools/checks/cell-views-smoke.mjs": "7a679079cd6367fe9183239893c1d2a202badb235576a7d475fe6430586dc382"
+  },
+  "nativeInputsReused": true,
+  "registryReexported": false,
+  "stateOrPairSweep": false,
+  "comprehensiveSuiteRun": false,
+  "githubWorkflowRun": false,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "complete": false,
+  "limits": [
+    "Flat cardinal stage only; world block/sky lightmap, ambient occlusion, emission contribution and complete environment shaders unavailable.",
+    "Stored per-block physical biome averaging is explicit; authentic client obfuscated-seed/quart/Voronoi lookup and its halo are not connected. Missing edge samples report and omit affected tinted faces; work exhaustion refuses the mesh.",
+    "Selected float32 normal direction decisions do not qualify all native geometry/normal calculations. Existing Studio fog remains a preview effect.",
+    "One 16^3 native metadata fixture checks zero voxel values. Registry installation is reused; no state/pair export/comparison or broad generation sweep.",
+    "Verified Chrome fails with SIGTRAP before navigation in this environment. Browser/GPU/UI execution and final comprehensive verification remain pending.",
+    "Native reference checksum/dependency provenance, full terrain/client integrations and authorized F8thful assets remain outstanding."
+  ]
+}

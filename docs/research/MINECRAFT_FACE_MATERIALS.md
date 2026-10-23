@@ -22,7 +22,7 @@ The fragment shader rejects alpha strictly below the selected cutoff after tint 
 
 Picking uses the same cutoffs with float32 alpha multiplication and the captured back-face rule. The inspector exposes selected material metadata. Base-level nearest alpha is used for picking; this does not qualify exact agreement with minified/mip-filtered GPU pixels or triangle raster edges. Older standalone picker records without material arrays retain their legacy behavior, but the renderer explicitly refuses a worker result missing current material buffers.
 
-The current model parser retains `shade_direction_override` and `light_emission`, including the native numeric truncation for supported finite int-range inputs. Unknown direction names, strings in numeric fields and out-of-range values refuse. The native parser ignores legacy `shade`; this adapter does too. Shader lighting remains the existing Studio directional scene/fog: retained override/emission metadata is visible but does not implement native world lightmaps, AO or environmental lighting. Those remain implementation gaps, not qualified behavior.
+The current model parser retains `shade_direction_override` and `light_emission`, including the native numeric truncation for supported finite int-range inputs. Unknown direction names, strings in numeric fields and out-of-range values refuse. The native parser ignores legacy `shade`; this adapter does too. The later [flat-color adapter](MINECRAFT_FLAT_LIGHTING.md) applies retained shade overrides using native environment/cardinal inputs. Emission stays metadata-only; world lightmaps, AO, complete environmental lighting and the existing Studio fog remain unqualified.
 
 ## Focused reference and limits
 
