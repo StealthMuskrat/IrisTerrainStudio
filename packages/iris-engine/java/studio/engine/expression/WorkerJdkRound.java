@@ -23,10 +23,17 @@
  * questions.
  */
 // SPDX-License-Identifier: GPL-2.0-only WITH Classpath-exception-2.0
-// Adapted from pinned OpenJDK 25 Math.round(double); full corresponding source is bundled.
+// Adapted from pinned OpenJDK 25 Math.round(float/double); full corresponding source is bundled.
 package studio.engine.expression;
 public final class WorkerJdkRound {
     private WorkerJdkRound(){}
+    public static int round(float value){
+        int bits=Float.floatToRawIntBits(value);
+        int exponent=(bits&0x7f800000)>>23;
+        int shift=(24-2+127)-exponent;
+        if((shift&-32)==0){int significand=(bits&0x007fffff)|0x00800000;if(bits<0)significand=-significand;return ((significand>>shift)+1)>>1;}
+        return (int)value;
+    }
     public static long round(double value){
         long bits=Double.doubleToRawLongBits(value);
         long exponent=(bits&0x7ff0000000000000L)>>52;

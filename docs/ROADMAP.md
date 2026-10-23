@@ -47,7 +47,7 @@ Native source-plan cache ownership, bounded memory continuation encoding, snapsh
 
 ## Remaining completion sequence (2026-10-23)
 
-Implementation and qualification remain separate gates. Recent geometry/biome, modern tile-payload, native Studio-layout and procedural ruin batches close bounded implementation gaps; they do not close the terrain, browser or release gates.
+Implementation and qualification remain separate gates. Recent geometry/biome, modern tile-payload, native Studio-layout, procedural ruin and shared rounding batches close bounded implementation gaps; they do not close the terrain, browser or release gates.
 
 | Work | Evidence needed to finish | Existing tracking |
 | --- | --- | --- |

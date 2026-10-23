@@ -12,7 +12,7 @@ The guarded source and neighborhood paths now accept ruins through the original 
 
 A tiny native comparison exposed TeaVM 0.16.0's `Math.round(double)` implementation: negative half values round away from zero, unlike OpenJDK's rule toward positive infinity. Ruin noise-coordinate rounding changes erosion and weathering decisions at negative coordinates. The mismatch affected even a small buried pillar, so matching a few positive probes alone was insufficient.
 
-Exactly eight original `RuinGenerator` calls and four `RuinShapes` calls now use the existing OpenJDK 25 `WorkerJdkRound` adapter. Compiler checks enforce those counts. The native method instructions and arithmetic around the calls remain unchanged. No global rounding replacement or qualification of other callers is claimed. The adapter and full corresponding OpenJDK source/notices accompany the module.
+Exactly eight original `RuinGenerator` calls and four `RuinShapes` calls now use the existing OpenJDK 25 `WorkerJdkRound` adapter. Compiler checks enforce those counts. The native method instructions and arithmetic around the calls remain unchanged. This initially scoped binding is subsequently extended by the [shared native rounding boundary](NATIVE_ROUNDING.md). That extension does not qualify every caller. The adapter and full corresponding OpenJDK source/notices accompany the module.
 
 ## Admission and ownership
 

@@ -48,6 +48,9 @@ The [native Studio-layout batch](evidence/native-studio-layout-2026-10-23.json) 
 
 The [procedural ruin batch](evidence/native-ruins-2026-10-23.json) connects native ruin descriptors and isolated variants, manual placement, source/neighborhood replay and registered Overworld content. Shapes, burial, erosion, weathering and accents retain original algorithms under bounded dimension/candidate/canvas admission. A focused mismatch exposed TeaVM negative-half double rounding; twelve pinned calls now use the existing OpenJDK adapter. Five tiny shapes match native counts/bounds and fifteen selected materials; four terrain routes match twenty-one selected materials plus physical-biome/control metadata. Actual Wasm/worker/client caching and refusal/recovery pass. Imported structures remain excluded. All settings/collisions, full lifecycle, browser/GPU and complete terrain/release parity remain unqualified; see [the boundary](research/PROCEDURAL_RUINS.md).
 
+
+The [shared native rounding boundary](evidence/native-rounding-2026-10-23.json) extends the ruin fix to original Iris/VolmLib Math/StrictMath float/double round calls and the two pinned Minecraft rotation math classes. Both overloads follow OpenJDK 25 bit operations; native CNG and hexagonal-noise call counts are enforced. The arithmetic check uses 26 authored IEEE pairs and three original CNG fitting overloads without loading a registry or generating terrain. The cached ruin fixture is replayed on the rebuilt module. This does not resolve #15's separate native checksum discrepancy or qualify complete callers/noise/terrain behavior. See [scope](research/NATIVE_ROUNDING.md).
+
 ## Implemented
 
 - Initial empty-repository audit and preservation of the complete user specification.

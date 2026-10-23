@@ -29,6 +29,7 @@ import art.arcane.iris.generation.terrain.IrisRegion;
 
 /** Browser entry points into the actual pinned Iris classes. No terrain replacement algorithms. */
 public final class BrowserEngine {
+    @JSExport public static String diagnosticNativeRounding(String binary64,String binary32)throws java.io.IOException{return NativeRoundingDiagnostic.sample(binary64,binary32);}
     private record Definition(String style, double zoom, double exponent, double frequency,
                               double cellularZoom, String fracture, double multiplier, int octaves) {}
     private static final Map<String, Definition> definitions = new LinkedHashMap<>();
