@@ -1,3 +1,4 @@
+import{textureMipmapMetadata}from'./texture-mipmaps.mjs';
 import { quadrant } from './model-transform.mjs';
 import { parseMaterial } from './material.mjs';
 import { decodeTexturePng } from './texture-pixels.mjs';
@@ -98,7 +99,7 @@ export class ResourcePackStack {
     const path=`assets/${id.namespace}/textures/${id.path}.png`,bytes=this.bytes(path);
     if(!bytes)throw new Error(`Missing texture ${id.id}.`);
     const dimensions=textureDimensions(bytes,id.id),metadata=this.metadata(path);
-    const animation=metadata&&Object.hasOwn(metadata,'animation')?metadata.animation:null;
+    const animation=metadata&&Object.hasOwn(metadata,'animation')?metadata.animation:null,texture=textureMipmapMetadata(metadata&&Object.hasOwn(metadata,'texture')?metadata.texture:undefined);
     if(metadata&&Object.hasOwn(metadata,'animation')&&(animation===null||typeof animation!=='object'||Array.isArray(animation)))throw new Error(`Texture ${id.id} animation metadata must be an object.`);
     if(this.bitmapBytes+dimensions.bytes>MAX_BITMAP_BYTES)throw new Error('Resource-pack textures exceed the 64 MiB decoded bitmap budget.');
     // Admission includes pending decodes so concurrent texture requests cannot bypass the limit.
@@ -107,7 +108,7 @@ export class ResourcePackStack {
       const raster=await decodeTexturePng(bytes);
       if(this.disposed)throw new DOMException('Resource-pack stack disposed during image decoding.','AbortError');
       if(raster.width!==dimensions.width||raster.height!==dimensions.height)throw new Error(`Texture ${id.id} decoded dimensions differ from its PNG header.`);
-      return{...raster,animation,decodedBytes:dimensions.bytes};
+      return{...raster,animation,texture,decodedBytes:dimensions.bytes};
     }catch(error){this.bitmapBytes-=dimensions.bytes;throw error;}
   }
 

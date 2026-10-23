@@ -1,0 +1,145 @@
+{
+  "scope": "minecraft-client-mipmaps-targeted",
+  "result": "pass",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "nativeClassSha256": {
+    "net/minecraft/client/renderer/texture/MipmapGenerator": "fc7b87c713631960f7b89d364f8b2247cd5f537b48b4f2ce10733cdf0d058721",
+    "com/mojang/blaze3d/platform/TextureUtil": "4a0b84bfacb721967f27a695f9933ac15d131850b61cc29ea7c18cb504f0fa3b",
+    "net/minecraft/util/ARGB": "03cc9d35c6482408a96fdec73db7ab71ffb1b52e39b3b6fa7cb6e23fed126fee"
+  },
+  "referenceMethod": "Original MipmapGenerator/TextureUtil bytecode; only NativeImage allocation/pixel IO remapped to owned integer arrays. Original ARGB lookup tables and metadata codec execute unchanged.",
+  "cases": [
+    {
+      "name": "authored:block/mean",
+      "strategy": "mean",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:block/cutout",
+      "strategy": "cutout",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:item/cutout",
+      "strategy": "cutout",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:block/strict_cutout",
+      "strategy": "strict_cutout",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:block/dark_cutout",
+      "strategy": "dark_cutout",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:block/auto",
+      "strategy": "auto",
+      "levels": 3,
+      "pixels": 64
+    },
+    {
+      "name": "authored:block/opaque",
+      "strategy": "auto",
+      "levels": 2,
+      "pixels": 16
+    },
+    {
+      "name": "authored:block/empty",
+      "strategy": "auto",
+      "levels": 2,
+      "pixels": 16
+    },
+    {
+      "name": "authored:block/sheet",
+      "strategy": "cutout",
+      "levels": 2,
+      "pixels": 128
+    }
+  ],
+  "metadataCases": 8,
+  "metadataMatches": true,
+  "sourcePixelsUnchanged": true,
+  "controlledAtlas": {
+    "requestedLevels": 4,
+    "animatedSheetLevels": 3,
+    "smallSpriteClampsTo": 2,
+    "allLevelsAnimate": true,
+    "unchangedTickUploads": 0,
+    "alignedGutters": true,
+    "basePickingAlpha": true,
+    "failedEntryRetainsOwnership": true,
+    "byteBudgetRefusal": true,
+    "disposeExactlyOnce": true
+  },
+  "limits": {
+    "sourcePixels": 1048576,
+    "retainedMipBytes": 67108864
+  },
+  "inputSha256": "e86d87194ec48568d68ea91e325517fd5c7c3e935b14865bdad563fa32a01ea1",
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "recordedAt": "2026-10-23",
+  "nativeWasmSha256": "d5630df0d4352e4409fda2d3f31f89ada2a2c189fddc8788c3dce6441d58badb",
+  "nativeSourceArchiveSha256": "58ade1e26c3f8d6a1044574bdbd174b55f513e6716f9d39f574ed1655a493176",
+  "nativeWasmUnchanged": true,
+  "rawLevelZeroRegression": {
+    "scope": "raw-pixel-texture-pipeline-targeted",
+    "result": "pass",
+    "authoredPngs": 5,
+    "decodedPixels": 9,
+    "rawRgbaAndHiddenColor": true,
+    "paletteAndGrayTransparency": true,
+    "sixteenBitHighBytes": true,
+    "irisPackedGrayDefaultUnchanged": true,
+    "controlledUploadDevice": true,
+    "interpolatedAlphaAndGutters": true,
+    "tickOnlyUpdates": true,
+    "repeatedFramesAndRestore": true,
+    "ownedDecodeCache": true,
+    "metadataFailureRecovery": true,
+    "admissionWithoutLargeAllocation": true,
+    "disposedPendingAtlasRefused": true,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "workspaceSha256": {
+    "packages/resource-packs/atlas.mjs": "1a66a1691ce6f411cb4816b124a599fc586dd1b3e2a463264677de725cd7fc0d",
+    "packages/resource-packs/pack.mjs": "d8491a7a1ecf14f9d6130dbdfb939d3073d20050bd91519b57112fea6bc7edbd",
+    "packages/resource-packs/texture-pixels.mjs": "7dac23d3b1c9028b5ddb33ad1dd559cfbca8c2405ab0b16a5ef91a5d1a08d344",
+    "packages/voxel-renderer/world.mjs": "d1c4184a0130c7305376b31c0f6e3fd5db5b4d8720df4580b12dcd71e0766d83",
+    "packages/resource-packs/client-mipmap-data.json": "e86d87194ec48568d68ea91e325517fd5c7c3e935b14865bdad563fa32a01ea1",
+    "packages/resource-packs/texture-mipmaps.mjs": "1dbe2d0c8cad99beee4fcb905eb0a668621b92dc5f9eada9933fefcaee34bed3",
+    "tools/checks/MinecraftMipmapCheck.java": "3e66c48d81430caa1a4c126c7482521fb7b9537fa3e61860f76ac71a5e694dad",
+    "tools/checks/capture-client-mipmaps.py": "4f46984fc943dbe92fb847438ac10feaa4f2a568c3f02794652a6aba28c264bc",
+    "tools/checks/client-mipmaps-smoke.mjs": "be8e7220703d460534ca06f0fb892fe035aa444410b77545dfd2458dfafaafbd"
+  },
+  "commands": [
+    "python3 tools/checks/capture-client-mipmaps.py --write-inputs",
+    "node tools/checks/client-mipmaps-smoke.mjs",
+    "node tools/checks/texture-pipeline-smoke.mjs",
+    "node --check (changed JavaScript modules)",
+    "git diff --check",
+    "node tools/build-app.mjs --require-engine"
+  ],
+  "limitations": [
+    "Controlled device uploads do not qualify browser/GPU sampling, filtering, shaders or UI.",
+    "Full native filtering/anisotropy, alpha-test/material behavior, lighting and biome sampling remain unfinished.",
+    "The separate 64 MiB retained mip budget does not cover pack decoded images, GPU textures, alpha picking or temporary preprocessing storage.",
+    "F8thful input, complete terrain/native options/lifecycle/parity and reference/release qualification remain open."
+  ],
+  "developmentBuild": {
+    "result": "pass",
+    "nativeWasmUnchanged": true,
+    "qualifiedRelease": false
+  }
+}

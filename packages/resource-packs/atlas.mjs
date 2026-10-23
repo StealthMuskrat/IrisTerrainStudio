@@ -1,13 +1,15 @@
+import{textureMipmaps,spriteMipLevel,textureMipmapMetadata}from'./texture-mipmaps.mjs';
 import{textureAnimation,animationState}from'./texture-animation.mjs';
 import{textureFramePixels}from'./texture-pixels.mjs';
 export class TextureAtlas {
-  constructor(device,size=2048){
-    this.device=device;this.size=Math.min(size,device.limits.maxTextureDimension2D);
-    if(!Number.isSafeInteger(this.size)||this.size<4)throw new Error('Invalid texture atlas dimensions.');
-    this.alpha=new Uint8Array(this.size*this.size);this.entries=new Map();this.pending=new Map();this.x=1;this.y=1;this.rowHeight=0;this.disposed=false;this.epoch=null;this.tick=-1;
-    this.texture=device.createTexture({size:[this.size,this.size,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});
-    this.sampler=device.createSampler({magFilter:'nearest',minFilter:'nearest',mipmapFilter:'nearest'});
+  constructor(device,size=2048,{mipLevels=0}={}){
+    if(!Number.isInteger(mipLevels)||mipLevels<0||mipLevels>4)throw new Error('Atlas mip level must be an integer from zero to four.');
+    this.device=device;this.requestedMipLevel=this.mipmapLevel=mipLevels;this.padding=2**mipLevels;this.mipBytes=0;this.size=Math.floor(Math.min(size,device.limits.maxTextureDimension2D)/this.padding)*this.padding;
+    if(!Number.isSafeInteger(this.size)||this.size<Math.max(4,this.padding*3))throw new Error('Invalid texture atlas dimensions.');
+    this.alpha=new Uint8Array(this.size*this.size);this.entries=new Map();this.pending=new Map();this.x=this.padding;this.y=this.padding;this.rowHeight=0;this.disposed=false;this.epoch=null;this.tick=-1;
+    try{this.texture=device.createTexture({size:[this.size,this.size,1],mipLevelCount:mipLevels+1,format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});this.sampler=this.createSampler(this.mipmapLevel);}catch(error){this.texture?.destroy();throw error;}
   }
+  createSampler(level){return this.device.createSampler({magFilter:'nearest',minFilter:'nearest',mipmapFilter:this.requestedMipLevel?'linear':'nearest',lodMinClamp:0,lodMaxClamp:level});}
   async add(name,stack){
     if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
     if(this.entries.has(name))return this.entries.get(name);if(this.pending.has(name))return this.pending.get(name);
@@ -17,19 +19,21 @@ export class TextureAtlas {
   async load(name,stack){
     const raster=await stack.bitmap(name);if(this.disposed)throw new DOMException('Texture atlas disposed.','AbortError');
     const plan=textureAnimation(raster.width,raster.height,raster.animation,this.size),width=plan.width,height=plan.height;
-    let x=this.x,y=this.y,rowHeight=this.rowHeight;
-    if(x+width+1>this.size){x=1;y+=rowHeight;rowHeight=0;}if(y+height+1>this.size)throw new Error('The texture atlas is full. Use a smaller resource pack.');
+    const padding=this.padding,slotWidth=Math.ceil(width/padding)*padding+2*padding,slotHeight=Math.ceil(height/padding)*padding+2*padding;let x=this.x,y=this.y,rowHeight=this.rowHeight;
+    if(x+slotWidth-padding>this.size){x=padding;y+=rowHeight;rowHeight=0;}if(y+slotHeight-padding>this.size)throw new Error('The texture atlas is full. Use a smaller resource pack.');
     const entry={name,pixels:raster.pixels,sourceWidth:raster.width,sourceHeight:raster.height,x,y,...plan,frame:0,progress:0,renderKey:plan.frames[0].index+'/static',uv:[x/this.size,y/this.size,(x+width)/this.size,(y+height)/this.size]};
+    let charge=0;const level=spriteMipLevel(width,height,this.requestedMipLevel);if(this.requestedMipLevel){for(let i=0;i<=level;i++)charge+=(raster.width/2**i)*(raster.height/2**i)*4;if(charge>64*1024*1024-this.mipBytes)throw new Error('Texture atlas exceeds its 64 MiB retained mipmap budget.');entry.mipmaps=textureMipmaps(name,raster,level,raster.texture??textureMipmapMetadata());entry.pixels=entry.mipmaps[0].pixels;}
+    const nextLevel=Math.min(this.mipmapLevel,level),sampler=nextLevel===this.mipmapLevel?this.sampler:this.createSampler(nextLevel);
     let transparent=false,partial=false;
     for(const index of new Set(plan.frames.map(frame=>frame.index))){const pixels=textureFramePixels(entry,index);for(let at=3;at<pixels.length;at+=4){transparent||=pixels[at]<255;partial||=pixels[at]>0&&pixels[at]<255;}if(partial)break;}
     if(plan.interpolate&&transparent&&plan.frames.some(frame=>frame.time>1))partial=true;
     entry.transparency=partial?'blend':transparent?'cutout':'opaque';this.upload(entry,plan.frames[0].index);
-    this.entries.set(name,entry);this.x=x+width+2;this.y=y;this.rowHeight=Math.max(rowHeight,height+2);return entry;
+    this.entries.set(name,entry);this.x=x+slotWidth;this.y=y;this.rowHeight=Math.max(rowHeight,slotHeight);this.mipmapLevel=nextLevel;this.sampler=sampler;this.mipBytes+=charge;return entry;
   }
   upload(entry,index,next=index,progress=0){
-    const pixels=textureFramePixels(entry,index,next,progress),width=entry.width+2,height=entry.height+2,x=entry.x-1,y=entry.y-1;
-    this.device.queue.writeTexture({texture:this.texture,origin:[x,y]},pixels,{bytesPerRow:width*4,rowsPerImage:height},[width,height]);
-    for(let row=0;row<height;row++)for(let column=0;column<width;column++)this.alpha[(y+row)*this.size+x+column]=pixels[(row*width+column)*4+3];
+    let base;const count=entry.mipmaps?.length??1;for(let level=0;level<count;level++){const scale=2**level,border=this.padding/scale,image=entry.mipmaps?.[level],source=image?{...entry,pixels:image.pixels,sourceWidth:image.width,sourceHeight:image.height,width:entry.width/scale,height:entry.height/scale}:entry,pixels=textureFramePixels(source,index,next,progress,border),width=source.width+2*border,height=source.height+2*border,x=entry.x/scale-border,y=entry.y/scale-border;
+      this.device.queue.writeTexture({texture:this.texture,mipLevel:level,origin:[x,y]},pixels,{bytesPerRow:width*4,rowsPerImage:height},[width,height]);if(level===0)base={pixels,width,height,x,y};
+    }const{pixels,width,height,x,y}=base;for(let row=0;row<height;row++)for(let column=0;column<width;column++)this.alpha[(y+row)*this.size+x+column]=pixels[(row*width+column)*4+3];
   }
   pause(){this.paused=true;}
   sampleAlpha(u,v,cache){
@@ -41,5 +45,5 @@ export class TextureAtlas {
     this.epoch??=time;const elapsed=Math.max(0,time-this.epoch),tick=Math.floor(elapsed/50);if(tick===this.tick)return false;this.tick=tick;let changed=false;
     for(const entry of this.entries.values())if(entry.frames.length>1){const state=animationState(entry,elapsed),key=state.index+'/'+(state.progress>0&&state.index!==state.next?state.next+':'+state.progress:'static');if(key!==entry.renderKey){this.upload(entry,state.index,state.next,state.progress);entry.renderKey=key;changed=true;}entry.frame=state.frame;entry.progress=state.progress;}return changed;
   }
-  dispose(){if(this.disposed)return;this.disposed=true;this.texture.destroy();this.entries.clear();this.pending.clear();this.alpha=null;}
+  dispose(){if(this.disposed)return;this.disposed=true;this.texture.destroy();this.entries.clear();this.pending.clear();this.alpha=null;this.mipBytes=0;}
 }

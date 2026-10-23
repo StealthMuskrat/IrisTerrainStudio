@@ -50,7 +50,7 @@ export class WorldRenderer{
     // Generated inputs are immutable. Reusing the exact committed input avoids another
     // complete block/biome validation scan during an appearance-only replacement.
     const reuse=input===this.volumeInput&&sameVoxelData(this.volume,input)&&this.volume.biomes===(input.biomes||null)&&this.volume.metadata===input.metadata;
-    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device),models=cells?.models??[],diagnostics=[],offsetProfiles=[],renderProfiles=[];let session,tintInput,fluidMaterials;
+    const volume=input instanceof VoxelVolume?input:reuse?this.volume:new VoxelVolume(input);clip=localClip(volume,clip);mode=voxelViewMode(mode);const cells=mode==='textured'?null:prepareCellView(volume,mode);this.cancelMesh();const id=this.job,atlas=cells?new CellAtlas(this.gpu.device):new TextureAtlas(this.gpu.device,2048,{mipLevels:4}),models=cells?.models??[],diagnostics=[],offsetProfiles=[],renderProfiles=[];let session,tintInput,fluidMaterials;
     try{
       if(!cells)for(let i=0;i<volume.palette.length;i++){
         try{renderProfiles[i]=blockRenderProfile(volume.palette[i]);if(volume.palette[i].air===true||renderProfiles[i].renderShape==='INVISIBLE'){models[i]=[];continue;}offsetProfiles[i]=modelOffsetProfile(volume.palette[i].id);models[i]=await bakeBlockPlan(volume.palette[i],stack,atlas,{tints:volume.palette[i].tints,choices:volume.palette[i].modelChoices});}
