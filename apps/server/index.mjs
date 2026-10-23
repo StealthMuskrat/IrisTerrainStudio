@@ -34,6 +34,7 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
       const hostname = new URL('http://' + request.headers.host).hostname;
       if (loopback && !['localhost','127.0.0.1','[::1]'].includes(hostname)) throw new StoreError(403, 'Unrecognized local host.');
       if (request.headers.origin && new URL(request.headers.origin).host !== request.headers.host) throw new StoreError(403, 'Cross-origin file operations are disabled.');
+      if(url.pathname==='/healthz'&&['GET','HEAD'].includes(method))return json(response,200,{status:'ok'});
       if (url.pathname.startsWith('/api/')) {
         if (!authenticated(request, token)) throw new StoreError(401, 'Enter the server access token to open packs.');
         const pack = url.searchParams.get('pack'), relative = url.searchParams.get('path');

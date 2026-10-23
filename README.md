@@ -23,7 +23,7 @@ Implemented editing includes resource search, field/JSON views, undo/redo, local
 
 The **Runtime status** panel reports installed Iris, registry and laboratory files. Generation controls follow the selected field’s requirements; pack editing remains available without generation modules. Installation checks establish file integrity and matching inputs, not terrain parity.
 
-Docker configuration is in `docker/`; remote binding requires a server access token of at least 32 characters. Use HTTPS when accessing WebGPU remotely.
+The [self-hosting guide](docker/README.md) covers building the checked `dist/` image, a persistent pack volume, token authentication, health checks and HTTPS. Remote binding requires a server access token of at least 32 characters. Use HTTPS when accessing WebGPU remotely.
 
 ## Native Iris development module
 
@@ -185,3 +185,6 @@ Block-ID and physical-biome cell views now combine compatible faces to reduce ge
 
 
 Block inspection now includes retained native region keys for unstacked chunk previews. **Native region cells** colors that same column metadata without regenerating terrain. Layered previews explain when vertical region metadata is unavailable. See [native creation and region scope](docs/research/NATIVE_PACK_WORKFLOW.md).
+
+
+Compatible static opaque cube snapshots now merge textured faces with repeated sprites, retained cell picking and cached rectangle buffers. Complex/offset/fluid/contextual models retain their existing emitter. See [admission and verification limits](docs/research/TEXTURED_GREEDY.md).

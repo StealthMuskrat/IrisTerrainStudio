@@ -1,0 +1,5 @@
+**
+!dist/
+!dist/**
+!docker/
+!docker/Dockerfile

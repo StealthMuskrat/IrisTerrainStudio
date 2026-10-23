@@ -18,7 +18,7 @@ async function bakeApplications(block,stack,atlas,applications,tints){
       if(!elementTransform&&facing)cuboidWinding(points,mapped,facing);
       let color=[1,1,1,1],tintIndex=null;if(face.tintindex!==undefined&&face.tintindex>=0){if(!Number.isInteger(face.tintindex))throw new Error('Model tint index must be a whole number.');if(tints?.[face.tintindex])color=tints[face.tintindex];else tintIndex=face.tintindex;}
       let cull=null;if(face.cullface&&faces[face.cullface]){let v=faces[face.cullface].normal;v=rotateModelVector(v,rotation);cull=direction(v);}
-      const transparency=material.forceTranslucent?'blend':atlas.transparencyAt?.(texture,uv)??texture.transparency;quads.push({positions:points,normal:n,shadeDirection:facing??'up',uv:mapped,color,tintIndex,cull,transparency,...elementFlags,alphaCutoff:materialLayer(transparency).alphaCutoff,modelId:application.model.id});
+      const transparency=material.forceTranslucent?'blend':atlas.transparencyAt?.(texture,uv)??texture.transparency;quads.push({positions:points,spriteUv:texture.uv.slice(),normal:n,shadeDirection:facing??'up',uv:mapped,color,tintIndex,cull,transparency,...elementFlags,alphaCutoff:materialLayer(transparency).alphaCutoff,modelId:application.model.id});
     }
   }}
   return quads;

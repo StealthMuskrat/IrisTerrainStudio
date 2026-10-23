@@ -708,7 +708,7 @@ async function previewDetails(){
   for(const [label,data,inputs]of[['Map',state.mapField??state.map?.data,state.mapInputs],['Displayed 3D',state.volume,state.volumeInputs],['Awaiting 3D rendering',state.pendingVolume?.field.volume,state.pendingVolume?.inputs]]){
     rows.push(element('h3',{text:label}),...previewDescription(data,inputs).map(copy));
   }
-  const world=state.world,stats=world?.meshStats;if(world?.volume&&stats)rows.push(element('h3',{text:'Displayed geometry'}),copy(`${world.faces.toLocaleString()} quads · ${stats.reused.toLocaleString()} cached sections reused · ${stats.rebuilt.toLocaleString()} sections rebuilt`),...(world.mode!=='textured'&&stats.savedFaces>0?[copy(`${stats.sourceFaces.toLocaleString()} exposed cell faces combined into ${world.faces.toLocaleString()} quads. Individual block inspection is retained.`)]:[]));
+  const world=state.world,stats=world?.meshStats;if(world?.volume&&stats)rows.push(element('h3',{text:'Displayed geometry'}),copy(`${world.faces.toLocaleString()} quads · ${stats.reused.toLocaleString()} cached sections reused · ${stats.rebuilt.toLocaleString()} sections rebuilt`),...(stats.savedFaces>0?[copy(`${stats.sourceFaces.toLocaleString()} exposed ${world.mode==='textured'?'model':'cell'} faces combined into ${world.faces.toLocaleString()} quads. Individual block inspection is retained.`)]:[]));
   await ask('Retained preview details',rows,{wide:true,submit:null,cancel:'Close'});
 }
 function resetPreviewView(){state.world?.reset();state.map?.draw();}
