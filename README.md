@@ -179,3 +179,6 @@ Procedural **ruins** now appear in the native entry chooser and use the original
 
 
 Native custom biome **authoring previews** now retain the original content-addressed biome keys and generated 26.3 definitions. Stored model/fluid colors and optional biome blending use those definitions; voxel inspection offers an exact definition download. Handles are bounded and owned by the terrain context. Live registry installation and complete custom biome parity remain unqualified. See [scope](docs/research/CUSTOM_BIOME_AUTHORING.md).
+
+
+Block-ID and physical-biome cell views now combine compatible faces to reduce geometry while retaining individual-block inspection and selection. **Retained preview details** reports the current quad and section-reuse counts. Emitted-face picking uses bounded spatial buckets for denser geometry, including model overhangs. See [scope and focused checks](docs/research/DIAGNOSTIC_MESH_PICKING.md).

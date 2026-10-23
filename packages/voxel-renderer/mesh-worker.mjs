@@ -1,3 +1,4 @@
+import{emitGreedyCells,MERGED_CELL_OWNER}from'./greedy-cells.mjs';
 import{localClip,emptyClip}from'./clip.mjs';import{selectedModelParts}from'../resource-packs/model-selection.mjs';import{blockModelOffset}from'../resource-packs/model-offset.mjs';import{blockTint,biomeTint,rgbaTint}from'../resource-packs/biome-tints.mjs';import{emptyRenderProfile}from'../resource-packs/render-inputs.mjs';import{fluidQuads}from'./fluids.mjs';import{shouldRenderBlockFace}from'../resource-packs/face-culling.mjs';import{faceParameters}from'../resource-packs/face-materials.mjs';import{shadeFlatColor}from'./flat-lighting.mjs';import{createBiomeBlendSampler}from'../resource-packs/biome-tints.mjs';import{createClientBiomeSampler}from'../resource-packs/client-biome-sampling.mjs';
 const directions={north:[0,0,-1],south:[0,0,1],west:[-1,0,0],east:[1,0,0],up:[0,1,0],down:[0,-1,0]};
 // Typed pages avoid retaining millions of boxed numbers while building a mesh.
@@ -63,7 +64,7 @@ self.onmessage=async({data})=>{
     const stored=(x,y,z)=>x>=0&&y>=0&&z>=0&&x<width&&y<height&&z<depth,storedBiomeAt=(x,y,z)=>{x-=origin[0];y-=origin[1];z-=origin[2];return stored(x,y,z)&&input.biomes?input.biomes.palette[input.biomes.cells[x+width*(z+depth*y)]]:null;};
     const biomeAt=input.tintInput?.sampling?createClientBiomeSampler(input,storedBiomeAt,input.tintInput.sampling):storedBiomeAt;
     const tintAt=input.tintInput?.blendRadius?createBiomeBlendSampler(biomeAt,input.tintInput):null;
-    const sectionTotal=start.reduce((total,value,axis)=>total*Math.ceil((maximum[axis]-value)/16),1),stats={reused:0,rebuilt:0,cells:0};let sections=0,faces=0;
+    const sectionTotal=start.reduce((total,value,axis)=>total*Math.ceil((maximum[axis]-value)/16),1),stats={reused:0,rebuilt:0,cells:0};let sections=0,faces=0,sourceFaces=0;
     const range=()=>({first:0,count:0,min:[Infinity,Infinity,Infinity],max:[-Infinity,-Infinity,-Infinity]});
     if(!emptyClip(clip))for(let sy=start[1];sy<maximum[1];sy+=16)for(let sz=start[2];sz<maximum[2];sz+=16)for(let sx=start[0];sx<maximum[0];sx+=16){
       const base=[sx,sy,sz],haloMin=base.map((value,axis)=>Math.max(value-1,minimum[axis])),haloMax=base.map((value,axis)=>Math.min(value+17,maximum[axis]));
@@ -71,8 +72,19 @@ self.onmessage=async({data})=>{
       if(part)stats.reused++;
       else{
         stats.rebuilt++;
-        const opaque=new Vertices(),transparent=new Vertices(),pickOpaque=new PickRecords(),pickTransparent=new PickRecords(),materialOpaque=new Materials(),materialTransparent=new Materials(),section={section:base.map((value,axis)=>(value+origin[axis])/16),opaque:range(),transparent:range()},diagnosticRows=new Map(),report=(block,error)=>{if(error.name==='BiomeBlendBudgetError'||error.name==='BiomeSamplingBudgetError')throw error;const key=block.id+':'+error.message;if(diagnosticRows.size<32&&!diagnosticRows.has(key))diagnosticRows.set(key,{block:block.id,message:error.message.slice(0,512),...(typeof error.code==='string'?{code:error.code.slice(0,128)}:{})});};let count=0;
-        for(let y=Math.max(sy,minimum[1]);y<Math.min(sy+16,maximum[1]);y++)for(let z=Math.max(sz,minimum[2]);z<Math.min(sz+16,maximum[2]);z++)for(let x=Math.max(sx,minimum[0]);x<Math.min(sx+16,maximum[0]);x++){
+        const opaque=new Vertices(),transparent=new Vertices(),pickOpaque=new PickRecords(),pickTransparent=new PickRecords(),materialOpaque=new Materials(),materialTransparent=new Materials(),section={section:base.map((value,axis)=>(value+origin[axis])/16),opaque:range(),transparent:range()},diagnosticRows=new Map(),report=(block,error)=>{if(error.name==='BiomeBlendBudgetError'||error.name==='BiomeSamplingBudgetError')throw error;const key=block.id+':'+error.message;if(diagnosticRows.size<32&&!diagnosticRows.has(key))diagnosticRows.set(key,{block:block.id,message:error.message.slice(0,512),...(typeof error.code==='string'?{code:error.code.slice(0,128)}:{})});};let count=0,exposedFaces=0;
+        const emit=(quad,owner,offset,color,sourceCount=1,merged=false)=>{
+          if(++count+faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');
+          exposedFaces+=sourceCount;const blend=quad.transparency==='blend',target=blend?transparent:opaque,bounds=blend?section.transparent:section.opaque;bounds.count+=6;
+          for(const point of quad.positions)for(let axis=0;axis<3;axis++){const value=Math.fround(point[axis]+offset[axis]);if(!Number.isFinite(value))throw new Error('Model mesh contains a nonfinite vertex.');bounds.min[axis]=Math.min(bounds.min[axis],value);bounds.max[axis]=Math.max(bounds.max[axis],value);}
+          (blend?pickTransparent:pickOpaque).write(quad,merged?(owner|MERGED_CELL_OWNER):owner,offset,color);(blend?materialTransparent:materialOpaque).write(quad);
+          for(const vertex of[0,1,2,0,2,3])target.write(quad.positions[vertex],quad.normal,color,quad.uv[vertex],...offset);
+        };
+        if(input.cellColors?.greedy===true){
+          const sectionMin=base.map((value,a)=>Math.max(value,minimum[a])),sectionMax=base.map((value,a)=>Math.min(value+16,maximum[a]));
+          stats.cells+=sectionMax.reduce((n,value,a)=>n*(value-sectionMin[a]),1);emitGreedyCells(input,minimum,maximum,sectionMin,sectionMax,center,emit);
+        }else{
+          for(let y=Math.max(sy,minimum[1]);y<Math.min(sy+16,maximum[1]);y++)for(let z=Math.max(sz,minimum[2]);z<Math.min(sz+16,maximum[2]);z++)for(let x=Math.max(sx,minimum[0]);x<Math.min(sx+16,maximum[0]);x++){
           stats.cells++;const owner=x+width*(z+depth*y),index=blocks[owner],block=palette[index],model=models[index],position=[x+origin[0],y+origin[1],z+origin[2]],parts=!model?[]:Array.isArray(model)?[model]:selectedModelParts(model,block,position),hasFluid=block.renderProfile?.fluid!=='empty'&&input.fluidMaterials?.[block.renderProfile?.fluid];if(!parts.some(p=>p.length)&&!hasFluid)continue;const displacement=block.modelOffset?blockModelOffset(block.modelOffset,position):[0,0,0],tintCache=new Map();
           let cellColor;
           if(input.cellColors){const colorIndex=input.cellColors.indices?.[owner]??index,at=colorIndex*4;if(at+4>input.cellColors.palette.length)throw new Error('A visible cell references a missing identity color.');cellColor=input.colorRows.get(colorIndex);if(!cellColor){cellColor=Array.from(input.cellColors.palette.subarray(at,at+4));input.colorRows.set(colorIndex,cellColor);}}
@@ -81,22 +93,19 @@ self.onmessage=async({data})=>{
             if(quad.cull){const d=directions[quad.cull],nx=x+d[0],ny=y+d[1],nz=z+d[2];if(inside(nx,ny,nz)){const neighbor=palette[blocks[nx+width*(nz+depth*ny)]];if(block.renderProfile&&neighbor.renderProfile?!shouldRenderBlockFace(block,neighbor,quad.cull):neighbor.solid===true||block.cullSameMaterial===true&&neighbor.id===block.id)continue;}}
             let color=cellColor??quad.color;if(!cellColor&&quad.tintIndex!=null){try{if(!tintCache.has(quad.tintIndex))tintCache.set(quad.tintIndex,blockTint(block,quad.tintIndex,position,biomeAt,input.tintInput,tintAt));color=tintCache.get(quad.tintIndex);}catch(error){report(block,error);continue;}}
             if(!cellColor&&input.lightingInput?.profile)color=shadeFlatColor(color,quad,input.lightingInput);
-            if(++count+faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');
-            const blend=quad.transparency==='blend',target=blend?transparent:opaque,bounds=blend?section.transparent:section.opaque,offset=[x,y,z].map((value,axis)=>Math.fround(value-center[axis]+(quad.fluid?0:Math.fround(displacement[axis]))));bounds.count+=6;
-            for(const point of quad.positions)for(let axis=0;axis<3;axis++){const value=Math.fround(point[axis]+offset[axis]);if(!Number.isFinite(value))throw new Error('Model mesh contains a nonfinite vertex.');bounds.min[axis]=Math.min(bounds.min[axis],value);bounds.max[axis]=Math.max(bounds.max[axis],value);}
-            (blend?pickTransparent:pickOpaque).write(quad,owner,offset,color);(blend?materialTransparent:materialOpaque).write(quad);
-            for(const vertex of[0,1,2,0,2,3])target.write(quad.positions[vertex],quad.normal,color,quad.uv[vertex],...offset);
+            emit(quad,owner,[x,y,z].map((value,axis)=>Math.fround(value-center[axis]+(quad.fluid?0:Math.fround(displacement[axis])))),color);
           }
         }
-        part={section,faces:count,diagnostics:[...diagnosticRows.values()],opaque:opaque.finish(),transparent:transparent.finish(),materials:{opaque:materialOpaque.finish(),transparent:materialTransparent.finish()},picking:{opaque:pickOpaque.finish(),transparent:pickTransparent.finish()}};cache.put(key,part);
+        }
+        part={section,faces:count,sourceFaces:exposedFaces,diagnostics:[...diagnosticRows.values()],opaque:opaque.finish(),transparent:transparent.finish(),materials:{opaque:materialOpaque.finish(),transparent:materialTransparent.finish()},picking:{opaque:pickOpaque.finish(),transparent:pickTransparent.finish()}};cache.put(key,part);
       }
-      faces+=part.faces;if(faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');parts.push(part);
+      sourceFaces+=part.sourceFaces;faces+=part.faces;if(faces>250000)throw new Error('Visible geometry exceeds the preview mesh budget. Reduce the area or use clipping.');parts.push(part);
       if((++sections&7)===0){self.postMessage({kind:'progress',id,progress:sections/Math.max(1,sectionTotal)});await new Promise(resolve=>setTimeout(resolve,0));if(job!==revision)return;}
     }
     if(job!==revision)return;
     // Flatten for the existing GPU/picker ABI. Cached section buffers remain owned by
     // this worker; only fresh combined buffers are transferred to the renderer.
-    const diagnostics=[...new Map(parts.flatMap(p=>p.diagnostics??[]).map(row=>[row.block+':'+row.message,row])).values()].slice(0,128),output={kind:'mesh',id,faces,ranges:[],picking:{},materials:{},diagnostics,stats:{...stats,entries:cache.entries.size,bytes:cache.bytes,byteLimit:cache.limit}};
+    const diagnostics=[...new Map(parts.flatMap(p=>p.diagnostics??[]).map(row=>[row.block+':'+row.message,row])).values()].slice(0,128),output={kind:'mesh',id,faces,cellGreedy:input.cellColors?.greedy===true,ranges:[],picking:{},materials:{},diagnostics,stats:{...stats,sourceFaces,savedFaces:sourceFaces-faces,entries:cache.entries.size,bytes:cache.bytes,byteLimit:cache.limit}};
     for(const kind of['opaque','transparent']){
       const count=parts.reduce((sum,part)=>sum+part.section[kind].count,0),vertices=new Float32Array(count*12),quads=new Float32Array(count/6*21),owners=new Uint32Array(count/6),materials=new Float32Array(count/6*4);let first=0;
       for(const part of parts){vertices.set(part[kind],first*12);materials.set(part.materials[kind],first/6*4);quads.set(new Float32Array(part.picking[kind].quads),first/6*21);owners.set(new Uint32Array(part.picking[kind].owners),first/6);first+=part.section[kind].count;}

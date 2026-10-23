@@ -18,13 +18,13 @@ globalThis.Worker=class {
   terminate(){this.terminated=true;this.worker.terminate();}
 };
 const createSession=(volume,models,palette,options)=>{const session=new MeshSession(volume,models,palette,options);sessions.push(session);return session;};
-const block={id:'check:cube',solid:true},model={id:'check:cube',elements:[{from:[0,0,0],to:[16,16,16],faces:Object.fromEntries(['north','south','west','east','up','down'].map(name=>[name,{texture:'check:pixel',cullface:name}]))}]};
+const block={id:'minecraft:stone',solid:true},model={id:'check:cube',elements:[{from:[0,0,0],to:[16,16,16],faces:Object.fromEntries(['north','south','west','east','up','down'].map(name=>[name,{texture:'check:pixel',cullface:name}]))}]};
 const cube=await bakeBlock(block,{blockModels:()=>[{model,x:0,y:0}],texture:()=> 'check:pixel'},{add:async()=>({uv:[0,0,1,1],transparency:'opaque'})});
 const glass=cube.map(quad=>({...quad,transparency:'blend',positions:quad.positions.map(point=>point.map((value,axis)=>axis===1?value*1.5:value))}));
 const blocks=new Uint32Array(50);for(const index of [16,17,32,33])blocks[index]=1;blocks[49]=2;
 const palette=[{id:'minecraft:air',air:true},block,{id:'check:glass'}],models=[[],cube,glass],volume=new VoxelVolume({width:50,height:1,depth:1,origin:[-17,-1,-1],blocks,palette}),originalBlocks=blocks.slice();
 const compare=(actual,expected)=>{assert.equal(actual.faces,expected.faces);assert.deepEqual(actual.ranges,expected.ranges);for(const kind of ['opaque','transparent']){assert.deepEqual(new Float32Array(actual[kind]),new Float32Array(expected[kind]));for(const field of ['quads','owners'])assert.deepEqual(new Uint8Array(actual.picking[kind][field]),new Uint8Array(expected.picking[kind][field]));}};
-const evidence={date:'2026-10-21',scope:'bounded section mesh cache, persistent snapshot worker, partial CPU remeshing and appearance camera retention',fixture:{storedCells:50,occupiedCells:5,generatedTerrainCells:0,sourcePixels:0},checks:[],realBrowserVerified:false,webGpuVerified:false,performanceMeasured:false,nativeParityVerified:false,complete:false};
+const evidence={date:'2026-10-23',scope:'bounded section mesh cache, persistent snapshot worker, partial CPU remeshing and appearance camera retention',fixture:{storedCells:50,occupiedCells:5,generatedTerrainCells:0,sourcePixels:0},checks:[],realBrowserVerified:false,webGpuVerified:false,performanceMeasured:false,nativeParityVerified:false,complete:false};
 try{
   const session=createSession(volume,models,palette),reference=createSession(volume,models,palette,{cacheByteLimit:0});
   const full=await session.build(null,1);assert.equal(full.faces,26);assert.equal(full.stats.rebuilt,5);assert.equal(full.stats.cells,50);assert.equal(new MeshPicker(volume,full).bytes,26*88);
@@ -44,11 +44,11 @@ try{
   // Actual WorldRenderer methods with tiny canvas/GPU services, no rasterization.
   globalThis.OffscreenCanvas=class{getContext(){return{clearRect(){},drawImage(){},getImageData:()=>({data:new Uint8ClampedArray([255,255,255,255])})};}};
   globalThis.GPUTextureUsage={TEXTURE_BINDING:1,COPY_DST:2,RENDER_ATTACHMENT:4};
-  const textures=[],device={limits:{maxTextureDimension2D:8},createTexture(){const texture={destroy(){this.destroyed=true;}};textures.push(texture);return texture;},createSampler:()=>({}),queue:{copyExternalImageToTexture(){}}};
-  const two=new VoxelVolume({width:2,height:1,depth:1,origin:[-1,-1,-1],palette:[block],blocks:new Uint32Array(2)}),stack={blockModels:()=>[{model,x:0,y:0}],texture:()=> 'check:pixel',bitmap:async()=>({bitmap:{width:1,height:1},animation:null})};
+  const textures=[],device={limits:{maxTextureDimension2D:64},createTexture(){const texture={destroy(){this.destroyed=true;}};textures.push(texture);return texture;},createSampler:()=>({}),queue:{writeTexture(){}}};
+  const two=new VoxelVolume({width:2,height:1,depth:1,origin:[-1,-1,-1],palette:[block],blocks:new Uint32Array(2)}),stack={blockModelGroups:()=>({multipart:false,groups:[{weighted:false,variants:[{model,x:0,y:0,z:0}]}]}),blockModels:()=>[{model,x:0,y:0}],texture:()=> 'check:pixel',bitmap:async()=>({width:1,height:1,pixels:new Uint8Array([255,255,255,255]),animation:null})};
   const renderer=Object.assign(Object.create(WorldRenderer.prototype),{gpu:{device},atlas:{dispose(){}},job:0,camera:{},bind(){},draw(){},uploadMesh(mesh){if(this.failUpload)throw new Error('Controlled upload failure');this.uploads=(this.uploads||0)+1;this.lastMesh=mesh;this.clearSelection(false);},upload(){}});
   try{
-    await renderer.setVolume(two,stack);const firstSession=renderer.meshSession,firstAtlas=renderer.atlas,camera=renderer.camera={yaw:.6,pitch:.3,distance:4,target:[.1,.2,.3]};
+    await renderer.setVolume(two,stack);assert.deepEqual(renderer.diagnostics.filter(row=>row.block===block.id),[]);const firstSession=renderer.meshSession,firstAtlas=renderer.atlas,camera=renderer.camera={yaw:.6,pitch:.3,distance:4,target:[.1,.2,.3]};
     const raw={...two};await renderer.setVolume(raw,stack);assert.equal(renderer.camera,camera);assert(firstSession.disposed);assert(firstAtlas.disposed);assert(renderer.meshStats.rebuilt>0);
     const validated=renderer.volume;await renderer.setVolume(raw,stack);assert.equal(renderer.volume,validated);assert.equal(renderer.camera,camera);
     const sameSession=renderer.meshSession,uploads=renderer.uploads;await renderer.setClip({min:[0,0,0],max:[2,1,1]});assert.equal(renderer.uploads,uploads);assert.equal(renderer.meshSession,sameSession);
@@ -62,6 +62,6 @@ try{
   assert.deepEqual(blocks,originalBlocks);
   evidence.limits='Focused Node worker transfers and controlled renderer canvas/device only. CPU section reuse still flattens/transfers/uploads the complete visible mesh. Cache budget covers payload bytes plus per-entry allowance, not total browser/driver memory; staged snapshots can coexist. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. Real browser/GPU and performance qualification remain pending.';
   const paths=['packages/voxel-renderer/mesh-worker.mjs','packages/voxel-renderer/mesh-session.mjs','packages/voxel-renderer/world.mjs','tools/checks/section-cache-smoke.mjs'];evidence.workspaceSha256=Object.fromEntries(await Promise.all(paths.map(async path=>[path,createHash('sha256').update(await fs.readFile(new URL('../../'+path,import.meta.url))).digest('hex')])));
-  await fs.writeFile(new URL('../../docs/evidence/section-cache-batch-2026-10-21.json',import.meta.url),JSON.stringify(evidence,null,2)+'\n');
+  await fs.writeFile(new URL('../../.local-tools/section-cache-smoke-results.json',import.meta.url),JSON.stringify(evidence,null,2)+'\n');
   console.log(JSON.stringify({result:'pass',fixture:evidence.fixture,full:evidence.full,cutaway:evidence.cutaway,returnToFull:evidence.returnToFull,checks:evidence.checks},null,2));
 }finally{for(const session of sessions)session.dispose();for(const worker of workers)worker.terminate();delete globalThis.Worker;delete globalThis.OffscreenCanvas;delete globalThis.GPUTextureUsage;}
