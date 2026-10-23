@@ -1,3 +1,4 @@
+import {defaultAssetsReader} from './default-assets.mjs';
 import{starterCatalog}from'./starter-packs.mjs';
 import http from 'node:http';
 import * as fs from 'node:fs/promises';
@@ -21,12 +22,12 @@ async function body(request, limit = JSON_LIMIT) {
   return Buffer.concat(chunks);
 }
 function authenticated(request, token) { if (!token) return true; const supplied = Buffer.from((request.headers.authorization || '').replace(/^Bearer /, '')); const expected = Buffer.from(token); return supplied.length === expected.length && timingSafeEqual(supplied, expected); }
-export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || path.join(repository, 'packs'), host = process.env.HOST || '127.0.0.1', token = process.env.IRIS_STUDIO_TOKEN || '' } = {}) {
+export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || path.join(repository, 'packs'), host = process.env.HOST || '127.0.0.1', token = process.env.IRIS_STUDIO_TOKEN || '', renderingDefaults = process.env.IRIS_RENDERING_DEFAULTS_DIR || path.join(repository,'.local-assets/rendering-defaults') } = {}) {
   const loopback = ['127.0.0.1', 'localhost', '::1'].includes(host);
   if (!loopback && token.length < 32) throw new Error('Set IRIS_STUDIO_TOKEN to at least 32 characters before binding to a non-loopback address.');
   const store = new PackStore(root); await store.initialize();
   const lock = JSON.parse(await fs.readFile(path.join(repository, 'upstream.lock.json'), 'utf8'));
-  const runtimeStatus=runtimeStatusReader(repository);
+  const runtimeStatus=runtimeStatusReader(repository),defaultAssets=defaultAssetsReader(renderingDefaults);
   const server = http.createServer(async (request, response) => {
     headers(response);
     try {
@@ -41,6 +42,8 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
         if (method === 'GET' && url.pathname === '/api/status') {
           return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine:await runtimeStatus(), authenticated: !!token });
         }
+        if(method==='GET'&&url.pathname==='/api/rendering-defaults')return json(response,200,(await defaultAssets()).status);
+        if(['GET','HEAD'].includes(method)&&url.pathname==='/api/rendering-default'){const data=(await defaultAssets()).archives.get(url.searchParams.get('role'));if(!data)throw new StoreError(404,'Configured rendering asset not found.');response.writeHead(200,{'Content-Type':MIME['.zip'],'Content-Length':data.length,'Cache-Control':'private, no-cache'});return response.end(method==='HEAD'?undefined:data);}
         if (method === 'GET' && url.pathname === '/api/packs') return json(response, 200, { packs: await store.packs() });
         if (method === 'GET' && url.pathname === '/api/pack-starters') return json(response,200,{starters:starterCatalog()});
         if (method === 'POST' && url.pathname === '/api/packs') { const data = JSON.parse((await body(request)).toString('utf8')); if(!data||typeof data!=='object'||Array.isArray(data))throw new StoreError(400,'Pack creation requires a JSON object.'); return json(response, 201, await store.create(data.id,{template:data.template})); }

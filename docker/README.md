@@ -10,6 +10,8 @@ Use Node 24 from the repository root. Follow the engine setup section in the mai
 npm run build -- --require-engine
 ```
 
+To include authorized provisioned rendering defaults, prepare them with `npm run assets:defaults` and add `--include-local-assets` to the build command. Otherwise local asset inputs stay outside the distribution. Both catalog and ZIP delivery require the configured server token.
+
 This stages `dist/` atomically and checks installed module identities. It is a development package, not release/parity certification. Keep the generated source archive, licenses and notices in the image. `--release` remains blocked while qualification is incomplete.
 
 ## Start with persistent packs

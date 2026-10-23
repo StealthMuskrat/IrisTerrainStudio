@@ -1,4 +1,4 @@
-import{regionColumns,regionColumnCharge}from'../shared/region-columns.mjs';
+import{regionColumns,regionColumnCharge,regionBufferBytes}from'../shared/region-columns.mjs';
 import{customBiomeDefinitions}from'./custom-biomes.mjs';
 export class UnsupportedGenerationError extends Error { constructor(message, feature) { super(message); this.name='UnsupportedGenerationError';this.feature=feature; } }
 export function numericSeed(value) { const text=String(value).trim();if(!/^-?(?:0|[1-9]\d*)$/.test(text))throw new Error('The native engine needs a signed 64-bit decimal seed.');const number=BigInt(text);if(number<-(1n<<63n)||number>(1n<<63n)-1n)throw new Error('Seed is outside the signed Java long range.');return number.toString(); }
@@ -16,7 +16,7 @@ export function generationAvailability(installation,field){
 // Charge a conservative fixed estimate once per cached bounded network, not just its samples.
 export const HYDROLOGY_NETWORK_CACHE_CHARGE=8*1024*1024;
 const customDefinitionCharges=new WeakMap();
-function resultBytes(result){return(result.volume?result.volume.blocks.byteLength+(result.volume.biomes?.cells.byteLength||0)+(result.volume.regions?.cells.byteLength||0):result.values.byteLength)+(result.hydrology?.network?HYDROLOGY_NETWORK_CACHE_CHARGE:0)+(customDefinitionCharges.get(result)??0);}
+function resultBytes(result){return(result.volume?result.volume.blocks.byteLength+(result.volume.biomes?.cells.byteLength||0)+regionBufferBytes(result.volume.regions):result.values.byteLength)+(result.hydrology?.network?HYDROLOGY_NETWORK_CACHE_CHARGE:0)+(customDefinitionCharges.get(result)??0);}
 export class GenerationClient extends EventTarget {
   constructor(){super();this.workers=new Map();this.revision=0;this.sequence=0;this.pending=null;this.requests=new Map();this.cache=new Map();this.cacheBytes=0;this.maxCacheBytes=48*1024*1024;}
   worker(kind){
@@ -29,7 +29,7 @@ export class GenerationClient extends EventTarget {
       if(data.kind==='progress'){this.dispatchEvent(new CustomEvent('progress',{detail:data.progress}));return;}
       const pending=this.pending;this.pending=null;
       if(data.error){pending.reject(new Error(data.error));return;}
-      let result;try{result={...data.result};customDefinitionCharges.set(result,customBiomeDefinitions(result.volume?.metadata?.terrainInfo??result.terrainInfo).bytes+regionColumnCharge(result.volume?.regions));if(result.volume)result.volume={...result.volume,blocks:new Uint32Array(result.volume.blocks),regions:regionColumns(result.volume.regions,result.volume.width,result.volume.depth),...(result.volume.biomes?{biomes:{...result.volume.biomes,cells:new Uint16Array(result.volume.biomes.cells)}}:{})};else result.values=new Float64Array(result.values);}catch(error){pending.reject(error);return;}
+      let result;try{result={...data.result};customDefinitionCharges.set(result,customBiomeDefinitions(result.volume?.metadata?.terrainInfo??result.terrainInfo).bytes+regionColumnCharge(result.volume?.regions));if(result.volume)result.volume={...result.volume,blocks:new Uint32Array(result.volume.blocks),regions:regionColumns(result.volume.regions,result.volume.width,result.volume.depth,result.volume.height),...(result.volume.biomes?{biomes:{...result.volume.biomes,cells:new Uint16Array(result.volume.biomes.cells)}}:{})};else result.values=new Float64Array(result.values);}catch(error){pending.reject(error);return;}
       this.cache.set(pending.key,result);this.cacheBytes+=resultBytes(result);
       while((this.cacheBytes>this.maxCacheBytes||this.cache.size>64)&&this.cache.size>1){const oldest=this.cache.keys().next().value;this.cacheBytes-=resultBytes(this.cache.get(oldest));this.cache.delete(oldest);}
       pending.resolve(result);

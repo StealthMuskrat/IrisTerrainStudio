@@ -1,4 +1,4 @@
-import{regionColumns}from'../shared/region-columns.mjs';
+import{regionColumns,regionIndex}from'../shared/region-columns.mjs';
 import{clipBounds,emptyClip}from'./clip.mjs';
 export class VoxelVolume {
   constructor(data) {
@@ -13,14 +13,14 @@ export class VoxelVolume {
       if(!(biomes.cells instanceof Uint16Array)||biomes.cells.length!==blocks.length)throw new Error('Voxel physical biome coverage is incomplete.');
       for(const index of biomes.cells)if(index>=biomes.palette.length)throw new Error('A voxel references a missing physical biome.');
     }
-    this.regions=regionColumns(data.regions,width,depth);
+    this.regions=regionColumns(data.regions,width,depth,height);
     this.biomes=biomes||null;
     this.width=width;this.height=height;this.depth=depth;this.origin=origin.slice();this.palette=palette;this.blocks=blocks;this.metadata=data.metadata||{};
   }
   index(x,y,z){return x+this.width*(z+this.depth*y);}
   block(x,y,z){if(x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.palette[this.blocks[this.index(x,y,z)]];}
   biome(x,y,z){if(!this.biomes||!Number.isInteger(x)||!Number.isInteger(y)||!Number.isInteger(z)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.biomes.palette[this.biomes.cells[this.index(x,y,z)]];}
-  region(x,y,z){if(!this.regions||![x,y,z].every(Number.isInteger)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.regions.palette[this.regions.cells[x+this.width*z]];}
+  region(x,y,z){if(!this.regions||![x,y,z].every(Number.isInteger)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.regions.palette[regionIndex(this.regions,x+this.width*z,y)];}
   worldBiome(x,y,z){return this.biome(x-this.origin[0],y-this.origin[1],z-this.origin[2]);}
   worldBlock(x,y,z){return this.block(x-this.origin[0],y-this.origin[1],z-this.origin[2]);}
   raycast(origin,direction,maxDistance=4096,{clip=null,visible}={}){

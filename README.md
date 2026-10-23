@@ -188,3 +188,16 @@ Block inspection now includes retained native region keys for unstacked chunk pr
 
 
 Compatible static opaque cube snapshots now merge textured faces with repeated sprites, retained cell picking and cached rectangle buffers. Complex/offset/fluid/contextual models retain their existing emitter. See [admission and verification limits](docs/research/TEXTURED_GREEDY.md).
+
+### Provision local rendering defaults
+
+Authorized vanilla and F8thful archives can be prepared as installation defaults without committing or downloading those assets:
+
+```sh
+npm run assets:defaults -- --baseline .local-assets/vanilla-26.3.zip --overrides /path/to/F8thful.zip
+npm run build -- --require-engine --include-local-assets
+```
+
+The preparation command follows every blockstate/model/texture dependency for the baseline's block-type roots, preserving original selected bytes, current overlays, filters and source notices. It trims unrelated and inactive resources, records input/output SHA-256 identities and refuses incomplete dependencies or an existing output directory. An optional `--roots` JSON array restricts the supported block types; this is not a block-state scan. `--output` selects a new reviewable directory. The default directory is `.local-assets/rendering-defaults`; `IRIS_RENDERING_DEFAULTS_DIR` selects another directory when running the server.
+
+Provisioned defaults are authenticated downloads and load automatically after connection. Their enable/disable preferences remain local; original ZIPs are not duplicated in browser storage. Custom replace mode retains vanilla while omitting default overrides. Bundling assets in `dist/` requires `--include-local-assets`, which is an explicit deployment choice; review distribution rights first. Running the command does not certify the source pack or rendering parity. See [scope and checks](docs/research/LOCAL_RENDERING_DEFAULTS.md).

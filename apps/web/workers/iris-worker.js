@@ -153,12 +153,17 @@ self.onmessage=async({data})=>{
       if(persistentNoise)noiseCache={...noiseCache,durablePersistence:persistentNoise.status==='restored'||persistentNoise.saveStatus==='saved',persistence:persistentNoise};
       if(terrainInfo&&result.volume)result.volume.metadata={...result.volume.metadata,terrainInfo};
       if(terrainPreviewFields.has(options.field)&&terrainInfo&&result.volume&&result.volume.width===16&&result.volume.depth===16&&!result.volume.metadata?.studioOutsideLayout){
-        if(terrainInfo.dimensionStackLayers>0)result.volume.metadata={...result.volume.metadata,regionColumnsUnavailable:'Dimension-stack region output needs vertical region metadata.'};
+        if(typeof api.sampleTerrainRegionChunk!=='function')throw new Error('Rebuild the native engine to retain region metadata.');
+        const volume=result.volume,region=JSON.parse(api.sampleTerrainRegionChunk(volume.origin[0],volume.origin[2]));
+        if(region.unavailable){if(typeof region.unavailable!=='string'||region.unavailable.length>1024)throw new Error('Invalid native region refusal.');volume.metadata={...volume.metadata,regionColumnsUnavailable:region.unavailable};}
         else{
-          if(typeof api.sampleTerrainRegionChunk!=='function')throw new Error('Rebuild the native engine to retain region columns.');
-          const volume=result.volume,region=JSON.parse(api.sampleTerrainRegionChunk(volume.origin[0],volume.origin[2]));
-          if(region.scope!=='native-engine-region-columns'||region.x!==volume.origin[0]||region.z!==volume.origin[2]||typeof region.dimension!=='string'||region.dimension.length>1024||!Array.isArray(region.palette)||!region.palette.length||region.palette.length>256||region.palette.some(key=>typeof key!=='string'||!key.length||key.length>1024)||new Set(region.palette).size!==region.palette.length||!Array.isArray(region.cells)||region.cells.length!==256||region.cells.some(value=>!Number.isInteger(value)||value<0||value>=region.palette.length))throw new Error('Native region columns are incomplete.');
+          const spans=region.scope==='native-engine-region-spans';
+          if(!spans&&region.scope!=='native-engine-region-columns'||region.x!==volume.origin[0]||region.z!==volume.origin[2]||typeof region.dimension!=='string'||!region.dimension.length||region.dimension.length>1024||!Array.isArray(region.palette)||!region.palette.length||region.palette.length>(spans?4096:256)||region.palette.some(key=>typeof key!=='string'||!key.length||key.length>1024)||new Set(region.palette).size!==region.palette.length||!Array.isArray(region.cells)||region.cells.length>(spans?65536:256)||!spans&&region.cells.length!==256||region.cells.some(value=>!Number.isInteger(value)||value<0||value>=region.palette.length))throw new Error('Native region metadata is incomplete.');
           const cells=Uint16Array.from(region.cells);volume.regions={scope:region.scope,dimension:region.dimension,palette:region.palette,cells:cells.buffer};transfers.push(cells.buffer);
+          if(spans){
+            if(region.height!==volume.height||!Array.isArray(region.starts)||region.starts.length!==region.cells.length||!Array.isArray(region.offsets)||region.offsets.length!==257||region.offsets[0]!==0||region.offsets[256]!==region.cells.length||region.starts.some(value=>!Number.isInteger(value)||value<0||value>=region.height)||region.offsets.some(value=>!Number.isInteger(value)||value<0||value>region.cells.length))throw new Error('Native vertical region metadata is incomplete.');
+            const starts=Uint16Array.from(region.starts),offsets=Uint32Array.from(region.offsets);Object.assign(volume.regions,{height:region.height,starts:starts.buffer,offsets:offsets.buffer,nativeQueries:region.nativeQueries});transfers.push(starts.buffer,offsets.buffer);
+          }
         }
       }
 

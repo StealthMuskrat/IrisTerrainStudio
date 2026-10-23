@@ -15,7 +15,7 @@ function keysFor(volume,mode){
 export function prepareCellView(volume,mode){
   const keys=keysFor(volume,mode),colors=new Float32Array(keys.length*4),known=new Map();
   keys.forEach((key,index)=>{if(!known.has(key))known.set(key,categoryColor(key));colors.set(known.get(key),index*4);});
-  return{models:volume.palette.map(block=>air(block)?[]:CELL_CUBE),palette:volume.palette.map(block=>({...block,solid:!air(block)})),cellColors:{greedy:true,palette:colors,indices:mode==='biomes'?volume.biomes.cells:null,columnIndices:mode==='regions'?volume.regions.cells:null}};
+  return{models:volume.palette.map(block=>air(block)?[]:CELL_CUBE),palette:volume.palette.map(block=>({...block,solid:!air(block)})),cellColors:{greedy:true,palette:colors,indices:mode==='biomes'?volume.biomes.cells:null,columnIndices:mode==='regions'&&!volume.regions.offsets?volume.regions.cells:null,regionSpans:mode==='regions'&&volume.regions.offsets?volume.regions:null}};
 }
 export class CellPalette{
   constructor(volume,mode){const keys=keysFor(volume,mode),visible=mode!=='blocks'?keys:keys.filter((key,index)=>!air(volume.palette[index]));this.keys=[...new Set(visible)].sort();}
