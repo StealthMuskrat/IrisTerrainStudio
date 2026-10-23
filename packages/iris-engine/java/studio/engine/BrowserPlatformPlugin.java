@@ -260,7 +260,13 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
                 int enumerations=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("k")){Program p=method.getProgram();if(p==null)continue;for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getName().equals("keys")&&call.getMethod().parameterCount()==0){Variable map=call.getInstance();call.setInstance(null);call.setArguments(map);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference(WorkerCollections.class,"enumeration",java.util.Map.class,java.util.Enumeration.class));enumerations++;}}
                 if(enumerations!=1)throw new IllegalStateException("Pinned native key enumeration changed");
             }
-            if(name.equals("art.arcane.iris.generation.block.TileData"))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null)unavailable(method,"Object tile-entity values");
+            if(name.equals("art.arcane.iris.generation.block.TileData"))for(MethodHolder method:cls.getMethods())if(method.getProgram()!=null){
+                if(method.getName().equals("<init>")&&method.parameterCount()==0)continue;
+                if(method.getName().equals("<clinit>")){Program p=new Program();p.createVariable();p.createBasicBlock().add(new ExitInstruction());method.setProgram(p);}
+                else if(java.util.Set.of("read","of").contains(method.getName())){
+                    Program p=new Program();p.createVariable();java.util.List<Variable> args=new java.util.ArrayList<>();for(int n=0;n<method.parameterCount();n++)args.add(p.createVariable());Variable result=p.createVariable();BasicBlock b=p.createBasicBlock();InvokeInstruction call=new InvokeInstruction();call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.pack.WorkerTileData",method.getDescriptor()));call.setArguments(args.toArray(Variable[]::new));call.setReceiver(result);b.add(call);ExitInstruction exit=new ExitInstruction();exit.setValueToReturn(result);b.add(exit);method.setProgram(p);
+                }else unavailable(method,"Tile world execution or non-owned tile values");
+            }
             if(name.equals("art.arcane.iris.generation.block.IrisBlockData"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("getTile"))unavailable(method,"Object tile-entity material payloads");
             if(name.equals("art.arcane.iris.generation.block.BlockDataMergeSupport")){
                 int hooks=0;for(MethodHolder method:cls.getMethods())if(method.getName().equals("merge")&&method.parameterCount()==2&&method.parameterType(0).equals(ValueType.object("art.arcane.volmlib.nativelib.terrain.NativeBlockState"))){
@@ -291,7 +297,7 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if(name.equals("art.arcane.iris.structure.object.IrisObjectIO")){
                 int streams=0,tiles=0;
                 for(MethodHolder method:cls.getMethods()){
-                    if(method.getName().equals("readTile")){unavailable(method,"Native object tile-entity payloads");tiles++;}
+                    if(method.getName().equals("readTile"))tiles++;
                     Program p=method.getProgram();if(p!=null)for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().getClassName().equals("java.io.FileInputStream")&&call.getMethod().getName().equals("<init>"))streams++;
                 }
                 if(streams!=3||tiles!=1)throw new IllegalStateException("Pinned native object IO boundary changed");

@@ -79,7 +79,9 @@ public final class TerrainCarvingComponent {
             if(neighbors){var stats=placementResult.neighborhood();result=result.substring(0,result.length()-1)+",\"neighborhood\":{\"sourceChunks\":"+stats.sourceChunks()+",\"contributingSources\":"+stats.contributingSources()+",\"placementRadius\":"+stats.placementRadius()+",\"inputChunkRadius\":"+stats.inputChunkRadius()+",\"sourceChunkRadius\":"+stats.sourceChunkRadius()+",\"builtPlanBytes\":"+stats.builtPlanBytes()+"},\"journaledCells\":"+WorkerCaveStorage.journalCellCount()+",\"journalWindow\":"+WorkerCaveStorage.journalWindow()+"}";}
             if(scatter||neighbors)result=result.substring(0,result.length()-1)+",\"objectTags\":"+WorkerCaveStorage.objectTags()+",\"caveSearch\":"+WorkerProceduralMap.caveSearchStatistics()+"}";
             if(decorate)result=result.substring(0,result.length()-1)+",\"markers\":"+WorkerCaveStorage.markerEntries()+"}";
+            String tileMetadata=WorkerCaveStorage.tileEntries(engine.getMinHeight());
             if(neighbors){WorkerCaveStorage.retainContinuations(neighborhood.session().continuations(engine),engine);result=result.substring(0,result.length()-1)+",\"cache\":"+neighborhood.session().statistics(engine)+"}";cachePass.commit();}
+            result=result.substring(0,result.length()-1)+",\"tilePayloads\":"+tileMetadata+"}";
             return result;
         } finally {try{if(cachePass!=null)cachePass.close();}finally{if(floating)art.arcane.iris.generation.biome.FloatingIslandSample.clearThreadCaches();WorkerCaveStorage.clear();}}
     }

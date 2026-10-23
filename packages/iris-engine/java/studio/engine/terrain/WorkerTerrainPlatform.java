@@ -16,6 +16,8 @@ public final class WorkerTerrainPlatform {
             public String platformName(){return "browser-worker";}
             public String minecraftVersion(){return "26.3";}
             public PlatformRegistries registries(){return registry;}
+            // Original IrisPlatform default: memory tile codecs must never register world IO.
+            public boolean supportsMatterWorldIo(){return false;}
             public void log(LogLevel level,String message){System.err.println(level+": "+message);}
             public void msg(String message){System.err.println(message);}
             public void reportError(Throwable error){error.printStackTrace();}

@@ -41,6 +41,8 @@ The [face-material batch](evidence/client-face-materials-2026-10-22.json) correc
 
 The next milestone is remaining native flow/containment and platform options, verified Minecraft rendering semantics, and full browser/native/release qualification after implementation is complete. Comprehensive program verification remains deferred until implementation is complete.
 
+The [modern tile-payload batch](evidence/native-tiles-2026-10-23.json) connects strict modern namespaced object records to owned payload storage, original native tile matter, sparse placement metadata and bounded inspector downloads. Large integer text, unknown fields and nested JSON remain in string envelopes; no tile/world behavior executes. Raw/decoded object-cache charging, record/value/depth/transport budgets and cache-commit ordering are explicit. One two-block native object/one tile and one tiny explicit placement edit exercise the changed boundaries; see the [scope and evidence](research/MODERN_TILE_PAYLOADS.md). Imported placement, legacy tile formats, block-entity rendering, complete codec/terrain/browser and release qualification remain open.
+
 ## Implemented
 
 - Initial empty-repository audit and preservation of the complete user specification.

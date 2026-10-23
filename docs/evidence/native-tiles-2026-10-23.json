@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-23",
+  "scope": "strict modern Iris tile envelope storage, original object/tile matter boundaries, destination metadata and retained inspection",
+  "result": "pass",
+  "reference": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "sourceServerJarSha256": "203daf198d4e63a1db4ec807d65b835669481efdbb2812802d0628a6119674b9",
+    "developmentInputsSha256": "2443bdb6f6f8da616ed206825f353bcab4822c429cb0fc9f65024084c9e71297",
+    "nativeClassSha256": {
+      "art/arcane/iris/structure/object/IrisObjectIO": "ef9fecabae80431128a896c27ca91dfe0060bac309e12d51591f2e62346ee1b3",
+      "art/arcane/iris/generation/block/TileData": "340bc06105671e5fc43d4843aa4847ce9a43509185ddd7b5a8b19f8133724435",
+      "art/arcane/iris/world/storage/matter/TileMatter": "5f39659e1c028e0eb9b00a829ed09504a7be4bab772ce1429cbe15b2e5e064c7",
+      "art/arcane/iris/generation/mantle/ObjectDestinationTransaction": "7f0d407d18a6f9f40d6570567aa895ac598e352bb03de21d94a4762c47a9dfb8"
+    },
+    "tileReferencePlatform": "pinned StubTileData reader/factory; no Bukkit/modded live-world tile execution"
+  },
+  "focusedCheck": {
+    "result": "pass",
+    "nativeObject": {
+      "inputBlocks": 2,
+      "tileRecords": 1,
+      "binaryBytes": 256,
+      "binarySha256": "701a190c33cdaf68a049620453a82d4a70f20feca21db17507fba627d8fe3205",
+      "propertiesTextExact": true,
+      "largeIntegerTextExact": true,
+      "nativeCloneAndMatterNode": true
+    },
+    "placement": {
+      "fixtures": 1,
+      "seeds": 1,
+      "selectedBlockProbes": 2,
+      "tileRecords": 2,
+      "nativeDestinationReplay": true,
+      "metadataMatches": true,
+      "explicitDiagnosticEdit": true,
+      "proceduralEntryEditsSupported": false
+    },
+    "transport": {
+      "capturedWasmChunkThroughWorkerClient": true,
+      "duplicateAndOutOfVolumeRefused": true,
+      "tileWorldExecution": false
+    },
+    "ui": {
+      "rawTextAndDownload": true,
+      "staleDownloadRefused": true,
+      "browserVerified": false
+    },
+    "refusals": [
+      "legacy/non-namespaced tile envelope",
+      "duplicate JSON property",
+      "depth budget"
+    ],
+    "recovery": true,
+    "unknownNestedNullPreserved": true,
+    "wasmSha256": "1d3398dedd0728578a4ef424260d313ffda90ca36e8b233319604370047b81d0",
+    "sourceSha256": "75202f608d061fed9a0a20615dc71f22d8de174ba2c6923a151098e41ff104bb",
+    "referenceSources": [
+      {
+        "path": "tools/checks/NativeTileLinkCheck.java",
+        "sha256": "451e3df9e9041a66eae2c306cc43bdcd441b0d85b1e1dc96248322ee69dc5016"
+      },
+      {
+        "path": "tools/checks/NativeTilePlacementCheck.java",
+        "sha256": "97601e16bfe58a64918b760a7d2c1ea62510983d45429ea10c92b2d5d9d76b57"
+      },
+      {
+        "path": "tools/checks/NativeTerrainLinkCheck.java",
+        "sha256": "d0efc707a895d9c127648a38de7fc169e54d09e8f1dd4a3d405353718915dc00"
+      },
+      {
+        "path": ".upstream/Iris/probe/src/main/java/art/arcane/iris/probe/StubTileData.java",
+        "sha256": "fd58a19698c37408ab10675d02eb885f0edee508825ec1db1e5a14bbba5fbf5f"
+      },
+      {
+        "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/structure/object/IrisObjectIO.java",
+        "sha256": "960400476b7ae2046f5faddcfe655f027d1159caee75cb08b9cd55e870b638cf"
+      },
+      {
+        "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/world/storage/matter/TileMatter.java",
+        "sha256": "b563ceed1ed90922aca7415c55a3fd8c3e89f13490d580773f936fb86b033071"
+      }
+    ],
+    "terrainParityVerified": false,
+    "clientRenderingParity": false,
+    "browserVerified": false,
+    "tileContinuationCodecWasmVerified": false
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "835254501a661b13dcb25e198bee16dc6ac470cc3a444db075221f7409c3024a",
+    "apps/web/workers/iris-worker.js": "90b5e48731005910a29afdecd73b407bf45bcb04d82ca596f343fae323788e2a",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "18673ff691f864e20ef018f5d08c543eb487597415b5a76f2edbeefa819aef32",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java": "9ebce617985c7ccf5df3c82530b94ae57e9c06cc91775bdfff03a29e2073cc3e",
+    "packages/iris-engine/java/studio/engine/pack/WorkerTileData.java": "83a35285b4d71f4e7419a8cbe188b9d6a4be5e489c4ec00e53772b0a22506c8b",
+    "packages/iris-engine/java/studio/engine/pack/MemoryObjectLoader.java": "801abd84352c68bcb1599f4934f45b4a26ea62f8206ba7b499f5716a188c72c5",
+    "packages/iris-engine/java/studio/engine/matter/WorkerMatterCodecs.java": "c9222fd6e365a277e6e7e46a57109df4215bf8504af055109e5acf1f919c03f1",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerTerrainPlatform.java": "e3b8b04bfb72e262013d5eea1d1f7022b09f021aa711515a465b5f9bcf940527",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java": "05042bf1aee9306aae200936aea8676107babea87f2e9d8d3a054ebe212ec6f3",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java": "bb51b5ad78ee6e1c24e9b6e6d59db6e11fecb6bb92ccb5a7982c3a7c76d09e9b",
+    "packages/iris-engine/java/studio/engine/terrain/OverworldTerrainStage.java": "3c0a987be0edae59ff38cc19a7a905cd15b666347cf43cecca030734c4928518",
+    "tools/engine-build/build.mjs": "049f9b2f72c629c65dc38cc5ba681ba255191fab758e7da7049e0fcf10e590e8",
+    "tools/checks/NativeTileLinkCheck.java": "451e3df9e9041a66eae2c306cc43bdcd441b0d85b1e1dc96248322ee69dc5016",
+    "tools/checks/NativeTilePlacementCheck.java": "97601e16bfe58a64918b760a7d2c1ea62510983d45429ea10c92b2d5d9d76b57",
+    "tools/checks/NativeTerrainLinkCheck.java": "d0efc707a895d9c127648a38de7fc169e54d09e8f1dd4a3d405353718915dc00",
+    "tools/checks/native-object-smoke.mjs": "f90d40924d63ec4796f04aea6a513cf49e6a38e1ded739786d1907ff4f9a4a3e",
+    "tools/checks/native-tiles-smoke.mjs": "80df776a2fbaca183fb71befc8da643f81c2300a924f8c5d3af922f317c4640b"
+  },
+  "build": {
+    "nativeJavaBuild": "pass",
+    "wasmBuild": "pass",
+    "wasmSha256": "1d3398dedd0728578a4ef424260d313ffda90ca36e8b233319604370047b81d0",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "packagedSourceSha256": "2c05fffbe8cf92edfb1bc0c8097d3eed9cece8e3e671f04abdf63e4fc7fade20",
+    "testedSourceSha256": "75202f608d061fed9a0a20615dc71f22d8de174ba2c6923a151098e41ff104bb",
+    "sourceRefresh": "Refreshed adapter descriptions and source archive after the local compiler finished; runtime Java/source entries match current files and Wasm bytes are unchanged.",
+    "sourceEntriesChecked": true,
+    "registryReexportedThisBatch": false,
+    "requiredEngineDevelopmentApplicationBuild": "pass",
+    "builtAt": "2026-10-23T15:34:49.984Z",
+    "node": "v24.19.0",
+    "engineManifestSha256": "8b5426f884af4497d6cab588c4205a6e87a5d1d253cdafdce9bcaddae42d95bf",
+    "browserRegistrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "terrainAvailable": false,
+    "qualifiedTerrainEngine": false
+  },
+  "limits": {
+    "envelopeValues": 4096,
+    "jsonDepth": 64,
+    "objectTileRecords": 1024,
+    "objectJsonCharacters": 1048576,
+    "objectAggregateValues": 65536,
+    "objectCacheLogicalBytes": 16777216,
+    "cachedObjects": 8,
+    "transportRecords": 1024,
+    "transportJsonCharacters": 1048576,
+    "displayRecords": 8,
+    "displayCharactersPerRecord": 4096,
+    "cacheCharges": "input bytes + 2*JSON chars + 64*decoded values + 128*tile records; estimates, not measured heap"
+  },
+  "qualification": {
+    "modernObjectPayloadSelectedReference": true,
+    "originalTileMatterNodeJVM": true,
+    "selectedNativeDestinationReplay": true,
+    "actualWasmObjectLoader": true,
+    "capturedChunkWorkerTransport": true,
+    "controlledUI": true,
+    "legacyTiles": false,
+    "fullPropertyConformance": false,
+    "tileContinuationCodecWasmVerified": false,
+    "tileWorldExecution": false,
+    "blockEntityRendering": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingParity": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "complete": false
+  },
+  "workflow": {
+    "parentCommit": "9cf77bc19732cf287c4d04cb9e1981dab392afe2",
+    "registryStateOrPairSweepRun": false,
+    "comprehensiveSuiteRun": false,
+    "githubWorkflowRun": false,
+    "worldChunkFilesModified": false
+  },
+  "open": [
+    "Strict namespaced modern envelopes only; legacy/noncanonical/lenient inputs and complete value/map ordering conformance remain unqualified.",
+    "One native object/tile and one tiny explicit diagnostic edit with two selected block probes/two populated tile records; this is not complete placement/rollback/terrain coverage.",
+    "Wasm tile-continuation encoding/replay registration is connected but not executed by this focused check.",
+    "Imported object placement, world application and block-entity rendering remain unavailable.",
+    "Remaining native terrain/platform paths, production biome grids/lighting, release provenance/checksum, authorized F8thful, actual browser/GPU/performance and final comprehensive verification remain open."
+  ]
+}
