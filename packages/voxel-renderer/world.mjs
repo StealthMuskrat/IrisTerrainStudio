@@ -47,7 +47,7 @@ export class WorldRenderer{
   bind(){this.bindGroups={};for(const name of['opaque','transparent'])this.bindGroups[name]=this.gpu.device.createBindGroup({layout:this.pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:this.uniform}},{binding:1,resource:this.atlas.texture.createView()},{binding:2,resource:this.atlas.sampler},{binding:3,resource:{buffer:this[name+'Materials']??this.defaultMaterials}}]});this.bindGroup=this.bindGroups.opaque;}
   cancelMesh(){this.job=(this.job||0)+1;this.meshSession?.cancel();this.pendingMesh?.dispose();this.pendingMesh=null;}
   suspendTextures(){if(this.disposed)return;this.cancelMesh();this.atlas.pause();}
-  async setVolume(input,stack,{clip,mode='textured',blendRadius=0}={}){
+  async setVolume(input,stack,{clip,mode='textured',blendRadius=0,biomeSampling='stored'}={}){
     if(this.disposed)throw new DOMException('World renderer disposed.','AbortError');
     // Generated inputs are immutable. Reusing the exact committed input avoids another
     // complete block/biome validation scan during an appearance-only replacement.
@@ -59,7 +59,7 @@ export class WorldRenderer{
         catch(error){models[i]=[];diagnostics.push({block:volume.palette[i].id,message:error.message});}
         if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       }
-      if(!cells){tintInput=await prepareBiomeTints(stack,volume,{blendRadius});fluidMaterials={};for(const kind of new Set(renderProfiles.filter(Boolean).map(p=>p.fluid).filter(kind=>kind!=='empty'))){try{Object.assign(fluidMaterials,await prepareFluidMaterials(stack,atlas,[kind]));}catch(error){diagnostics.push({block:'minecraft:fluid/'+kind,message:error.message});}}}
+      if(!cells){tintInput=await prepareBiomeTints(stack,volume,{blendRadius,samplingMode:biomeSampling});fluidMaterials={};for(const kind of new Set(renderProfiles.filter(Boolean).map(p=>p.fluid).filter(kind=>kind!=='empty'))){try{Object.assign(fluidMaterials,await prepareFluidMaterials(stack,atlas,[kind]));}catch(error){diagnostics.push({block:'minecraft:fluid/'+kind,message:error.message});}}}
       if(this.job!==id||this.disposed)throw new DOMException('Voxel meshing cancelled.','AbortError');
       const meshPalette=cells?.palette??volume.palette.map((block,index)=>({...block,renderProfile:renderProfiles[index]??null,modelOffset:offsetProfiles[index]??null,solid:!offsetProfiles[index]&&opaqueUnitCube(models[index])}));
       session=this.pendingMesh=new MeshSession(volume,models,meshPalette,{cellColors:cells?.cellColors,tintInput,fluidMaterials,lightingInput,onProgress:progress=>this.onProgress?.(progress)});

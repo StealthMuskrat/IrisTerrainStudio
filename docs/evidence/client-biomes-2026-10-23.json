@@ -1,0 +1,242 @@
+{
+  "date": "2026-10-23",
+  "scope": "original client seed hashing/eight-corner biome selector over explicit source-derived native offline writer projection",
+  "result": "pass",
+  "reference": {
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "captureSourceSha256": "86e55fe9ff401e00521719d2062f7278bca2ee75c34def2602405b22e2c3fe6b",
+    "requestSha256": "8436c3ebe1f8f152ad1a6d76e274b54109c0304502caaadaf316f240e75d7def",
+    "outputSha256": "9ad4d9d0bfcc3b834a4c0a0314ceede262e1455f7cbeecec92f139135e557b4f",
+    "libraries": [
+      {
+        "name": "com.google.code.gson:gson:2.14.0",
+        "sha1": "efc0e34ede4e3204eaefb84a00e55e8c86634382",
+        "sha256": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f"
+      },
+      {
+        "name": "com.google.guava:failureaccess:1.0.3",
+        "sha1": "aeaffd00d57023a2c947393ed251f0354f0985fc",
+        "sha256": "cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb"
+      },
+      {
+        "name": "com.google.guava:guava:33.6.0-jre",
+        "sha1": "c376b13067cc99a5774403530953f7b05a91e218",
+        "sha256": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3"
+      },
+      {
+        "name": "com.mojang:authlib:10.0.77",
+        "sha1": "add8754cda96cf0cd840441632875648836f8a71",
+        "sha256": "521672866582633a412c82171d3cfa416ecaccdf05a43baf809c16f9aec07068"
+      },
+      {
+        "name": "com.mojang:brigadier:1.3.11",
+        "sha1": "3373d1e7bf00c8b99bed1ea4efb8c47344e4a887",
+        "sha256": "9d09cf4819de83dfcd38bcb212d5f2227131791cef3abbfca3321d6fb2b9a64d"
+      },
+      {
+        "name": "com.mojang:datafixerupper:10.0.21",
+        "sha1": "b6b2ae770c02e0c1eb90f9985b151e9085a38d0b",
+        "sha256": "3547cb1da8993fb7ebd42494d0e78997d2cfbe90c421f5efd022863e6909941e"
+      },
+      {
+        "name": "com.mojang:logging:1.7.12",
+        "sha1": "351cea64a5233361327d8d54c44277041beed97f",
+        "sha256": "3c7ac9742fa98c773275379eb1046c048b5d2ee989152a8c69e7ba696c3f8538"
+      },
+      {
+        "name": "commons-io:commons-io:2.20.0",
+        "sha1": "36f3474daec2849c149e877614e7f979b2082cd2",
+        "sha256": "df90bba0fe3cb586b7f164e78fe8f8f4da3f2dd5c27fa645f888100ccc25dd72"
+      },
+      {
+        "name": "io.netty:netty-buffer:4.2.16.Final",
+        "sha1": "05397ef65dcb60670e0e0dba4854522873af3070",
+        "sha256": "cc36ae9fbd0b03fe755eb4eb4424ca53b59cfd297d7fd47d49e5b1059beded6c"
+      },
+      {
+        "name": "io.netty:netty-codec-base:4.2.16.Final",
+        "sha1": "01a01d45a9efc228c6d747525848b065e0656b5f",
+        "sha256": "feb410225938d9970de6b624a0c031d079804fa5cc5e1ec6e9298f16db5998a7"
+      },
+      {
+        "name": "io.netty:netty-common:4.2.16.Final",
+        "sha1": "c2bc7fa5acfa2afc777e944d84f0aa65559cc81e",
+        "sha256": "9825ee68a0dc4cd2b53e2f532502401b2211bad9b77e8b04882d9e64487283ff"
+      },
+      {
+        "name": "it.unimi.dsi:fastutil:8.5.18",
+        "sha1": "a6cff377eecc19c2037bf31568a6d7106b50ba1f",
+        "sha256": "9094ae67d01d0ad246f886f11ad557fc2e79c72cbf3feed83e1512a8ae90a74a"
+      },
+      {
+        "name": "org.apache.commons:commons-lang3:3.20.0",
+        "sha1": "65897b3e5731220962e659e001904af3c3cbeba9",
+        "sha256": "69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4"
+      },
+      {
+        "name": "org.apache.logging.log4j:log4j-api:2.26.0",
+        "sha1": "ad52af0ecf054a7e3f275a2e180ee06d9c490951",
+        "sha256": "820de7bbaf430eaf2e3e5ccb92f23e2085797c5ac4d4f7fc6c8b660fbefa1dbc"
+      },
+      {
+        "name": "org.apache.logging.log4j:log4j-core:2.26.0",
+        "sha1": "d267ca60b27ddb075e0b4e75e7875859717bf85f",
+        "sha256": "406bb3132c47a5d322e5c571feb0787ca84496469f346eb51f1ef2ee45499902"
+      },
+      {
+        "name": "org.apache.logging.log4j:log4j-slf4j2-impl:2.26.0",
+        "sha1": "668c0f0e813d83f00a7182533aa658ec7e7a0a0d",
+        "sha256": "cfc1bddbd39e684b698ae968291d8a3b3a55ee0ec2ef3d3ea5c2336a9e151598"
+      },
+      {
+        "name": "org.joml:joml:1.10.9",
+        "sha1": "438e036486bad66b189bff385dd07dea4f74a146",
+        "sha256": "feca4db853371704338621c120acc5cc32300d8af635fa42414b6213301e216b"
+      },
+      {
+        "name": "org.jspecify:jspecify:1.0.0",
+        "sha1": "7425a601c1c7ec76645a78d22b8c6a627edee507",
+        "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+      },
+      {
+        "name": "org.slf4j:slf4j-api:2.0.17",
+        "sha1": "d9e58ac9c7779ba3bf8142aff6c830617a7fe60f",
+        "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+      }
+    ],
+    "nativeClassSha256": {
+      "net/minecraft/world/level/biome/BiomeManager": "4f024bcc37eb8f989e0e80501c3d42bca72fda640783b24cfa6991101530223e",
+      "net/minecraft/util/LinearCongruentialGenerator": "386a17aa657839e303b76af93034d6f9053468b9303ce88511d4ce23a7ba8a12",
+      "net/minecraft/world/level/chunk/ChunkAccess": "267d279e1665787cec813aff89f105406dd30c5c27dfc71c39868bd6bb566032"
+    },
+    "offlineWriterProjectionSource": {
+      "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+      "path": "adapters/bukkit/nms/v26_3_R1/src/offline/java/art/arcane/iris/probe/NativeRegionTerrainWriter.java",
+      "sourceSha256": "3ca1efd20e1668d3957dffaf2414a31217e0771e3385f996972d8f4654ea3f72",
+      "gitBlob": "6382c9de58e73c20612e2d0ae78536c272645501",
+      "reference": "reviewed source; projection not executed through writer; production equivalence unqualified"
+    },
+    "versionMetadataSha1": "61fff1316bd50312624a858bbb5eb18fa45208ed"
+  },
+  "focusedComparison": {
+    "result": "pass",
+    "seedHashes": 4,
+    "nativeCoordinates": 16,
+    "projectionSamples": 2,
+    "nativeAlgorithm": true,
+    "offlineWriterProjection": "source-derived lower-quart corner; aligned full vertical coverage",
+    "writerProjectionExecutedNatively": false,
+    "productionWriterParity": false,
+    "actualWorker": {
+      "occupiedCells": 1,
+      "sourceCells": 4096,
+      "clientColorDiffersFromStored": true,
+      "storedModeCompatibleWithoutSeed": true,
+      "cacheRetained": true,
+      "pickingOwner": true,
+      "missingHaloReported": true,
+      "sourceUnchanged": true
+    },
+    "cachedBiomesAndErrors": true,
+    "workBudgetRefused": true,
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingParity": false,
+    "terrainParityVerified": false
+  },
+  "controlledUI": {
+    "result": "pass",
+    "retainedVolume": true,
+    "cameraRetained": true,
+    "generationCalls": 0,
+    "rendererOption": true,
+    "busyRefusal": true,
+    "renderFailureRollback": true,
+    "preferenceSaved": true,
+    "clientSamplingMode": true,
+    "bothPreferencesRollback": true,
+    "missingBiomeGuidance": true,
+    "closedDialogRefusal": true,
+    "browserVerified": false
+  },
+  "nativeSeedMetadataHandoff": {
+    "result": "pass",
+    "nativeEnvironments": [
+      "NORMAL",
+      "NETHER"
+    ],
+    "workerEnvironment": "NETHER",
+    "nativeBiomeSeed": "9223372036854775807",
+    "workerVolume": [
+      16,
+      16,
+      16
+    ],
+    "checkedVoxelValues": 0,
+    "wasmSha256": "815c71f94d9bc437664b482bffd0eba9e16e145b75d4f45164f9b4bea64788ff",
+    "sourceSha256": "36fadf00664324ae4c775b3f13b25da4d632e174e61bf04b6708ffe74715661d",
+    "terrainParityVerified": false,
+    "browserVerified": false
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "1278c635f98cf940e84c4ea7c229b9b4949d74b208a3fe1567c336ebb969e270",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java": "1d39143cb80fb8ba924821eff5447cad68408f1dcdce033829d1db4caa6f0561",
+    "packages/resource-packs/client-biome-sampling.mjs": "8e6dc83d7988d853f165263c5742f33a6037d1642802b6961a9c9e6f24508ef0",
+    "packages/resource-packs/biome-tints.mjs": "8bb78d300d203322fdc33bea7aa6a50d901cf90674f6b71dc844073a762812f5",
+    "packages/voxel-renderer/mesh-worker.mjs": "97f145a74c0859f1cce8fcec235a38817a21afd60ce50f5732f069f96ebbac71",
+    "packages/voxel-renderer/world.mjs": "8e8408199e37516c7e97d04aa7af844c7e5632672a04d22889a686d738697960",
+    "tools/checks/MinecraftBiomeSamplingCheck.java": "86e55fe9ff401e00521719d2062f7278bca2ee75c34def2602405b22e2c3fe6b",
+    "tools/checks/capture-client-biomes.py": "4c4177a96608eee396f66994e80000257e2191bd399cfb6d874995fed056a156",
+    "tools/checks/client_reference_inputs.py": "abdecb84b37a647f09bee0d8c8d2c4995887318158ea153b923b810dd09243e8",
+    "tools/checks/capture-client-cuboids.py": "9dcf4737eeb384ea4c61b934ef9f2189f453293cec0ad3c5887f8854842e5e94",
+    "tools/checks/client-biomes-smoke.mjs": "9eecf78db63fdeb32bbccdd762cbd44a2892dc4685459190a96676d40470c370",
+    "tools/checks/biome-blend-ui-smoke.mjs": "617ea3da5df12ebf1168d97213ba274a7f18a12c0d85de46472b55e389aee74d",
+    "tools/checks/native-environment-smoke.mjs": "37335898baface0c9a3259e0ef807ddbfc8ce3597f2c6a1f123f5a0d7ffbbf98",
+    "tools/checks/fixtures/client-biomes.json": "8436c3ebe1f8f152ad1a6d76e274b54109c0304502caaadaf316f240e75d7def"
+  },
+  "build": {
+    "nativeJavaBuild": "pass",
+    "wasmBuild": "pass",
+    "requiredEngineDevelopmentApplicationBuild": "pass",
+    "node": "v24.19.0",
+    "builtAt": "2026-10-23T14:38:34.312Z",
+    "wasmSha256": "815c71f94d9bc437664b482bffd0eba9e16e145b75d4f45164f9b4bea64788ff",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "36fadf00664324ae4c775b3f13b25da4d632e174e61bf04b6708ffe74715661d",
+    "engineManifestSha256": "d48ac986e02dd9ab0498b08c1055d43d9c89f5e99662d15a651670715886c324",
+    "sourceServerJarSha256": "203daf198d4e63a1db4ec807d65b835669481efdbb2812802d0628a6119674b9",
+    "browserRegistrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "registryReexportedThisBatch": false,
+    "productionInputQualified": false
+  },
+  "qualification": {
+    "originalClientSelectorMethods": true,
+    "selectedSeedHashesAndQuartCoordinatesMatch": true,
+    "writerProjectionSourceReviewed": true,
+    "writerProjectionExecutedNatively": false,
+    "productionWriterParity": false,
+    "realNodeMeshWorker": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingParity": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "complete": false
+  },
+  "workflow": {
+    "parentCommit": "e852d129a505aa98aa9a1f5492bbc52792c7f619",
+    "nativeClientCaptureNeedsIrisBuild": false,
+    "nativeClientCaptureExportsStates": false,
+    "stateOrPairSweepRun": false,
+    "comprehensiveSuiteRun": false,
+    "githubWorkflowRun": false
+  },
+  "limits": [
+    "Four signed-long seeds and sixteen selected coordinate probes exercise original unchanged BiomeManager methods, without starting a native registry, world, renderer or GPU.",
+    "Lower-quart projection and vertical clamping are source-derived from the pinned offline writer and ChunkAccess; the native writer projection is not executed. This does not qualify production Bukkit/modded client-visible biome grids.",
+    "Only full native vertical coverage, section-aligned volumes and retained exact seed metadata are admitted. Horizontal halo is not generated or guessed; affected tinted faces report missing data.",
+    "One occupied authored worker cell checks selected-source color, retained section cache/picking and immutable source arrays. It is not a native terrain-volume comparison.",
+    "Browser/GPU/UI, measured performance, world lightmap/AO/emission/environment shaders, production biome source/halo, remaining native terrain/platform options, F8thful, exact release provenance/checksum and final comprehensive verification remain open."
+  ]
+}

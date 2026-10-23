@@ -53,7 +53,7 @@ Implementation and qualification remain separate gates. The current cuboid batch
 | --- | --- | --- |
 | Native reference/dependency identity | Explain the unchanged checksum failure and establish exact release artifacts/registry/schema provenance | #2, #3, #15 |
 | Remaining supported terrain options/platform paths | Connect remaining in-scope state/custom/object/lifecycle paths and compare with the original engine for an explicitly stated supported pack | #6, #10 |
-| Remaining Minecraft rendering | Native world lightmap/AO/environment behavior, authentic quart/Voronoi biome input and remaining geometry/filter/parser options | #9, #11 |
+| Remaining Minecraft rendering | Native world lightmap/AO/environment behavior, production biome-grid/halo equivalence (seeded client lookup now has an explicit offline-writer mode) and remaining geometry/filter/parser options | #9, #11 |
 | Authorized default assets | Supply the intended F8thful archive in the active workspace, verify identity and exercise its real dependency roots | #5 |
 | Actual browser execution | A working browser/GPU environment; prior verified Chrome exited with SIGTRAP before navigation | #4, #8, #9 |
 | Final program verification | After implementation: complete applicable native/browser/integration/security/deployment and measured performance checks | #12 |

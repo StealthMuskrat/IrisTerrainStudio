@@ -28,3 +28,6 @@ The source is explicitly the retained per-block physical biome array. It is **no
 - `native-environment-smoke.mjs` checks two original native environment outputs and one 16³ native worker metadata handoff. It inspects metadata only, with zero voxel-value comparisons. The browser engine is rebuilt with reused native inputs; no registry or state-pair re-export runs.
 
 These are selected implementation checks. Actual browser/GPU rasterization, full geometry/lighting/filtering/biome coverage, authorized F8thful assets, native terrain parity/provenance and final comprehensive verification remain open. All qualification flags stay false.
+
+
+The later [seeded biome integration](MINECRAFT_BIOME_SAMPLING.md) adds native seed hashing/eight-corner selection over an explicit offline-writer quart projection, alongside the original stored source. It does not qualify production visible-biome grid/halo equivalence; the earlier evidence above keeps its historical source and scope.
