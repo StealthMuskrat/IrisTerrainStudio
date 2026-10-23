@@ -9,6 +9,7 @@ import art.arcane.iris.pack.loading.IrisData;
 /** Worker-owned runtime state. Native IrisComplex owns all biome and height algorithms. */
 public final class BrowserTerrainEngine extends EngineBoundary {
     private final IrisDimension dimension;
+    private final boolean studioEnabled;
     private final IrisData data;
     private final SeedManager seeds;
     private final GenerationSessionManager sessions=new GenerationSessionManager();
@@ -39,9 +40,13 @@ public final class BrowserTerrainEngine extends EngineBoundary {
             }
         }
     }
-    public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){
-        this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
+    public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry){this(dimension,data,seed,registry,false);}
+    public BrowserTerrainEngine(IrisDimension dimension,IrisData data,long seed,art.arcane.iris.spi.PlatformRegistries registry,boolean studioLayout){
+        this.studioEnabled=studioLayout;this.dimension=dimension;this.data=data;seeds=new SeedManager(seed);
         admitHeight(dimension);
+        if(studioLayout&&dimension.getStudioMode()==null)throw new IllegalArgumentException("Studio layout requires a native studio mode");
+        if(studioLayout&&(dimension.hasDimensionStack()||dimension.hasUpperDimension()))throw studio.engine.UnsupportedPlatform.unavailable("Studio layout with upper/stack dimensions");
+        if(studioLayout&&dimension.getStudioMode()==art.arcane.iris.studio.StudioMode.OBJECT_BUFFET)throw studio.engine.UnsupportedPlatform.unavailable("Object studio layout; select a native biome buffet or normal mode");
         if(dimension.hasDimensionStack()&&(dimension.getDimensionStack().getDimensions()==null||dimension.getDimensionStack().getDimensions().size()>16))throw new IllegalArgumentException("Dimension stack exceeds its sixteen-layer worker budget");
         world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(seed).build();
         WorkerTerrainPlatform.install(registry);
@@ -73,7 +78,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
     @Override public art.arcane.iris.generation.mantle.EngineMantle getMantle(){return nativeMatter==null?mantle:nativeMatter;}
     @Override public art.arcane.iris.world.IrisWorld getWorld(){return world;}
     @Override public EnginePlatformHooks getPlatformHooks(){return new EnginePlatformHooks(){};}
-    @Override public boolean isStudio(){return false;}
+    @Override public boolean isStudio(){return studioEnabled;}
     @Override public boolean isClosed(){return closed;}
     @Override public int getCacheID(){return System.identityHashCode(this);}
     @Override public UpperDimensionContext getUpperContext(){return upper;}

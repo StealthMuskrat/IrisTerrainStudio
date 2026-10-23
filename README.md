@@ -120,7 +120,7 @@ The comparator checks provenance, complete capture bounds, exact floating-point 
 No F8thful archive or Minecraft assets were supplied with the specification. Asset validation and redistribution review remain open. The optional noise-module installer preserves the compiled module's corresponding source and notices. No proprietary game assets are committed.
 
 
-Native `.iob` object resources can now be inspected from the explorer using the original Iris binary reader in the browser worker. The inspector shows dimensions and a bounded block sample. Binary bytes are preserved, and changed object content invalidates cached previews. Object/structure placement and tile-entity payload support remain unfinished; see [development details](docs/DEVELOPMENT.md#native-binary-object-resources).
+Native `.iob` object resources can now be inspected from the explorer using the original Iris binary reader in the browser worker. The inspector shows dimensions, a bounded block sample and preserved modern tile payloads. Binary bytes are preserved, and changed object content invalidates cached previews. Legacy tiles, block-entity rendering, imported object placement and full tile continuation qualification remain unfinished; see [development details](docs/DEVELOPMENT.md#native-binary-object-resources).
 
 
 For an isolated procedural tree or natural-object preview, open a biome or region and choose **Preview procedural object or tree**. Select its native entry and baked variant index; the configured entry seed is preserved exactly. The preview uses local object coordinates and matching local block assets. Automatic terrain scattering and full collision replay remain unfinished. See [development details](docs/DEVELOPMENT.md#isolated-native-procedural-variants).
@@ -132,7 +132,7 @@ The same chooser can attempt **Single placement on terrain** at the selected chu
 **Native procedural content · one source chunk · development** now runs native world-seed derivation, chance/density selection and tree/object placement for the selected source chunk. Neighboring source contributions and collision replay remain unfinished. Use natural entries without imported objects, ruins or cave anchors. See [the current source-pass scope](docs/DEVELOPMENT.md#native-one-source-procedural-scatter).
 
 
-Use **Native procedural neighborhood · one chunk · development** to include the required neighboring source contributions. Native radii determine the prepared window; one destination chunk is displayed. Plan caching, persistent continuations and full terrain qualification remain unfinished. See [the neighborhood scope](docs/DEVELOPMENT.md#native-procedural-source-neighborhoods).
+Use **Native procedural neighborhood · one chunk · development** to include the required neighboring source contributions. Native radii determine the prepared window; one destination chunk is displayed. Native plan caching and bounded in-memory continuations are connected for the development subset; durable persistence and full terrain qualification remain unfinished. See [the neighborhood scope](docs/DEVELOPMENT.md#native-procedural-source-neighborhoods).
 
 
 Native directional state rotation now runs the pinned modded-platform algorithm with exported property handles and native angle-segment math. A few selected axis/facing/sign/vine/wall/wire states and a fixed-yaw tree placement match the JVM reference; complete state/platform coverage remains unqualified. See [rotation scope and evidence](docs/DEVELOPMENT.md#native-directional-state-rotation).
@@ -141,7 +141,7 @@ Native directional state rotation now runs the pinned modded-platform algorithm 
 Native edit-state merging now runs the pinned platform merger with owned property handles and native partial-property masks. Seven selected merges and one explicit-rule oak placement match the JVM reference. This diagnostic does not add edit settings to native procedural entry types. See [merge scope and evidence](docs/DEVELOPMENT.md#native-edit-state-merging).
 
 
-The native source-plan cache platform boundary now has an isolated JVM/Node-Wasm development check using controlled plan fixtures. Terrain previews remain uncached until real source-plan integration is qualified. See [cache scope and the current native build dependency blocker](docs/DEVELOPMENT.md#isolated-native-source-plan-cache-boundary).
+Native source-plan caching and bounded continuations now serve the connected procedural development subset. The original isolated cache check remains boundary evidence; complete placement, persistence and release qualification remain open. See [the original cache boundary scope](docs/DEVELOPMENT.md#isolated-native-source-plan-cache-boundary).
 
 Texture rendering now classifies alpha across referenced animation frames, refreshes a one-pixel atlas gutter on every uploaded frame, and bounds owned bitmap decoding (including pending loads). Pack replacement pauses the previous atlas before closing its image sources. Interpolated animation, verified Minecraft UV-lock/weighted selection, fluid/tint adapters and real browser/GPU qualification remain pending.
 
@@ -170,3 +170,6 @@ Original hydrology publication is now connected in registered Overworld terrain 
 
 
 **Native surface hydrology · planning** now maps original primary surface feature types from the current unsaved dimension snapshot. It samples whole blocks at grid centers and supports the existing retained map inspector, category legend, analysis and export. The native selection/flooring rule remains in export metadata. Limits are 256 samples per axis and a 256-block window in each axis; cancel stops its worker. Five selected JVM/Wasm samples, refusal/recovery and controlled transport/cancellation pass. This host-dimension planning map omits underground/deep-fluid layers and does not simulate fluids or qualify all terrain/rendering options. See the [map boundary](docs/research/HYDROLOGY_SURFACE_MAP.md).
+
+
+Enable **Studio layout** to apply the dimension’s native Studio biome grid to region, map and supported 3D previews. Active layouts take native precedence over authored focus. Outside-grid scalar maps use the native first-cell fallback; outside-grid 3D chunks show the native-source-derived barrier floor at world Y zero and skip biomes/content. Use **Block ID cells** to inspect the normally invisible barrier. Layered, object-buffet, hydrology and explicit procedural Studio combinations remain unavailable. See [Studio layout scope](docs/research/STUDIO_BIOME_LAYOUT.md).

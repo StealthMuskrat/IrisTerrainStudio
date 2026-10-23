@@ -415,6 +415,16 @@ public final class BrowserPlatformPlugin implements TeaVMPlugin {
             if(name.equals("art.arcane.iris.pack.loading.IrisData"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("customBiomeResourceKey"))unavailable(method,"Custom biome registry contributions and epoch contracts");
             if(name.equals("art.arcane.iris.configuration.IrisSettings"))for(MethodHolder method:cls.getMethods())if(method.getName().equals("read"))unavailable(method,"Server settings filesystem IO; install worker settings first");
             if(name.equals("art.arcane.iris.generation.runtime.IrisComplex")){
+                int studioHosts=0;
+                for(MethodHolder method:cls.getMethods())if(method.getName().equals("<init>")){
+                    Program p=method.getProgram();if(p==null)continue;var expected=new java.util.HashSet<Variable>();
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof StringConstantInstruction text&&"bukkit".equals(text.getConstant()))expected.add(text.getReceiver());
+                    for(int b=0;b<p.basicBlockCount();b++)for(Instruction instruction=p.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference(String.class,"equals",Object.class,boolean.class))&&expected.contains(call.getInstance())){
+                        Variable expectedHost=call.getInstance(),actual=call.getArguments().get(0);call.setInstance(null);call.setArguments(expectedHost,actual);call.setType(InvocationType.SPECIAL);call.setMethod(new MethodReference("studio.engine.terrain.WorkerStudioLayout","acceptsHost",ValueType.object("java.lang.String"),ValueType.object("java.lang.Object"),ValueType.BOOLEAN));studioHosts++;
+                    }
+                }if(studioHosts!=1)throw new IllegalStateException("Pinned studio-layout platform predicate changed");
+            }
+            if(name.equals("art.arcane.iris.generation.runtime.IrisComplex")){
                 int uuids=0;for(MethodHolder method:cls.getMethods()){Program program=method.getProgram();if(program==null)continue;for(int b=0;b<program.basicBlockCount();b++)for(Instruction instruction=program.basicBlockAt(b).getFirstInstruction();instruction!=null;instruction=instruction.getNext())if(instruction instanceof InvokeInstruction call&&call.getMethod().equals(new MethodReference(java.util.UUID.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class))){call.setMethod(new MethodReference(studio.probe.UuidCompat.class,"nameUUIDFromBytes",byte[].class,java.util.UUID.class));uuids++;}}
                 if(uuids!=1)throw new IllegalStateException("Pinned complex focus UUID call changed");
             }

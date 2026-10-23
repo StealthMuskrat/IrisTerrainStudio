@@ -1,4 +1,5 @@
 let hydrologyNetworkModule;
+const terrainPreviewFields=new Set(['terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves','hydrology']);
 let runtime, registryRuntime, terrainContext, active = 0;
 function clearContext(api){terrainContext=null;api.clear();}
 const digest = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('');
@@ -129,6 +130,7 @@ self.onmessage=async({data})=>{
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;
     const dimensions=options.field==='iris-style3d'?3:2;
     const registryInfo=options.packSnapshot?await registry(api,manifest):null;if(active!==id)return;
+    if(options.packSnapshot&&options.buffet===true&&terrainPreviewFields.has(options.field)){if(['procedural-source','procedural-neighborhood','procedural-placement'].includes(options.field))throw new Error('Studio layout is not connected for explicit procedural diagnostics. Disable Studio layout for this preview.');if(typeof api.prepareStudioTerrain!=='function'||typeof api.paintStudioOutsideChunk!=='function')throw new Error('Rebuild the local Iris engine to enable native Studio terrain layouts.');}
     const retain=['procedural-neighborhood','overworld-mode'].includes(options.field),contextKey=retain?await terrainContextKey(options,manifest):null;
     if(active!==id)return;const contextReused=retain&&terrainContext?.key===contextKey;
     let terrainInfo=contextReused?terrainContext.info:undefined;
@@ -154,7 +156,16 @@ self.onmessage=async({data})=>{
       if(['procedural-object','procedural-source','procedural-placement','hydrology'].includes(options.field))clearContext(api);
       self.postMessage({kind:'result',id,result},transfers);
     };
-    if(options.packSnapshot&&!contextReused){if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(['terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves','hydrology'].includes(options.field)){if(options.buffet===true)throw new Error('Studio buffet terrain is not connected yet. Disable Studio layout for native biome and height maps.');terrainInfo=JSON.parse(api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
+    if(options.packSnapshot&&!contextReused){if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(terrainPreviewFields.has(options.field)){terrainInfo=JSON.parse(options.buffet===true?api.prepareStudioTerrain(options.dimensionKey,seed):api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
+    if(options.buffet===true&&['terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage'].includes(options.field)){
+      const bx=Math.floor(x/16)*16,bz=Math.floor(z/16)*16,chunk=JSON.parse(api.paintStudioOutsideChunk(bx,bz));
+      if(chunk){
+        if(chunk.scope!=='native-studio-buffet-outside-development'||chunk.studioOutsideLayout!==true||chunk.nativeStudioGeneratorExecuted!==false||chunk.x!==bx||chunk.z!==bz||!Number.isInteger(chunk.minY)||!Number.isInteger(chunk.height)||chunk.height<1||chunk.height>4096||!Array.isArray(chunk.palette)||chunk.palette.length<1||chunk.palette.length>2||!Array.isArray(chunk.cells)||chunk.cells.length!==256*chunk.height||chunk.cells.some(value=>!Number.isInteger(value)||value<0||value>=chunk.palette.length)||chunk.activeLeasesAfter!==0)throw new Error('Native Studio outside-layout output is incomplete.');
+        const blocks=Uint32Array.from(chunk.cells),palette=chunk.palette.map(key=>JSON.parse(api.registryRenderingState(key)));
+        await publishResult({field:options.field,scope:'iris-studio-buffet-outside-development',sourceCommit:manifest.irisCommit,seed,generationMs:performance.now()-started,volume:{width:16,height:chunk.height,depth:16,origin:[bx,chunk.minY,bz],palette,blocks:blocks.buffer,metadata:{scope:chunk.scope,mode:chunk.mode,seed,sourceCommit:manifest.irisCommit,studioOutsideLayout:true,floorWorldY:0,studioFloorWriter:'native-source-derived',nativeStudioGeneratorExecuted:false,physicalBiomeVolume:false,contentGenerated:false,activeLeasesAfter:0,completePipeline:false}}},[blocks.buffer]);return;
+      }
+    }
+    if(options.buffet===true&&(terrainInfo?.hydrologyActive||options.field==='hydrology'))throw new Error('Studio layout with hydrology generation/diagnostics is not connected. Disable Studio layout for this preview.');
     if(options.field==='hydrology'){
       if(typeof api.sampleSurfaceHydrologyMap!=='function')throw new Error('Rebuild the local Iris engine to enable native surface hydrology maps.');
       const map=JSON.parse(api.sampleSurfaceHydrologyMap(x,z,span,width,height));
