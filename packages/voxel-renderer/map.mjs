@@ -1,5 +1,6 @@
+import{checkedShaderModule}from'./gpu-validation.mjs';
 import{FieldIndex,displayRange,categoryColor}from'./field-data.mjs';
-import{HydrologyOverlay}from'./hydrology-overlay.mjs';
+import{HydrologyOverlay,prepareHydrologyPipelines}from'./hydrology-overlay.mjs';
 const shader = `
 struct Settings { dimensions:vec4f, range:vec4f, world:vec4f, options:vec4f };
 @group(0) @binding(0) var<storage, read> values:array<f32>;
@@ -31,8 +32,9 @@ export class MapRenderer {
     this.canvas = canvas; this.gpu = gpu; this.data = null; this.settings = { palette: 'terrain', grid: true,network:true };
     this.context = canvas.getContext('webgpu'); if (!this.context) throw new Error('A WebGPU canvas could not be created.');
     try{this.context.configure({ device: gpu.device, format: gpu.format, alphaMode: 'opaque' });
-    const module = gpu.device.createShaderModule({ label: 'Native noise field display', code: shader });
+    const module = checkedShaderModule(gpu.device,{ label: 'Native noise field display', code: shader });
     this.pipeline = gpu.device.createRenderPipeline({ label: '2D field display', layout: 'auto', vertex: { module, entryPoint: 'vertex' }, fragment: { module, entryPoint: 'fragment', targets: [{ format: gpu.format }] }, primitive: { topology: 'triangle-list' } });
+    prepareHydrologyPipelines(gpu.device,gpu.format);
     this.uniforms = gpu.device.createBuffer({ size: 64, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     this.observer = new ResizeObserver(() => this.draw()); this.observer.observe(canvas);
     }catch(error){this.dispose();throw error;}
@@ -55,7 +57,7 @@ export class MapRenderer {
   }
   clear() { if(this.disposed)return;this.storage?.destroy();this.categoryStorage?.destroy();this.networkOverlay?.dispose();this.networkOverlay=null;this.categoryStorage=null;this.storage=null; this.bindGroup=null;this.index=null; this.data=null; this.draw();this.onData?.(null); }
   draw() {
-    if(this.disposed)return;
+    if(this.disposed||this.gpu.ready===false)return;
     const rect = this.canvas.getBoundingClientRect(); if (rect.width < 1 || rect.height < 1) return;
     const ratio = Math.min(devicePixelRatio || 1, 2), width = Math.max(1, Math.round(rect.width * ratio)), height = Math.max(1, Math.round(rect.height * ratio)); if (this.canvas.width !== width || this.canvas.height !== height) { this.canvas.width = width; this.canvas.height = height; }
     const encoder = this.gpu.device.createCommandEncoder(), pass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: { r: .061, g: .089, b: .092, a: 1 }, loadOp: 'clear', storeOp: 'store' }] });

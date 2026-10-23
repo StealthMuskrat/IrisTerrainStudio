@@ -6,6 +6,10 @@ const faceNormals={north:[0,0,-1],south:[0,0,1],east:[1,0,0],west:[-1,0,0],up:[0
 function defaultUv(face,a,b){switch(face){case'down':return[a[0],16-b[2],b[0],16-a[2]];case'up':return[a[0],a[2],b[0],b[2]];case'north':return[16-b[0],16-b[1],16-a[0],16-a[1]];case'south':return[a[0],16-b[1],b[0],16-a[1]];case'west':return[a[2],16-b[1],b[2],16-a[1]];case'east':return[16-b[2],16-b[1],16-a[2],16-a[1]];}}
 function direction(vector){const axis=vector.map(Math.abs).indexOf(Math.max(...vector.map(Math.abs)));if(Math.abs(vector[axis])<.99999)return null;return axis===0?(vector[0]>0?'east':'west'):axis===1?(vector[1]>0?'up':'down'):(vector[2]>0?'south':'north');}
 export async function bakeBlock(block,stack,atlas,{choices,tints}={}){return bakeApplications(block,stack,atlas,stack.blockModels(block,choices),tints);}
+export function hasModelGeometry(model){
+  if(Array.isArray(model))return model.length>0;
+  return model?.kind==='minecraft-model-plan'&&model.groups.some(group=>group.variants.some(variant=>(!group.weighted||variant.weight>0)&&variant.quads.length>0));
+}
 async function bakeApplications(block,stack,atlas,applications,tints){
   const quads=[];let admittedFaces=0;
   for(const application of applications){const rotation=modelRotation(application.x,application.y,application.z);if(!Array.isArray(application.model.elements))throw new Error('Model elements must be an array.');for(const part of application.model.elements){

@@ -1153,3 +1153,7 @@ The dedicated checksum command compiles and runs exactly the original upstream a
 ## Native chunk areas
 
 Registered native previews assemble up to four destinations per axis without substituting terrain. Shared snapshot hashing/context ownership, final area noise-cache persistence, bounded row copying, palette remapping, compressed regions, destination metadata/picking and saved controls are connected. Legacy setups retain 1×1. Four tiny stored destinations and two original native destinations per mode cover selected seams/metadata/probes; complete area/browser/performance qualification remains open. See [scope and executable checks](research/CHUNK_AREAS.md).
+
+## Rendering startup and diagnostic reports
+
+GPU startup now waits for shader compilation diagnostics and scoped pipeline/allocation errors before publishing readiness. The shared device's scopes are popped synchronously before waiting, and failed or disposed startup releases both renderers. The UI exposes downloadable notices for the displayed volume, including empty native model definitions. A scalar-publication regression introduced with chunk areas is corrected. See [behavior and focused commands](research/RENDERING_VALIDATION.md) and [evidence](evidence/rendering-validation-2026-10-23.json). Actual browser/GPU and complete reference/release qualification remain required.
