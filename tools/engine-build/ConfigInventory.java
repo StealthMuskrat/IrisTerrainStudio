@@ -66,7 +66,7 @@ public final class ConfigInventory {
         ClassLoader loader=ConfigInventory.class.getClassLoader();JsonObject roots=new JsonObject();
         for(var entry:new TreeMap<>(ROOTS).entrySet()){Class<?> cls=Class.forName(entry.getValue(),false,loader);queue.add(cls);roots.addProperty(entry.getKey(),cls.getName());}
         while(!queue.isEmpty()){if(definitions.size()>2048)throw new IllegalStateException("Configuration type graph exceeds inventory budget");describe(queue.remove());}
-        JsonObject result=new JsonObject();result.addProperty("formatVersion",1);result.addProperty("scope","pinned-native-field-inventory");result.addProperty("irisCommit","c3a9449a026078c44a87c9776766f54a67779392");result.addProperty("completeNativeSchema",false);result.add("roots",roots);JsonObject types=new JsonObject();definitions.forEach(types::add);result.add("definitions",types);
+        JsonObject result=new JsonObject();result.addProperty("formatVersion",1);result.addProperty("scope","pinned-native-field-inventory");result.addProperty("irisCommit","c3359e0a16438b1bb8468901c6171dcefdf63f7f");result.addProperty("completeNativeSchema",false);result.add("roots",roots);JsonObject types=new JsonObject();definitions.forEach(types::add);result.add("definitions",types);
         Path output=Path.of(args[0]);Files.createDirectories(output.getParent());Files.writeString(output,new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(result)+"\n");System.out.println("Exported native field metadata for "+definitions.size()+" types.");
     }
 }

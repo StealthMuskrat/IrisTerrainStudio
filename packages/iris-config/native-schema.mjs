@@ -8,7 +8,7 @@ export async function loadNativePackSchema(resource,rows,head,{current=()=>true,
   alive();resourcePath(resource);const base='/app/engine/schema-generated/',response=await fetch(base+'manifest.json',{cache:'no-cache',headers});
   if(response.status===401)throw new Error('Enter the server access token before loading a native pack schema.');
   if(!response.ok)throw new Error('No native schema bundle is installed. Run npm run engine:schemas -- /path/to/your/pack locally.');
-  const manifest=await response.json();alive();if(manifest.scope!=='native-pack-schema-development-export'||manifest.irisCommit!=='c3a9449a026078c44a87c9776766f54a67779392'||manifest.minecraft!=='26.3'||manifest.packSpecific!==true)throw new Error('The native schema bundle does not identify the pinned Iris and Minecraft inputs.');
+  const manifest=await response.json();alive();if(manifest.scope!=='native-pack-schema-development-export'||manifest.irisCommit!=='c3359e0a16438b1bb8468901c6171dcefdf63f7f'||manifest.minecraft!=='26.3'||manifest.packSpecific!==true)throw new Error('The native schema bundle does not identify the pinned Iris and Minecraft inputs.');
   const names=Object.keys(manifest.packFiles||{}).sort(),paths=rows.filter(row=>!ignored(row.path)).map(row=>resourcePath(row.path)).sort();
   if(!names.length||names.length>20000||names.length!==paths.length||names.some((name,index)=>name!==paths[index]||!/^[a-f0-9]{64}$/.test(manifest.packFiles[name])))throw new Error('The native schema bundle belongs to a different pack snapshot. Export schemas for this pack first.');
   let cursor=0;

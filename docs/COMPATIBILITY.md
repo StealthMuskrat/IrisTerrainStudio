@@ -1,8 +1,8 @@
 # Compatibility matrix
 
-Target: Iris 4.3.4 at `c3a9449a026078c44a87c9776766f54a67779392`, Minecraft 26.3.
+Target: Iris 4.3.5 at `c3359e0a16438b1bb8468901c6171dcefdf63f7f`, Minecraft 26.3.
 
-No feature is currently advertised as supported. “Inspected” means source reviewed, not implemented or parity-tested.
+The 4.3.5 upgrade compiles and its focused canopy/root/placement/region checks pass. Historical rows below retain their original evidence identities and do not become 4.3.5 qualification. No feature is currently advertised as fully parity-qualified. “Inspected” means source reviewed, not implemented or parity-tested.
 
 | Feature | Source investigation | Browser implementation | Native/browser parity |
 | --- | --- | --- | --- |

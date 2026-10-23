@@ -21,7 +21,7 @@ gradle.projectsEvaluated {
                 output.parentFile.mkdirs()
                 output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
                     formatVersion: 1, scope: 'minecraft-26.3-development-registry-export',
-                    volmLibCandidate: 'e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac',
+                    volmLibCandidate: '210705c5ab1321dc74b86b48457fd6d5e0452944',
                     releaseMatchVerified: false,
                     classpath: files.collect { file -> [path: file.absolutePath,
                         sha256: file.isFile() ? HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(file.bytes)) : null] }
@@ -56,8 +56,8 @@ gradle.projectsEvaluated {
                 buildProfile: browserInputProfile,
                 excludedSources: browserInputProfile == 'terrain-no-eco-items' ? ['core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java'] : [],
                 excludedDependencies: browserInputProfile == 'terrain-no-eco-items' ? ['com.willfp:eco:2026.27'] : [],
-                irisCommit: 'c3a9449a026078c44a87c9776766f54a67779392',
-                volmLibCandidate: 'e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac',
+                irisCommit: 'c3359e0a16438b1bb8468901c6171dcefdf63f7f',
+                volmLibCandidate: '210705c5ab1321dc74b86b48457fd6d5e0452944',
                 releaseMatchVerified: false, classpath: entries]))
         }
     }

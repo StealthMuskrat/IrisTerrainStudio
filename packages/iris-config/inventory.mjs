@@ -1,4 +1,4 @@
-const pinnedIris='c3a9449a026078c44a87c9776766f54a67779392';
+const pinnedIris='c3359e0a16438b1bb8468901c6171dcefdf63f7f';
 export async function loadFieldInventory(){
   const base='/app/engine/iris-generated/',manifestResponse=await fetch(base+'manifest.json');if(!manifestResponse.ok)return null;
   const manifest=await manifestResponse.json();if(!manifest.configInventorySha256)return null;

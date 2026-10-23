@@ -11,14 +11,15 @@ public final class WorkerMatterCodecs {
         if(registered)return;
         IrisMatter.registerSliceType(new StringMatter());IrisMatter.registerSliceType(new MarkerMatter());IrisMatter.registerSliceType(new CavernMatter());
         IrisMatter.registerSliceType("art.arcane.iris.util.project.matter.TileWrapper",new TileMatter());IrisMatter.registerSliceType(new UpdateMatter());IrisMatter.registerSliceType("art.arcane.iris.engine.hydrology.cave.HydrologyCaveCell",new HydrologyCaveMatter());
-        IrisMatter.registerSliceType(new ObjectContinuationMatter());IrisMatter.registerSliceType(new PlatformBlockMatter());
+        IrisMatter.registerSliceType(new TreeCanopyMatter());IrisMatter.registerSliceType(new ObjectContinuationMatter());IrisMatter.registerSliceType(new PlatformBlockMatter());
         IrisMatter.registerSliceType("art.arcane.iris.core.link.Identifier",new IdentifierMatter());
         IrisMatter.registerSliceType("art.arcane.iris.util.project.matter.PreObjectMatterCell",new PreObjectMatter());
         IrisMatter.registerSliceType("art.arcane.iris.engine.framework.TreeBlockMaterial",new TreeBlockMaterialMatter());registered=true;
     }
     @SuppressWarnings("unchecked") public static <T>MatterSlice<T> create(Class<T> type,Matter owner){
         ensureRegistered();int w=owner.getWidth(),h=owner.getHeight(),d=owner.getDepth();MatterSlice<?> result;
-        if(type==String.class)result=new StringMatter(w,h,d);
+        if(type==art.arcane.iris.generation.mantle.TreeCanopy.class)result=new TreeCanopyMatter(w,h,d);
+        else if(type==String.class)result=new StringMatter(w,h,d);
         else if(type==MatterMarker.class)result=new MarkerMatter(w,h,d);
         else if(type==MatterCavern.class)result=new CavernMatter(w,h,d);
         else if(type==art.arcane.iris.generation.mantle.ObjectContinuationBundle.class)result=new ObjectContinuationMatter(w,h,d);

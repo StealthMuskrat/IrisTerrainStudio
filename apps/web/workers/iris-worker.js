@@ -24,7 +24,7 @@ async function engine() {
     const base = '/app/engine/iris-generated/', response = await fetch(base+'manifest.json',{cache:'no-cache'});
     if (!response.ok) throw new Error('The Iris browser engine is not installed. Build it locally with npm run engine:build.');
     const manifest = await response.json();
-    if (manifest.scope !== 'iris-browser-engine-development' || manifest.irisCommit !== 'c3a9449a026078c44a87c9776766f54a67779392') throw new Error('The browser module does not identify the pinned Iris source.');
+    if (manifest.scope !== 'iris-browser-engine-development' || manifest.irisCommit !== 'c3359e0a16438b1bb8468901c6171dcefdf63f7f') throw new Error('The browser module does not identify the pinned Iris source.');
     const files = await Promise.all(['iris.wasm','iris.wasm-runtime.js'].map(async name=>{
       const file = await fetch(base+name,{cache:'no-cache'}); if (!file.ok) throw new Error(`Missing browser engine file: ${name}`); return file.arrayBuffer();
     }));

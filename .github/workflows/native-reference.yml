@@ -18,13 +18,13 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: VolmitSoftware/Iris
-          ref: c3a9449a026078c44a87c9776766f54a67779392
+          ref: c3359e0a16438b1bb8468901c6171dcefdf63f7f
           path: .upstream/Iris
           persist-credentials: false
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           repository: VolmitSoftware/VolmLib
-          ref: e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          ref: 210705c5ab1321dc74b86b48457fd6d5e0452944
           path: .upstream/VolmLib
           fetch-depth: 0
           persist-credentials: false
@@ -35,9 +35,9 @@ jobs:
       - name: Verify identities, test the reporter, and record the toolchain
         run: |
           mkdir -p .reference-output/native-reference
-          test "$(git -C .upstream/Iris rev-parse HEAD)" = c3a9449a026078c44a87c9776766f54a67779392
-          test "$(git -C .upstream/Iris rev-parse 'HEAD^{tree}')" = 95b910b97fa75c29b3e98cd4f32bc2a40276dcb3
-          test "$(git -C .upstream/VolmLib rev-parse HEAD)" = e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac
+          test "$(git -C .upstream/Iris rev-parse HEAD)" = c3359e0a16438b1bb8468901c6171dcefdf63f7f
+          test "$(git -C .upstream/Iris rev-parse 'HEAD^{tree}')" = 4b721a531ad265a330b7cab13cec46a8119d891b
+          test "$(git -C .upstream/VolmLib rev-parse HEAD)" = 210705c5ab1321dc74b86b48457fd6d5e0452944
           test -z "$(git -C .upstream/Iris status --porcelain)"
           test -z "$(git -C .upstream/VolmLib status --porcelain)"
           git -C .upstream/VolmLib rev-parse 'HEAD^{tree}' > .reference-output/native-reference/volmlib-tree.txt

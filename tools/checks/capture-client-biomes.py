@@ -10,7 +10,7 @@ record={'clientSha256':LOCK['clientSha256'],'captureSourceSha256':hashlib.sha256
 with zipfile.ZipFile(client) as z:record['nativeClassSha256']={n:hashlib.sha256(z.read(n+'.class')).hexdigest() for n in ['net/minecraft/world/level/biome/BiomeManager','net/minecraft/util/LinearCongruentialGenerator','net/minecraft/world/level/chunk/ChunkAccess']}
 # Reviewed source identity, independent of this client-method capture. No writer executes here.
 record['offlineWriterProjectionSource']={
-    'irisCommit':'c3a9449a026078c44a87c9776766f54a67779392',
+    'irisCommit':'c3359e0a16438b1bb8468901c6171dcefdf63f7f',
     'path':'adapters/bukkit/nms/v26_3_R1/src/offline/java/art/arcane/iris/probe/NativeRegionTerrainWriter.java',
     'sourceSha256':'3ca1efd20e1668d3957dffaf2414a31217e0771e3385f996972d8f4654ea3f72',
     'gitBlob':'6382c9de58e73c20612e2d0ae78536c272645501',

@@ -68,11 +68,11 @@ Native stage diagnostics and the registered Overworld mode are available for the
 
 ## Verified target
 
-Checked on 2026-10-20 against upstream's latest non-prerelease release:
+Checked on 2026-10-23 against upstream's latest non-prerelease release:
 
 | Component | Target | State |
 | --- | --- | --- |
-| Iris | 4.3.4, tag `4.3.4-26.1.2-26.3` | Commit `c3a9449a026078c44a87c9776766f54a67779392` pinned |
+| Iris | 4.3.5, tag `4.3.5-26.1.2-26.3` | Commit `c3359e0a16438b1bb8468901c6171dcefdf63f7f` pinned |
 | Minecraft | 26.3 | Development registry exported; qualification pending |
 | Native build toolchain | Java 25 | Iris core compiles locally and in CI; pinned native noise checksum fails |
 | VolmLib | Release-matching source and binaries | Unresolved; upstream uses mutable snapshot/composite resolution |
@@ -82,7 +82,7 @@ Checked on 2026-10-20 against upstream's latest non-prerelease release:
 
 The [portability experiment](tools/portability-probe/README.md) now passes **195,696 exact Java/browser comparisons with zero mismatches** across actual noise primitives and RNG calls on a separately pinned VolmLib candidate. The JDK compatibility adapter is independently checked against native Java. See the [expanded run evidence](docs/evidence/noise-rng-portability-2026-10-20.json).
 
-The actual Iris core build runs, but its unchanged noise/seed suites pass **14 of 15 tests**: the all-style checksum differs from the pinned expectation. The [native audit](docs/research/NATIVE_RNG_AUDIT.md) records the mismatch. The candidate is not a qualified release reference, and Iris seed-manager, browser noise-wrapper and terrain parity remain unproved.
+The historical 4.3.4 native audit passed **14 of 15 tests**: the all-style checksum differs from the pinned expectation. The [native audit](docs/research/NATIVE_RNG_AUDIT.md) records the mismatch. The reference remains unqualified. The 4.3.5 browser bridge now compiles with an explicit API-synchronized VolmLib candidate; its shipping dependency identity and complete browser/native terrain parity remain unproved. [Upgrade evidence](docs/evidence/iris-4.3.5-upgrade-2026-10-23.json) records the small canopy/root/placement/region checks, unchanged-input registry reuse, schemas and standalone packaging. The earlier checksum failure was not rerun or relabeled as a 4.3.5 pass.
 
 ## Verification tools
 

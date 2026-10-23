@@ -3,13 +3,16 @@
   "purpose": "Native Iris source-build audit with explicit experimental VolmLib input",
   "iris": {
     "repository": "VolmitSoftware/Iris",
-    "commit": "c3a9449a026078c44a87c9776766f54a67779392",
-    "tree": "95b910b97fa75c29b3e98cd4f32bc2a40276dcb3"
+    "commit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "tree": "4b721a531ad265a330b7cab13cec46a8119d891b",
+    "version": "4.3.5",
+    "tag": "4.3.5-26.1.2-26.3"
   },
   "volmLib": {
     "repository": "VolmitSoftware/VolmLib",
-    "commit": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
-    "releaseMatchVerified": false
+    "commit": "210705c5ab1321dc74b86b48457fd6d5e0452944",
+    "releaseMatchVerified": false,
+    "selection": "First native structure-volume API synchronization after Iris 4.3.5 source commit (91 seconds later); includes required change tracking and surface API. Shipping dependency identity remains unqualified."
   },
   "java": {
     "setupCoordinate": "25.0.4+1",
