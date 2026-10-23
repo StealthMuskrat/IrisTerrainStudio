@@ -6,6 +6,7 @@ import { resolvePackTarget } from './target-format.mjs';
 import { resourceFilter } from './resource-filter.mjs';
 import { readZip } from '../shared/zip.mjs';
 import { BUNDLE_MANIFEST, readRenderingBundle, assetDigest, assetJson } from './bundle.mjs';
+import { builtinTexture } from './builtin-textures.mjs';
 const MAX_BITMAP_BYTES=64*1024*1024,MAX_TEXTURE_PIXELS=4_194_304;
 function textureDimensions(bytes,name){
   const signature=[137,80,78,71,13,10,26,10];
@@ -96,6 +97,8 @@ export class ResourcePackStack {
     return this.bitmaps.get(id.id);
   }
   async loadBitmap(id){
+    const builtin=builtinTexture(id.id);
+    if(builtin){const decodedBytes=builtin.pixels.byteLength;if(this.bitmapBytes+decodedBytes>MAX_BITMAP_BYTES)throw new Error('Resource-pack textures exceed the 64 MiB decoded bitmap budget.');this.bitmapBytes+=decodedBytes;return{...builtin,animation:null,texture:textureMipmapMetadata(undefined),decodedBytes};}
     const path=`assets/${id.namespace}/textures/${id.path}.png`,bytes=this.bytes(path);
     if(!bytes)throw new Error(`Missing texture ${id.id}.`);
     const dimensions=textureDimensions(bytes,id.id),metadata=this.metadata(path);

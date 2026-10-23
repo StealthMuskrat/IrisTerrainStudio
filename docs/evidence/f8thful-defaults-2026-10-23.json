@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-23",
+  "result": "pass",
+  "source": {
+    "sha256": "2b07f25eba57e340f421a8ee3e927d0c7239244d19cabe5ef89c32ea2ea48977",
+    "bytes": 6217021,
+    "declaredRange": [
+      [
+        69,
+        0
+      ],
+      [
+        88,
+        2147483647
+      ]
+    ],
+    "compatible": false,
+    "inactiveOverlays": 5
+  },
+  "packs": [
+    {
+      "role": "baseline",
+      "name": "Vanilla baseline: vanilla-26.3.zip",
+      "filename": "baseline.zip",
+      "bytes": 4056365,
+      "sha256": "243f6e6d07c076445938967e3f92f2cbe01da95821678f485e61a3800ae9e696",
+      "sourceSha256": "4af418c4e5728947df1aaa90e2f346a7c729c275bbea3a06fb1cdd41f453e832",
+      "files": 5578
+    },
+    {
+      "role": "default",
+      "name": "Default overrides: F8thful(1).zip",
+      "filename": "default.zip",
+      "bytes": 692392,
+      "sha256": "15bd30ed1d604848c158f8af2d403ec9aada6f4974e58a25f36ca384906503e4",
+      "sourceSha256": "2b07f25eba57e340f421a8ee3e927d0c7239244d19cabe5ef89c32ea2ea48977",
+      "files": 1539
+    }
+  ],
+  "dependencyWork": {
+    "baseline": {
+      "blockTypes": 1285,
+      "models": 2883,
+      "textures": 1297,
+      "files": 5578,
+      "bytes": 3034269,
+      "applications": 10263,
+      "distinctModelDependencies": 2579
+    },
+    "combined": {
+      "blockTypes": 1285,
+      "models": 2905,
+      "textures": 1315,
+      "files": 5560,
+      "bytes": 2783052,
+      "applications": 10281,
+      "distinctModelDependencies": 2597
+    }
+  },
+  "originalBlockDefinitionsRetained": 211,
+  "unusedVanillaTemplatesRetained": true,
+  "metadataUnchanged": true,
+  "sourceProvenanceRetained": true,
+  "unrelatedAssetsOmitted": true,
+  "selectedBlockModels": 4,
+  "selectedDependencyFiles": 40,
+  "eightPixelStone": true,
+  "animatedFluidSprites": 2,
+  "controlledRawMipUploads": 48,
+  "namedNativeMissingSprite": true,
+  "otherMissingTexturesRefuse": true,
+  "actualNodeMeshWorker": {
+    "storedCells": 1,
+    "faces": 6,
+    "cacheAndPicking": true
+  },
+  "originalArchiveUnchanged": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "redistributionPermissionEstablished": false,
+  "projectFinished": false,
+  "standalone": {
+    "engineAndRegistryPresent": true,
+    "authenticatedCatalogAndHashVerifiedDownloads": true,
+    "automaticLibraryStartup": true,
+    "noDuplicateArchiveWrites": true,
+    "staticModulesDelivered": true,
+    "privateAssetPathRefused": true
+  },
+  "validationCommand": "node tools/checks/f8thful-assets-smoke.mjs /path/to/F8thful.zip .local-assets/rendering-defaults dist",
+  "implementationFiles": [
+    "packages/resource-packs/dependencies.mjs",
+    "packages/resource-packs/builtin-textures.mjs",
+    "packages/resource-packs/pack.mjs",
+    "tools/assets/prepare-defaults.mjs",
+    "tools/checks/f8thful-assets-smoke.mjs"
+  ],
+  "limits": "Local supplied inputs, bounded authored JSON applications and selected real pixels/models; no registry predicates, state/pair sweep, terrain generation, real browser/GPU, Docker or GitHub workflow."
+}

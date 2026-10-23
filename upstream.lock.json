@@ -33,8 +33,8 @@
     "status": "compiled-development-browser-qualification-pending"
   },
   "assets": {
-    "f8thfulSha256": null,
-    "vanillaBaselineSha256": null
+    "f8thfulSha256": "2b07f25eba57e340f421a8ee3e927d0c7239244d19cabe5ef89c32ea2ea48977",
+    "vanillaBaselineSha256": "4af418c4e5728947df1aaa90e2f346a7c729c275bbea3a06fb1cdd41f453e832"
   },
   "sources": [
     {
@@ -109,8 +109,7 @@
       "Resolve native all-style checksum mismatch: expected 5059606393854142913, observed 3659164368724912644.",
       "Export and hash the matching schemas and Minecraft 26.3 block registry.",
       "Compile and execute an actual Iris/VolmLib generation path in a browser worker.",
-      "Produce native/browser reference captures and pass exact comparisons.",
-      "F8thful.zip and an authorized vanilla asset baseline were not attached."
+      "Produce native/browser reference captures and pass exact comparisons."
     ]
   }
 }

@@ -2,8 +2,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
-import {MinecraftResourcePack,ResourcePackStack} from '../../packages/resource-packs/pack.mjs';
-import {inspectRenderingDependencies} from '../../packages/resource-packs/dependencies.mjs';
+import {MinecraftResourcePack,ResourcePackStack,identifier} from '../../packages/resource-packs/pack.mjs';
+import {inspectRenderingDependencies,blockDefinitionPaths} from '../../packages/resource-packs/dependencies.mjs';
 import {writeZip} from '../../packages/shared/zip.mjs';
 import {assetDigest} from '../../packages/resource-packs/bundle.mjs';
 const root=fileURLToPath(new URL('../../',import.meta.url));
@@ -13,13 +13,15 @@ export async function prepareDefaults({baseline,overrides,roots,destination=path
   if(!baseline||!overrides)throw new Error('Supply --baseline and --overrides authorized local ZIP paths.');
   const packs=await Promise.all([baseline,overrides].map(async filename=>MinecraftResourcePack.open(await input(filename),path.basename(filename))));
   if(packs.some(pack=>pack.metadata.studioRenderingBundle))throw new Error('Provision original Minecraft resource packs, not an already-resolved Studio bundle.');
-  if(!roots)roots=[...packs[0].entries.keys()].flatMap(name=>{const match=/^assets\/([^/]+)\/blockstates\/(.+)\.json$/.exec(name);return match?[match[1]+':'+match[2]]:[];});
-  if(!roots.length)throw new Error('No blockstate roots were found.');
+  if(!roots)roots=blockDefinitionPaths(packs).flatMap(name=>{const match=/^assets\/([^/]+)\/blockstates\/(.+)\.json$/.exec(name);return match?[match[1]+':'+match[2]]:[];});
+  if(!Array.isArray(roots)||!roots.length||roots.length>4096)throw new Error('Supply 1–4096 block-type roots.');
+  roots=roots.map(value=>identifier(value).id);
   const baselineStack=new ResourcePackStack([packs[0]]),combinedStack=new ResourcePackStack(packs);
   let baselineCapture,combinedCapture;
   try{
-    baselineCapture=await inspectRenderingDependencies(baselineStack,roots);
-    combinedCapture=await inspectRenderingDependencies(combinedStack,roots);
+    const baselineRoots=roots.filter(id=>{const [namespace,key]=id.split(':');return baselineStack.resolve(`assets/${namespace}/blockstates/${key}.json`);});
+    baselineCapture=await inspectRenderingDependencies(baselineStack,baselineRoots,{retainBlockDefinitions:true});
+    combinedCapture=await inspectRenderingDependencies(combinedStack,roots,{retainBlockDefinitions:true});
     const failures=[...baselineCapture.report.errors,...combinedCapture.report.errors];
     if(failures.length)throw new Error('Default asset dependencies are incomplete: '+failures.slice(0,8).map(e=>e.context+': '+e.message).join('; '));
   }finally{await baselineStack.dispose();await combinedStack.dispose();}
@@ -28,8 +30,8 @@ export async function prepareDefaults({baseline,overrides,roots,destination=path
   // The baseline also retains dependencies introduced only by override models.
   for(const [capture,sources] of [[baselineCapture,[0]],[combinedCapture,[0,1]]])for(const file of capture.report.files){const index=sources[file.source];selected[index].set(file.sourcePath,packs[index].entries.get(file.sourcePath));}
   const archives=selected.map(entries=>writeZip(entries)),roles=['baseline','default'];
-  const records=await Promise.all(archives.map(async(bytes,index)=>({role:roles[index],name:index?'Configured default overrides':'Configured vanilla baseline',filename:roles[index]+'.zip',bytes:bytes.length,sha256:await assetDigest(bytes),sourceSha256:packs[index].digest,files:selected[index].size})));
-  const manifest={format:'iris-terrain-studio-default-assets',version:1,target:{minecraftVersion:'26.3',resourceFormat:[97,1]},roots:combinedCapture.report.roots,packs:records,qualification:{sourceCompatibilityVerified:false,clientRenderingParity:false},scope:'Local authorized inputs, original winning dependency bytes and source notices; no block-state enumeration or image resampling.'};
+  const records=await Promise.all(archives.map(async(bytes,index)=>({role:roles[index],name:(index?'Default overrides: ':'Vanilla baseline: ')+packs[index].name.slice(0,200),filename:roles[index]+'.zip',bytes:bytes.length,sha256:await assetDigest(bytes),sourceSha256:packs[index].digest,files:selected[index].size})));
+  const manifest={format:'iris-terrain-studio-default-assets',version:1,target:{minecraftVersion:'26.3',resourceFormat:[97,1]},roots:combinedCapture.report.roots,packs:records,sources:combinedCapture.report.sources,dependencies:{baseline:baselineCapture.report.counts,combined:combinedCapture.report.counts},qualification:{sourceCompatibilityVerified:false,clientRenderingParity:false},scope:'Local authorized inputs, all block definitions, original winning dependency bytes and source notices; no block-state enumeration or image resampling.'};
   // Publish only a fully validated immutable directory; never replace an installation silently.
   await fs.mkdir(path.dirname(destination),{recursive:true});const stage=await fs.mkdtemp(path.join(path.dirname(destination),'.rendering-defaults-'));
   try{for(let i=0;i<archives.length;i++)await fs.writeFile(path.join(stage,records[i].filename),archives[i]);await fs.writeFile(path.join(stage,'manifest.json'),encode(manifest));

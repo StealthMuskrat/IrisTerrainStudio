@@ -1,6 +1,6 @@
 # Architecture decisions
 
-Status: proposed boundaries, grounded in the Phase 0 source audit. No application packages have been scaffolded before the engine feasibility gate.
+Status: implemented application boundaries, with native/browser/release qualification still open. Historical design choices below explain the source-reuse approach; current behavior and evidence are indexed in [STATUS.md](STATUS.md).
 
 ## Three runtime responsibilities
 
