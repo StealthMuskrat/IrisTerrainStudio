@@ -1,3 +1,4 @@
+import{faceParameters}from'../../packages/resource-packs/face-materials.mjs';
 // Two adjacent blocks across one negative-world section boundary, plus controlled GPU calls.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -15,7 +16,7 @@ const block={id:'check:cube',solid:true},model={id:'check:cube',elements:[{from:
 const cube=await bakeBlock(block,{blockModels:()=>[{model,x:0,y:0}],texture:()=> 'check:pixel'},{add:async()=>({uv:[0,0,1,1],transparency:'opaque'})});
 const blocks=new Uint32Array(34);blocks[16]=1;blocks[17]=1;const before=blocks.slice(),input={id:1,width:34,height:1,depth:1,origin:[-17,-1,-1],blocks,palette:[{id:'minecraft:air'},block],models:[[],cube]};
 const workerCode=(await fs.readFile(new URL('../../packages/voxel-renderer/mesh-worker.mjs',import.meta.url),'utf8')).replace(/^import.*\n/,'');
-async function mesh(extra={}){const messages=[],context=vm.createContext({self:{postMessage:data=>messages.push(data)},Float32Array,setTimeout,localClip,emptyClip});vm.runInContext(workerCode,context);await context.self.onmessage({data:{...input,...extra}});return messages.at(-1);}
+async function mesh(extra={}){const messages=[],context=vm.createContext({self:{postMessage:data=>messages.push(data)},Float32Array,setTimeout,localClip,emptyClip,faceParameters});vm.runInContext(workerCode,context);await context.self.onmessage({data:{...input,...extra}});return messages.at(-1);}
 const full=await mesh();assert.equal(full.faces,10);assert.equal(full.ranges.length,2);
 assert.deepEqual(Array.from(full.ranges[0].section),[-1,-1,-1]);assert.deepEqual(Array.from(full.ranges[1].section),[0,-1,-1]);
 assert.equal(full.ranges[0].opaque.first,0);assert.equal(full.ranges[0].opaque.count,30);assert.equal(full.ranges[1].opaque.first,30);assert.equal(full.ranges[1].opaque.count,30);
@@ -30,12 +31,12 @@ const camera=multiply(perspective(Math.PI/3,1,.1,10),lookAt([0,0,5],[0,0,0]));as
 const allocated=[],writes=[],draws=[],passes=[],device={limits:{maxBufferSize:262144},createBuffer(options){const buffer={...options,destroyed:0,destroy(){this.destroyed++;}};allocated.push(buffer);return buffer;},queue:{writeBuffer(buffer,offset,data){assert(!buffer.destroyed);writes.push({buffer,offset,data:data.slice()});},submit(){}},createCommandEncoder(){return{beginRenderPass(){const pass={setBindGroup(){},setPipeline(){},setVertexBuffer(){},setIndexBuffer(){},draw(...args){draws.push(['opaque',...args]);},drawIndexed(...args){draws.push(['transparent',...args]);},end(){}};passes.push(pass);return pass;},finish(){return{};}};}};
 const buffers=new MeshBufferStore(device,{byteLimit:196608}),first=buffers.write('opaque',new Float32Array(4),1);buffers.write('opaque',new Float32Array(2),1);assert.equal(allocated.length,1);assert.equal(buffers.reserve('opaque',0,1),first);
 const grown=buffers.reserve('opaque',70000,1);assert.notEqual(grown,first);assert.equal(first.destroyed,1);buffers.reserve('indices',4,2);assert.equal(buffers.bytes,196608);assert.throws(()=>buffers.reserve('other',4,1),/budget/);assert.throws(()=>buffers.reserve('opaque',300000,1),/device/);assert.equal(buffers.slots.get('opaque').buffer,grown);buffers.dispose();buffers.dispose();assert.equal(grown.destroyed,1);assert.equal(buffers.bytes,0);assert.throws(()=>buffers.reserve('opaque',4,1),{name:'AbortError'});
-globalThis.GPUBufferUsage={VERTEX:1,COPY_DST:2,INDEX:4};globalThis.GPUTextureUsage={RENDER_ATTACHMENT:1};globalThis.devicePixelRatio=1;
+globalThis.GPUBufferUsage={VERTEX:1,COPY_DST:2,INDEX:4,STORAGE:8};globalThis.GPUTextureUsage={RENDER_ATTACHMENT:1};globalThis.devicePixelRatio=1;
 const data=new Float32Array(144);for(let i=0;i<12;i++){data[i*12]=(i<6?0:3);data[i*12+2]=.5;}
 const inside={first:0,count:6,...box(0,0,.5)},outside={first:6,count:6,...box(3,0,.5)},ranges=[{opaque:inside,transparent:inside},{opaque:outside,transparent:outside}];
 assert.equal(visibleMeshRanges(ranges,identity).opaque.length,1);
-const renderer=Object.assign(Object.create(WorldRenderer.prototype),{gpu:{device},canvas:{width:2,height:2,getBoundingClientRect:()=>({width:2,height:2})},depth:{createView:()=>({})},context:{getCurrentTexture:()=>({createView:()=>({})})},uniform:{},matrices:()=>({eye:[0,0,2],matrix:identity}),ranges});
-renderer.uploadMesh({opaque:data.buffer,transparent:data.buffer,ranges});const vertexBuffer=renderer.opaque,indexBuffer=renderer.transparentIndices,afterUpload=allocated.length;
+const renderer=Object.assign(Object.create(WorldRenderer.prototype),{gpu:{device},bind(){this.bindGroups={opaque:{},transparent:{}};this.bindGroup=this.bindGroups.opaque;},canvas:{width:2,height:2,getBoundingClientRect:()=>({width:2,height:2})},depth:{createView:()=>({})},context:{getCurrentTexture:()=>({createView:()=>({})})},uniform:{},matrices:()=>({eye:[0,0,2],matrix:identity}),ranges});
+renderer.uploadMesh({opaque:data.buffer,transparent:data.buffer,ranges,materials:{opaque:new Float32Array([...faceParameters({transparency:'opaque'}),...faceParameters({transparency:'opaque'})]).buffer,transparent:new Float32Array([...faceParameters({transparency:'blend'}),...faceParameters({transparency:'blend'})]).buffer}});const vertexBuffer=renderer.opaque,indexBuffer=renderer.transparentIndices,afterUpload=allocated.length;
 renderer.draw();assert.deepEqual(draws,[['opaque',6,1,0],['transparent',6]]);assert.equal(renderer.transparentDrawCount,6);assert.deepEqual(Array.from(writes.findLast(write=>write.buffer===indexBuffer).data),[0,1,2,3,4,5]);
 const sortedWrites=writes.filter(write=>write.buffer===indexBuffer).length;renderer.draw();assert.equal(writes.filter(write=>write.buffer===indexBuffer).length,sortedWrites);
 // A projection-only change at the same eye must rebuild the visible blend index subset.

@@ -1,3 +1,4 @@
+import{elementMaterial,materialLayer}from'../resource-packs/face-materials.mjs';
 import{modelRotation,rotateModelPoint,rotateModelVector,faceUv,quadrant}from'../resource-packs/model-transform.mjs';
 import{visualSeedRule}from'../resource-packs/model-selection.mjs';
 const faces={north:{normal:[0,0,-1],points:(a,b)=>[[b[0],b[1],a[2]],[b[0],a[1],a[2]],[a[0],a[1],a[2]],[a[0],b[1],a[2]]]},south:{normal:[0,0,1],points:(a,b)=>[[a[0],b[1],b[2]],[a[0],a[1],b[2]],[b[0],a[1],b[2]],[b[0],b[1],b[2]]]},east:{normal:[1,0,0],points:(a,b)=>[[b[0],b[1],b[2]],[b[0],a[1],b[2]],[b[0],a[1],a[2]],[b[0],b[1],a[2]]]},west:{normal:[-1,0,0],points:(a,b)=>[[a[0],b[1],a[2]],[a[0],a[1],a[2]],[a[0],a[1],b[2]],[a[0],b[1],b[2]]]},up:{normal:[0,1,0],points:(a,b)=>[[a[0],b[1],a[2]],[a[0],b[1],b[2]],[b[0],b[1],b[2]],[b[0],b[1],a[2]]]},down:{normal:[0,-1,0],points:(a,b)=>[[a[0],a[1],b[2]],[a[0],a[1],a[2]],[b[0],a[1],a[2]],[b[0],a[1],b[2]]]}};
@@ -9,7 +10,7 @@ export async function bakeBlock(block,stack,atlas,{choices,tints}={}){return bak
 async function bakeApplications(block,stack,atlas,applications,tints){
   const quads=[];
   for(const application of applications)for(const part of application.model.elements){
-    const a=part.from,b=part.to;if(!Array.isArray(a)||!Array.isArray(b)||a.length!==3||b.length!==3||![...a,...b].every(Number.isFinite))throw new Error(`Invalid model element in ${application.model.id}.`);
+    const a=part.from,b=part.to,elementFlags=elementMaterial(part);if(!Array.isArray(a)||!Array.isArray(b)||a.length!==3||b.length!==3||![...a,...b].every(Number.isFinite))throw new Error(`Invalid model element in ${application.model.id}.`);
     for(const[name,face]of Object.entries(part.faces||{})){const definition=faces[name];if(!definition)throw new Error('Unknown model face: '+name);const material=stack.material?.(application.model,face.texture)??{sprite:stack.texture(application.model,face.texture),forceTranslucent:false},texture=await atlas.add(material.sprite,stack);let points=definition.points(a,b).map(point=>point.map(v=>v/16));
       if(part.rotation){const r=part.rotation;if(![-45,-22.5,0,22.5,45].includes(r.angle)||!Array.isArray(r.origin))throw new Error(`Unsupported element rotation in ${application.model.id}.`);points=points.map(p=>rotate(p,r.axis,r.angle,r.origin.map(n=>n/16),!!r.rescale));}
       const rotation=modelRotation(application.x,application.y,application.z);points=points.map(p=>rotateModelPoint(p,rotation));const n=normal(points);
@@ -17,7 +18,7 @@ async function bakeApplications(block,stack,atlas,applications,tints){
       const turns=quadrant(face.rotation)/90;const corners=[[uv[0],uv[1]],[uv[0],uv[3]],[uv[2],uv[3]],[uv[2],uv[1]]],mapped=Array.from({length:4},(_,i)=>{const c=corners[(i+turns)%4],locked=faceUv(name,c[0],c[1],rotation,application.uvlock);return[texture.uv[0]+locked[0]*(texture.uv[2]-texture.uv[0]),texture.uv[1]+locked[1]*(texture.uv[3]-texture.uv[1])];});
       let color=[1,1,1,1],tintIndex=null;if(face.tintindex!==undefined&&face.tintindex>=0){if(!Number.isInteger(face.tintindex))throw new Error('Model tint index must be a whole number.');if(tints?.[face.tintindex])color=tints[face.tintindex];else tintIndex=face.tintindex;}
       let cull=null;if(face.cullface&&faces[face.cullface]){let v=faces[face.cullface].normal;v=rotateModelVector(v,rotation);cull=direction(v);}
-      quads.push({positions:points,normal:n,uv:mapped,color,tintIndex,cull,transparency:material.forceTranslucent?'blend':texture.transparency,modelId:application.model.id});
+      const transparency=material.forceTranslucent?'blend':atlas.transparencyAt?.(texture,uv)??texture.transparency;quads.push({positions:points,normal:n,uv:mapped,color,tintIndex,cull,transparency,...elementFlags,alphaCutoff:materialLayer(transparency).alphaCutoff,modelId:application.model.id});
     }
   }
   return quads;

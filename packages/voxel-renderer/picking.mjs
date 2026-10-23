@@ -1,3 +1,5 @@
+import{meshMaterialRows}from'./mesh-materials.mjs';
+import{describeFaceParameters}from'../resource-packs/face-materials.mjs';
 const STRIDE=21,MAX_BYTES=24*1024*1024;
 const sub=(a,b)=>a.map((value,i)=>value-b[i]),dot=(a,b)=>a.reduce((sum,value,i)=>sum+value*b[i],0),cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
 function boundsEntry(origin,direction,bounds,limit){
@@ -21,7 +23,7 @@ function triangle(origin,direction,vertices,twoSided,limit){
 // occupancy approximation or registry traversal. Sections reject unrelated geometry before triangles.
 export class MeshPicker{
   constructor(volume,mesh){
-    this.volume=volume;this.ranges=mesh.ranges;this.offset=[volume.width/2,volume.height/2,volume.depth/2].map((value,axis)=>value+volume.origin[axis]);this.groups={};let bytes=0,faces=0;
+    this.materials=mesh.materials?meshMaterialRows(mesh):null;this.volume=volume;this.ranges=mesh.ranges;this.offset=[volume.width/2,volume.height/2,volume.depth/2].map((value,axis)=>value+volume.origin[axis]);this.groups={};let bytes=0,faces=0;
     for(const name of ['opaque','transparent']){
       const input=mesh.picking?.[name];if(!input)throw new Error('Mesh picking records are missing.');
       const quads=new Float32Array(input.quads),owners=new Uint32Array(input.owners);bytes+=quads.byteLength+owners.byteLength;faces+=owners.length;
@@ -43,13 +45,13 @@ export class MeshPicker{
       for(let index=range.first/6;index<(range.first+range.count)/6;index++){
         if(++quadsTested>32768)throw new Error('Model picking exceeds the interactive face budget. Reduce the visible section.');const at=index*STRIDE,points=Array.from({length:4},(_,i)=>Array.from(quads.subarray(at+i*5,at+i*5+3)));
         for(const corners of [[0,1,2],[0,2,3]]){
-          trianglesTested++;const hit=triangle(origin,direction,corners.map(i=>points[i]),name==='transparent',nearest);if(!hit)continue;
+          trianglesTested++;const material=this.materials?.[name],cutoff=material?.[index*4]??.01,twoSided=material?material[index*4+3]===0:name==='transparent',hit=triangle(origin,direction,corners.map(i=>points[i]),twoSided,nearest);if(!hit)continue;
           if(++alphaSamples>4096)throw new Error('Model picking exceeds the interactive alpha budget. Reduce the visible section.');
-          const uv=[0,1].map(axis=>corners.reduce((sum,corner,i)=>sum+quads[at+corner*5+3+axis]*hit.weights[i],0)),coverage=alpha(...uv)*quads[at+20];
-          if(!Number.isFinite(coverage))throw new Error('The current atlas returned invalid alpha coverage.');if(coverage<.01)continue;
+          const uv=[0,1].map(axis=>corners.reduce((sum,corner,i)=>sum+quads[at+corner*5+3+axis]*hit.weights[i],0)),coverage=Math.fround(Math.fround(alpha(...uv))*Math.fround(quads[at+20]));
+          if(!Number.isFinite(coverage))throw new Error('The current atlas returned invalid alpha coverage.');if(coverage<cutoff)continue;
           const owner=owners[index];if(owner>=this.volume.blocks.length)throw new Error('Picked geometry references a missing stored voxel.');
           const x=owner%this.volume.width,z=Math.floor(owner/this.volume.width)%this.volume.depth,y=Math.floor(owner/(this.volume.width*this.volume.depth)),block=this.volume.palette[this.volume.blocks[owner]];
-          nearest=hit.distance;result={x:x+this.volume.origin[0],y:y+this.volume.origin[1],z:z+this.volume.origin[2],block,biome:this.volume.biome(x,y,z),metadata:this.volume.metadata,distance:nearest,point:origin.map((value,axis)=>value+direction[axis]*nearest+this.offset[axis]),normal:hit.normal,frontFace:hit.frontFace,quad:points,uv,alpha:coverage};
+          nearest=hit.distance;result={x:x+this.volume.origin[0],y:y+this.volume.origin[1],z:z+this.volume.origin[2],block,biome:this.volume.biome(x,y,z),metadata:this.volume.metadata,distance:nearest,point:origin.map((value,axis)=>value+direction[axis]*nearest+this.offset[axis]),normal:hit.normal,frontFace:hit.frontFace,quad:points,uv,alpha:coverage,...(this.materials?{material:describeFaceParameters(this.materials[name],index)}:{})};
           Object.defineProperty(result,'meshOwner',{value:this});
         }
       }

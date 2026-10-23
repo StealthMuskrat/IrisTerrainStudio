@@ -1,10 +1,11 @@
+import{sourceTransparency,spriteTransparency,transparencyName,MATERIAL_SCAN_LIMIT}from'./face-materials.mjs';
 import{textureMipmaps,spriteMipLevel,textureMipmapMetadata}from'./texture-mipmaps.mjs';
 import{textureAnimation,animationState}from'./texture-animation.mjs';
 import{textureFramePixels}from'./texture-pixels.mjs';
 export class TextureAtlas {
   constructor(device,size=2048,{mipLevels=0}={}){
     if(!Number.isInteger(mipLevels)||mipLevels<0||mipLevels>4)throw new Error('Atlas mip level must be an integer from zero to four.');
-    this.device=device;this.requestedMipLevel=this.mipmapLevel=mipLevels;this.padding=2**mipLevels;this.mipBytes=0;this.size=Math.floor(Math.min(size,device.limits.maxTextureDimension2D)/this.padding)*this.padding;
+    this.device=device;this.requestedMipLevel=this.mipmapLevel=mipLevels;this.padding=2**mipLevels;this.mipBytes=0;this.materialWork=0;this.size=Math.floor(Math.min(size,device.limits.maxTextureDimension2D)/this.padding)*this.padding;
     if(!Number.isSafeInteger(this.size)||this.size<Math.max(4,this.padding*3))throw new Error('Invalid texture atlas dimensions.');
     this.alpha=new Uint8Array(this.size*this.size);this.entries=new Map();this.pending=new Map();this.x=this.padding;this.y=this.padding;this.rowHeight=0;this.disposed=false;this.epoch=null;this.tick=-1;
     try{this.texture=device.createTexture({size:[this.size,this.size,1],mipLevelCount:mipLevels+1,format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});this.sampler=this.createSampler(this.mipmapLevel);}catch(error){this.texture?.destroy();throw error;}
@@ -24,12 +25,11 @@ export class TextureAtlas {
     const entry={name,pixels:raster.pixels,sourceWidth:raster.width,sourceHeight:raster.height,x,y,...plan,frame:0,progress:0,renderKey:plan.frames[0].index+'/static',uv:[x/this.size,y/this.size,(x+width)/this.size,(y+height)/this.size]};
     let charge=0;const level=spriteMipLevel(width,height,this.requestedMipLevel);if(this.requestedMipLevel){for(let i=0;i<=level;i++)charge+=(raster.width/2**i)*(raster.height/2**i)*4;if(charge>64*1024*1024-this.mipBytes)throw new Error('Texture atlas exceeds its 64 MiB retained mipmap budget.');entry.mipmaps=textureMipmaps(name,raster,level,raster.texture??textureMipmapMetadata());entry.pixels=entry.mipmaps[0].pixels;}
     const nextLevel=Math.min(this.mipmapLevel,level),sampler=nextLevel===this.mipmapLevel?this.sampler:this.createSampler(nextLevel);
-    let transparent=false,partial=false;
-    for(const index of new Set(plan.frames.map(frame=>frame.index))){const pixels=textureFramePixels(entry,index);for(let at=3;at<pixels.length;at+=4){transparent||=pixels[at]<255;partial||=pixels[at]>0&&pixels[at]<255;}if(partial)break;}
-    if(plan.interpolate&&transparent&&plan.frames.some(frame=>frame.time>1))partial=true;
-    entry.transparency=partial?'blend':transparent?'cutout':'opaque';this.upload(entry,plan.frames[0].index);
+    entry.sourceTransparency=sourceTransparency(entry,amount=>this.chargeMaterial(amount));entry.transparency=transparencyName(entry.sourceTransparency);this.upload(entry,plan.frames[0].index);
     this.entries.set(name,entry);this.x=x+slotWidth;this.y=y;this.rowHeight=Math.max(rowHeight,slotHeight);this.mipmapLevel=nextLevel;this.sampler=sampler;this.mipBytes+=charge;return entry;
   }
+  chargeMaterial(amount){if(!Number.isSafeInteger(amount)||amount<0||amount>MATERIAL_SCAN_LIMIT-this.materialWork)throw new Error('Texture material inspection exceeds its bounded 32 Mi-pixel work budget.');this.materialWork+=amount;}
+  transparencyAt(entry,uv){if(this.disposed||this.entries.get(entry.name)!==entry)throw new Error('Face material requires the current owned atlas entry.');return spriteTransparency(entry,uv,amount=>this.chargeMaterial(amount));}
   upload(entry,index,next=index,progress=0){
     let base;const count=entry.mipmaps?.length??1;for(let level=0;level<count;level++){const scale=2**level,border=this.padding/scale,image=entry.mipmaps?.[level],source=image?{...entry,pixels:image.pixels,sourceWidth:image.width,sourceHeight:image.height,width:entry.width/scale,height:entry.height/scale}:entry,pixels=textureFramePixels(source,index,next,progress,border),width=source.width+2*border,height=source.height+2*border,x=entry.x/scale-border,y=entry.y/scale-border;
       this.device.queue.writeTexture({texture:this.texture,mipLevel:level,origin:[x,y]},pixels,{bytesPerRow:width*4,rowsPerImage:height},[width,height]);if(level===0)base={pixels,width,height,x,y};

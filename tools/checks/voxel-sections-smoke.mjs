@@ -1,3 +1,4 @@
+import{faceParameters}from'../../packages/resource-packs/face-materials.mjs';
 // Eight stored cells, a few clipped meshes/rays and controlled UI/worker doubles; no generation sweep.
 import assert from'node:assert/strict';import fs from'node:fs/promises';import vm from'node:vm';import{createHash}from'node:crypto';
 import{VoxelVolume}from'../../packages/voxel-renderer/volume.mjs';import{WorldRenderer}from'../../packages/voxel-renderer/world.mjs';import{bakeBlock}from'../../packages/voxel-renderer/models.mjs';
@@ -5,7 +6,7 @@ import{localClip,sectionSettings,sectionClip,clipBounds,emptyClip,clipCenter}fro
 const volume=new VoxelVolume({width:2,height:2,depth:2,origin:[-16,-32,-48],palette:[{id:'minecraft:stone',properties:{},solid:true},{id:'minecraft:dirt',properties:{},solid:true}],blocks:new Uint32Array([0,1,0,1,0,1,0,1]),biomes:{palette:['minecraft:plains','minecraft:forest'],cells:new Uint16Array([0,1,0,1,0,1,0,1])},metadata:{scope:'controlled-eight-cell-fixture',completePipeline:false}}),originalBlocks=volume.blocks.slice(),originalBiomes=volume.biomes.cells.slice();
 const model={id:'check:cube',elements:[{from:[0,0,0],to:[16,16,16],faces:Object.fromEntries(['north','south','east','west','up','down'].map(name=>[name,{texture:'check:pixel',cullface:name}]))}]},stack={blockModels(){return[{model,x:0,y:0}];},texture(){return'check:pixel';}},atlas={async add(){return{uv:[0,0,1,1],transparency:'opaque'};}},cube=await bakeBlock(volume.palette[0],stack,atlas),models=[cube,cube];
 const workerCode=(await fs.readFile(new URL('../../packages/voxel-renderer/mesh-worker.mjs',import.meta.url),'utf8')).replace(/^import.*\n/,'');
-async function mesh(clip){const messages=[],context=vm.createContext({self:{postMessage:value=>messages.push(value)},Float32Array,setTimeout,localClip,emptyClip});vm.runInContext(workerCode,context);await context.self.onmessage({data:{id:1,width:2,height:2,depth:2,blocks:volume.blocks,palette:volume.palette,models,clip}});return messages.at(-1);}
+async function mesh(clip){const messages=[],context=vm.createContext({self:{postMessage:value=>messages.push(value)},Float32Array,setTimeout,localClip,emptyClip,faceParameters});vm.runInContext(workerCode,context);await context.self.onmessage({data:{id:1,width:2,height:2,depth:2,blocks:volume.blocks,palette:volume.palette,models,clip}});return messages.at(-1);}
 assert.equal((await mesh(null)).faces,24);const comparisons=[];
 for(const[axis,position]of[['x',-16],['y',-32],['z',-48]]){
  const clip=sectionClip(volume,{axis,position,mode:'slice'}),output=await mesh(clip);assert.equal(output.faces,16);assert.equal(output.transparent.byteLength,0);comparisons.push({axis,position,faces:output.faces});
@@ -19,7 +20,7 @@ assert.equal(volume.raycast([-10,-31.5,-47.5],[-1,0,0],4096,{clip:xSection}).x,-
 for(const bad of[{axis:'y',position:1.5},{axis:'nope',position:0},{axis:'y',position:0,mode:'unknown'}])assert.throws(()=>sectionSettings(bad));assert.throws(()=>localClip(volume,{min:[0,0,0],max:[1.5,1,1]}));assert.throws(()=>volume.raycast(rayOrigin,[0,0,0]));assert.throws(()=>volume.raycast([NaN,0,0],direction));
 // Actual renderer remesh method, with actual worker body hosted in an isolated VM.
 const workers=[];let held=false;globalThis.Worker=class{
- constructor(){this.terminated=false;this.messages=[];workers.push(this);const owner=this;this.context=vm.createContext({self:{postMessage(value){if(!owner.terminated)owner.onmessage?.({data:value});}},Float32Array,setTimeout,localClip,emptyClip});vm.runInContext(workerCode,this.context);}
+ constructor(){this.terminated=false;this.messages=[];workers.push(this);const owner=this;this.context=vm.createContext({self:{postMessage(value){if(!owner.terminated)owner.onmessage?.({data:value});}},Float32Array,setTimeout,localClip,emptyClip,faceParameters});vm.runInContext(workerCode,this.context);}
  postMessage(data){this.messages.push(data);if(held&&data.kind!=='cancel')this.waiting=data;else this.run(data);}
  async run(data){try{await this.context.self.onmessage({data});}catch(error){this.onerror?.({message:error.message});}}
  terminate(){this.terminated=true;}

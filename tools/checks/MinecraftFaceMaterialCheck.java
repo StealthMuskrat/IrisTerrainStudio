@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+import com.google.gson.*;
+import com.mojang.blaze3d.platform.Transparency;
+import java.nio.*;import java.nio.file.*;import java.util.*;import java.util.jar.*;
+import org.objectweb.asm.*;import org.objectweb.asm.commons.*;
+/** Original image/sprite transparency methods with owned IntBuffer memory and animation-address hosts. */
+public final class MinecraftFaceMaterialCheck {
+ static final Map<Long,IntBuffer> MEMORY=new HashMap<>();
+ public static IntBuffer memory(long id,int size){var value=MEMORY.get(id);if(value==null||value.capacity()!=size)throw new IllegalStateException("Unowned reference raster");return value;}
+ public static final class Animation {public it.unimi.dsi.fastutil.ints.IntList uniqueFrames;public int frameRowSize;public int getFrameX(int i){return i%frameRowSize;}public int getFrameY(int i){return i/frameRowSize;}}
+ static final class Host extends ClassLoader{
+  final JarFile jar;Host(Path p)throws Exception{super(MinecraftFaceMaterialCheck.class.getClassLoader());jar=new JarFile(p.toFile());}
+  @Override protected Class<?> findClass(String name)throws ClassNotFoundException{String original=name.equals("ImageProbe")?"com/mojang/blaze3d/platform/NativeImage":name.equals("SpriteProbe")?"net/minecraft/client/renderer/texture/SpriteContents":null;if(original==null)throw new ClassNotFoundException(name);
+   try(var stream=jar.getInputStream(jar.getJarEntry(original+".class"))){var writer=new ClassWriter(0);var remapper=new Remapper(){@Override public String map(String value){return switch(value){case"com/mojang/blaze3d/platform/NativeImage"->"ImageProbe";case"net/minecraft/client/renderer/texture/SpriteContents"->"SpriteProbe";case"net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture"->"MinecraftFaceMaterialCheck$Animation";default->value;};}};
+    var visitor=new ClassVisitor(Opcodes.ASM9,new ClassRemapper(writer,remapper)){
+     @Override public void visitNestHost(String host){}@Override public void visitNestMember(String member){}@Override public void visitInnerClass(String a,String b,String c,int d){}
+     @Override public MethodVisitor visitMethod(int access,String method,String descriptor,String signature,String[] exceptions){if(!method.equals("computeTransparency")&&!name.equals("ImageProbe")||!Set.of("computeTransparency","checkAllocated").contains(method))return null;
+      return new MethodVisitor(Opcodes.ASM9,super.visitMethod(access,method,descriptor,signature,exceptions)){
+       @Override public void visitMethodInsn(int opcode,String owner,String method,String desc,boolean itf){if(owner.equals("org/lwjgl/system/MemoryUtil")&&method.equals("memIntBuffer")){super.visitMethodInsn(Opcodes.INVOKESTATIC,"MinecraftFaceMaterialCheck","memory",desc,false);}else super.visitMethodInsn(opcode,owner,method,desc,itf);}
+      };}
+    };new ClassReader(stream).accept(visitor,0);var bytes=writer.toByteArray();return defineClass(name,bytes,0,bytes.length);
+   }catch(Exception e){throw new ClassNotFoundException(name,e);}
+  }
+ }
+ static void field(Object target,String name,Object value)throws Exception{var f=target.getClass().getDeclaredField(name);f.setAccessible(true);f.set(target,value);}
+ static Object allocate(Class<?> type)throws Exception{var f=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");f.setAccessible(true);return ((sun.misc.Unsafe)f.get(null)).allocateInstance(type);}
+ static JsonObject flags(Transparency value){var row=new JsonObject();row.addProperty("transparent",value.hasTransparent());row.addProperty("translucent",value.hasTranslucent());return row;}
+ static Object deserializer(String name)throws Exception{var c=Class.forName(name).getDeclaredConstructor();c.setAccessible(true);return c.newInstance();}
+ public static void main(String[] args)throws Exception{
+  var request=JsonParser.parseString(Files.readString(Path.of(args[1]))).getAsJsonObject();var out=new JsonObject();var host=new Host(Path.of(args[0]));var imageType=host.loadClass("ImageProbe");var spriteType=host.loadClass("SpriteProbe");var sourceMethod=imageType.getMethod("computeTransparency");var faceMethod=spriteType.getMethod("computeTransparency",float.class,float.class,float.class,float.class);var results=new JsonArray();long memoryId=0;
+  for(var value:request.getAsJsonArray("sprites")){var row=value.getAsJsonObject();int width=row.get("sourceWidth").getAsInt(),height=row.get("sourceHeight").getAsInt();var pixels=IntBuffer.allocate(width*height);var rgba=row.getAsJsonArray("pixels");for(int i=0;i<pixels.capacity();i++)pixels.put(i,rgba.get(i*4+3).getAsInt()<<24);long id=++memoryId;MEMORY.put(id,pixels);var image=allocate(imageType);field(image,"width",width);field(image,"height",height);field(image,"pixels",id);field(image,"format",com.mojang.blaze3d.platform.NativeImage.Format.RGBA);var all=(Transparency)sourceMethod.invoke(image);var sprite=allocate(spriteType);field(sprite,"width",row.get("width").getAsInt());field(sprite,"height",row.get("height").getAsInt());field(sprite,"originalImage",image);field(sprite,"transparency",all);
+   var frames=row.getAsJsonArray("frames");if(frames.size()>1){var animation=new Animation();animation.frameRowSize=width/row.get("width").getAsInt();animation.uniqueFrames=new it.unimi.dsi.fastutil.ints.IntArrayList();for(var frame:frames){int f=frame.getAsInt();if(!animation.uniqueFrames.contains(f))animation.uniqueFrames.add(f);}field(sprite,"animatedTexture",animation);}
+   var result=new JsonObject();result.add("source",flags(all));var faces=new JsonArray();for(var uv:row.getAsJsonArray("uvs")){var p=uv.getAsJsonArray();float a=p.get(0).getAsFloat(),b=p.get(1).getAsFloat(),c=p.get(2).getAsFloat(),d=p.get(3).getAsFloat();var face=new JsonObject();try{var sample=(Transparency)faceMethod.invoke(sprite,Math.min(a,c)/16F,Math.min(b,d)/16F,Math.max(a,c)/16F,Math.max(b,d)/16F);face.addProperty("accepted",true);face.add("flags",flags(sample));}catch(java.lang.reflect.InvocationTargetException e){if(!(e.getCause() instanceof IllegalArgumentException))throw e;face.addProperty("accepted",false);}faces.add(face);}result.add("faces",faces);results.add(result);MEMORY.remove(id);
+  }out.add("sprites",results);
+  var layers=new JsonObject();for(var entry:Map.of("opaque",Transparency.NONE,"cutout",Transparency.TRANSPARENT,"blend",Transparency.TRANSLUCENT).entrySet()){var layer=net.minecraft.client.renderer.chunk.ChunkSectionLayer.byTransparency(entry.getValue());var pipeline=layer.pipeline(false);String cutoff=pipeline.getShaderDefines().values().get("ALPHA_CUTOUT");var row=new JsonObject();row.addProperty("layer",layer.name());row.addProperty("alphaCutoff",cutoff==null?0:Float.parseFloat(cutoff));row.addProperty("cull",pipeline.isCull());layers.add(entry.getKey(),row);}out.add("layers",layers);
+  var gson=new GsonBuilder().registerTypeAdapter(net.minecraft.client.resources.model.cuboid.CuboidModelElement.class,deserializer("net.minecraft.client.resources.model.cuboid.CuboidModelElement$Deserializer")).registerTypeAdapter(net.minecraft.client.resources.model.cuboid.CuboidFace.class,deserializer("net.minecraft.client.resources.model.cuboid.CuboidFace$Deserializer")).create();var elements=new JsonArray();for(var value:request.getAsJsonArray("elements")){var row=new JsonObject();try{var element=gson.fromJson(value,net.minecraft.client.resources.model.cuboid.CuboidModelElement.class);row.addProperty("accepted",true);if(element.shadeDirectionOverride()==null)row.add("shadeDirectionOverride",JsonNull.INSTANCE);else row.addProperty("shadeDirectionOverride",element.shadeDirectionOverride().getName());row.addProperty("lightEmission",element.lightEmission());}catch(Exception e){row.addProperty("accepted",false);}elements.add(row);}out.add("elements",elements);
+  Files.writeString(Path.of(args[2]),new Gson().toJson(out)+"\n");host.jar.close();
+ }
+}
