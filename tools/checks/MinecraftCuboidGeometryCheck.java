@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+import com.google.gson.*;import java.nio.file.*;import java.util.*;
+import net.minecraft.client.resources.model.cuboid.*;import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.ModelState;import net.minecraft.client.resources.model.ModelBaker;import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;import net.minecraft.client.renderer.texture.TextureAtlasSprite;import net.minecraft.client.model.geom.builders.UVPair;import net.minecraft.core.Direction;import com.mojang.math.Quadrant;import org.joml.*;
+/** Original client parser, cuboid transform, FaceBakery and winding, with an owned sprite address carrier. */
+public final class MinecraftCuboidGeometryCheck {
+ static final Gson GSON=new GsonBuilder().registerTypeAdapter(CuboidModelElement.class,adapter("CuboidModelElement")).registerTypeAdapter(CuboidFace.class,adapter("CuboidFace")).create();
+ static Object adapter(String name){try{var c=Class.forName("net.minecraft.client.resources.model.cuboid."+name+"$Deserializer").getDeclaredConstructor();c.setAccessible(true);return c.newInstance();}catch(Exception e){throw new RuntimeException(e);}}
+ static Object allocate(Class<?> type)throws Exception{var f=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");f.setAccessible(true);return((sun.misc.Unsafe)f.get(null)).allocateInstance(type);}
+ static JsonArray bits(float... values){var out=new JsonArray();for(float value:values)out.add(String.format("%08x",Float.floatToRawIntBits(value)));return out;}
+ public static void main(String[] args)throws Exception{
+  var input=JsonParser.parseString(Files.readString(Path.of(args[0]))).getAsJsonArray();var out=new JsonObject();out.addProperty("fastmath",org.joml.Options.FASTMATH);out.addProperty("fma",org.joml.Options.USE_MATH_FMA);var rows=new JsonArray();
+  var sprite=(TextureAtlasSprite)allocate(TextureAtlasSprite.class);for(var entry:Map.of("u0",.125F,"v0",.25F,"u1",.375F,"v1",.75F).entrySet()){var f=TextureAtlasSprite.class.getDeclaredField(entry.getKey());f.setAccessible(true);f.setFloat(sprite,entry.getValue());}
+  var interner=new ModelBaker.Interner(){public Vector3fc vector(Vector3fc v){return v;}public BakedQuad.MaterialInfo materialInfo(BakedQuad.MaterialInfo v){return v;}};
+  var defaultUv=FaceBakery.class.getDeclaredMethod("defaultFaceUV",Vector3fc.class,Vector3fc.class,Direction.class);defaultUv.setAccessible(true);
+  for(var value:input){var request=value.getAsJsonObject();var row=new JsonObject();row.addProperty("name",request.get("name").getAsString());CuboidModelElement element;try{element=GSON.fromJson(request.get("element"),CuboidModelElement.class);}catch(JsonParseException e){row.addProperty("accepted",false);rows.add(row);continue;}row.addProperty("accepted",true);
+   var r=request.getAsJsonObject("application");var rotation=BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.parseJson(r.get("x").getAsInt()),Quadrant.parseJson(r.get("y").getAsInt()),Quadrant.parseJson(r.get("z").getAsInt())));ModelState modelState=r.get("uvlock").getAsBoolean()?rotation.withUvLock():rotation;
+   if(element.rotation()!=null){var values=new float[16];element.rotation().transform().get(values);var matrix=new JsonArray();for(int column=0;column<3;column++)for(int axis=0;axis<3;axis++)matrix.add(String.format("%08x",Float.floatToRawIntBits(values[column*4+axis])));row.add("elementMatrix",matrix);}
+   var faces=new JsonArray();for(var entry:element.faces().entrySet()){var face=entry.getValue();var uvs=face.uvs()!=null?face.uvs():(CuboidFace.UVs)defaultUv.invoke(null,element.from(),element.to(),entry.getKey());var material=new BakedQuad.MaterialInfo(sprite,null,null,null,null,face.tintIndex(),element.shadeDirectionOverride(),element.lightEmission());var quad=FaceBakery.bakeQuad(interner,element.from(),element.to(),uvs,face.rotation(),material,entry.getKey(),modelState,element.rotation());var result=new JsonObject();result.addProperty("face",entry.getKey().getName());result.addProperty("direction",quad.direction().getName());var positions=new JsonArray();var texture=new JsonArray();for(int i=0;i<4;i++){var p=quad.position(i);positions.add(bits(p.x(),p.y(),p.z()));texture.add(bits(UVPair.unpackU(quad.packedUV(i)),UVPair.unpackV(quad.packedUV(i))));}result.add("positions",positions);result.add("uv",texture);faces.add(result);}row.add("faces",faces);rows.add(row);
+  }out.add("rows",rows);Files.writeString(Path.of(args[1]),GSON.toJson(out)+"\n");
+ }
+}

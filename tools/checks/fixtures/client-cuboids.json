@@ -1,0 +1,603 @@
+[
+  {
+    "name": "identity-small-coordinate",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "identity-uvlock-small",
+    "element": {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "all",
+          "uv": [
+            1e-07,
+            0,
+            15.33,
+            16
+          ]
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": true
+    }
+  },
+  {
+    "name": "model-turn-uvlock",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all",
+          "rotation": 90,
+          "uv": [
+            1,
+            2,
+            14,
+            15
+          ]
+        },
+        "up": {
+          "texture": "all"
+        }
+      }
+    },
+    "application": {
+      "x": 90,
+      "y": 180,
+      "z": 270,
+      "uvlock": true
+    }
+  },
+  {
+    "name": "single-angle-rescale",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "Z",
+        "angle": 30,
+        "rescale": true
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "single-axis-precedence",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          6.25,
+          9,
+          7
+        ],
+        "axis": "y",
+        "angle": 37.25,
+        "x": 123,
+        "rescale": true
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "euler-rescale",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          5,
+          6,
+          9
+        ],
+        "x": 25,
+        "y": -35,
+        "z": 14,
+        "rescale": true
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "euler-zero",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "x": 0,
+        "rescale": true
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "degenerate",
+    "element": {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "all"
+        },
+        "north": {
+          "texture": "all"
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "inverted",
+    "element": {
+      "from": [
+        16,
+        1,
+        13
+      ],
+      "to": [
+        2,
+        14,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 90,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "missing-origin",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "axis": "x",
+        "angle": 12
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "empty-faces",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {}
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "bounds",
+    "element": {
+      "from": [
+        -17,
+        0,
+        0
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "missing-rotation-values",
+    "element": {
+      "from": [
+        1e-07,
+        -3.125,
+        2.75
+      ],
+      "to": [
+        15.33,
+        16,
+        13.875
+      ],
+      "faces": {
+        "north": {
+          "texture": "all"
+        },
+        "south": {
+          "texture": "all"
+        },
+        "east": {
+          "texture": "all"
+        },
+        "west": {
+          "texture": "all"
+        },
+        "up": {
+          "texture": "all"
+        },
+        "down": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "null-euler",
+    "element": {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "all"
+        }
+      },
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "x": null
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  },
+  {
+    "name": "null-uv",
+    "element": {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "all",
+          "uv": null
+        }
+      }
+    },
+    "application": {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "uvlock": false
+    }
+  }
+]

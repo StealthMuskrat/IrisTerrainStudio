@@ -23,3 +23,6 @@ Each block admits at most 128 selected groups, 128 candidates per group, 512 can
 The reference calls actual client model collectors with marker model parts; it does not start the client renderer or a GPU. The finite matrix/type metadata capture is separate from those small behavior checks. Full model geometry, offsets, fluid/tint/material/mipmap semantics, every selector/property option, real browser/GPU/UI behavior, final terrain/reference/release qualification and supplied F8thful assets remain open. No broad suite, state/volume sweep or GitHub workflow runs.
 
 The subsequent [offset integration](MINECRAFT_MODEL_OFFSETS.md) adds original XZ/XYZ displacement, shared render/pick bounds, owner-preserving picking and displacement inspection, with six native reference positions and two mesh cells. The earlier evidence above retains its original module/source identities.
+
+
+The later [cuboid integration](MINECRAFT_CUBOID_GEOMETRY.md) adds native single-axis/Euler transforms and rescale, binary32 geometry/UV handling, identity precision, canonical winding and native face directions. Its fifteen tiny fixtures qualify 41 selected faces; the earlier model-selection evidence retains its historical scope and hashes.

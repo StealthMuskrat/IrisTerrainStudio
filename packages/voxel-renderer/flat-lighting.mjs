@@ -16,7 +16,7 @@ export function closestShadeDirection(normal){
 }
 export function shadeFlatColor(color,quad,input){
   if(!input?.profile)return color;const profile=profiles[input.profile];if(!profile)throw new Error('Unknown native cardinal lighting profile.');
-  const direction=quad.fluid?quad.fluidFace:quad.shadeDirectionOverride??closestShadeDirection(quad.normal),index=directions.indexOf(direction);if(index<0)throw new Error('Missing native flat face direction.');
+  const direction=quad.fluid?quad.fluidFace:quad.shadeDirectionOverride??quad.shadeDirection??closestShadeDirection(quad.normal),index=directions.indexOf(direction);if(index<0)throw new Error('Missing native flat face direction.');
   // Fluid side normals are always up in the original tesselator. Its side shade is
   // up * north/west; model gray is first packed to bytes, then multiplied by tint.
   const shade=quad.fluid&&index>=2?F(profile[1]*profile[index<4?2:4]):profile[index];
