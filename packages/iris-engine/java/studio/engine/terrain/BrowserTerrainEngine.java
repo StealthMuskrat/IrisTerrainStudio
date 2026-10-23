@@ -36,7 +36,7 @@ public final class BrowserTerrainEngine extends EngineBoundary {
             finally{
                 complex=null;stack=null;upper=null;nativeMatter=null;
                 try{data.unregisterEngine(this);}
-                finally{try{if(objectSession!=null)objectSession.close();}finally{objectSession=null;try{if(nativeObjectSession!=null)nativeObjectSession.close();}finally{nativeObjectSession=null;}}}
+                finally{try{if(objectSession!=null)objectSession.close();}finally{objectSession=null;try{if(nativeObjectSession!=null)nativeObjectSession.close();}finally{nativeObjectSession=null;studio.engine.biome.WorkerCustomBiomes.clear();}}}
             }
         }
     }
@@ -50,12 +50,15 @@ public final class BrowserTerrainEngine extends EngineBoundary {
         if(dimension.hasDimensionStack()&&(dimension.getDimensionStack().getDimensions()==null||dimension.getDimensionStack().getDimensions().size()>16))throw new IllegalArgumentException("Dimension stack exceeds its sixteen-layer worker budget");
         world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(seed).build();
         WorkerTerrainPlatform.install(registry);
+        if(!(registry instanceof studio.engine.registry.BrowserRegistries owned))throw new IllegalArgumentException("Terrain requires an owned browser registry");
+        studio.engine.biome.WorkerCustomBiomes.begin(owned,data);
         try{
+            studio.engine.biome.WorkerCustomBiomes.prepare(dimension);
             if(dimension.hasDimensionStack())for(String key:dimension.getDimensionStack().getDimensions())if(key!=null&&!key.isBlank()){
-                IrisDimension layer=key.equals(dimension.getLoadKey())?dimension:data.getDimensionLoader().load(key);if(layer!=null)admitHeight(layer);
+                IrisDimension layer=key.equals(dimension.getLoadKey())?dimension:data.getDimensionLoader().load(key);if(layer!=null){admitHeight(layer);studio.engine.biome.WorkerCustomBiomes.prepare(layer);}
             }
             if(dimension.hasUpperDimension()&&!dimension.getUpperDimension().equals(dimension.getLoadKey())){
-                IrisDimension layer=data.getDimensionLoader().load(dimension.getUpperDimension(),false);if(layer!=null)admitHeight(layer);
+                IrisDimension layer=data.getDimensionLoader().load(dimension.getUpperDimension(),false);if(layer!=null){admitHeight(layer);studio.engine.biome.WorkerCustomBiomes.prepare(layer);}
             }
             complex=new IrisComplex(this);
             // Same native assembly order as EngineRuntimeBuilder. Only the concrete host type differs.

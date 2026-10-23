@@ -52,7 +52,7 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
         for name in ('java.base/java/lang/Math.java','java.base/java/util/SplittableRandom.java', 'java.base/java/util/random/RandomGenerator.java', 'java.base/jdk/internal/util/random/RandomSupport.java'):
             add('upstream/OpenJDK/' + name, source.read(name))
         # Raster-model references only; AWT/ImageIO are not compiled into the worker module.
-        for name in ('java.desktop/com/sun/imageio/plugins/png/PNGImageReader.java','java.desktop/javax/imageio/ImageTypeSpecifier.java','java.desktop/java/awt/image/IndexColorModel.java'):
+        for name in ('java.desktop/com/sun/imageio/plugins/png/PNGImageReader.java','java.desktop/javax/imageio/ImageTypeSpecifier.java','java.desktop/java/awt/image/IndexColorModel.java','java.desktop/java/awt/Color.java'):
             add('reference/OpenJDK/' + name, source.read(name))
     for filename in sorted((jdk / 'legal/java.desktop').glob('*')):
         if filename.is_file():

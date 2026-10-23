@@ -47,7 +47,7 @@ Native source-plan cache ownership, bounded memory continuation encoding, snapsh
 
 ## Remaining completion sequence (2026-10-23)
 
-Implementation and qualification remain separate gates. Recent geometry/biome, modern tile-payload, native Studio-layout, procedural ruin and shared rounding batches close bounded implementation gaps; they do not close the terrain, browser or release gates.
+Implementation and qualification remain separate gates. Recent geometry/biome, modern tile-payload, native Studio-layout, procedural ruin, shared rounding and custom biome authoring batches close bounded implementation gaps; they do not close the terrain, browser or release gates.
 
 | Work | Evidence needed to finish | Existing tracking |
 | --- | --- | --- |
@@ -57,3 +57,5 @@ Implementation and qualification remain separate gates. Recent geometry/biome, m
 | Authorized default assets | Supply the intended F8thful archive in the active workspace, verify identity and exercise its real dependency roots | #5 |
 | Actual browser execution | A working browser/GPU environment; prior verified Chrome exited with SIGTRAP before navigation | #4, #8, #9 |
 | Final program verification | After implementation: complete applicable native/browser/integration/security/deployment and measured performance checks | #12 |
+
+Custom biome authoring now connects native physical identities and retained generated definitions through ephemeral worker handles, including colors and exact definition download. The original factory/actuator are exercised against a virtual-key JVM fixture; this does not close live registry epochs, production custom contributions, history/world lifecycle or full option coverage. See [scope](research/CUSTOM_BIOME_AUTHORING.md).

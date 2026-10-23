@@ -144,7 +144,7 @@ public final class BrowserRegistries implements PlatformRegistries {
     @Override public NativeBlockState deepSlateOre(NativeBlockState block,NativeBlockState ore){BrowserBlockState onto=owned(block),source=owned(ore);String mapped=(onto.isDeepSlate()?deep:normal).get(source.materialKey());return mapped==null?direct(source.state):direct(byKey.get(mapped));}
     BrowserBlockState owned(NativeBlockState state){if(!(state instanceof BrowserBlockState value)||value.owner!=this)throw new IllegalArgumentException("Native states belong to different registry instances");return value;}
     boolean canPlace(BrowserBlockState block,NativeBlockState other){BrowserBlockState onto=owned(other);int bit=block.state.type*types.size()+onto.state.type;return(placement[bit>>>3]&(1<<(bit&7)))!=0;}
-    @Override public NativeBiome biome(String key){String name=normalizedKey(key);return keySets.get("biomes").contains(name)?new BiomeValue(name):null;}
+    @Override public NativeBiome biome(String key){String name=normalizedKey(key);return keySets.get("biomes").contains(name)||studio.engine.biome.WorkerCustomBiomes.contains(this,name)?new BiomeValue(name):null;}
     @Override public NativeItem item(String key){String name=normalizedKey(key.trim().toLowerCase(Locale.ROOT).replace(' ','_'));return keySets.get("items").contains(name)?new ItemValue(name):null;}
     @Override public NativeEntityType entity(String key){String name=normalizedKey(key);return keySets.get("entities").contains(name)?new EntityValue(name,entityCategories.get(name)):null;}
     private static String normalizedKey(String key){return key.indexOf(':')<0?"minecraft:"+key:key;}

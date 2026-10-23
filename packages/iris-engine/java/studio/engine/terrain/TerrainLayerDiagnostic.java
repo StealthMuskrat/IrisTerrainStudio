@@ -8,6 +8,7 @@ import java.io.*;
 public final class TerrainLayerDiagnostic {
     public static void writeMetadata(JsonWriter writer,Engine engine)throws IOException{
         WorkerStudioLayout.describe(engine,writer);
+        studio.engine.biome.WorkerCustomBiomes.describe(writer);
         writer.name("biomeSeed").value(Long.toString(engine.getWorld().getRawWorldSeed()));
         writer.name("environment").value(engine.getDimension().getEnvironment().name());
         var upper=engine.getUpperContext();var stack=engine.getDimensionStackContext();

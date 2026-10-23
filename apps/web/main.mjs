@@ -1,3 +1,4 @@
+import{customBiomeLabel}from'/packages/iris-engine/custom-biomes.mjs';
 import {navigationSettings} from '/packages/voxel-renderer/navigation.mjs';
 import {CameraTools} from './lib/camera-tools.mjs';
 import {JsonTools} from './lib/json-tools.mjs';
@@ -396,6 +397,11 @@ async function sampleNativeImageMap(){
     return`${sample.x}, ${sample.z}: ${value}\n  inside source: ${sample.insideSource?'yes':'no'} · filter kernel inside: ${sample.samplingKernelInsideSource?'yes':'no'}`;
   });
   await ask('Native image-map samples',[...imageMapDetails(result.resource),element('pre',{class:'modal-copy',text:rows.join('\n\n')}),copy('Bounds describe the transformed source and sampling kernel before the configured outside behavior is applied.')],{submit:null,cancel:'Close'});if(current())message('Native image-map sampling finished.');
+}
+function customBiomeDetails(terrainInfo,key,{current=()=>true}={}){
+  const rows=terrainInfo?.customBiomes,definition=Array.isArray(rows)?rows.find(row=>row.key===key):null;if(!definition)return [];
+  const text=definition.definitionJson;
+  return[copy(`Custom biome: ${customBiomeLabel(terrainInfo,key)}`),copy('Colors use this retained native definition. Live registry installation is not qualified.'),element('button',{type:'button',class:'quiet-button',text:'Download biome definition',onclick:()=>{if(!current()){toast('The displayed volume changed. Inspect it again.',true);return;}download(new Blob([text],{type:'application/json'}),'custom-biome.json');}})];
 }
 function tilePayloadDetails(rows,{current=()=>true,space='world'}={}){
   if(!Array.isArray(rows)||!rows.length)return [];
@@ -806,7 +812,7 @@ async function inspectWorldVoxel(hit){
   if(!hit)return;const volume=currentVoxelVolume();if(!volume||hit.meshOwner&&hit.meshOwner!==state.world.picker)return;
   $('coordinates-status').textContent=`X ${hit.x} · Y ${hit.y} · Z ${hit.z}`;$('sample-status').textContent=(hit.block.stateKey||hit.block.id)+(hit.biome?' · '+hit.biome:'');
   const properties=Object.entries(hit.block.properties||{}).map(([key,value])=>`${key}: ${value}`).join('\n'),metadata=hit.metadata||{};
-  const details=[copy((state.world.mode??'textured')==='textured'?'Textured model geometry':'Diagnostic cell extents · identity colors'),copy(`World X ${hit.x} · Y ${hit.y} · Z ${hit.z}`),copy(hit.block.stateKey||hit.block.id),...(properties?[element('pre',{class:'modal-copy',text:properties})]:[]),copy(hit.biome?`Stored physical biome: ${hit.biome}`:'This volume contains no physical biome output.'),...(metadata.scope?[copy(`Generation scope: ${metadata.scope}`)]:[]),...(metadata.mode?[copy(`Native mode: ${metadata.mode}`)]:[]),...(hit.point?[copy(`Surface hit: ${hit.point.map(value=>value.toFixed(4)).join(' · ')} · distance ${hit.distance.toFixed(4)} blocks`)]:[]),copy((state.world.mode??'textured')==='textured'?'Transparent pixels can be selected through. Press Esc in the world view to clear the face outline.':'Cell faces show opaque voxel extents. Press Esc in the world view to clear the face outline.')];
+  const details=[copy((state.world.mode??'textured')==='textured'?'Textured model geometry':'Diagnostic cell extents · identity colors'),copy(`World X ${hit.x} · Y ${hit.y} · Z ${hit.z}`),copy(hit.block.stateKey||hit.block.id),...(properties?[element('pre',{class:'modal-copy',text:properties})]:[]),copy(hit.biome?`Stored physical biome: ${hit.biome}`:'This volume contains no physical biome output.'),...customBiomeDetails(metadata.terrainInfo,hit.biome,{current:()=>currentVoxelVolume()===volume&&(!hit.meshOwner||state.world?.picker===hit.meshOwner)}),...(metadata.scope?[copy(`Generation scope: ${metadata.scope}`)]:[]),...(metadata.mode?[copy(`Native mode: ${metadata.mode}`)]:[]),...(hit.point?[copy(`Surface hit: ${hit.point.map(value=>value.toFixed(4)).join(' · ')} · distance ${hit.distance.toFixed(4)} blocks`)]:[]),copy((state.world.mode??'textured')==='textured'?'Transparent pixels can be selected through. Press Esc in the world view to clear the face outline.':'Cell faces show opaque voxel extents. Press Esc in the world view to clear the face outline.')];
   if(hit.modelApplications?.length)details.push(copy('Selected cell model applications: '+hit.modelApplications.join(' · ')));
   if(hit.modelOffset?.some(value=>value!==0))details.push(copy('Model offset: '+hit.modelOffset.map(value=>value.toFixed(6)).join(' · ')));
   if(hit.material)details.push(copy(`Face alpha cutoff: ${hit.material.alphaCutoff.toFixed(3)} · back faces ${hit.material.cullBackFaces?'culled':'visible'}.`),...(hit.material.shadeDirectionOverride||hit.material.lightEmission?[copy(`Model lighting metadata: direction ${hit.material.shadeDirectionOverride??'face normal'} · emission ${hit.material.lightEmission}. ${hit.material.lighting}`)]:[]));

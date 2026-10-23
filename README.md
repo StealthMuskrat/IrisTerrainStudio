@@ -154,7 +154,7 @@ Dimension authoring now includes native image-binding inspection and coordinate 
 
 ### Native dimension layers and local vanilla assets
 
-Upper dimensions (self or another pack dimension) and dimension stacks now use the original Iris context factories, layer layouts, blend sampling, terrain/biome actuators and stack stage registration. The registered Overworld route includes its fifth terrain stage when stacked. Superflat, Enclosure and Islands use their native stack/custom registrations. Scalar maps remain host-dimension fields; generated volume metadata identifies its upper dimension or layer count. Worker admission is limited to sixteen stack references and 1–4096 blocks per dimension. Imported object placement, active custom contributions, hydrology and saved-world transitions still refuse. The standalone cave/component diagnostics refuse stacks; use a registered mode for native layer ordering. See [layer evidence](docs/evidence/native-dimension-layers-2026-10-22.json).
+Upper dimensions (self or another pack dimension) and dimension stacks now use the original Iris context factories, layer layouts, blend sampling, terrain/biome actuators and stack stage registration. The registered Overworld route includes its fifth terrain stage when stacked. Superflat, Enclosure and Islands use their native stack/custom registrations. Scalar maps remain host-dimension fields; generated volume metadata identifies its upper dimension or layer count. Worker admission is limited to sixteen stack references and 1–4096 blocks per dimension. Imported object placement, live custom registry epochs, unsupported hydrology combinations and saved-world transitions still refuse. The standalone cave/component diagnostics refuse stacks; use a registered mode for native layer ordering. See [layer evidence](docs/evidence/native-dimension-layers-2026-10-22.json).
 
 Prepare the vanilla baseline from an authorized local Minecraft **26.3** `client.jar`:
 
@@ -176,3 +176,6 @@ Enable **Studio layout** to apply the dimension’s native Studio biome grid to 
 
 
 Procedural **ruins** now appear in the native entry chooser and use the original variant generator, erosion, weathering, burial and accents. Isolated, single-placement, source/neighborhood and registered Overworld paths share bounded admission. See [the ruin boundary](docs/research/PROCEDURAL_RUINS.md) for the native rounding adapter and current limits.
+
+
+Native custom biome **authoring previews** now retain the original content-addressed biome keys and generated 26.3 definitions. Stored model/fluid colors and optional biome blending use those definitions; voxel inspection offers an exact definition download. Handles are bounded and owned by the terrain context. Live registry installation and complete custom biome parity remain unqualified. See [scope](docs/research/CUSTOM_BIOME_AUTHORING.md).
