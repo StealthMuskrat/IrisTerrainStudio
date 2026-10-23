@@ -1,0 +1,188 @@
+{
+  "date": "2026-10-23",
+  "scope": "Usable native pack creation and retained native region inspection",
+  "result": "pass",
+  "starterAndNativeTransport": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "Native-source terrain starter, atomic creation, editor handoff and browser-engine compatibility",
+    "files": 6,
+    "nativeResources": 4,
+    "sourceFilesByteExact": true,
+    "authenticatedHttp": true,
+    "duplicateAndInvalidRefusal": true,
+    "createNameRaceAtomic": true,
+    "exportPreservesAllFiles": true,
+    "controlledEditorHandoff": true,
+    "cancelledLateCreationVisible": true,
+    "staleNavigationRefusal": true,
+    "nativeReferenceIdentity": "a9ed31f026428b7f70bc195a46c87d8c8176fd0abd438eb4527bcf0e4112f8e4",
+    "nativeReferenceReused": true,
+    "reference": {
+      "blocks": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock"
+        ],
+        [
+          8,
+          128,
+          8,
+          "minecraft:air"
+        ],
+        [
+          15,
+          255,
+          15,
+          "minecraft:air"
+        ]
+      ],
+      "regions": [
+        "ledges",
+        "ledges"
+      ],
+      "samples": [
+        {
+          "height": "4062400000000000",
+          "biome": "ledges"
+        },
+        {
+          "height": "4062000000000000",
+          "biome": "ledges"
+        }
+      ]
+    },
+    "heightProbes": 2,
+    "biomeProbes": 2,
+    "regionProbes": 2,
+    "retainedRegionColumnProbes": 2,
+    "regionCacheCharge": true,
+    "layeredRegionRefusalAndRelease": true,
+    "materialProbes": 3,
+    "actualWasmWorkerClient": true,
+    "clientCacheReuse": true,
+    "wasmSha256": "47eed6a15503bb9819a81914e918aa380195a62dee31400c7b1f6c488ff11997",
+    "sourceSha256": "7ef26ed826a52db915bb414ff52467cf176ed03aa091e70b62d73374951fb2d3",
+    "resources": [
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90"
+      },
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      }
+    ],
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParity": false,
+    "releaseMatchVerified": false,
+    "projectFinished": false
+  },
+  "regionCells": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "Retained region-column unit-cell colors and selected-region inspection",
+    "storedCells": 4,
+    "regionColumns": 2,
+    "actualMeshWorker": true,
+    "individualRegionPicks": 2,
+    "greedyAndOriginalEmitters": true,
+    "scopeAndCoverageRefusals": true,
+    "cacheReuse": true,
+    "retainedBuffersUnchanged": true,
+    "sourceHashes": {
+      "packages/shared/region-columns.mjs": "7a17bb5273924696df7028a237d7f850ee71ce33a42dcd9a2d2acc5d706b5c92",
+      "packages/voxel-renderer/cell-view.mjs": "d458b1efc05ec2a3d864fe38b3bd194056bd8bf24ce583f1b2dae32a73e6b124",
+      "packages/voxel-renderer/volume.mjs": "03a57f3e2af3185320e0b7018dfe2873d147810dd085ba21677c10dfe7e4e53f",
+      "packages/voxel-renderer/mesh-worker.mjs": "9319b6699d822c90bf7658ada10d7743ccea04d08ee5722200a80d0e67d9e651",
+      "packages/voxel-renderer/greedy-cells.mjs": "196c56af214b41eeb28d760631faa06d7244fd4d6271c5792485109553b1909d",
+      "packages/voxel-renderer/picking.mjs": "283cba3ff63010175fcf78e82838e762e90bb68165162ed66110f2fe676798ac",
+      "tools/checks/region-columns-smoke.mjs": "64331db490a6ccdc8470b38afab7a78120ad43f6f4a57a884dc2b94713cf53c1"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "nativeRegionBehaviorQualified": false,
+    "projectFinished": false
+  },
+  "nativeRegionReference": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "engineSourceSha256": "41f671246c40e538791b26e69c43538a07c10e07b28a655ae034eaf7b53a6019",
+    "engineClassSha256": "d2a363d1ec030753bbd8376e7e35d71e7be6b3975abacbb6f8760d5f6855de62",
+    "regionComparison": "Original Java RegionSelection queries; source-inspected equivalence to the unstacked Engine.getRegion host stream. Actual Wasm calls the original Engine defaults.",
+    "verticalLayerAttributionQualified": false
+  },
+  "build": {
+    "nativeJavaAndWasm": "pass",
+    "requiredEngineAppPackage": "pass",
+    "wasmSha256": "47eed6a15503bb9819a81914e918aa380195a62dee31400c7b1f6c488ff11997",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "7ef26ed826a52db915bb414ff52467cf176ed03aa091e70b62d73374951fb2d3",
+    "archiveMatchesChangedSources": [
+      "packages/iris-engine/client.mjs",
+      "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "packages/iris-engine/java/studio/engine/terrain/TerrainRegionSnapshot.java",
+      "packages/shared/region-columns.mjs",
+      "tools/engine-build/GenerateEngineBoundary.java",
+      "tools/engine-build/build.mjs"
+    ],
+    "registryReexported": false,
+    "exhaustiveStateComparison": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "worldChunksModified": false
+  },
+  "executionLimits": {
+    "localChrome": "Previously failed with SIGTRAP before navigation",
+    "cloudBrowser": "net::ERR_CONNECTION_REFUSED at workspace loopback",
+    "managedPreview": "sites-previewd mailbox unavailable at /tmp/sites-previewd/requests",
+    "workspaceTransport": "Execution service temporarily disconnected; recovered with source edits intact"
+  },
+  "sourceHashes": {
+    "README.md": "b89127e5247874fcbbdb5256eb6fc4562cf52b220643d51d1aa99dad62dfed4d",
+    "apps/server/index.mjs": "6cb0ec5a0e01fae25280ce4d82c2ee036f9673833887a197490987d950de3c4d",
+    "apps/server/pack-store.mjs": "59ea45256b0da13d07bf8c2bddac23b04483fd0411272d517626dd9106f25f53",
+    "apps/server/starter-packs.mjs": "bea3801167cad7d236503df7f78396b76cb29449151ed196b01237c0bf1a757f",
+    "apps/web/index.html": "70e83257929daacb658c9b8c85351af6cf8d816ac557f183adac6775bcc8e10f",
+    "apps/web/main.mjs": "e24a522cee20a5f37e9d9a406a6a1deebb28d8e1c6d0e1048aabe31481cf3ec2",
+    "apps/web/workers/iris-worker.js": "add95a1e2927787af505a86af0b57688709563164767a0b8cf3bec993f634704",
+    "packages/iris-engine/client.mjs": "cd1b174a9bc2615210099593ed0c377c6e8917f8ecb8ad400314b6d15ee54973",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "3ecc3d40168f6507cc77ce561350ebceda1b2826affeb741b3bb108516b29a68",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainRegionSnapshot.java": "788dd6edf6b14c48cd426847e72f1e7f87747c7cad5e9162c8688bff38e6f7ab",
+    "packages/iris-resources/starters/index.json": "e35db2debe5d89069e235b53be29bc8d90e4a3a1a5eb5364653a2393f1ec243d",
+    "packages/iris-resources/starters/terrain3d/LICENSE.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "packages/iris-resources/starters/terrain3d/SOURCE-NOTICE.txt": "b23a664498dd8208b83b308a65483060d6613fd97b71b4cc6694e33ec4348b2f",
+    "packages/iris-resources/starters/terrain3d/biomes/ledges.json": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90",
+    "packages/iris-resources/starters/terrain3d/dimensions/terrain3d.json": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba",
+    "packages/iris-resources/starters/terrain3d/generators/flat.json": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10",
+    "packages/iris-resources/starters/terrain3d/regions/ledges.json": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d",
+    "packages/shared/region-columns.mjs": "7a17bb5273924696df7028a237d7f850ee71ce33a42dcd9a2d2acc5d706b5c92",
+    "packages/voxel-renderer/cell-view.mjs": "d458b1efc05ec2a3d864fe38b3bd194056bd8bf24ce583f1b2dae32a73e6b124",
+    "packages/voxel-renderer/greedy-cells.mjs": "196c56af214b41eeb28d760631faa06d7244fd4d6271c5792485109553b1909d",
+    "packages/voxel-renderer/mesh-worker.mjs": "9319b6699d822c90bf7658ada10d7743ccea04d08ee5722200a80d0e67d9e651",
+    "packages/voxel-renderer/picking.mjs": "283cba3ff63010175fcf78e82838e762e90bb68165162ed66110f2fe676798ac",
+    "packages/voxel-renderer/volume.mjs": "03a57f3e2af3185320e0b7018dfe2873d147810dd085ba21677c10dfe7e4e53f",
+    "packages/voxel-renderer/world.mjs": "aba8a1e4cf1a6b7b4a1eb7a2e5010b35da3600032de2e2cc2fc2099075429026",
+    "tools/checks/region-columns-smoke.mjs": "64331db490a6ccdc8470b38afab7a78120ad43f6f4a57a884dc2b94713cf53c1",
+    "tools/checks/terrain-starter-smoke.mjs": "fda7505d83207454f2dd38ba37f6121ddc02fef4e16074c49064be3e2c621ff6",
+    "tools/engine-build/GenerateEngineBoundary.java": "7b2aa7f4f79af63579191317e7cf443fa27b0b5518907c302130f6a9c1b43aa4",
+    "tools/engine-build/build.mjs": "b6b0471d034dcd9ed879966ca756b3863206b6d6d1f1defd7a7165b753df2824"
+  },
+  "qualification": {
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParity": false,
+    "releaseMatchVerified": false,
+    "projectFinished": false
+  }
+}

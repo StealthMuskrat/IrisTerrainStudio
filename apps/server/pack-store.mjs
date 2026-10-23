@@ -1,3 +1,4 @@
+import{starterFiles}from'./starter-packs.mjs';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import { constants } from 'node:fs';
@@ -32,7 +33,15 @@ export class PackStore {
     return current;
   }
   async packs() { return (await fs.readdir(this.root, { withFileTypes: true })).filter(entry => entry.isDirectory() && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(entry.name)).map(entry => ({ id: entry.name, name: entry.name })).sort((a, b) => a.id.localeCompare(b.id)); }
-  async create(id) { packId(id); return this.withLock('pack/'+id,async()=>{await fs.mkdir(path.join(this.root,id)).catch(error=>{if(error.code==='EEXIST')throw new StoreError(409,'A pack with that name already exists.');throw error;});return{id,name:id};}); }
+  async create(id,{template='empty'}={}) {
+    try{packId(id);}catch(error){throw new StoreError(400,error.message);}
+    if(typeof template!=='string')throw new StoreError(400,'Choose an available terrain starter or an empty folder.');
+    if(template!=='empty'){
+      let starter;try{starter=await starterFiles(template);}catch(error){throw new StoreError(template==='iris-terrain3d'?503:400,template==='iris-terrain3d'?'Bundled terrain starter is unavailable or failed its integrity check.':error.message);}
+      const result=await this.import(id,writeZip(starter.files));return{...result,name:id,template,dimension:starter.dimension};
+    }
+    return this.withLock('pack/'+id,async()=>{await fs.mkdir(path.join(this.root,id)).catch(error=>{if(error.code==='EEXIST')throw new StoreError(409,'A pack with that name already exists.');throw error;});return{id,name:id,template};});
+  }
   async resources(pack) {
     const base = await this.safe(pack), results = []; let total = 0;
     const walk = async (directory, prefix = '') => {

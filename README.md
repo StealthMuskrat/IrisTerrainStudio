@@ -17,7 +17,7 @@ npm start
 
 Open `http://127.0.0.1:4783`. Place native Iris pack folders under `packs/`, set `IRIS_PACKS_DIR` to their parent directory, or import a pack ZIP/folder in the editor. The editor preserves unrelated resources and unknown JSON fields. Numeric tokens are retained exactly, including Java long values.
 
-Implemented editing includes resource search, field/JSON views, undo/redo, local draft recovery, duplicate/rename/delete operations, version-checked saves, backups and restore, and complete pack ZIP export. New resources can copy an existing native resource as a template. Empty JSON is not presented as an engine-valid Iris template.
+Implemented editing includes resource search, field/JSON views, undo/redo, local draft recovery, duplicate/rename/delete operations, version-checked saves, backups and restore, and complete pack ZIP export. Pack actions can create a linked native terrain starter with a dimension, region, biome and generator, or an explicitly empty folder. New resources can copy an existing native resource as a template. Empty JSON is not presented as an engine-valid Iris template.
 
 `npm run build` stages a clean standalone development copy in `dist/`; run it with `npm --prefix dist start`. Old distribution files are removed when the staged copy replaces the previous build. `BUILD.json` records the installed module integrity checks. `npm run build -- --require-engine` requires the Iris Wasm/runtime, field inventory, corresponding source and a matching native registry. A failed required-engine build preserves the previous distribution. `--release` refuses while implementation or release prerequisites remain unfinished.
 
@@ -182,3 +182,6 @@ Native custom biome **authoring previews** now retain the original content-addre
 
 
 Block-ID and physical-biome cell views now combine compatible faces to reduce geometry while retaining individual-block inspection and selection. **Retained preview details** reports the current quad and section-reuse counts. Emitted-face picking uses bounded spatial buckets for denser geometry, including model overhangs. See [scope and focused checks](docs/research/DIAGNOSTIC_MESH_PICKING.md).
+
+
+Block inspection now includes retained native region keys for unstacked chunk previews. **Native region cells** colors that same column metadata without regenerating terrain. Layered previews explain when vertical region metadata is unavailable. See [native creation and region scope](docs/research/NATIVE_PACK_WORKFLOW.md).

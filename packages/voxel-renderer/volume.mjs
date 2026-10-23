@@ -1,3 +1,4 @@
+import{regionColumns}from'../shared/region-columns.mjs';
 import{clipBounds,emptyClip}from'./clip.mjs';
 export class VoxelVolume {
   constructor(data) {
@@ -12,12 +13,14 @@ export class VoxelVolume {
       if(!(biomes.cells instanceof Uint16Array)||biomes.cells.length!==blocks.length)throw new Error('Voxel physical biome coverage is incomplete.');
       for(const index of biomes.cells)if(index>=biomes.palette.length)throw new Error('A voxel references a missing physical biome.');
     }
+    this.regions=regionColumns(data.regions,width,depth);
     this.biomes=biomes||null;
     this.width=width;this.height=height;this.depth=depth;this.origin=origin.slice();this.palette=palette;this.blocks=blocks;this.metadata=data.metadata||{};
   }
   index(x,y,z){return x+this.width*(z+this.depth*y);}
   block(x,y,z){if(x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.palette[this.blocks[this.index(x,y,z)]];}
   biome(x,y,z){if(!this.biomes||!Number.isInteger(x)||!Number.isInteger(y)||!Number.isInteger(z)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.biomes.palette[this.biomes.cells[this.index(x,y,z)]];}
+  region(x,y,z){if(!this.regions||![x,y,z].every(Number.isInteger)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.regions.palette[this.regions.cells[x+this.width*z]];}
   worldBiome(x,y,z){return this.biome(x-this.origin[0],y-this.origin[1],z-this.origin[2]);}
   worldBlock(x,y,z){return this.block(x-this.origin[0],y-this.origin[1],z-this.origin[2]);}
   raycast(origin,direction,maxDistance=4096,{clip=null,visible}={}){
@@ -33,7 +36,7 @@ export class VoxelVolume {
     const next=direction.map((n,i)=>Math.abs(n)<1e-12?Infinity:enter+((step[i]>0?cell[i]+1:cell[i])-at[i])/n);
     while(t<exit&&cell.every((value,axis)=>value>=bounds.min[axis]&&value<bounds.max[axis])){
       const index=this.blocks[this.index(...cell)],block=this.palette[index];
-      if(!['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(block.id)&&(!visible||visible(block,index)))return{x:cell[0]+this.origin[0],y:cell[1]+this.origin[1],z:cell[2]+this.origin[2],block,biome:this.biome(...cell),distance:t,metadata:this.metadata};
+      if(!['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(block.id)&&(!visible||visible(block,index)))return{x:cell[0]+this.origin[0],y:cell[1]+this.origin[1],z:cell[2]+this.origin[2],block,biome:this.biome(...cell),region:this.region(...cell),regionDimension:this.regions?.dimension??null,distance:t,metadata:this.metadata};
       const axis=next[0]<next[1]?(next[0]<next[2]?0:2):(next[1]<next[2]?1:2);t=next[axis];next[axis]+=delta[axis];cell[axis]+=step[axis];
     }
     return null;

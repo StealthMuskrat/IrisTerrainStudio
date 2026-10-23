@@ -1,3 +1,4 @@
+import{starterCatalog}from'./starter-packs.mjs';
 import http from 'node:http';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
@@ -40,7 +41,8 @@ export async function createStudioServer({ root = process.env.IRIS_PACKS_DIR || 
           return json(response, 200, { name: 'Iris Terrain Studio', version: '0.1.0-dev', target: { iris: lock.iris.version, minecraft: lock.minecraft.version, commit: lock.iris.commit }, engine:await runtimeStatus(), authenticated: !!token });
         }
         if (method === 'GET' && url.pathname === '/api/packs') return json(response, 200, { packs: await store.packs() });
-        if (method === 'POST' && url.pathname === '/api/packs') { const data = JSON.parse((await body(request)).toString('utf8')); return json(response, 201, await store.create(data.id)); }
+        if (method === 'GET' && url.pathname === '/api/pack-starters') return json(response,200,{starters:starterCatalog()});
+        if (method === 'POST' && url.pathname === '/api/packs') { const data = JSON.parse((await body(request)).toString('utf8')); if(!data||typeof data!=='object'||Array.isArray(data))throw new StoreError(400,'Pack creation requires a JSON object.'); return json(response, 201, await store.create(data.id,{template:data.template})); }
         if (method === 'GET' && url.pathname === '/api/resources') return json(response, 200, await store.resources(pack));
         if (['GET','HEAD'].includes(method) && url.pathname === '/api/resource') {
           const result = await store.read(pack, relative); response.setHeader('ETag', result.etag); response.setHeader('Cache-Control', 'no-store');

@@ -1,0 +1,7 @@
+Iris terrain pack starter
+
+These four JSON resources are copied without changes from VolmitSoftware/Iris, commit c3a9449a026078c44a87c9776766f54a67779392 (Iris 4.3.4).
+Source directory: probe/src/test/resources/terrain3d-pack/
+https://github.com/VolmitSoftware/Iris/tree/c3a9449a026078c44a87c9776766f54a67779392/probe/src/test/resources/terrain3d-pack
+
+Copyright (c) Volmit Software and the Iris contributors. Distributed under GPL-3.0-or-later; see LICENSE.txt. Native fixture authoring choices are retained; this is not a claim about Iris defaults or complete release parity.

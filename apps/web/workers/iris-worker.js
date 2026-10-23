@@ -152,6 +152,16 @@ self.onmessage=async({data})=>{
       if(active!==id)return;
       if(persistentNoise)noiseCache={...noiseCache,durablePersistence:persistentNoise.status==='restored'||persistentNoise.saveStatus==='saved',persistence:persistentNoise};
       if(terrainInfo&&result.volume)result.volume.metadata={...result.volume.metadata,terrainInfo};
+      if(terrainPreviewFields.has(options.field)&&terrainInfo&&result.volume&&result.volume.width===16&&result.volume.depth===16&&!result.volume.metadata?.studioOutsideLayout){
+        if(terrainInfo.dimensionStackLayers>0)result.volume.metadata={...result.volume.metadata,regionColumnsUnavailable:'Dimension-stack region output needs vertical region metadata.'};
+        else{
+          if(typeof api.sampleTerrainRegionChunk!=='function')throw new Error('Rebuild the native engine to retain region columns.');
+          const volume=result.volume,region=JSON.parse(api.sampleTerrainRegionChunk(volume.origin[0],volume.origin[2]));
+          if(region.scope!=='native-engine-region-columns'||region.x!==volume.origin[0]||region.z!==volume.origin[2]||typeof region.dimension!=='string'||region.dimension.length>1024||!Array.isArray(region.palette)||!region.palette.length||region.palette.length>256||region.palette.some(key=>typeof key!=='string'||!key.length||key.length>1024)||new Set(region.palette).size!==region.palette.length||!Array.isArray(region.cells)||region.cells.length!==256||region.cells.some(value=>!Number.isInteger(value)||value<0||value>=region.palette.length))throw new Error('Native region columns are incomplete.');
+          const cells=Uint16Array.from(region.cells);volume.regions={scope:region.scope,dimension:region.dimension,palette:region.palette,cells:cells.buffer};transfers.push(cells.buffer);
+        }
+      }
+
       if(noiseCache){result.noiseCache=noiseCache;if(result.volume)result.volume.metadata={...result.volume.metadata,noiseCache};}
       if(['procedural-object','procedural-source','procedural-placement','hydrology'].includes(options.field))clearContext(api);
       self.postMessage({kind:'result',id,result},transfers);

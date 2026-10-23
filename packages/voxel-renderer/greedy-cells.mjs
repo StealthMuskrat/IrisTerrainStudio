@@ -14,7 +14,7 @@ export function emitGreedyCells(input,minimum,maximum,sectionMin,sectionMax,cent
       for(let j=0;j<rows;j++)for(let i=0;i<columns;i++){
         const p=[];p[axis]=slice;p[u]=sectionMin[u]+i;p[v]=sectionMin[v]+j;if(!occupied(p))continue;
         const neighbor=p.map((value,a)=>value+normal[a]);if(inside(neighbor)&&occupied(neighbor))continue;
-        const cell=owner(p),colorIndex=cellColors.indices?.[cell]??blocks[cell];if((colorIndex+1)*4>cellColors.palette.length)throw new Error('A visible cell references a missing identity color.');mask[i+j*columns]=colorIndex+1;
+        const cell=owner(p),colorIndex=cellColors.indices?.[cell]??cellColors.columnIndices?.[cell%(width*depth)]??blocks[cell];if((colorIndex+1)*4>cellColors.palette.length)throw new Error('A visible cell references a missing identity color.');mask[i+j*columns]=colorIndex+1;
       }
       for(let j=0;j<rows;j++)for(let i=0;i<columns;){
         const key=mask[i+j*columns];if(!key){i++;continue;}
