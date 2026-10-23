@@ -85,6 +85,7 @@ public final class NativeTerrainLinkCheck {
                     if(request.has("registeredOverworldCheck"))pack.add(registeredOverworldCheck(engine,request.getAsJsonObject("registeredOverworldCheck"),directory,registries));
                     if(request.has("registeredOverworldChecks"))for(var check:request.getAsJsonArray("registeredOverworldChecks"))pack.add(registeredOverworldCheck(engine,check.getAsJsonObject(),directory,registries));
                     if(request.has("terrainModeCheck"))pack.add(terrainModeCheck(engine,request.getAsJsonObject("terrainModeCheck"),registries));
+                    if(request.has("terrainModeChecks"))for(var check:request.getAsJsonArray("terrainModeChecks"))pack.add(terrainModeCheck(engine,check.getAsJsonObject(),registries));
                     if(request.has("customBiomeReference")&&request.get("customBiomeReference").getAsBoolean())pack.add((JsonElement)Class.forName("art.arcane.iris.probe.NativeCustomBiomeCheck").getMethod("inspect",Engine.class).invoke(null,engine));
                     if(request.has("physicalBiomeChecks"))pack.add(physicalBiomeChecks(engine,request.getAsJsonArray("physicalBiomeChecks")));
                     if(request.has("subterrainCheck")){try{pack.add(subterrainCheck(engine,directory,registries,gson,request.get("subterrainCheck").getAsBoolean()));}finally{data.unregisterEngine(engine);}continue;}

@@ -8,10 +8,11 @@ function object(value,keys){if(!value||typeof value!=='object'||Array.isArray(va
 function text(value,label,max=128){if(typeof value!=='string'||!value.trim()||value.length>max||/[\u0000-\u001f]/.test(value))throw new Error('Invalid '+label+'.');return value;}
 function path(value){jsonPath(value);return value;}
 export function previewSetup(input){
-  object(input,['field','seed','x','z','y','span','resolution','dimension','resource','style','grid','studioLayout','palette','view']);
+  object(input,['field','seed','x','z','y','span','resolution','chunks','dimension','resource','style','grid','studioLayout','palette','view']);
   if(!/^[a-z][a-z0-9-]{0,63}$/.test(input.field)||['procedural-object','procedural-placement'].includes(input.field))throw new Error('This field needs a live procedural selection and cannot be saved as a preview setup.');
   if(typeof input.seed!=='string'||input.seed.length>128)throw new Error('Invalid entered seed.');numericSeed(input.seed);
   if(![input.x,input.z,input.y,input.span].every(Number.isFinite)||input.span<=0||input.span>4096||Math.abs(input.x)+input.span/2>30000000||Math.abs(input.z)>30000000||Math.abs(input.y)>30000000||!Number.isInteger(input.resolution)||input.resolution<1||input.resolution>512)throw new Error('Saved preview coordinates/resolution exceed the preview limits.');
+  if(input.chunks!==undefined&&![1,2,4].includes(input.chunks))throw new Error('Choose a saved chunk edge of 1, 2 or 4.');
   if(typeof input.dimension!=='string'||input.dimension&&(!input.dimension.startsWith('dimensions/')||!path(input.dimension)))throw new Error('Choose a dimension JSON resource.');
   if(input.resource!==null){path(input.resource);if(input.field!=='iris-generator')throw new Error('Only a generator setup can bind a standalone generator resource.');}
   if(input.style!==null){object(input.style,['name','path','pointer','expressionResource']);text(input.style.name,'style name',128);if(input.style.path!==null)path(input.style.path);if(typeof input.style.pointer!=='string'||input.style.pointer.length>1024||input.style.pointer!==''&&(!input.style.pointer.startsWith('/')||/~(?:[^01]|$)/.test(input.style.pointer))||typeof input.style.expressionResource!=='boolean')throw new Error('Invalid saved style location.');}
@@ -21,7 +22,7 @@ export function previewSetup(input){
 }
 export function cameraBookmark(input){
   object(input,['volume','camera','navigation','source']);const v=input.volume;object(v,['origin','width','height','depth']);
-  if(!Array.isArray(v.origin)||v.origin.length!==3||!v.origin.every(Number.isSafeInteger)||![v.width,v.height,v.depth].every(value=>Number.isSafeInteger(value)&&value>0&&value<=4096)||v.width*v.height*v.depth>1048576)throw new Error('Invalid stored-volume bounds.');
+  if(!Array.isArray(v.origin)||v.origin.length!==3||!v.origin.every(Number.isSafeInteger)||![v.width,v.height,v.depth].every(value=>Number.isSafeInteger(value)&&value>0&&value<=4096)||v.width*v.height*v.depth>16777216)throw new Error('Invalid stored-volume bounds.');
   object(input.camera,['eye','yaw','pitch','distance']);cameraFromView(v,input.camera);object(input.navigation,['mode','speed']);if(input.navigation.mode===undefined||input.navigation.speed===undefined)throw new Error('Camera navigation mode and speed are required.');navigationSettings(input.navigation);
   if(input.source!==null){object(input.source,['field','seed','dimension']);if(input.source.field!==null)text(input.source.field,'source field',128);if(input.source.seed!==null)text(input.source.seed,'source seed',128);if(input.source.dimension!==null)text(input.source.dimension,'source dimension',1024);}
   return clone(input);

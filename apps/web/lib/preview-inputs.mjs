@@ -6,6 +6,7 @@ export function capturePreviewInputs(options,{pack='',revision=0,request=0}={}){
     const value=options[key];if(value!==undefined)result[key]=typeof value==='bigint'?String(value):value;
   }
   if(options.buffet!==undefined)result.studioLayout=options.buffet;
+  if(options.chunkArea)result.chunkArea=Object.freeze({width:options.chunkArea.width,depth:options.chunkArea.depth});
   if(options.nativeConfig)result.resource=options.nativeConfig.id;
   if(options.procedural)result.procedural=Object.freeze({key:options.procedural.key,family:options.procedural.family,index:options.procedural.index,variant:options.procedural.variant});
   return Object.freeze(result);
@@ -27,6 +28,7 @@ export function previewDescription(data,inputs){
   if(data.origin){
     lines.push(`Stored cells: ${data.width} × ${data.height} × ${data.depth}`);
     lines.push(`Origin X/Y/Z: ${data.origin.join(', ')}`);
+    if(data.metadata?.chunkArea)lines.push(`Native destination chunks: ${data.metadata.chunkArea.width} × ${data.metadata.chunkArea.depth}`);
   }else{
     lines.push(`Stored samples: ${data.width} × ${data.height}`);
     lines.push(`Centre X/Z: ${data.x}, ${data.z} · span X/Z: ${data.span}, ${data.depth}`);

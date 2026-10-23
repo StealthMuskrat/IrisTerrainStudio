@@ -1149,3 +1149,7 @@ The provided F8thful archive now has an exact recorded identity and an optimized
 ## Current native reference assertion
 
 The dedicated checksum command compiles and runs exactly the original upstream all-style assertion against the pinned 4.3.5 inputs. It verifies source and artifact identities, records captured class-file identities and returns a failing process status. The assertion still fails with the historical aggregate; this neither attributes the cause nor qualifies release provenance. Full suites and historical captures are not repeated. See [current native evidence](evidence/native-noise-checksum-4.3.5-2026-10-23.json).
+
+## Native chunk areas
+
+Registered native previews assemble up to four destinations per axis without substituting terrain. Shared snapshot hashing/context ownership, final area noise-cache persistence, bounded row copying, palette remapping, compressed regions, destination metadata/picking and saved controls are connected. Legacy setups retain 1×1. Four tiny stored destinations and two original native destinations per mode cover selected seams/metadata/probes; complete area/browser/performance qualification remains open. See [scope and executable checks](research/CHUNK_AREAS.md).

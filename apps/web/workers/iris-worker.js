@@ -1,4 +1,4 @@
-let hydrologyNetworkModule;
+let hydrologyNetworkModule,chunkAreaModule;
 const terrainPreviewFields=new Set(['terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage','procedural-source','procedural-neighborhood','procedural-placement','caves','hydrology']);
 let runtime, registryRuntime, terrainContext, active = 0;
 function clearContext(api){terrainContext=null;api.clear();}
@@ -76,7 +76,7 @@ async function terrainContextKey(options,manifest){
 }
 const bits=new DataView(new ArrayBuffer(8));
 function decode(hex) { if (!/^[a-f0-9]{16}$/.test(hex)) throw new Error('Iris returned invalid double bits.');bits.setBigUint64(0,BigInt('0x'+hex));const value=bits.getFloat64(0);if(!Number.isFinite(value))throw new Error('Iris returned a non-finite value.');return value; }
-self.onmessage=async({data})=>{
+async function handleMessage({data},emit=(message,transfers)=>self.postMessage(message,transfers),areaPlan=null){
   if(data.kind==='release-context'){active=0;const loaded=runtime&&await runtime.catch(()=>null);if(loaded&&active===0)clearContext(loaded.api);return;}
   if(data.kind==='cancel'){if(active===data.id)active=0;return;}
   if(data.kind!=='generate'&&data.kind!=='info'&&data.kind!=='inspect-pack'&&data.kind!=='sample-image-map'&&data.kind!=='sample-dimension-image-maps'&&data.kind!=='sample-hydrology-column')return;
@@ -131,21 +131,22 @@ self.onmessage=async({data})=>{
     const dimensions=options.field==='iris-style3d'?3:2;
     const registryInfo=options.packSnapshot?await registry(api,manifest):null;if(active!==id)return;
     if(options.packSnapshot&&options.buffet===true&&terrainPreviewFields.has(options.field)){if(['procedural-source','procedural-neighborhood','procedural-placement'].includes(options.field))throw new Error('Studio layout is not connected for explicit procedural diagnostics. Disable Studio layout for this preview.');if(typeof api.prepareStudioTerrain!=='function'||typeof api.paintStudioOutsideChunk!=='function')throw new Error('Rebuild the local Iris engine to enable native Studio terrain layouts.');}
-    const retain=['procedural-neighborhood','overworld-mode'].includes(options.field),contextKey=retain?await terrainContextKey(options,manifest):null;
+    const retain=!!areaPlan||['procedural-neighborhood','overworld-mode'].includes(options.field),contextKey=retain?(areaPlan?.contextKey??await terrainContextKey(options,manifest)):null;
+    if(areaPlan)areaPlan.contextKey=contextKey;
     if(active!==id)return;const contextReused=retain&&terrainContext?.key===contextKey;
     let terrainInfo=contextReused?terrainContext.info:undefined;
     if(!contextReused)clearContext(api);
     if(options.packSnapshot&&!contextReused){if(!await registerSnapshot(api,options.packSnapshot,()=>active===id))return;api.openPack();}
     let persistence,persistenceKey,persistentNoise;
     if(typeof indexedDB!=='undefined'&&typeof api.restoreNoiseCacheTile==='function'&&/^[a-f0-9]{64}$/.test(manifest.wasmSha256||'')){
-      try{const cacheModule=await import('/packages/iris-engine/noise-cache-store.mjs');if(active!==id)return;if(cacheModule.usesPersistentNoiseCache(options,manifest)){persistence=cacheModule.noiseTilePersistence;persistenceKey=await cacheModule.noiseCacheNamespace(options,{...manifest,registrySha256:registryInfo?.sourceSha256});if(active!==id)return;persistentNoise=contextReused?{status:'context-reused',restoredFiles:0}:await persistence.restore(api,persistenceKey,()=>active===id);if(active!==id)return;}}catch{persistentNoise={status:'unavailable'};}
+      try{const cacheModule=await import('/packages/iris-engine/noise-cache-store.mjs');if(active!==id)return;if(cacheModule.usesPersistentNoiseCache(options,manifest)){persistence=cacheModule.noiseTilePersistence;persistenceKey=areaPlan?.persistenceKey??await cacheModule.noiseCacheNamespace(options,{...manifest,registrySha256:registryInfo?.sourceSha256});if(areaPlan)areaPlan.persistenceKey=persistenceKey;if(active!==id)return;persistentNoise=contextReused?{status:'context-reused',restoredFiles:0}:await persistence.restore(api,persistenceKey,()=>active===id);if(active!==id)return;}}catch{persistentNoise={status:'unavailable'};}
     }
     if(active!==id)return;
     // Capture native diagnostics/bytes before the first async save; a newer request may own api after it.
     const publishResult=async(result,transfers)=>{
       if(active!==id)return;
       let noiseCache=(options.packSnapshot||persistentNoise)&&typeof api.noiseCacheStatistics==='function'?{...JSON.parse(api.noiseCacheStatistics()),implementationFingerprint:manifest.noiseCacheIdentity?.implementationFingerprint}:undefined;
-      if(persistence){
+      if(persistence&&(!areaPlan||areaPlan.destination===areaPlan.count-1)){
         const saved=await persistence.save(api,persistenceKey,()=>active===id);if(active!==id)return;
         persistentNoise={...persistentNoise,saveStatus:saved.status,savedFiles:saved.savedFiles,savedBytes:saved.savedBytes};
       }
@@ -169,9 +170,10 @@ self.onmessage=async({data})=>{
 
       if(noiseCache){result.noiseCache=noiseCache;if(result.volume)result.volume.metadata={...result.volume.metadata,noiseCache};}
       if(['procedural-object','procedural-source','procedural-placement','hydrology'].includes(options.field))clearContext(api);
-      self.postMessage({kind:'result',id,result},transfers);
+      emit({kind:'result',id,result},transfers);
     };
     if(options.packSnapshot&&!contextReused){if(options.field==='regions')api.prepareRegionSelection(options.dimensionKey,seed,options.buffet===true);else if(terrainPreviewFields.has(options.field)){terrainInfo=JSON.parse(options.buffet===true?api.prepareStudioTerrain(options.dimensionKey,seed):api.prepareTerrain(options.dimensionKey,seed));}if(retain)terrainContext={key:contextKey,info:terrainInfo};}
+    if(areaPlan)chunkAreaModule.admitChunkAreaHeight(areaPlan,terrainInfo.maxHeight-terrainInfo.minHeight);
     if(options.buffet===true&&['terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','material-finish-stage','subterrain-finish-stage'].includes(options.field)){
       const bx=Math.floor(x/16)*16,bz=Math.floor(z/16)*16,chunk=JSON.parse(api.paintStudioOutsideChunk(bx,bz));
       if(chunk){
@@ -280,5 +282,28 @@ self.onmessage=async({data})=>{
     }
     if(active!==id)return;
     await publishResult({values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,categories:categorical?categories:undefined,terrainInfo,style:options.style,configuredPointer:options.configured?.pointer,expressions:options.packSnapshot&&typeof api.expressionStatistics==='function'?JSON.parse(api.expressionStatistics()):undefined,scope:['terrain','biomes','density','terrain-stage'].includes(options.field)?'iris-native-terrain-scalar-development':options.field==='regions'?'iris-region-selection-development':options.nativeConfig?.kind==='dimension'?'iris-dimension-control-development':options.generator||options.nativeConfig?.kind==='generator'?'iris-generator-development':'iris-noise-style-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started},[values.buffer]);
-  }catch(error){let detail=error.message||String(error);if(active===id&&apiForCleanup){try{clearContext(apiForCleanup);}catch(cleanup){detail+=' Context cleanup failed: '+(cleanup.message||String(cleanup));}}self.postMessage({id,error:detail});}
+  }catch(error){let detail=error.message||String(error);if(active===id&&apiForCleanup){try{clearContext(apiForCleanup);}catch(cleanup){detail+=' Context cleanup failed: '+(cleanup.message||String(cleanup));}}emit({id,error:detail});}
+
+}
+self.onmessage=async event=>{
+  const {data}=event;
+  if(data.kind!=='generate'||data.options?.chunkArea===undefined)return handleMessage(event);
+  const id=data.id;active=id;const started=performance.now();
+  try{
+    chunkAreaModule??=await import('/packages/iris-engine/chunk-area.mjs');if(active!==id)return;
+    const plan=chunkAreaModule.chunkAreaPlan(data.options);
+    if(plan.count===1)return handleMessage(event);
+    const result=await chunkAreaModule.generateChunkArea(plan,async(x,z,index)=>{
+      plan.destination=index;
+      let reply;await handleMessage({data:{...data,options:{...data.options,x,z}}},message=>{reply=message;},plan);
+      if(active!==id)throw new DOMException('Chunk area cancelled.','AbortError');
+      if(!reply||reply.error)throw new Error(reply?.error??'Native destination did not publish a result.');return reply.result;
+    },{isCurrent:()=>active===id,onProgress:progress=>{if(active===id)self.postMessage({kind:'progress',id,progress});}});
+    if(active!==id)return;result.generationMs=performance.now()-started;
+    self.postMessage({kind:'result',id,result},chunkAreaModule.chunkAreaTransfers(result));
+  }catch(error){
+    if(active!==id)return;const loaded=runtime&&await runtime.catch(()=>null);if(active!==id)return;
+    let detail=error.message||String(error);try{if(loaded)clearContext(loaded.api);}catch(cleanup){detail+=' Context cleanup failed: '+(cleanup.message||String(cleanup));}
+    self.postMessage({id,error:detail});
+  }
 };

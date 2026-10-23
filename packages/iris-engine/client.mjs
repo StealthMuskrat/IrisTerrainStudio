@@ -1,3 +1,4 @@
+import{chunkAreaPlan,chunkAreaMetadataCharge}from'./chunk-area.mjs';
 import{regionColumns,regionColumnCharge,regionBufferBytes}from'../shared/region-columns.mjs';
 import{customBiomeDefinitions}from'./custom-biomes.mjs';
 export class UnsupportedGenerationError extends Error { constructor(message, feature) { super(message); this.name='UnsupportedGenerationError';this.feature=feature; } }
@@ -29,7 +30,7 @@ export class GenerationClient extends EventTarget {
       if(data.kind==='progress'){this.dispatchEvent(new CustomEvent('progress',{detail:data.progress}));return;}
       const pending=this.pending;this.pending=null;
       if(data.error){pending.reject(new Error(data.error));return;}
-      let result;try{result={...data.result};customDefinitionCharges.set(result,customBiomeDefinitions(result.volume?.metadata?.terrainInfo??result.terrainInfo).bytes+regionColumnCharge(result.volume?.regions));if(result.volume)result.volume={...result.volume,blocks:new Uint32Array(result.volume.blocks),regions:regionColumns(result.volume.regions,result.volume.width,result.volume.depth,result.volume.height),...(result.volume.biomes?{biomes:{...result.volume.biomes,cells:new Uint16Array(result.volume.biomes.cells)}}:{})};else result.values=new Float64Array(result.values);}catch(error){pending.reject(error);return;}
+      let result;try{result={...data.result};customDefinitionCharges.set(result,customBiomeDefinitions(result.volume?.metadata?.terrainInfo??result.terrainInfo).bytes+regionColumnCharge(result.volume?.regions)+(result.volume?chunkAreaMetadataCharge(result.volume):0));if(result.volume)result.volume={...result.volume,blocks:new Uint32Array(result.volume.blocks),regions:regionColumns(result.volume.regions,result.volume.width,result.volume.depth,result.volume.height),...(result.volume.biomes?{biomes:{...result.volume.biomes,cells:new Uint16Array(result.volume.biomes.cells)}}:{})};else result.values=new Float64Array(result.values);}catch(error){pending.reject(error);return;}
       this.cache.set(pending.key,result);this.cacheBytes+=resultBytes(result);
       while((this.cacheBytes>this.maxCacheBytes||this.cache.size>64)&&this.cache.size>1){const oldest=this.cache.keys().next().value;this.cacheBytes-=resultBytes(this.cache.get(oldest));this.cache.delete(oldest);}
       pending.resolve(result);
@@ -83,6 +84,7 @@ export class GenerationClient extends EventTarget {
     this.cancel();const revision=this.revision;
     if(!laboratory.has(request.field)&&!irisStyles.has(request.field))throw new UnsupportedGenerationError('Pack terrain generation is not yet connected. No approximate terrain is substituted.',request.field);
     const options={...request,seed:numericSeed(request.seed)};
+    if(options.chunkArea!==undefined){chunkAreaPlan(options);options.chunkArea={...options.chunkArea};}
     for(const key of ['x','z','y','span','width','height'])if(!Number.isFinite(options[key]))throw new Error('Preview coordinates and dimensions must be finite.');
     if(!Number.isInteger(options.width)||!Number.isInteger(options.height)||options.width<1||options.height<1||options.width>512||options.height>512||options.span<=0||options.span>4096||Math.abs(options.x)+options.span/2>30_000_000||Math.abs(options.z)+options.span*options.height/options.width/2>30_000_000||Math.abs(options.y)>30_000_000)throw new Error('Preview exceeds the supported coordinate, resolution or memory limits.');
     if(request.field==='hydrology'&&(options.width>256||options.height>256||options.span>256||options.span*options.height/options.width>256))throw new Error('Surface hydrology maps allow up to 256 samples per axis and a 256-block window. Reduce the resolution or span.');

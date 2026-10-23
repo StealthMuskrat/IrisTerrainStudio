@@ -1,3 +1,4 @@
+import{validateChunkAreaMetadata,chunkMetadataAt}from'../iris-engine/chunk-area.mjs';
 import{regionColumns,regionIndex}from'../shared/region-columns.mjs';
 import{clipBounds,emptyClip}from'./clip.mjs';
 export class VoxelVolume {
@@ -15,8 +16,9 @@ export class VoxelVolume {
     }
     this.regions=regionColumns(data.regions,width,depth,height);
     this.biomes=biomes||null;
-    this.width=width;this.height=height;this.depth=depth;this.origin=origin.slice();this.palette=palette;this.blocks=blocks;this.metadata=data.metadata||{};
+    this.width=width;this.height=height;this.depth=depth;this.origin=origin.slice();this.palette=palette;this.blocks=blocks;this.metadata=data.metadata||{};this.chunkArea=validateChunkAreaMetadata(this);
   }
+  metadataAt(x,y,z){return chunkMetadataAt(this.metadata,this.chunkArea,x,z);}
   index(x,y,z){return x+this.width*(z+this.depth*y);}
   block(x,y,z){if(x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.palette[this.blocks[this.index(x,y,z)]];}
   biome(x,y,z){if(!this.biomes||!Number.isInteger(x)||!Number.isInteger(y)||!Number.isInteger(z)||x<0||y<0||z<0||x>=this.width||y>=this.height||z>=this.depth)return null;return this.biomes.palette[this.biomes.cells[this.index(x,y,z)]];}
@@ -36,7 +38,7 @@ export class VoxelVolume {
     const next=direction.map((n,i)=>Math.abs(n)<1e-12?Infinity:enter+((step[i]>0?cell[i]+1:cell[i])-at[i])/n);
     while(t<exit&&cell.every((value,axis)=>value>=bounds.min[axis]&&value<bounds.max[axis])){
       const index=this.blocks[this.index(...cell)],block=this.palette[index];
-      if(!['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(block.id)&&(!visible||visible(block,index)))return{x:cell[0]+this.origin[0],y:cell[1]+this.origin[1],z:cell[2]+this.origin[2],block,biome:this.biome(...cell),region:this.region(...cell),regionDimension:this.regions?.dimension??null,distance:t,metadata:this.metadata};
+      if(!['minecraft:air','minecraft:cave_air','minecraft:void_air'].includes(block.id)&&(!visible||visible(block,index)))return{x:cell[0]+this.origin[0],y:cell[1]+this.origin[1],z:cell[2]+this.origin[2],block,biome:this.biome(...cell),region:this.region(...cell),regionDimension:this.regions?.dimension??null,distance:t,metadata:this.metadataAt(...cell)};
       const axis=next[0]<next[1]?(next[0]<next[2]?0:2):(next[1]<next[2]?1:2);t=next[axis];next[axis]+=delta[axis];cell[axis]+=step[axis];
     }
     return null;

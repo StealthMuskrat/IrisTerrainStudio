@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-23",
+  "scope": "native-destination-chunk-area-development",
+  "result": "pass-focused",
+  "stored": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "authoredDestinations": 4,
+    "storedCells": 2048,
+    "negativeOriginAndSeams": true,
+    "blockAndBiomePaletteRemapping": true,
+    "compressedMixedRegionMetadata": true,
+    "perDestinationInspectionAndTiles": true,
+    "actualNodeMeshPicker": true,
+    "sourceBuffersRetained": true,
+    "cellAdmissionBeforeAllocation": true,
+    "partialBiomeRefusal": true,
+    "cancelledAreaNotPublished": true,
+    "clientCacheAndMetadataCharge": true,
+    "controlsAndSavedSetups": true,
+    "legacySetupsRemainSingleChunk": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "nativeParityVerified": false
+  },
+  "nativeSuperflat": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "mode": "SUPERFLAT",
+    "nativeDestinationChunks": 2,
+    "selectedMaterialAndBiomeProbes": 6,
+    "selectedRegionProbes": 2,
+    "generatedVolumeCells": 16384,
+    "originalNativeModeEntry": true,
+    "actualWasmWorkerClient": true,
+    "negativeChunkBoundary": true,
+    "typedTransfers": true,
+    "compressedRegions": true,
+    "perDestinationLifecycleMetadata": true,
+    "contextAndResultReuse": true,
+    "oversizedAreaRefusedBeforePainting": true,
+    "cachedResultSurvivesRefusal": true,
+    "retainedAfterNativeRelease": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "packResourceHashes": {
+      "dimensions/terrain3d.json": "61082b7ea934973591cae8ac95965b41ad968460e4ffb701242d397e33fff5ea",
+      "regions/ledges.json": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1",
+      "biomes/ledges.json": "cd3f0a7610bddb2ab15423b76ebbd40b87c7ac0e7754fe33f717443be5905ba5",
+      "generators/flat.json": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    },
+    "sourceHashes": {
+      "packages/iris-engine/chunk-area.mjs": "2d66bd2eba72bd1f7aa29b97f1d2f106623f73f4624bb6e6b5d7de867a4144c1",
+      "packages/iris-engine/client.mjs": "d5955d91ceac2f27eb56a3ca5bf8b4664dbe10cea2be19f1206bfa0844b07d34",
+      "apps/web/workers/iris-worker.js": "5a0c3dd69ddf596405aba5a3ee7d8dde72fd8bf4d20a0e7f8fc8a0a1f6afc188",
+      "packages/voxel-renderer/volume.mjs": "31d3b11bb4b0d0e32c15f436a893b13a61406840e3719199cb8a2c15eb5d9c6c",
+      "tools/checks/NativeTerrainLinkCheck.java": "c3a369df9ee4b50fe3062b22fbea426574566b643c5d5e36fc635351432c706d"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParity": false,
+    "projectFinished": false
+  },
+  "nativeOverworld": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "mode": "OVERWORLD",
+    "nativeDestinationChunks": 2,
+    "selectedMaterialAndBiomeProbes": 6,
+    "selectedRegionProbes": 2,
+    "generatedVolumeCells": 16384,
+    "originalNativeModeEntry": true,
+    "actualWasmWorkerClient": true,
+    "negativeChunkBoundary": true,
+    "typedTransfers": true,
+    "compressedRegions": true,
+    "perDestinationLifecycleMetadata": true,
+    "contextAndResultReuse": true,
+    "retainedAfterNativeRelease": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "packResourceHashes": {
+      "dimensions/terrain3d.json": "8f26435c711a442d3b4e4e686215b713a1cec9a503bc7113b19fb8f1e0876b3b",
+      "regions/ledges.json": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1",
+      "biomes/ledges.json": "cd3f0a7610bddb2ab15423b76ebbd40b87c7ac0e7754fe33f717443be5905ba5",
+      "generators/flat.json": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    },
+    "sourceHashes": {
+      "packages/iris-engine/chunk-area.mjs": "2d66bd2eba72bd1f7aa29b97f1d2f106623f73f4624bb6e6b5d7de867a4144c1",
+      "packages/iris-engine/client.mjs": "d5955d91ceac2f27eb56a3ca5bf8b4664dbe10cea2be19f1206bfa0844b07d34",
+      "apps/web/workers/iris-worker.js": "5a0c3dd69ddf596405aba5a3ee7d8dde72fd8bf4d20a0e7f8fc8a0a1f6afc188",
+      "packages/voxel-renderer/volume.mjs": "31d3b11bb4b0d0e32c15f436a893b13a61406840e3719199cb8a2c15eb5d9c6c",
+      "tools/checks/NativeTerrainLinkCheck.java": "c3a369df9ee4b50fe3062b22fbea426574566b643c5d5e36fc635351432c706d"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParity": false,
+    "projectFinished": false
+  },
+  "savedViews": {
+    "date": "2026-10-23",
+    "scope": "named preview controls, bound 3D cameras, optional browser persistence and portable view-library import/export",
+    "fixture": {
+      "initialEntries": 2,
+      "sourceLocatorBytes": 28,
+      "volumeBoundsOnly": [
+        2,
+        1,
+        1
+      ],
+      "generatedTerrainCells": 0
+    },
+    "checks": [
+      "session/remembered CRUD, exact entered long seed/pose bundle round trip, import deduplication/fresh IDs and unknown/duplicate/invalid input refusal",
+      "queued publication waits for storage, quota/stale-tab/revision failure preserves entries, retry merges session views and external settings",
+      "actual shared storage guard preserves view/texture conflict identities, waits for both guards and rolls back failed transactions",
+      "actual app capture/apply restores controls without generation or replacing retained data, retains source seed labels, applies matching camera bounds and refuses pack/resource/pointer/pending-volume mismatches",
+      "controlled library UI creates session entries; cancelled import and superseded first-load dialog cannot reopen a successor modal"
+    ],
+    "workspaceSha256": {
+      "apps/web/lib/view-library.mjs": "f3b77ad9b9a9240141807363087622fdaaa3f83393a3fe2ede22e42415f0d730",
+      "apps/web/lib/view-tools.mjs": "50455d31824a536569272e94650b0b924a60d13c164aa4e69937450f0402de3e",
+      "apps/web/lib/local-store.mjs": "71badad328333357f19d074f6d051f99fdcd386d4304db9b395389a89aa2499f",
+      "apps/web/main.mjs": "a54296da4fe7331e39c5338acb61bf5ec493e64c985ed5a84c0b44054af316bd",
+      "apps/web/index.html": "62b1e678f42022c21be7719b4bcfd99a1daf66b9f13bb3f679e280f5c0fa50b7",
+      "apps/web/styles.css": "2adb5992c0dea40b11b2b81fda4ee983be8c1ce155141fd03afc7d0e00333b4e"
+    },
+    "realBrowserVerified": false,
+    "indexedDbDurabilityVerified": false,
+    "webGpuVerified": false,
+    "nativeParityVerified": false,
+    "complete": false,
+    "limits": "Two small setup/camera entries, one tiny JSON resource locator, volume metadata only and controlled Node storage/modal/application/renderer hosts. Saved views do not include pack content, drafts, generated data, rendering assets or native qualification. Camera bookmarks require matching volume bounds; preview setups omit live procedural selections. Real browser layout/focus/storage/multi-tab/quota/durability, GPU/view agreement and complete native/client/release verification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+  },
+  "sourceRefresh": {
+    "method": "unchanged-native-java-and-wasm-source-refresh",
+    "javaFilesCompared": 131,
+    "previousSourceSha256": "1829dea79f6b23388b56a06cac66a763c12182614928a5420c4b2e24123e7738",
+    "sourceSha256": "527d2ddcbd5bf1bdefb5b7ed97a1bb66eef319604bb77bac8721dd5be59d5c8f",
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "nativeSourcesUnchanged": true,
+    "wasmRecompiled": false
+  },
+  "limits": "Four authored two-high destination volumes and two 32-high native destinations per mode. Selected probe comparisons only, no whole-volume/state/pair comparison, registry export, comprehensive suite or GitHub workflow. Actual browser/GPU, IndexedDB durability, measured performance, larger native combinations, native reference qualification and project completion remain open.",
+  "standalone": {
+    "result": "pass",
+    "requiredEngine": true,
+    "matchingRegistry": true,
+    "refreshedCorrespondingSource": true,
+    "configuredF8thful": true,
+    "realStandaloneHttp": true,
+    "areaSelectorDelivered": true,
+    "exactModuleFilesDelivered": 4,
+    "assetAuthentication": true,
+    "browserVerified": false,
+    "webGpuVerified": false
+  }
+}
