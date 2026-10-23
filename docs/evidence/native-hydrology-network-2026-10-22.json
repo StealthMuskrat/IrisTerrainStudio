@@ -1,0 +1,269 @@
+{
+  "scope": "native-hydrology-network-development-targeted",
+  "recordedAt": "2026-10-22",
+  "result": "pass",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "wasmSha256": "d5630df0d4352e4409fda2d3f31f89ada2a2c189fddc8788c3dce6441d58badb",
+  "sourceSha256": "58ade1e26c3f8d6a1044574bdbd174b55f513e6716f9d39f574ed1655a493176",
+  "nativeWorkerClient": {
+    "scope": "native-surface-hydrology-map-targeted",
+    "result": "pass",
+    "fixtures": 1,
+    "seeds": 1,
+    "distinctSamples": 5,
+    "windows": 3,
+    "results": [
+      {
+        "request": {
+          "x": 10.5,
+          "z": -7,
+          "span": 6,
+          "width": 3,
+          "height": 1
+        },
+        "categories": [
+          "No primary surface feature",
+          "SURFACE_POOL",
+          "RIFFLE",
+          "CASCADE",
+          "WATERFALL",
+          "MOUTH",
+          "STANDING_POOL"
+        ],
+        "values": [
+          0,
+          6,
+          6
+        ],
+        "admission": {
+          "admittedPlanningRoots": 4,
+          "admittedPlanningCalls": 4,
+          "admittedCarvingChunks": 0,
+          "chargedCarvingInputCells": 0
+        },
+        "preparedSampleChunks": 1,
+        "network": {
+          "counts": {
+            "tiles": 4,
+            "courses": 32,
+            "segments": 32,
+            "points": 96,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "omitted": {
+            "tiles": 0,
+            "courses": 0,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "truncated": false
+        }
+      },
+      {
+        "request": {
+          "x": -16.25,
+          "z": -32.25,
+          "span": 1,
+          "width": 1,
+          "height": 1
+        },
+        "categories": [
+          "No primary surface feature",
+          "SURFACE_POOL",
+          "RIFFLE",
+          "CASCADE",
+          "WATERFALL",
+          "MOUTH",
+          "STANDING_POOL"
+        ],
+        "values": [
+          0
+        ],
+        "admission": {
+          "admittedPlanningRoots": 4,
+          "admittedPlanningCalls": 4,
+          "admittedCarvingChunks": 0,
+          "chargedCarvingInputCells": 0
+        },
+        "preparedSampleChunks": 1,
+        "network": {
+          "counts": {
+            "tiles": 4,
+            "courses": 32,
+            "segments": 32,
+            "points": 96,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "omitted": {
+            "tiles": 0,
+            "courses": 0,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "truncated": false
+        }
+      },
+      {
+        "request": {
+          "x": -0.25,
+          "z": -0.25,
+          "span": 1,
+          "width": 1,
+          "height": 1
+        },
+        "categories": [
+          "No primary surface feature",
+          "SURFACE_POOL",
+          "RIFFLE",
+          "CASCADE",
+          "WATERFALL",
+          "MOUTH",
+          "STANDING_POOL"
+        ],
+        "values": [
+          0
+        ],
+        "admission": {
+          "admittedPlanningRoots": 4,
+          "admittedPlanningCalls": 4,
+          "admittedCarvingChunks": 0,
+          "chargedCarvingInputCells": 0
+        },
+        "preparedSampleChunks": 1,
+        "network": {
+          "counts": {
+            "tiles": 4,
+            "courses": 32,
+            "segments": 32,
+            "points": 96,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "omitted": {
+            "tiles": 0,
+            "courses": 0,
+            "nodes": 0,
+            "outlets": 0
+          },
+          "truncated": false
+        }
+      }
+    ],
+    "referenceKey": "fcbb097357f46503b43c33d1e87c9413082b63eb755a6fa39e123d7b922ea936",
+    "actualWorkerClient": true,
+    "originalNetworkMetadataMatches": true,
+    "clientCacheReuse": true,
+    "coordinateRule": "floor-world-block-at-grid-center",
+    "boundsAndInactiveRefused": true,
+    "recoveryAndRelease": true,
+    "directApiCleanup": {
+      "sessionId": "1",
+      "activeLeases": 0,
+      "scopeBound": false
+    },
+    "controlledCancellation": true,
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "90f5bbe8eece03c31cd2fcb01fefc8dad377fbea089ab4888e74f01ea652727f"
+      },
+      {
+        "path": "regions/floor.json",
+        "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+      },
+      {
+        "path": "biomes/floor.json",
+        "sha256": "24c913e5e334b855658f8b02fc242b1809a31853f1c5f3576d53474028fe0fd8"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+      }
+    ],
+    "wasmSha256": "d5630df0d4352e4409fda2d3f31f89ada2a2c189fddc8788c3dce6441d58badb",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "terrainParityVerified": false,
+    "completePipeline": false
+  },
+  "retainedUi": {
+    "scope": "hydrology-network-retained-ui-targeted",
+    "result": "pass",
+    "authoredCourses": 1,
+    "authoredStations": 3,
+    "nativeCourses": 32,
+    "nativeStations": 96,
+    "malformedCases": 5,
+    "sourceMetadataUnchanged": true,
+    "hexAndLongIdentitiesPreserved": true,
+    "nearestInterpolation": true,
+    "controlledGpu": {
+      "lineVertices": 4,
+      "markerVertices": 18,
+      "resizeReuse": true,
+      "uploadFailureOwnership": true,
+      "disposeExactlyOnce": true
+    },
+    "controlledUi": {
+      "toggleDoesNotGenerate": true,
+      "inspection": true,
+      "coordinates": true,
+      "download": true,
+      "staleDialogRefused": true
+    },
+    "cacheChargeBytes": 8388608,
+    "cacheChargeIsEstimate": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "terrainParityVerified": false
+  },
+  "networkLimits": {
+    "tiles": 32,
+    "courses": 256,
+    "segments": 1024,
+    "points": 32768,
+    "nodes": 4096,
+    "outlets": 1024
+  },
+  "workspaceSha256": {
+    "apps/web/index.html": "22f39a5dea7990ebf8daf44f2d66d09d2c7f91248ab2ec94ac7bd03584584ec8",
+    "apps/web/lib/map-tools.mjs": "305fef988306bb5237ce64f224119f9a180958806bdeb782432444e7f9e5b363",
+    "apps/web/main.mjs": "80c72d2ecabc007d930f403638cd798555213b4a64d9eaa481e12b9d85521922",
+    "apps/web/workers/iris-worker.js": "8320b77d0c171e3c555d7dd9700775d94f95983aaaefaa6ff7104aadf4460bac",
+    "packages/iris-engine/client.mjs": "99de05a3bb75f3680b94af045eaca868f511106c28673b8876ab41e1254bcdde",
+    "packages/iris-engine/java/studio/engine/hydrology/SurfaceHydrologyMap.java": "e2c829355df1582b8a4c3d7c52eb2a3232ac0ffaac5d5b39c8e807740419292b",
+    "packages/voxel-renderer/field-data.mjs": "4e260605509d4833a147f5f2dfb333c5d6ceb1553c95db8998a3d18e90015795",
+    "packages/voxel-renderer/map.mjs": "b11e262cdcc761a857df4a01819867421ae0141252d3329ee88da411318e0051",
+    "tools/checks/native-hydrology-map-smoke.mjs": "9588eafa7b97ed4ff5aed3429e0e32e5ffca5f2a5777c4bd857a7cff4843262f",
+    "tools/engine-build/build.mjs": "8a649356fc5349a63b659ebb984e808f9dcd454fd55bd1a87067f16b9c970ff7",
+    "packages/iris-engine/hydrology-network.mjs": "3eceb67b310db86b2fff2824a8b657822353946beccee2e04dd1ed9527b18062",
+    "packages/iris-engine/java/studio/engine/hydrology/HydrologyNetworkSnapshot.java": "d05612dd3efeffd9b03563ad135ea9e3c586681d20b95e5504bd01f72f65035d",
+    "packages/voxel-renderer/hydrology-overlay.mjs": "a0383679ccc18d54651257600f514e5c78be23fa20287996b1bb356e8919ffd7",
+    "tools/checks/hydrology-network-ui-smoke.mjs": "f122a951a07e4841f117165e5f8e179206f5d6f83a04ec712c00d95408e95e80"
+  },
+  "commands": [
+    "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "node tools/checks/native-hydrology-map-smoke.mjs",
+    "node tools/checks/hydrology-network-ui-smoke.mjs",
+    "node --check (changed JavaScript modules)",
+    "git diff --check",
+    "node tools/build-app.mjs --require-engine"
+  ],
+  "developmentBuild": {
+    "result": "pass",
+    "qualifiedRelease": false
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "limits": [
+    "Native fixture consists of independent pools: 32 courses, 32 segments, 96 stations and zero nodes/outlets per retained excerpt.",
+    "Source/outlet/drop UI records are authored controls, not native planning evidence.",
+    "Owner-tile excerpts may duplicate course identities; drainage edges are not serialized.",
+    "Graph cache charge is a conservative logical estimate, not measured heap or a hard total-memory guarantee.",
+    "Actual browser/GPU/UI, genuine river/drop/outlet planning, native options/full lifecycle/parity, assets and final reference/release qualification remain open."
+  ]
+}

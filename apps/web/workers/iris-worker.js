@@ -1,3 +1,4 @@
+let hydrologyNetworkModule;
 let runtime, registryRuntime, terrainContext, active = 0;
 function clearContext(api){terrainContext=null;api.clear();}
 const digest = async bytes => [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('');
@@ -147,6 +148,7 @@ self.onmessage=async({data})=>{
       if(typeof api.sampleSurfaceHydrologyMap!=='function')throw new Error('Rebuild the local Iris engine to enable native surface hydrology maps.');
       const map=JSON.parse(api.sampleSurfaceHydrologyMap(x,z,span,width,height));
       if(map.scope!=='native-surface-hydrology-map-development'||map.width!==width||map.height!==height||map.x!==x||map.z!==z||map.span!==span||map.depth!==depth||map.selection!=='original-primarySurfaceLayer'||map.sampling!=='floor-world-block-at-grid-center'||!Array.isArray(map.categories)||map.categories.length<1||map.categories.length>64||map.categories.some(value=>typeof value!=='string'||!value)||!Array.isArray(map.values)||map.values.length!==width*height||map.values.some(value=>!Number.isInteger(value)||value<0||value>=map.categories.length))throw new Error('Native surface hydrology map coverage is incomplete.');
+      const {validateHydrologyNetwork}=await(hydrologyNetworkModule??=import('/packages/iris-engine/hydrology-network.mjs'));validateHydrologyNetwork(map.network);
       const values=Float64Array.from(map.values);let min=Infinity,max=-Infinity;for(const value of values){min=Math.min(min,value);max=Math.max(max,value);}
       const {values:unused,...hydrology}=map;
       await publishResult({values:values.buffer,width,height,x,y,z,span,depth,seed,min,max,field:options.field,categories:map.categories,hydrology,terrainInfo,scope:'iris-native-surface-hydrology-map-development',sourceCommit:manifest.irisCommit,generationMs:performance.now()-started,completePipeline:false},[values.buffer]);return;

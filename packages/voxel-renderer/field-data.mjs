@@ -1,3 +1,4 @@
+import{HydrologyNetworkIndex}from'../iris-engine/hydrology-network.mjs';
 export function displayRange(value){
   if(value==null)return null;
   if(!Array.isArray(value)||value.length!==2||!value.every(Number.isFinite)||value[0]>=value[1])throw new Error('Display range needs two finite values with minimum below maximum.');return value.slice();
@@ -15,7 +16,7 @@ export class FieldIndex{
     if(![data.x,data.z,data.span,data.depth].every(Number.isFinite)||![data.span,data.depth].every(value=>Number.isFinite(Math.fround(value))&&Math.fround(value)>0)||![data.x-data.span/2,data.x+data.span/2,data.z-data.depth/2,data.z+data.depth/2].every(Number.isFinite))throw new Error('Map world bounds must be finite, positive and displayable.');
     const categories=data.categories;
     let characters=0;if(categories&&(!Array.isArray(categories)||!categories.length||categories.length>65536||categories.some(key=>typeof key!=='string'||!key.length||key.length>1024||(characters+=key.length)>8*1024*1024)||new Set(categories).size!==categories.length))throw new Error('Categorical map identities are invalid or exceed the key-length budget.');
-    this.data=data;this.counts=categories?new Uint32Array(categories.length):null;this.min=Infinity;this.max=-Infinity;
+    this.data=data;this.network=data.hydrology?.network?new HydrologyNetworkIndex(data.hydrology.network):null;this.counts=categories?new Uint32Array(categories.length):null;this.min=Infinity;this.max=-Infinity;
     for(const value of data.values){if(!Number.isFinite(value))throw new Error('Map samples must be finite; unsupported values cannot be displayed.');if(categories&&(!Number.isInteger(value)||value<0||value>=categories.length))throw new Error('A categorical sample has no identity.');if(categories)this.counts[value]++;this.min=Math.min(this.min,value);this.max=Math.max(this.max,value);}
     this.categories=categories?categories.map((key,index)=>({key,index,count:this.counts[index]})).filter(row=>row.count).sort((a,b)=>b.count-a.count||(a.key<b.key?-1:a.key>b.key?1:0)):null;
   }

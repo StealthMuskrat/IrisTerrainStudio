@@ -10,7 +10,10 @@ export function generationAvailability(installation,field){
   if(packField&&installation.registry?.available!==true)return{available:false,reason:installation.registry?.reason||'The native browser registry is unavailable.'};
   return{available:true,reason:''};
 }
-function resultBytes(result){return result.volume?result.volume.blocks.byteLength+(result.volume.biomes?.cells.byteLength||0):result.values.byteLength;}
+// Graphs retain object/tuple storage in addition to the numerical sample buffer.
+// Charge a conservative fixed estimate once per cached bounded network, not just its samples.
+export const HYDROLOGY_NETWORK_CACHE_CHARGE=8*1024*1024;
+function resultBytes(result){return(result.volume?result.volume.blocks.byteLength+(result.volume.biomes?.cells.byteLength||0):result.values.byteLength)+(result.hydrology?.network?HYDROLOGY_NETWORK_CACHE_CHARGE:0);}
 export class GenerationClient extends EventTarget {
   constructor(){super();this.workers=new Map();this.revision=0;this.sequence=0;this.pending=null;this.requests=new Map();this.cache=new Map();this.cacheBytes=0;this.maxCacheBytes=48*1024*1024;}
   worker(kind){
