@@ -1,3 +1,5 @@
+import {loadMeshWorkerHost} from './mesh-worker-host.mjs';
+const {source:meshWorkerSource,bindings:meshWorkerBindings}=await loadMeshWorkerHost();
 import{faceParameters}from'../../packages/resource-packs/face-materials.mjs';
 // Two stored cells / two emitted faces. Controlled canvas/device/input probes, no terrain or registry.
 import assert from 'node:assert/strict';
@@ -17,9 +19,9 @@ let frontModel={id:'check:front',elements:[{from:[0,0,0],to:[16,8,4],faces:{nort
 const backModel={id:'check:back',elements:[{from:[0,0,0],to:[16,16,16],faces:{north:{texture:'back'}}}]};
 const stack={blockModels(block){return[{model:block.id==='check:front'?frontModel:backModel,x:0,y:0}];},texture(model,ref){return ref;}};
 const atlas={async add(name){return{uv:name==='front'?[0,0,.5,1]:[.5,0,1,1],transparency:name==='front'?frontKind:'opaque'};}};
-const workerCode=(await fs.readFile(new URL('../../packages/voxel-renderer/mesh-worker.mjs',import.meta.url),'utf8')).replace(/^import.*\n/,'');
+const workerCode=meshWorkerSource;
 async function make(clip){
-  const models=await Promise.all(volume.palette.map(block=>bakeBlock(block,stack,atlas))),messages=[],context=vm.createContext({self:{postMessage:data=>messages.push(data)},Float32Array,Uint32Array,setTimeout,localClip,emptyClip,faceParameters});vm.runInContext(workerCode,context);
+  const models=await Promise.all(volume.palette.map(block=>bakeBlock(block,stack,atlas))),messages=[],context=vm.createContext({...meshWorkerBindings,self:{postMessage:data=>messages.push(data)},Float32Array,Uint32Array,setTimeout,localClip,emptyClip,faceParameters});vm.runInContext(workerCode,context);
   await context.self.onmessage({data:{id:1,width:volume.width,height:volume.height,depth:volume.depth,origin:volume.origin,blocks:volume.blocks,palette:volume.palette,models,clip}});
   const mesh=messages.at(-1);assert.equal(mesh.kind,'mesh',mesh.error);return{mesh,picker:new MeshPicker(volume,mesh),models};
 }
@@ -60,7 +62,7 @@ renderer.select(front);renderer.uploadMesh(mesh);assert.equal(renderer.selection
 const identity=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);let routed;
 WorldRenderer.prototype.inspect.call({volume,models:baseModels,meshPalette:volume.palette,picker:{raycast(...args){routed=args;return front;}},matrices:()=>({matrix:identity}),canvas:{getBoundingClientRect:()=>({left:0,top:0,width:2,height:2})},atlas:{sampleAlpha:()=>.25}},1,1);assert.equal(routed[3].alpha(0,0),.25);assert.deepEqual(routed[0],[-15.5,-31.5,-47]);
 // Inspect details preserve stored fields and reject a same-volume mesh replacement before focus.
-const source=await fs.readFile(new URL('../../apps/web/main.mjs',import.meta.url),'utf8'),controls=new Map(),dialogs=[];const ui={state:{world:{picker,focus(){throw Error('Stale mesh must not focus');}}},currentVoxelVolume:()=>volume,$:id=>{if(!controls.has(id))controls.set(id,{});return controls.get(id);},copy:text=>({text}),element:(tag,attributes)=>({tag,...attributes}),ask:async(title,content,options)=>{dialogs.push({title,content,options});}};vm.createContext(ui);vm.runInContext(source.slice(source.indexOf('async function inspectWorldVoxel('),source.indexOf('let previewTimer;')),ui);
+const source=await fs.readFile(new URL('../../apps/web/main.mjs',import.meta.url),'utf8'),controls=new Map(),dialogs=[];const ui={customBiomeDetails:()=>[],tilePayloadDetails:()=>[],state:{world:{picker,focus(){throw Error('Stale mesh must not focus');}}},currentVoxelVolume:()=>volume,$:id=>{if(!controls.has(id))controls.set(id,{});return controls.get(id);},copy:text=>({text}),element:(tag,attributes)=>({tag,...attributes}),ask:async(title,content,options)=>{dialogs.push({title,content,options});}};vm.createContext(ui);vm.runInContext(source.slice(source.indexOf('async function inspectWorldVoxel('),source.indexOf('let previewTimer;')),ui);
 await ui.inspectWorldVoxel(front);assert(dialogs[0].content.some(item=>item.text?.startsWith('Surface hit:')));assert(dialogs[0].content.some(item=>item.text?.includes('check:front_biome')));ui.state.world.picker=clipped.picker;assert.throws(()=>dialogs[0].options.onSubmit([0,0,0]),/mesh changed/);await ui.inspectWorldVoxel(front);assert.equal(dialogs.length,1);
 assert.deepEqual(volume.blocks,originalBlocks);assert.deepEqual(volume.biomes.cells,originalBiomes);renderer.buffers.dispose();
 const paths=['packages/voxel-renderer/picking.mjs','packages/voxel-renderer/selection.mjs','packages/voxel-renderer/mesh-worker.mjs','packages/voxel-renderer/world.mjs','packages/resource-packs/atlas.mjs','packages/voxel-renderer/mesh-buffers.mjs','apps/web/main.mjs','apps/web/index.html','tools/checks/model-picking-smoke.mjs'],workspaceSha256=Object.fromEntries(await Promise.all(paths.map(async path=>[path,createHash('sha256').update(await fs.readFile(new URL('../../'+path,import.meta.url))).digest('hex')])));

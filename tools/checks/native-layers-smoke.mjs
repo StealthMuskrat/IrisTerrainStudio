@@ -21,7 +21,7 @@ try{
   const manifest=JSON.parse(await fs.readFile(path.join(base,'manifest.json'),'utf8')),{exports:api}=await TeaVM.wasmGC.load(await fs.readFile(path.join(base,'iris.wasm')));
   api.installRegistry(await fs.readFile(path.join(root,'apps/web/engine/registry-generated/browser-registry.json'),'utf8'));
   let receiver;
-  const sandbox={performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,stubManifest:manifest,postMessage:data=>receiver?.({data})};sandbox.self=sandbox;
+  const sandbox={navigator:{userAgent:'Node controlled worker host'},performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,stubManifest:manifest,postMessage:data=>receiver?.({data:structuredClone(data)})};sandbox.self=sandbox;
   const context=vm.createContext(sandbox);vm.runInContext(await fs.readFile(path.join(root,'apps/web/workers/iris-worker.js'),'utf8'),context);vm.runInContext('runtime=Promise.resolve({api:stubApi,manifest:stubManifest});registryRuntime=Promise.resolve({installed:true});',context);
   globalThis.Worker=class{constructor(){receiver=event=>this.onmessage?.(event);}postMessage(data){sandbox.onmessage({data}).catch(error=>this.onerror?.({message:error.message}));}terminate(){receiver=null;}};
   client=new GenerationClient();

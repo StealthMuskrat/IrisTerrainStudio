@@ -49,6 +49,7 @@ try{
   // Persist the selected view using the actual preview preference writer.
   let save;const saved=[];sandbox.clearTimeout=()=>{};sandbox.setTimeout=callback=>{save=callback;return 1;};sandbox.localSet=async(store,key,value)=>saved.push({store,key,value});
   vm.runInContext(main.slice(main.indexOf('let previewTimer;'),main.indexOf('function mapControls(){')),sandbox);sandbox.persistPreview();save();await Promise.resolve();assert.equal(saved.at(-1).value.voxelView,'biomes');
+  sandbox.CHUNK_AREA_FIELDS=['terrain-mode','overworld-mode'];
   // A preference for cell diagnostics alone must not enable retry with no retained voxels.
   vm.runInContext(main.slice(main.indexOf('function syncPreviewStatus(){'),main.indexOf('async function previewDetails(){')),sandbox);const displayed=state.world,retained=state.volume;state.world={mode:'textured'};state.volume=null;state.renderError=null;sandbox.syncPreviewStatus();assert.equal(get('retry-rendering').disabled,true);state.world=displayed;state.volume=retained;
   const html=await fs.readFile(new URL('../../apps/web/index.html',import.meta.url),'utf8');for(const id of ['voxel-view','cell-legend','voxel-view-status'])assert.equal([...html.matchAll(new RegExp('id="'+id+'"','g'))].length,1);

@@ -43,7 +43,7 @@ try{
   assert.equal(JSON.parse(api.generationSessionStatistics()).activeLeases,0);assert.equal(JSON.parse(api.generationSessionStatistics()).scopeBound,false);
   assert.throws(()=>api.sampleHydrologyColumn(30000000,0));api.releaseTerrain();assert.equal(JSON.parse(api.inspectTerrainLifecycle()).prepared,false);
   const messages=[],manifestForWorker=JSON.parse(await fs.readFile(path.join(base,'manifest.json'),'utf8'));
-  const sandbox={performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,stubManifest:manifestForWorker,postMessage:message=>messages.push(message)};sandbox.self=sandbox;
+  const sandbox={navigator:{userAgent:'Node controlled worker host'},performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,stubManifest:manifestForWorker,postMessage:message=>messages.push(message)};sandbox.self=sandbox;
   const context=vm.createContext(sandbox);vm.runInContext(await fs.readFile(path.join(root,'apps/web/workers/iris-worker.js'),'utf8'),context);vm.runInContext('runtime=Promise.resolve({api:stubApi,manifest:stubManifest});registryRuntime=Promise.resolve({installed:true});',context);
   await sandbox.onmessage({data:{kind:'generate',id:1,options:{field:'terrain',dimensionKey:'terrain3d',packSnapshot:{resources:Object.entries(resources).map(([path,value])=>({path,text:JSON.stringify(value)}))},seed:'1',width:1,height:1,x:0,y:0,z:0,span:16}}});
   assert.match(messages.find(message=>message.error)?.error||'',/Complete hydrology terrain previews are not connected/);assert.equal(JSON.parse(api.inspectTerrainLifecycle()).prepared,false);

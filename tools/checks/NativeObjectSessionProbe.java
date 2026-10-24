@@ -8,7 +8,7 @@ import java.io.*;
 /** A few real native plan/cache/Matter operations. No registry, terrain sweep or replacement plan ABI. */
 public final class NativeObjectSessionProbe {
     private static void require(boolean value,String label){if(!value)throw new AssertionError(label);}
-    private static ObjectDestinationTransaction.SetMutation marker(int x,String value){return new ObjectDestinationTransaction.SetMutation(new ObjectDestinationTransaction.DataKey(x,5,1,String.class),value);}
+    private static ObjectDestinationTransaction.SetMutation marker(int x,String value){return new ObjectDestinationTransaction.SetMutation(new ObjectDestinationTransaction.DataKey(x,5,1,String.class),value,false);}
     @JSExport public static String run()throws IOException{
         Object owner=new Object();var session=new WorkerObjectSession(owner);
         ObjectSourcePlan plan=new ObjectSourcePlan(List.of(marker(15,"crossing"),marker(16,"crossing")),List.of(new ObjectDestinationTransaction.PlacementRange(0,2)));

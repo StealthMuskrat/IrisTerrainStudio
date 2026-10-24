@@ -1,6 +1,6 @@
 # Application development
 
-Development now proceeds locally in larger batches, as explicitly requested by the user. Repository pushes are checkpoints. GitHub workflows use `workflow_dispatch`; broad application verification happens after implementation. A focused check may be used to resolve the specific behavior under development.
+Development proceeds locally in larger batches, as explicitly requested by the user. Repository pushes are checkpoints. GitHub workflows use `workflow_dispatch`. On October 23 the user requested comprehensive available local testing and accepted responsibility for manual browser/GPU testing. `npm run verify -- --f8thful /path/to/authorized-original.zip` runs the bounded automated checks; [manual acceptance](MANUAL_ACCEPTANCE.md) covers unavailable runtime cases. Release/native qualification remains separate and unresolved.
 
 ## Current implementation
 

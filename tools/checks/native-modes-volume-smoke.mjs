@@ -1,3 +1,4 @@
+import {regionBufferBytes,regionColumnCharge} from '../../packages/shared/region-columns.mjs';
 // Three small native mode fixtures; four block/biome probes each, no volume or registry sweep.
 import fs from 'node:fs/promises';import path from 'node:path';import vm from 'node:vm';import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';import {createHash,webcrypto} from 'node:crypto';import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -10,7 +11,7 @@ try{
  await import(pathToFileURL(path.join(root,'apps/web/engine/iris-generated/iris.wasm-runtime.js')));const{exports:api}=await TeaVM.wasmGC.load(await fs.readFile(path.join(root,'apps/web/engine/iris-generated/iris.wasm')));api.installRegistry(await fs.readFile(path.join(local,'session-registry-fixture/browser-registry.json'),'utf8'));
  const fixture=path.join(root,'.upstream/Iris/probe/src/test/resources/terrain3d-pack'),names=['dimensions/terrain3d.json','regions/ledges.json','biomes/ledges.json','generators/flat.json'],controls=[[0,0,0],[3,16,6],[8,32,8],[15,63,15]],results=[];
  let receiver,generations=0,terminated=0,holdDispatch=false;
- const sandbox={performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,postMessage:data=>receiver?.({data})};sandbox.self=sandbox;const context=vm.createContext(sandbox),workerSource=await fs.readFile(path.join(root,'apps/web/workers/iris-worker.js'),'utf8');vm.runInContext(workerSource,context);vm.runInContext('runtime=Promise.resolve({api:stubApi,manifest:{irisCommit:"c3359e0a16438b1bb8468901c6171dcefdf63f7f"}});registryRuntime=Promise.resolve({fixtureInput:true});',context);
+ const sandbox={navigator:{userAgent:'Node controlled worker host'},performance,crypto:webcrypto,TextEncoder,TextDecoder,DataView,ArrayBuffer,Uint8Array,Uint16Array,Uint32Array,Float64Array,setTimeout,clearTimeout,console,stubApi:api,postMessage:data=>receiver?.({data:structuredClone(data)})};sandbox.self=sandbox;const context=vm.createContext(sandbox),workerSource=await fs.readFile(path.join(root,'apps/web/workers/iris-worker.js'),'utf8');vm.runInContext(workerSource,context);vm.runInContext('runtime=Promise.resolve({api:stubApi,manifest:{irisCommit:"c3359e0a16438b1bb8468901c6171dcefdf63f7f"}});registryRuntime=Promise.resolve({fixtureInput:true});',context);
  globalThis.Worker=class{constructor(){receiver=event=>this.onmessage?.(event);}postMessage(data){if(data.kind==='generate'){generations++;if(holdDispatch)return;}sandbox.onmessage({data}).catch(error=>this.onerror?.({message:error.message}));}terminate(){terminated++;receiver=null;}};
  client=new GenerationClient();client.maxCacheBytes=1; // Evict older previews using both owned buffers; retain the current preview.
  const options=resources=>({field:'terrain-mode-stage',seed:'1',dimensionKey:'terrain3d',packSnapshot:{resources},width:16,height:16,x:-8,y:0,z:24,span:16,buffet:false});let lastResources,lastResult;
@@ -21,7 +22,7 @@ try{
   for(const[x,y,z,block,biome]of expected.probes){assert.equal(volume.block(x,y,z).stateKey,block);assert.equal(volume.biome(x,y,z),biome);assert.equal(volume.worldBiome(x-16,y-32,z+16),biome);}
   assert.equal(volume.biome(-1,0,0),null);assert.equal(volume.worldBiome(-16,-33,16),null);
   const hit=volume.raycast([-15.5,-40,16.5],[0,1,0]);assert.ok(hit);assert.equal(hit.biome,volume.worldBiome(hit.x,hit.y,hit.z));assert.equal(hit.biome,'minecraft:desert');
-  assert.equal(client.cacheBytes,result.volume.blocks.byteLength+result.volume.biomes.cells.byteLength);assert.equal(client.cache.size,1);const count=generations;assert.equal(await client.generate(options(resources)),result);assert.equal(generations,count);
+  assert.equal(client.cacheBytes,result.volume.blocks.byteLength+result.volume.biomes.cells.byteLength+regionBufferBytes(result.volume.regions)+regionColumnCharge(result.volume.regions));assert.equal(client.cache.size,1);const count=generations;assert.equal(await client.generate(options(resources)),result);assert.equal(generations,count);
   results.push({mode,probes:expected.probes,terrainStages:expected.terrainStages,contentStages:expected.contentStages,cacheBytes:client.cacheBytes,resources:resources.map(row=>({path:row.path,sha256:createHash('sha256').update(row.text).digest('hex')}))});lastResources=resources;lastResult=result;
  }
  // A native stage failure must propagate through EngineMode's original wrapper and clear the snapshot.

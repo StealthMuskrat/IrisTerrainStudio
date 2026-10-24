@@ -24,7 +24,7 @@ with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as bun
                 add(f'upstream/{project}/{relative}', filename.read_bytes())
     for relative in ('tools/engine-build', 'tools/portability-probe', 'tools/native-reference', 'packages/iris-engine', 'packages/shared'):
         for filename in sorted((root / relative).rglob('*')):
-            if filename.is_file() and 'target' not in filename.relative_to(root).parts:
+            if filename.is_file() and not {'target', '__pycache__'}.intersection(filename.relative_to(root).parts):
                 add(str(filename.relative_to(root)), filename.read_bytes())
     for filename in sorted((root/'.local-tools/rotation-sources').rglob('*.java')):
         add('generated/rotation/'+str(filename.relative_to(root/'.local-tools/rotation-sources')),filename.read_bytes())

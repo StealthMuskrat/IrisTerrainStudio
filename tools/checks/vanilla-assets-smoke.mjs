@@ -20,7 +20,7 @@ try{
   assert.deepEqual(capture.report.errors,[]);
   assert.equal(stack.json('assets/minecraft/models/block/stone.json').parent,'minecraft:block/cube_all');
   assert.ok(stack.bytes('assets/minecraft/textures/block/stone.png'));
-  assert.throws(()=>stack.blockModels({id:'minecraft:stone',properties:{}}),/exact model selection/);
+  assert.throws(()=>stack.blockModels({id:'minecraft:stone',properties:{}}),/require contextual client selection/);
   const temporary=await fs.mkdtemp(path.join(root,'.local-tools/vanilla-assets-'));
   try{
     const invalid=path.join(temporary,'wrong.jar'),output=path.join(temporary,'previous.zip');
