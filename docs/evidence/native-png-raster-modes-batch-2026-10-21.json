@@ -1,0 +1,638 @@
+{
+  "scope": "native-png-raster-modes-and-inspector-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "e769ecee1fa6eab4af401c56c82ca041b0666e4c869b6d04bf8594cfbc998c96",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "2fe169012be92bf5f5b1187177918013f0cc2c28adc95c8c7a8878bcab4525b2",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass",
+    "sourceBundleRefreshedAfterChecks": "Added read-only pinned JDK raster reference sources/legal notices; no runtime algorithm change after the focused check."
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImage.java",
+      "sha256": "c2301fc8b8f01e02e27e57a479821f9b8f933a4ca1f12ad468187d34f06b2e53"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapCompiler.java",
+      "sha256": "47e276197b277630f10921e099ba84735bc5c21b243bb80ad3499df25c0f30bf"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/image/IrisImageMapValidationException.java",
+      "sha256": "8dec3819b1498c0000f824e8728215804eaae529c2e195b8f4cf84f5f1640d1d"
+    }
+  ],
+  "jdkRasterReferences": [
+    {
+      "path": "java.desktop/com/sun/imageio/plugins/png/PNGImageReader.java",
+      "sha256": "9f98dfd09a5b811b452ae7ca93f117698476254ee0709a891425c503ccb18a3c",
+      "role": "Raster-model reference only, not compiled into worker"
+    },
+    {
+      "path": "java.desktop/javax/imageio/ImageTypeSpecifier.java",
+      "sha256": "018afdb81cacda70119b56721657c47f6fde5536d5ef4f33cc75625bc90857fb",
+      "role": "Raster-model reference only, not compiled into worker"
+    },
+    {
+      "path": "java.desktop/java/awt/image/IndexColorModel.java",
+      "sha256": "eedfd3a703e1d357d87e22888230a0ebd93bf05463acb053ab284c00573184f7",
+      "role": "Raster-model reference only, not compiled into worker"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/png.mjs",
+    "packages/iris-engine/java/studio/engine/image/WorkerImagePixels.java",
+    "packages/iris-engine/java/studio/engine/image/ImagePlatformPlugin.java",
+    "packages/iris-engine/java/studio/engine/pack/MemoryPack.java",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "tools/engine-build/build.mjs",
+    "tools/engine-build/bundle-source.py"
+  ],
+  "frontendAndCheckSources": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "6aafd401e9698aa598247b9757007c314fb217cc42fed0a8fe5307c8f259a694"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "ef8df9b28a18f05a30d0e9ead0388962370a4e5d43d756b9a00025d6160557d1"
+    },
+    {
+      "path": "tools/checks/NativePngModesFixtures.java",
+      "sha256": "196cea338dd9830572efb23725ff2102a0a3a40fd8190d248eb1dda6197aca0d"
+    },
+    {
+      "path": "tools/checks/native-png-modes-smoke.mjs",
+      "sha256": "f9909a9e024e140d61c52346279030faf6d1d1b296642602d86020f164dab140"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-png-raster-modes-development-targeted",
+    "images": [
+      {
+        "name": "packed-gray",
+        "width": 5,
+        "height": 2,
+        "channels": 1,
+        "bitDepth": 2,
+        "colorMode": "INDEXED",
+        "hasAlpha": false,
+        "bands": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          1,
+          2,
+          3,
+          0,
+          1
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            2
+          ],
+          [
+            3,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            0
+          ]
+        ],
+        "mapType": "COLOR_MAP",
+        "validationError": "Indexed PNG images are unsupported; convert the source to grayscale, RGB, or RGBA; COLOR_MAP requires an RGB or RGBA PNG, got INDEXED; COLOR_MAP requires canonical 8-bit RGB channels, got 2-bit; COLOR_MAP requires at least one #RRGGBB legend entry",
+        "pngSha256": "461cd82a1e64615edc4ffd13c4fb6a539a471bccb32e74f8c2868e12f27078d7"
+      },
+      {
+        "name": "indexed-alpha",
+        "width": 5,
+        "height": 2,
+        "channels": 1,
+        "bitDepth": 2,
+        "colorMode": "INDEXED",
+        "hasAlpha": true,
+        "bands": [
+          0,
+          1,
+          2,
+          3,
+          0,
+          1,
+          2,
+          3,
+          0,
+          1
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            2,
+            0,
+            2
+          ],
+          [
+            3,
+            0,
+            3
+          ],
+          [
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            2
+          ],
+          [
+            2,
+            1,
+            3
+          ],
+          [
+            3,
+            1,
+            0
+          ]
+        ],
+        "mapType": "COLOR_MAP",
+        "validationError": "Indexed PNG images are unsupported; convert the source to grayscale, RGB, or RGBA; COLOR_MAP requires an RGB or RGBA PNG, got INDEXED; COLOR_MAP requires canonical 8-bit RGB channels, got 2-bit; COLOR_MAP requires at least one #RRGGBB legend entry",
+        "pngSha256": "2236577b6a0ab12c4f9351d0820f9f27db4951b336ff71758879d637c421d71a"
+      },
+      {
+        "name": "gray-alpha-8",
+        "width": 3,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 8,
+        "colorMode": "UNSUPPORTED",
+        "hasAlpha": true,
+        "bands": [
+          0,
+          0,
+          251,
+          127,
+          246,
+          254,
+          89,
+          127,
+          84,
+          254,
+          79,
+          0
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            251,
+            127
+          ],
+          [
+            2,
+            0,
+            246,
+            254
+          ],
+          [
+            0,
+            1,
+            89,
+            127
+          ],
+          [
+            1,
+            1,
+            84,
+            254
+          ],
+          [
+            2,
+            1,
+            79,
+            0
+          ]
+        ],
+        "mapType": "GRAYSCALE_HEIGHT",
+        "validationError": "Unsupported PNG color mode with 1 color components and 2 channels; GRAYSCALE_HEIGHT requires a grayscale PNG, got UNSUPPORTED",
+        "pngSha256": "9632e5f040258077a9f7ea7b508b86c9ac12d56fe04295a08e30e10e43b7b218"
+      },
+      {
+        "name": "gray-alpha-16",
+        "width": 3,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 16,
+        "colorMode": "UNSUPPORTED",
+        "hasAlpha": true,
+        "bands": [
+          0,
+          0,
+          11003,
+          32767,
+          22006,
+          65534,
+          7001,
+          32767,
+          18004,
+          65534,
+          29007,
+          0
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            11003,
+            32767
+          ],
+          [
+            2,
+            0,
+            22006,
+            65534
+          ],
+          [
+            0,
+            1,
+            7001,
+            32767
+          ],
+          [
+            1,
+            1,
+            18004,
+            65534
+          ],
+          [
+            2,
+            1,
+            29007,
+            0
+          ]
+        ],
+        "mapType": "GRAYSCALE_HEIGHT",
+        "validationError": "Unsupported PNG color mode with 1 color components and 2 channels; GRAYSCALE_HEIGHT requires a grayscale PNG, got UNSUPPORTED",
+        "pngSha256": "b21596dfb8ba1ca16e8faeb8abff11f70f19cfebfff4a370f56cb69f4ffb9cc5"
+      },
+      {
+        "name": "rgb-16",
+        "width": 2,
+        "height": 2,
+        "channels": 3,
+        "bitDepth": 16,
+        "colorMode": "RGB",
+        "hasAlpha": false,
+        "bands": [
+          0,
+          13003,
+          26006,
+          11003,
+          24006,
+          37009,
+          7001,
+          20004,
+          33007,
+          18004,
+          31007,
+          44010
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0,
+            13003,
+            26006
+          ],
+          [
+            1,
+            0,
+            11003,
+            24006,
+            37009
+          ],
+          [
+            0,
+            1,
+            7001,
+            20004,
+            33007
+          ],
+          [
+            1,
+            1,
+            18004,
+            31007,
+            44010
+          ]
+        ],
+        "mapType": "ALPHA_MASK",
+        "validationError": "ALPHA_MASK requires an 8-bit RGBA PNG; ALPHA_MASK requires an 8-bit alpha channel, got 16-bit color channels",
+        "pngSha256": "c19c5c9ffc4052350e84bbda243790b7bf968dd26e9ee17bf84f495d7e867906"
+      },
+      {
+        "name": "rgba-16",
+        "width": 2,
+        "height": 2,
+        "channels": 4,
+        "bitDepth": 16,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          0,
+          13003,
+          26006,
+          0,
+          11003,
+          24006,
+          37009,
+          32767,
+          7001,
+          20004,
+          33007,
+          32767,
+          18004,
+          31007,
+          44010,
+          65534
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            0,
+            13003,
+            26006,
+            0
+          ],
+          [
+            1,
+            0,
+            11003,
+            24006,
+            37009,
+            32767
+          ],
+          [
+            0,
+            1,
+            7001,
+            20004,
+            33007,
+            32767
+          ],
+          [
+            1,
+            1,
+            18004,
+            31007,
+            44010,
+            65534
+          ]
+        ],
+        "mapType": "ALPHA_MASK",
+        "validationError": "ALPHA_MASK requires an 8-bit alpha channel, got 16-bit color channels",
+        "pngSha256": "e57852f6d8d9a5e3eaf025cc700915e6a73da6f72ba31ea017c0b1d64eedd022"
+      },
+      {
+        "name": "gray-key-16",
+        "width": 3,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 16,
+        "colorMode": "UNSUPPORTED",
+        "hasAlpha": true,
+        "bands": [
+          12345,
+          0,
+          12347,
+          65535,
+          24694,
+          65535,
+          12345,
+          0,
+          18354,
+          65535,
+          30701,
+          65535
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            12345,
+            0
+          ],
+          [
+            1,
+            0,
+            12347,
+            65535
+          ],
+          [
+            2,
+            0,
+            24694,
+            65535
+          ],
+          [
+            0,
+            1,
+            12345,
+            0
+          ],
+          [
+            1,
+            1,
+            18354,
+            65535
+          ],
+          [
+            2,
+            1,
+            30701,
+            65535
+          ]
+        ],
+        "mapType": "GRAYSCALE_HEIGHT",
+        "validationError": "Unsupported PNG color mode with 1 color components and 2 channels; GRAYSCALE_HEIGHT requires a grayscale PNG, got UNSUPPORTED",
+        "pngSha256": "f781bacee8cb96754fe9eac3325ba0c4c8fefe04d598bb1da65f1fd630cc2f44"
+      },
+      {
+        "name": "rgb-key-8",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          0,
+          44,
+          55,
+          66,
+          255
+        ],
+        "sampleBands": [
+          [
+            0,
+            0,
+            11,
+            22,
+            33,
+            0
+          ],
+          [
+            1,
+            0,
+            44,
+            55,
+            66,
+            255
+          ]
+        ],
+        "mapType": "ALPHA_MASK",
+        "contentHash": "5e84a147c55e0f85fa0ba7e0223e688b0878213ece7784a07145df2b36731cc7",
+        "sourceHash": "aa24fed64b30558f2ad71f87c1e26845b0a566b69357abe861eaa73e660c9737",
+        "normalized": [
+          "0000000000000000",
+          "3ff0000000000000"
+        ],
+        "pngSha256": "eb3d92b6c8707745ada57addd7e62a9186009f04f81a8f983f8ae51ec1c2b8b4"
+      }
+    ],
+    "rawBandSamplesCompared": 92,
+    "nativeInspectorPixelsCompared": 44,
+    "nativeCompilerRefusalsMatched": 7,
+    "nativeLegacyAlphaSamplesCompared": 2,
+    "javaWriterAndReader": true,
+    "packedAdam7RowPadding": true,
+    "indexedPaletteAlphaPreserved": true,
+    "grayAlphaAndTransparencyBandsPreserved": true,
+    "highDepthTruecolorBandsPreserved": true,
+    "actualWorkerDecodeInspectionRefusalRecovery": true,
+    "paletteAndDecodedBudgetGuards": true,
+    "packedGrayTransparencyExplicitlyRefuses": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "pngDecoderSha256": "97c7933aa3cd2297797999ec70a301c2a19659d55030bb60e0bf20a46e787b73",
+    "wasmSha256": "e769ecee1fa6eab4af401c56c82ca041b0666e4c869b6d04bf8594cfbc998c96",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false,
+    "sourceBundleAtExecution": "c113448e6e053b71eb1b03dbc5651c76a704ac582a319c4d94844777169b2fbf",
+    "deliverySourceSha256": "2fe169012be92bf5f5b1187177918013f0cc2c28adc95c8c7a8878bcab4525b2",
+    "sourceBundleRefreshedAfterCheck": true
+  },
+  "implemented": [
+    "Raw packed grayscale/indexed 1/2/4-bit and indexed 8-bit PNG loading with source-byte filtering, Adam7 row/padding reconstruction and bounded owned palettes.",
+    "Gray alpha and gray transparency keys at 8/16 bits and RGB/RGBA 16-bit band transport; alpha/hidden samples remain unpremultiplied.",
+    "Original JDK raster/color-model shape: indexed bands remain indices, packed grayscale reports INDEXED, gray alpha reports UNSUPPORTED through unchanged IrisImage.",
+    "Separate indexed image registration, palette ownership/snapshot accounting, original native sample-size access and up to eight inspector raw-pixel rows.",
+    "Unused newly loaded image resources no longer block the whole snapshot; actual image-map use preserves original compiler validation/refusals. Existing RGB8 transparency/alpha-map behavior remains connected.",
+    "Pinned JDK raster references and legal notices retained alongside corresponding sources; AWT/ImageIO do not execute in the worker."
+  ],
+  "limits": {
+    "inputPngBytes": 8388608,
+    "maximumPixels": 4194304,
+    "decodedBandAndPaletteBytes": 16777216,
+    "snapshotBytes": 67108864,
+    "maximumPaletteEntries": 256,
+    "inspectorPixels": 8
+  },
+  "limitations": [
+    "Eight tiny JDK-written/read PNGs, 92 raw bands, 44 inspector pixels, seven native compiler refusals and two legacy alpha-map samples. Only a 2-bit packed/indexed example is qualified in this batch; complete bit-depth/options coverage remains unqualified.",
+    "This expands loading/inspection, not native image-map eligibility. Indexed/packed grayscale, gray alpha and unsupported truecolor map depths are still rejected exactly by native compiler validation.",
+    "Packed grayscale transparency expansion, APNG, unsupported ICC/HDR/profile semantics and general grayscale/high-depth AWT preview-color conversion remain unavailable.",
+    "Actual Wasm plus controlled Node worker snapshot inspection/refusal/recovery; real browser DOM/GPU/color-preview behavior remains unqualified.",
+    "Existing 20-type fixture registry only; native checksum issue #15, exact dependency/server/release identity, production registry/schema and authorized assets remain outstanding."
+  ],
+  "nextMilestone": "Continue native resource/options and remaining host-service gaps in connected local batches; perform comprehensive application/browser verification after implementation.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Terrain generation/output sweeps",
+    "Registry state or placement-pair sweeps/exports",
+    "Broad application/native suites",
+    "GitHub test workflows"
+  ]
+}

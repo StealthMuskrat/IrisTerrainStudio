@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-21",
+  "scope": "local rendering pack roles, precedence, ordering, optional persistence and transactional recovery",
+  "fixture": {
+    "syntheticPacks": 4,
+    "texturePixels": 0,
+    "terrainCellsGenerated": 0
+  },
+  "checks": [
+    "session imports without storage; retry merges current session",
+    "baseline/default/custom precedence and overlay/replace modes",
+    "priority and enable/role settings survive storage-key reorder",
+    "restore configured defaults and forget while retaining session",
+    "commit/clone failure rolls back both blobs and settings",
+    "queued edits publish after commit; stale tab writer refuses",
+    "archive hash mismatch and invalid settings reported without deletion",
+    "legacy storage-order migration without fabricated roles",
+    "early archive and expanded-asset admission",
+    "actual UI remeshes retained volume and preserves successor dialogs"
+  ],
+  "workspaceSha256": {
+    "apps/web/lib/local-store.mjs": "2aedf03893c096bbd326835e9712fec5ca0059038aae27b9020bc11d28175753",
+    "apps/web/lib/texture-library.mjs": "bc95d99d8d42c06553c2cc774ada5cd85871bcdac6aa4be1bd9a95ad9b81f7b8",
+    "apps/web/main.mjs": "861321c18c2b6e5256c648b40467963a90ed4b709e056721065e37392a9e1f64",
+    "apps/web/styles.css": "1395e867f5f269f5cdbfd93441ba86a5f5a07c8aa9d4acb8254b677be013172b",
+    "packages/resource-packs/pack.mjs": "baee92fcd376c156928bdba913da79149ad79c213234f0542479725d2adc580a",
+    "tools/checks/texture-library-smoke.mjs": "643eb51e1a392d956923b8b2bb7950be7512e483db5ae081c039644f7397d181"
+  },
+  "realBrowserVerified": false,
+  "indexedDbDurabilityVerified": false,
+  "webGpuVerified": false,
+  "productionAssetsVerified": false,
+  "complete": false,
+  "limits": "Controlled Node transaction/DOM doubles and four synthetic JSON-only archives. No native build, texture decoding, terrain generation, registry/state sweep, broad suite or GitHub workflow."
+}

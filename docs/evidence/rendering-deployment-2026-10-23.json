@@ -1,0 +1,217 @@
+{
+  "date": "2026-10-23",
+  "scope": "Conservative textured cube merging and standalone deployment",
+  "result": "focused-checks-pass-completion-blocked",
+  "texturedGreedy": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "Conservative opaque unit-cube textured greedy meshing with repeated sprite rectangles",
+    "storedCells": [
+      24,
+      2
+    ],
+    "exposedFaces": 52,
+    "mergedQuads": 6,
+    "sourceTransportBytes": 20384,
+    "mergedTransportBytes": 2448,
+    "textureAndOwnerProbes": 12,
+    "actualMeshWorker": true,
+    "sourceSurfaceCoverage": true,
+    "rotatedAndMirroredUvs": true,
+    "clipCacheOwnership": true,
+    "materialBoundaries": true,
+    "unsupportedModelsRetainOriginalEmitter": true,
+    "controlledGpuUploadAndReuse": true,
+    "metadataRefusals": true,
+    "retainedBuffersUnchanged": true,
+    "sourceHashes": {
+      "packages/voxel-renderer/greedy-textured.mjs": "05e7a77cdf5e3e93d2c87c15433ef28faeb6b3c53830d459e8808ecb251a07e9",
+      "packages/voxel-renderer/models.mjs": "17bb799edd1301f69dc04e5777de49f441aa96b5467b553dafa86aedb3753aba",
+      "packages/voxel-renderer/mesh-worker.mjs": "e6d2704052fa00ce44124ff722fad5049a72f70e5010d18234cb3afcb111b8a5",
+      "packages/voxel-renderer/mesh-materials.mjs": "c9f358667080b64d635431cd2c760ef06a71b9e1342f4c8f36d3deade4b19abc",
+      "packages/voxel-renderer/mesh-session.mjs": "56e2f010584bc95b2fff299a5a6f28bd790296411b84aee3b5025f1a7a8a21d8",
+      "packages/voxel-renderer/picking.mjs": "974d04529f62e513f3ab521435b6045327bbdf37e2a37f75f1054d70290333ad",
+      "packages/voxel-renderer/world.mjs": "3640021ce3e7d91f6b00a132abb7a0b05c097a3dab380028390c360d51c379a1",
+      "packages/resource-packs/face-materials.mjs": "825c746349c4839a5046340e811952d28a2b250e1d65a6ac8e2c7573a80a07ff",
+      "apps/web/main.mjs": "e8450c781ecb115d97c10bf9807e5f97d3aab4a3c544fdc0509813711c84d8fd",
+      "tools/checks/textured-greedy-smoke.mjs": "d70427fb90624a1a77aafe3921fa144d33e50b15f0adec8312c08a686001f507"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "shaderCompiled": false,
+    "rasterEdgesQualified": false,
+    "performanceMeasured": false,
+    "projectFinished": false
+  },
+  "standaloneDeployment": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "Standalone distribution liveness, authentication, assets, native creation and persisted saves",
+    "standalonePackage": true,
+    "realLoopbackHttp": true,
+    "healthGetAndHead": true,
+    "apiAuthentication": true,
+    "originRefusal": true,
+    "installedModuleAndRegistry": true,
+    "wasmAndCorrespondingSourceServed": true,
+    "privateSchemaAuthentication": true,
+    "nativeStarterFiles": 6,
+    "restartPreservesExactSourceAndEtag": true,
+    "staleSaveRefusal": true,
+    "dockerConfigurationReviewed": true,
+    "dockerExecuted": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "sourceHashes": {
+      "apps/server/index.mjs": "f77e40404250204359458815805c4f1aedad22184e9238ddc1abeb87cc173061",
+      "docker/Dockerfile": "1f3fc42c0eea399ea25d242a9644f75c948affb807ee2477ea34979ebd3cc004",
+      "docker/compose.yaml": "97d00e6ecfdbeb153863157d9d5ec95ca4de3ec1c12ff02d014a70d4742a6104",
+      "docker/README.md": "8a756c5426b243642476f2a25ae02d65ad4880accb485c11f74600fa15815dbd",
+      ".dockerignore": "32dbc8f91b570320783aebc107d8cecd70f12f06096020d5669af1c50019c842",
+      "tools/checks/deployment-smoke.mjs": "cd42caab720ab0ee7d9999cc5e79515eb0cf071810fae5927df34df4e005f523"
+    },
+    "projectFinished": false
+  },
+  "smallRegressions": {
+    "diagnosticCells": {
+      "date": "2026-10-23",
+      "scope": "Greedy diagnostic identity cells, individual-face picking, clip/cache ownership and geometry summary",
+      "result": "pass",
+      "actualMeshWorker": true,
+      "fixtureCells": [
+        24,
+        24,
+        8
+      ],
+      "cases": [
+        "52 exposed faces become six quads with identical surface colors/materials/coverage and exact individual-cell selection",
+        "clip exposes cut faces; empty clip and return reuse keep cached buffers/stats and retained voxels intact",
+        "blocks color boundaries and an air hole preserve surface coverage",
+        "biomes color boundaries and an air hole preserve surface coverage",
+        "world-aligned sections retain their separate rectangles without internal faces",
+        "actual preview-details helper reports retained geometry reduction in a controlled host"
+      ],
+      "browserVerified": false,
+      "webGpuVerified": false,
+      "performanceMeasured": false,
+      "nativeTerrainChanged": false,
+      "fullTexturedGreedySupport": false,
+      "projectFinished": false,
+      "prism": {
+        "exposedFaces": 52,
+        "mergedQuads": 6,
+        "beforeBytes": 20384,
+        "afterBytes": 2352
+      },
+      "pickingRays": 8,
+      "sourceHashes": {
+        "packages/voxel-renderer/cell-view.mjs": "d458b1efc05ec2a3d864fe38b3bd194056bd8bf24ce583f1b2dae32a73e6b124",
+        "packages/voxel-renderer/cell-geometry.mjs": "7119b52659fa37fd798b7d4f8bdc283f74de77eddc4f24ac130b9839d9020e8a",
+        "packages/voxel-renderer/greedy-cells.mjs": "196c56af214b41eeb28d760631faa06d7244fd4d6271c5792485109553b1909d",
+        "packages/voxel-renderer/mesh-worker.mjs": "e6d2704052fa00ce44124ff722fad5049a72f70e5010d18234cb3afcb111b8a5",
+        "packages/voxel-renderer/picking.mjs": "974d04529f62e513f3ab521435b6045327bbdf37e2a37f75f1054d70290333ad",
+        "apps/web/main.mjs": "e8450c781ecb115d97c10bf9807e5f97d3aab4a3c544fdc0509813711c84d8fd",
+        "tools/checks/greedy-cells-smoke.mjs": "6bd5939058129d48e6f45b5a17ddd03048211163ea46c147f9773e6338e3e7e7"
+      }
+    },
+    "sectionCache": {
+      "result": "pass",
+      "fixture": {
+        "storedCells": 50,
+        "occupiedCells": 5,
+        "generatedTerrainCells": 0,
+        "sourcePixels": 1
+      },
+      "full": {
+        "faces": 26,
+        "reused": 0,
+        "rebuilt": 5,
+        "cells": 50,
+        "sourceFaces": 26,
+        "savedFaces": 0,
+        "entries": 5,
+        "bytes": 11472,
+        "byteLimit": 67108864
+      },
+      "cutaway": {
+        "faces": 16,
+        "reused": 2,
+        "rebuilt": 1,
+        "cells": 16,
+        "sourceFaces": 16,
+        "savedFaces": 0,
+        "entries": 6,
+        "bytes": 16040,
+        "byteLimit": 67108864
+      },
+      "returnToFull": {
+        "faces": 26,
+        "reused": 5,
+        "rebuilt": 0,
+        "cells": 0,
+        "sourceFaces": 26,
+        "savedFaces": 0,
+        "entries": 6,
+        "bytes": 16040,
+        "byteLimit": 67108864
+      },
+      "checks": [
+        "unchanged sections reused; boundary halo rebuilt and compared byte-for-byte with uncached geometry/picking",
+        "negative/unaligned origins, opaque/blended ranges and overhangs preserved",
+        "actual transferable output leaves worker cache reusable; snapshot sent only once",
+        "slices/empty views, bounded LRU eviction and oversized section bypass preserve output",
+        "cancelled jobs and invalid clips cannot commit; fatal worker errors recreate the snapshot",
+        "renderer reuses sessions across clips, skips equivalent bounds and preserves appearance camera",
+        "same committed input reuses validated volume; new atlas gets a fresh geometry cache",
+        "failed staged upload retains committed session/picker/atlas; clear disposes pending work"
+      ]
+    },
+    "regionColumns": {
+      "result": "pass",
+      "storedCells": 4,
+      "bothEmitters": true,
+      "scope": "Picking, colors, bounds, retained cache ownership and refusal"
+    }
+  },
+  "requiredEngineDevelopmentBuild": "pass",
+  "nativeEngineUnchanged": {
+    "wasmSha256": "47eed6a15503bb9819a81914e918aa380195a62dee31400c7b1f6c488ff11997",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "7ef26ed826a52db915bb414ff52467cf176ed03aa091e70b62d73374951fb2d3",
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac"
+  },
+  "executionLimitations": {
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "wgslCompiled": false,
+    "rasterEdgesQualified": false,
+    "dockerExecuted": false,
+    "performanceMeasured": false,
+    "localBrowser": "Previously verified local Chrome exits with SIGTRAP before navigation.",
+    "cloudBrowser": "Owned local server is unreachable from cloud browser loopback (ERR_CONNECTION_REFUSED).",
+    "managedPreview": "sites-previewd mailbox unavailable at /tmp/sites-previewd/requests; managed supervisor absent.",
+    "docker": "No docker executable in this workspace."
+  },
+  "remainingImplementation": [
+    "Complete supported terrain options, custom/state/object platform paths and in-scope lifecycle interactions.",
+    "Native Minecraft world lightmap/AO/environment and remaining client geometry/filter/parser behavior."
+  ],
+  "releaseBlockers": [
+    "Required authorized F8thful archive is absent.",
+    "Native all-style reference checksum mismatch remains unresolved (#15).",
+    "Exact release/dependency/schema/registry provenance remains unqualified.",
+    "Actual browser/GPU, Docker, performance and final comprehensive verification remain unexecuted."
+  ],
+  "didNotRun": {
+    "terrainGeneration": true,
+    "registryExport": true,
+    "blockStateSweep": true,
+    "broadSuite": true,
+    "githubWorkflow": true,
+    "worldChunkWrites": true
+  },
+  "terrainParityVerified": false,
+  "releaseQualified": false,
+  "projectFinished": false
+}

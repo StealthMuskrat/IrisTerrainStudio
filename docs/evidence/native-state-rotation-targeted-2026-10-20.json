@@ -1,0 +1,308 @@
+{
+  "scope": "native-modded-state-rotation-development-targeted",
+  "date": "2026-10-20",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "validation": {
+    "direct": {
+      "result": "pass",
+      "stateOperations": 9,
+      "matchingMaskChecks": 1,
+      "unavailableHandleRefusals": 1,
+      "results": [
+        {
+          "state": "minecraft:stone",
+          "x": 0,
+          "y": 90,
+          "z": 0,
+          "result": "minecraft:stone"
+        },
+        {
+          "state": "minecraft:oak_log[axis=y]",
+          "x": -45,
+          "y": 0,
+          "z": 0,
+          "result": "minecraft:oak_log[axis=z]"
+        },
+        {
+          "state": "minecraft:furnace[facing=north]",
+          "x": 0,
+          "y": 90,
+          "z": 0,
+          "match": true,
+          "result": "minecraft:furnace[facing=west,lit=false]"
+        },
+        {
+          "state": "minecraft:furnace[facing=north]",
+          "x": 90,
+          "y": 0,
+          "z": 0,
+          "result": "minecraft:furnace[facing=north,lit=false]"
+        },
+        {
+          "state": "minecraft:wall_torch[facing=north]",
+          "x": 90,
+          "y": 0,
+          "z": 0,
+          "result": null
+        },
+        {
+          "state": "minecraft:oak_sign[rotation=1]",
+          "x": 0,
+          "y": 90,
+          "z": 0,
+          "result": "minecraft:oak_sign[rotation=13,waterlogged=false]"
+        },
+        {
+          "state": "minecraft:vine[north=true,west=true,up=true]",
+          "x": 0,
+          "y": 90,
+          "z": 0,
+          "result": "minecraft:vine[east=false,north=false,south=true,up=true,west=true]"
+        },
+        {
+          "state": "minecraft:cobblestone_wall[north=low,east=tall,south=none,west=none,up=false]",
+          "x": 0,
+          "y": 90,
+          "z": 0,
+          "result": "minecraft:cobblestone_wall[east=none,north=tall,south=none,up=false,waterlogged=false,west=low]"
+        },
+        {
+          "state": "minecraft:redstone_wire[north=side,east=up,south=none,west=none,power=0]",
+          "x": 0,
+          "y": -90,
+          "z": 0,
+          "result": "minecraft:redstone_wire[east=none,north=up,power=0,south=none,west=side]"
+        }
+      ],
+      "wasmSha256": "0deb6072fa0bf6a12481e4b1f027fbe317446934bb6a07122a1ccf0d9c1c0d17",
+      "sourceSha256": "59d3e34811ccd3837610e89a70cc6c6b15f761c1c3b55b45a7f71e3e7a1e1b9f",
+      "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+      "scope": "native-state-rotation-development-targeted",
+      "fullStateCoverageVerified": false,
+      "geometryVerified": false,
+      "browserVerified": false
+    },
+    "placement": {
+      "result": "pass",
+      "baseFixtures": 1,
+      "cases": 1,
+      "seeds": 1,
+      "chunksPerCase": 1,
+      "probesCompared": 5,
+      "workerGenerations": 1,
+      "results": [
+        {
+          "case": "accepted",
+          "placedY": 35,
+          "journaledCells": 95,
+          "scope": "native-procedural-placement-development",
+          "x": 0,
+          "z": 0,
+          "minY": 0,
+          "height": 64,
+          "selected": 2,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              8,
+              34,
+              8,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              7,
+              36,
+              6,
+              "minecraft:oak_leaves[distance=3,persistent=false,waterlogged=false]"
+            ]
+          ],
+          "resources": [
+            {
+              "path": "dimensions/terrain3d.json",
+              "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+            },
+            {
+              "path": "regions/ledges.json",
+              "sha256": "0d8f773e35c3c97ce2a37893351afc87b276e8ad1d37ff850a5a81360b5779c1"
+            },
+            {
+              "path": "biomes/ledges.json",
+              "sha256": "fae60570de1a56b6b20d21ad1d0a6404c3ad3868355b91dbd2ad87c652023ea1"
+            },
+            {
+              "path": "generators/flat.json",
+              "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+            }
+          ]
+        }
+      ],
+      "wasmSha256": "0deb6072fa0bf6a12481e4b1f027fbe317446934bb6a07122a1ccf0d9c1c0d17",
+      "sourceSha256": "59d3e34811ccd3837610e89a70cc6c6b15f761c1c3b55b45a7f71e3e7a1e1b9f",
+      "scope": "native-procedural-placement-development",
+      "fixedYawDegrees": 90,
+      "automaticScatterVerified": false,
+      "crossSourceCollisionReplayVerified": false,
+      "fullGeometryParityVerified": false,
+      "browserVerified": false
+    }
+  },
+  "artifact": {
+    "wasmSha256": "0deb6072fa0bf6a12481e4b1f027fbe317446934bb6a07122a1ccf0d9c1c0d17",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "0ed3cf45ce309e97438d9e6537e26e712a5dada7bdbd64f8d181f7bc3878d429",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "rotationInputs": {
+    "scope": "pinned-native-rotation-inputs",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "jarSha256": "9084e01709cdc1e767451ff5af56338411ccf7209315a0fe43bb1094077a31a0",
+    "nativeSources": [
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateRotator.java",
+        "sha256": "98ccf4ccec61f30d812996b9ac65dc8620745333a6a1bba089da9630300dfb3a"
+      },
+      {
+        "path": ".upstream/Iris/adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedStateRotator.java",
+        "sha256": "1c4555ed3e8817b7603c1952be362fd27079320d5eeb23b2f7e74405459d5a7d"
+      }
+    ],
+    "minecraftClasses": {
+      "net/minecraft/world/level/block/state/properties/RotationSegment.class": "5ede57cefcb87f28ccdc2154f2d88ca69c3713d384e31c874d4b379f63a87025",
+      "net/minecraft/util/SegmentedAnglePrecision.class": "03fded4de6a259fafbab1446ae160b1a7d92bae48ecea6ac706ae19c3c7b0e7c"
+    },
+    "metadataSha256": "304145cd7ffc7272fcc33db550fdc6a13869f82450e4da3c0a7bc2cc2d2521ef",
+    "generatedSources": [
+      {
+        "path": "RotationBindings.java",
+        "sha256": "836380eb99357fcd2c470b28e14b2cd202d1a2aae93e118dd7f5a74dca7d208f"
+      },
+      {
+        "path": "RotationTokens.java",
+        "sha256": "e80a13d7a75e7055d89458865eb68047447ee55c1bd2d0fef5bca3899dbd65a9"
+      }
+    ]
+  },
+  "nativeMetadata": {
+    "blockTypes": 1286,
+    "sharedPropertyLayouts": 117,
+    "blockStatesEnumerated": false,
+    "placementPairsEnumerated": false
+  },
+  "sourceBundleRefresh": {
+    "sourceSha256AtExecution": "59d3e34811ccd3837610e89a70cc6c6b15f761c1c3b55b45a7f71e3e7a1e1b9f",
+    "finalSourceSha256": "0ed3cf45ce309e97438d9e6537e26e712a5dada7bdbd64f8d181f7bc3878d429",
+    "wasmUnchanged": true,
+    "reason": "Source archive refreshed after adding cold-build registry prerequisite handling and documentation; tested runtime and installed client unchanged."
+  },
+  "sourceIdentity": {
+    "engineBuildFilesMatched": 13,
+    "generatedBindingsMatched": 2,
+    "nativeMathClassesMatched": 2
+  },
+  "registry": {
+    "manifestSha256": "579b7e6e4eb36cf3c3c64219358ae241ceaec76489343d6291d72ff6980ac05e",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "registryParityVerified": false
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "548b155f4e924924b6fab4148c1a15291108d60a9f453ba268f111d8cf877f90"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "85a58af8f8b0a52d2eb6811b72b799c5f3cc62d19ba3ca98e1eb7d0218905b71"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "2ef6df86aefeeef23c921d059259720f055aae9eb50c412cfb64b4e6c9aec4c5"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/BrowserBlockState.java",
+      "sha256": "52cf276aaa596d560212fa46f1c1caf8571d31407c149957b1061320196f55c3"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/BrowserRegistries.java",
+      "sha256": "1a884f2e3de0f4ab3d14eddaf830ef76b3e439f7a15875d71715f0af48bd9d2d"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerObjectStateHooks.java",
+      "sha256": "96a9a91ef14f448f88137bea9d026bc44931ebe12e3e2a20bdfd9896a514e90f"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "ac6dfa51c23468320b695935a1b1a2c755e8aa109698b22abfa568f06268630c"
+    },
+    {
+      "path": "tools/engine-build/bundle-source.py",
+      "sha256": "e1652619a0944e964ad70ceb4612aa67f2882878e33acc44998e2aa1f0fadd1f"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/RotationFailures.java",
+      "sha256": "63b4d18ea144db07f3d0575f039d12570e933d36384a0b47250aecb9d9b1ee83"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/RotationPredicates.java",
+      "sha256": "7585b7a6695cf36485d8bc4e80b66a78eab9aa269a63375f6bd6ab1a5eb3254d"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/RotationProperty.java",
+      "sha256": "27983c86dce3695f8ced1de4dc852dd3ebc03e5870a2a76d1e54219823263733"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/RotationState.java",
+      "sha256": "ea064509f179013e485c17f20c8930d9bd154a2d9bcfd6c7781de3ac53412612"
+    },
+    {
+      "path": "tools/checks/NativeRotationCheck.java",
+      "sha256": "00009a9f6a410ceb57a712d43d6d5e28fc4bacb6b41f3be2f1ae8fdd0eb71385"
+    },
+    {
+      "path": "tools/checks/native-rotated-placement-smoke.mjs",
+      "sha256": "7639e487c8101c045c94444cc3bcf5aa3817bd846b1ebb1cd9c0350ca3f17138"
+    },
+    {
+      "path": "tools/checks/native-rotation-smoke.mjs",
+      "sha256": "f6c1fb0eac5519a147c4cd6b402bc7ae4bee21a63c76eb9fb8f313af304737c0"
+    },
+    {
+      "path": "tools/engine-build/GenerateRotationBindings.java",
+      "sha256": "0d0c40566d481eaa7eabe4cd86a2d8be2d89519dfc0cf10a5bd0ca2a6f070f98"
+    },
+    {
+      "path": "tools/engine-build/rotation.mjs",
+      "sha256": "7adb0b2a4f6e80e10a8b2214a36b5e7e81e6c3390ff05b560ed4111d2da6b811"
+    }
+  ],
+  "fullStateCoverageVerified": false,
+  "fullGeometryParityVerified": false,
+  "browserVerified": false,
+  "limitations": [
+    "Pinned modded-platform development path only; complete target-platform and state/angle/options coverage remains unqualified",
+    "Nine selected state operations, one rotated matching-mask check, one inconsistent-domain refusal and one fixed-yaw tree with five material probes; no exhaustive state or geometry comparison",
+    "Native ordinary content-error reporting retained; unavailable platform failures are rethrown through original engine-failure classification",
+    "Opaque property value classes are not synthesized; unsupported handle/value operations refuse",
+    "Edit-state merging, tile entities, custom contributions, native structure obstacles, continuation persistence and cache integration remain pending",
+    "Native math bytecode and generated property bindings are hash-recorded; dependency/release provenance and full corresponding-input qualification remain open",
+    "Cold missing-registry prerequisite fallback was not exercised in this provisioned workspace",
+    "Full browser/GPU/assets, rollback failure injection, mode sequencing, native checksum and release qualification remain pending",
+    "No full suite, exhaustive state/registry sweep or GitHub workflow run"
+  ]
+}

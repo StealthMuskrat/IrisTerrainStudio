@@ -1,0 +1,349 @@
+{
+  "date": "2026-10-22",
+  "scope": "completion-audit-native-installation-integrity-and-packaging-development",
+  "projectComplete": false,
+  "nativeReferenceQualified": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "gitHubWorkflowsInvoked": 0,
+  "nativeBuild": {
+    "sourceCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "profile": "terrain-no-eco-items",
+    "excludedSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "classpathEntries": 100,
+    "jars": 94,
+    "inputCaptureSha256": "2443bdb6f6f8da616ed206825f353bcab4822c429cb0fc9f65024084c9e71297",
+    "java": "Temurin 25.0.4.1+1-LTS",
+    "gradle": "9.5.1",
+    "maven": "3.10.0",
+    "testTasksExecuted": false
+  },
+  "browserModule": {
+    "exports": 76,
+    "wasmSha256": "0f73322e287291c7731296a1970e6ac44b686d54239d519e1a5a2c1e17bde73c",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "8d7fc529737b34804af1447c39d7ede83c07b3ec3ac190ebfa8eb6ab15870e57",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab",
+    "platformSourceServerJarSha256": "2488c374c69e4828d2088fbc258c3fde0851e57f02f3a1cebbe5c191b1a21a9b",
+    "compiler": "TeaVM 0.16.0 Wasm GC"
+  },
+  "registry": {
+    "blocks": 1286,
+    "states": 35723,
+    "sourceServerJarSha256": "2488c374c69e4828d2088fbc258c3fde0851e57f02f3a1cebbe5c191b1a21a9b",
+    "files": {
+      "blocks.json": {
+        "sha256": "f0dc818bc1dc0547feccbb0c7707bcdcb2cba699f09859aa3286068e3a236d54",
+        "sourceReportSha256": "7a0de8aaf7b04d00c40b8ffdc4cfe75184cff2e821d336a020573201867105a4",
+        "bytes": 3753935
+      },
+      "registries.json": {
+        "sha256": "9bf25314dd593ee4e48a79c88af57dc749b8320d43653512de87a52ca748e947",
+        "sourceReportSha256": "6516af3f795065942317b87fc7ee005bfa5a65bfe560eb5053edc9b414ad3711",
+        "bytes": 357890
+      },
+      "native-predicates.json": {
+        "sha256": "9250ff7a38feca07e2b353302c757568ddbb6e217894d5469176672bd5370cf9",
+        "bytes": 721400
+      },
+      "native-registries.json": {
+        "sha256": "5a12036e829a9cd38feee4828688f2ecee1cae007f6df92cb21ff23d8022044e",
+        "bytes": 220741
+      },
+      "browser-registry.json": {
+        "sha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+        "bytes": 7090104
+      }
+    },
+    "placementCapture": {
+      "method": "pinned-native-input-equivalence-v1",
+      "sourceSha256": "64d583bb5256c374d5931b1b481f7d8dfc453da04ae0943d74a57f7ac8284cc3",
+      "groups": 34,
+      "nativeEvaluations": 1156,
+      "expandedPairs": 1653796
+    },
+    "exportedOnceForInstallation": true,
+    "fullStateOrPairComparisonExecuted": false
+  },
+  "checks": {
+    "runtimePackaging": {
+      "scope": "runtime-installation-and-packaging-targeted",
+      "result": "pass",
+      "fixture": "Eight-byte empty Wasm header and controlled metadata/runtime doubles; no Iris algorithm execution",
+      "checks": [
+        "Absent, checksum-mismatched, symlinked and platform-incompatible installations refuse",
+        "Field-specific module and registry admission; hydrology remains unavailable",
+        "Concurrent status reads share bounded cached inspection",
+        "Packaging drops stale files, includes runtime-only start script, preserves the previous build on failure and rejects overlapping builds",
+        "Unqualified releases refuse before replacing a development build",
+        "Authentication survives denied session storage",
+        "Laboratory worker executes exactly the checked Wasm/runtime bytes and refuses corrupt runtime before execution"
+      ],
+      "browserVerified": false,
+      "webGpuVerified": false,
+      "terrainParityVerified": false
+    },
+    "nativePlacementGroups": {
+      "scope": "native-placement-grouping-targeted",
+      "result": "pass",
+      "sourceSha256": "64d583bb5256c374d5931b1b481f7d8dfc453da04ae0943d74a57f7ac8284cc3",
+      "blockTypes": 1286,
+      "groups": 34,
+      "nativeEvaluations": 1156,
+      "expandedPairs": 1653796,
+      "allowedPairs": 1611301,
+      "changedSourceRefused": true,
+      "selectedProbes": [
+        {
+          "material": "sugar_cane",
+          "onto": "sand",
+          "allowed": true
+        },
+        {
+          "material": "sugar_cane",
+          "onto": "stone",
+          "allowed": false
+        },
+        {
+          "material": "cactus",
+          "onto": "red_sand",
+          "allowed": true
+        },
+        {
+          "material": "cactus",
+          "onto": "grass_block",
+          "allowed": false
+        },
+        {
+          "material": "crimson_fungus",
+          "onto": "crimson_nylium",
+          "allowed": true
+        },
+        {
+          "material": "warped_roots",
+          "onto": "soul_soil",
+          "allowed": true
+        },
+        {
+          "material": "poppy",
+          "onto": "grass_block",
+          "allowed": true
+        },
+        {
+          "material": "poppy",
+          "onto": "stone",
+          "allowed": false
+        },
+        {
+          "material": "stone",
+          "onto": "air",
+          "allowed": false
+        },
+        {
+          "material": "stone",
+          "onto": "cave_air",
+          "allowed": false
+        },
+        {
+          "material": "dead_bush",
+          "onto": "grass_block",
+          "allowed": false
+        },
+        {
+          "material": "dead_bush",
+          "onto": "dirt",
+          "allowed": true
+        },
+        {
+          "material": "torch",
+          "onto": "dirt_path",
+          "allowed": false
+        },
+        {
+          "material": "stone",
+          "onto": "dirt_path",
+          "allowed": true
+        },
+        {
+          "material": "poppy",
+          "onto": "oak_leaves",
+          "allowed": false
+        },
+        {
+          "material": "granite",
+          "onto": "birch_leaves",
+          "allowed": true
+        },
+        {
+          "material": "diamond_block",
+          "onto": "glass",
+          "allowed": true
+        },
+        {
+          "material": "grass_block",
+          "onto": "stone",
+          "allowed": true
+        },
+        {
+          "material": "red_mushroom",
+          "onto": "sand",
+          "allowed": true
+        },
+        {
+          "material": "warped_fungus",
+          "onto": "warped_nylium",
+          "allowed": true
+        }
+      ],
+      "exhaustiveComparison": false
+    },
+    "exportLinkage": {
+      "scope": "focused-node-wasm-export-linkage",
+      "styles": 186,
+      "mismatches": []
+    },
+    "restoredTerrain": {
+      "scope": "restored-native-engine-installation-targeted",
+      "result": "pass",
+      "fixtures": 1,
+      "seeds": 1,
+      "scalarPoints": 2,
+      "blockProbes": 3,
+      "expected": [
+        [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            127,
+            8,
+            "minecraft:air"
+          ],
+          [
+            15,
+            255,
+            15,
+            "minecraft:air"
+          ]
+        ],
+        [
+          {
+            "height": "4062400000000000",
+            "biome": "ledges"
+          },
+          {
+            "height": "405f400000000000",
+            "biome": "ledges"
+          }
+        ]
+      ],
+      "blocks": 1286,
+      "states": 35723,
+      "wasmSha256": "0f73322e287291c7731296a1970e6ac44b686d54239d519e1a5a2c1e17bde73c",
+      "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+      "resources": [
+        {
+          "path": "dimensions/terrain3d.json",
+          "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+        },
+        {
+          "path": "regions/ledges.json",
+          "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+        },
+        {
+          "path": "biomes/ledges.json",
+          "sha256": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90"
+        },
+        {
+          "path": "generators/flat.json",
+          "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+        }
+      ],
+      "browserVerified": false,
+      "webGpuVerified": false,
+      "terrainParityVerified": false
+    },
+    "standaloneDistribution": {
+      "scope": "standalone-development-distribution-http",
+      "result": "pass",
+      "engineAvailable": true,
+      "registryAvailable": true,
+      "completeTerrainAvailable": false,
+      "rootServed": true,
+      "generationClientServed": true,
+      "webGpuVerified": false,
+      "browserVerified": false
+    },
+    "nativePreflight": {
+      "javaReady": true,
+      "javaSource": "pinned local toolchain",
+      "releaseReady": false
+    }
+  },
+  "browserExecution": {
+    "result": "blocked-before-navigation",
+    "attempts": [
+      {
+        "version": "151.0.7922.34",
+        "archiveSha256": "3cfc2bd00d1bafcf8a68dc74c9c92bb7150ddc8d26ade948a776316e1cec4f14",
+        "exitCode": 133,
+        "signal": "SIGTRAP"
+      },
+      {
+        "version": "155.0.8059.84",
+        "archiveSha256": "a5d71b91aa996fef00517cd212b2dfb816b43055edefbe727e6fd562d4ae1f9c",
+        "exitCode": 133,
+        "signal": "SIGTRAP"
+      }
+    ],
+    "browserPageTestsExecuted": false,
+    "gpuTestsExecuted": false
+  },
+  "commands": [
+    "npm run engine:setup",
+    "npm run engine:build -- --browser-terrain-inputs --native-inputs-only",
+    "npm run engine:build -- --browser-terrain-inputs --reuse-native-inputs",
+    "node tools/checks/engine-link.mjs",
+    "node tools/checks/native-placement-groups.mjs",
+    "npm run engine:registry -- --reuse-native-inputs",
+    "node tools/checks/restored-engine-smoke.mjs",
+    "node tools/checks/runtime-packaging-smoke.mjs",
+    "npm run build -- --require-engine",
+    "node tools/reference-tests/preflight.mjs"
+  ],
+  "remaining": [
+    "Resolve unchanged upstream noise checksum mismatch and qualify dependency/reference provenance",
+    "Implement required remaining hydrology, upper/stacked dimensions, custom/tile and full lifecycle paths",
+    "Complete Minecraft UV-lock, weighted model, fluid, tint and interpolated animation adapters",
+    "Supply matching authorized F8thful/vanilla rendering assets",
+    "Perform full browser/native, persistence, rendering, security, deployment and performance qualification after implementation"
+  ],
+  "workspaceSha256": {
+    "apps/server/runtime-status.mjs": "4a51ecf54c7e2499ff9f261730e6fa56337ec27a4c430f0fadd909f98d0cb950",
+    "apps/server/index.mjs": "80eb7d210880420a95b6137ed6ceb4ab794009cb15bdf77bcf30d01621fa70a5",
+    "apps/web/main.mjs": "bb6ae51f3186c51997be43b87e69d3d20c1a96b1cdc9c8e4c2f9d28bb2b59f60",
+    "apps/web/lib/api.mjs": "b5ae5ded25277c6bd1c83307970ed87d159efde92878f67c5c128a4f8de7ad65",
+    "apps/web/workers/noise-worker.js": "dcf024534d1ff5684ed173791cb9c8e54224ca565db3fc80673019a89401d9c1",
+    "packages/iris-engine/client.mjs": "b8632e70cec3e408925263c24588167adafb656de6957035e88976a26b4c97a2",
+    "tools/build-app.mjs": "750cbd02d398b1916a544455e3daa7ba49384d39c1a1d982e809bdc17734efff",
+    "tools/reference-tests/preflight.mjs": "78bdcf0f172b62b08218ae48aec8015dc00eced9fa57ac65b8a9d044648ec677",
+    "tools/engine-build/NativePlacementGroups.java": "9bcc95565dcbfbb4b18196e148d56f3c67d06e1688b4aa0540d50133150ba117",
+    "tools/engine-build/NativeStateExport.java": "f564cd622196623af94fce329287149654507ca4f37043c7a526a551b6c0fbec",
+    "tools/engine-build/registry.mjs": "56ed604953b30159b2388379056f456acdeb4ff0ae20aa0b2e9a47ed4069e1aa",
+    "tools/engine-build/registry-normalize.py": "6a1e212df75d50a3a964ffd0652609bea95a242bcf9abd7e145f0757b6447f4b",
+    "tools/checks/runtime-packaging-smoke.mjs": "c9d5b5fb7d7149bd8277e28d8b897d36a94f31431df33eabc5a1b711531d70bd",
+    "tools/checks/native-placement-groups.mjs": "bcbf223ce9c4b985af0e4ba878e09ddc7e30d0f8e887dcf6fce8792fff1ce6c8",
+    "tools/checks/NativePlacementGroupCheck.java": "35a911181228d0e20d62b2b3fbb2c890cc1d8ce3120ccefb11c77917d7ad3e05",
+    "tools/checks/restored-engine-smoke.mjs": "a1893559ef0a9da9bc2ba9457ff531ef3c414f249a6c2a44644c9cb33ce36d12",
+    "tools/checks/session-registry-fixture.mjs": "17e8cbc331d32ae3a5554dd0e50277bddda0d7bc5d820a08a3726f285cdad893"
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "date": "2026-10-23",
+  "scope": "single-original-native-noise-checksum",
+  "irisCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+  "volmLibCandidate": "210705c5ab1321dc74b86b48457fd6d5e0452944",
+  "buildProfile": "terrain-no-eco-items",
+  "fixtureSha256": "23d6b42737ea66ffbef73306629d8e4b5a2aae95d037f010e1c2fd54a5173fd5",
+  "runnerSha256": "3e5076599440ae1be98e44abfedb006696afee487b72b3d09949a3495dfcb482",
+  "classHashes": {
+    "art/arcane/iris/generation/noise/NoiseStyle.class": "d881cb605f0d5555cf7d96fbda3a5cde336a1b0808dcc8b35d54e92729784707",
+    "art/arcane/volmlib/util/noise/CNG.class": "a591a6965d69103f73bd1d0e95821ea4a5ed2cabd3eb6a59f4e2ed8494cb25d4",
+    "art/arcane/volmlib/util/math/RNG.class": "a514ef99dd495e5619ecc250ae11aa7aec4a9a9afcf67464f2416078c2faa196"
+  },
+  "jars": [
+    {
+      "name": "lombok-1.18.46.jar",
+      "bytes": 2045364,
+      "sha256": "01f7b1a015e33e2b62d5f5f37053306357ab1415fd181fcba7794f5d198c1126"
+    },
+    {
+      "name": "paper-api-26.1.2.build.74-stable.jar",
+      "bytes": 2841287,
+      "sha256": "66d38ebfcc4fde9241d925f5cf78b68cf39d93ecb9c99c263961ba7485a3c3bf"
+    },
+    {
+      "name": "log4j-core-2.26.1.jar",
+      "bytes": 2015459,
+      "sha256": "2ec8c3bf5a6d7c89be8620116a2fc973f7dda1ad0261ad393c4d4726edfd3dcb"
+    },
+    {
+      "name": "log4j-api-2.26.1.jar",
+      "bytes": 351428,
+      "sha256": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822"
+    },
+    {
+      "name": "guava-33.6.0-jre.jar",
+      "bytes": 3064793,
+      "sha256": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3"
+    },
+    {
+      "name": "nexo-1.25.0.jar",
+      "bytes": 2445461,
+      "sha256": "21a45702160a84f4b046928d084ecef27235d06487eb5fd4abacb0a69dc9abed"
+    },
+    {
+      "name": "oraxen-1.218.0.jar",
+      "bytes": 2695292,
+      "sha256": "c87601da12725e434dff30495d4ba70d721fb7eb65333877b3c334b059851536"
+    },
+    {
+      "name": "itemsadder-api-4.0.17.jar",
+      "bytes": 55965,
+      "sha256": "38decfbfc093f0c05596d9468cf8540dd7ec7750923c4a2e393366027b356fdf"
+    },
+    {
+      "name": "SCore-5.25.3.9.jar",
+      "bytes": 3373289,
+      "sha256": "15e2ef9ecd78534dd463f66f2957c65c470630900868ab66930c2a8aba626a08"
+    },
+    {
+      "name": "MMOItems-API-6.10.1-SNAPSHOT.jar",
+      "bytes": 1436867,
+      "sha256": "e6153223a325850afce0ccd86748540b822e77e9850512ab40e27d9dc49e6d30"
+    },
+    {
+      "name": "MythicLib-dist-1.7.1-SNAPSHOT.jar",
+      "bytes": 2648076,
+      "sha256": "225aa7f75d4e6e6ae6b3ad87a7ca678c025c027f00374ab1062275d24f3a73c9"
+    },
+    {
+      "name": "Mythic-Dist-5.12.1.jar",
+      "bytes": 20242096,
+      "sha256": "3781927033898c75b0c4e21a8eee1756ca822d80160430c3da9de760c9137cd1"
+    },
+    {
+      "name": "MythicCrucible-Dist-2.2.0.jar",
+      "bytes": 14113376,
+      "sha256": "9d54340905df5df02fa83ee3bc30c4f5b18bcda352dec866b2ac960744c90690"
+    },
+    {
+      "name": "kgenerators-core-7.3.jar",
+      "bytes": 1701146,
+      "sha256": "ea7055146f20bc10f5db5d727e55dd7812bdd3fb43d14402aebf62930fdb7c24"
+    },
+    {
+      "name": "multiverse-core-5.8.0.jar",
+      "bytes": 4624388,
+      "sha256": "c527d9e21a25a71cb2442ac1f1bfd3a8a1efb7d89e0cb0e6a94f600304fde6c1"
+    },
+    {
+      "name": "craft-engine-core-26.8.2.jar",
+      "bytes": 5776359,
+      "sha256": "2e0318554644ebbac3d42d8388c00e6fa71810171b9523c087bfa9eb87b833db"
+    },
+    {
+      "name": "craft-engine-bukkit-26.8.2.jar",
+      "bytes": 2155776,
+      "sha256": "ac8e8b58c62ace9df59d3c52cb3678eb12e0831a6e7679a4756a981a78241246"
+    },
+    {
+      "name": "spigot-2.1.9.jar",
+      "bytes": 6936,
+      "sha256": "e10c3da03271a69c754b7d5fa1568a1af22495033ad52b1a5b0bb235dab9343d"
+    },
+    {
+      "name": "toml4j-0.7.2.jar",
+      "bytes": 62621,
+      "sha256": "f5475e63e7e89e5db62223489aec7a56bd303543772077a17c2cb54c19ca3a20"
+    },
+    {
+      "name": "bungeecord-chat-1.21-R0.2-deprecated+build.21.jar",
+      "bytes": 168064,
+      "sha256": "ce930b3ee048520a0ab538eb8d1627b301367fc1b300837235387aded6d89ba1"
+    },
+    {
+      "name": "creative-serializer-minecraft-1.14.1.jar",
+      "bytes": 147665,
+      "sha256": "b74d3a6ece93bd68efb832de9a7a5790843d6aa177531179ec698bab3833d20c"
+    },
+    {
+      "name": "creative-server-1.14.1.jar",
+      "bytes": 23024,
+      "sha256": "0714a79689d1fe31f539c8e41a1ed2f7aeb6de97928ad76ff311eb86cd00284e"
+    },
+    {
+      "name": "creative-api-1.14.1.jar",
+      "bytes": 368583,
+      "sha256": "ed0cc14cb011467c247b51a76cc7840d6814804e61061829ed42457f5dfe4846"
+    },
+    {
+      "name": "adventure-text-minimessage-4.26.1.jar",
+      "bytes": 193786,
+      "sha256": "1d43451e9af473252dc8af3e8084238d5ce68ad43af0e3b7383eb3d4b63fff9f"
+    },
+    {
+      "name": "adventure-text-serializer-legacy-4.26.1.jar",
+      "bytes": 29940,
+      "sha256": "721107bc213572454df1bfbe438dba630e30457550c750b7a154b35dc3264aa8"
+    },
+    {
+      "name": "adventure-text-serializer-plain-4.26.1.jar",
+      "bytes": 13032,
+      "sha256": "39b9bfe5790f645605ff5464382c0e062476f48f9bfb2548801f275f12faf405"
+    },
+    {
+      "name": "adventure-text-logger-slf4j-4.26.1.jar",
+      "bytes": 19939,
+      "sha256": "009a99518d9b4f0ec54665f209724813bf98a2c1ff020aeabcf34a3699fd1dfa"
+    },
+    {
+      "name": "adventure-text-serializer-json-4.26.1.jar",
+      "bytes": 17034,
+      "sha256": "55c64b4333d5d2968a0125b8f29dae7cfba15392d5f99f78dbaea711cb0d4dc2"
+    },
+    {
+      "name": "adventure-api-4.26.1.jar",
+      "bytes": 454911,
+      "sha256": "551e536b9ea868f30e72c7900a309b35124ee7d4889fa3b3aed0910299751a26"
+    },
+    {
+      "name": "adventure-key-4.26.1.jar",
+      "bytes": 11368,
+      "sha256": "eec172d63db77b40eb7abeeb25f65eedea89bd30264d057b68b12fecb731be5e"
+    },
+    {
+      "name": "adventure-text-serializer-gson-4.26.1.jar",
+      "bytes": 66479,
+      "sha256": "e4a908dedc4acb4305083d916d362ddc2b21ecf452d577a0be665280bddae9fc"
+    },
+    {
+      "name": "gson-2.14.0.jar",
+      "bytes": 313604,
+      "sha256": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f"
+    },
+    {
+      "name": "concurrentlinkedhashmap-lru-1.4.2.jar",
+      "bytes": 116565,
+      "sha256": "56a95fb5b54c661a7efde073b8792f63a8c317e389102673d8d976c7c8f36945"
+    },
+    {
+      "name": "caffeine-3.2.4.jar",
+      "bytes": 1029147,
+      "sha256": "9d9d2cfd681fd9272ded3d27c9930db12f89f732345975aa113ebc223bbf1224"
+    },
+    {
+      "name": "paralithic-0.8.1.jar",
+      "bytes": 88965,
+      "sha256": "ed4224311e2e16af68ddede5bf7312f27f0517f454d1fed3c1977bf5e74bd13b"
+    },
+    {
+      "name": "paperlib-1.0.8.jar",
+      "bytes": 26948,
+      "sha256": "63916eda827d2f24da8705a21c5584c28c38adb9b111b537bf4ffc0a2bc6a443"
+    },
+    {
+      "name": "bstats-bukkit-3.2.1.jar",
+      "bytes": 4318,
+      "sha256": "9506152619165f4aa7df9768d755f3c2c9ff8e95a3ccc5ded34cb49b87b50dd4"
+    },
+    {
+      "name": "commons-io-2.22.0.jar",
+      "bytes": 609182,
+      "sha256": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758"
+    },
+    {
+      "name": "maven-resolver-provider-3.9.6.jar",
+      "bytes": 74416,
+      "sha256": "73b00b244b7b9e285654a45e765892bf5d369da77d42b5b4b5429122ed198a33"
+    },
+    {
+      "name": "maven-model-builder-3.9.6.jar",
+      "bytes": 198399,
+      "sha256": "5f96dafbc411ee4b1e8426368d0d31d05ab5a4dace69808143142a0017598721"
+    },
+    {
+      "name": "maven-artifact-3.9.6.jar",
+      "bytes": 58708,
+      "sha256": "ad7a0fb408f8e47585ccc0d0011e0b501d93bfc9888d369bbd4a043d19475073"
+    },
+    {
+      "name": "commons-lang3-3.20.0.jar",
+      "bytes": 713862,
+      "sha256": "69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4"
+    },
+    {
+      "name": "oshi-core-6.9.0.jar",
+      "bytes": 1022125,
+      "sha256": "b29ba9bce041e6ea822203d5b5a692660c87551241510ebc76eedffe684844c7"
+    },
+    {
+      "name": "lz4-java-1.8.1.jar",
+      "bytes": 683071,
+      "sha256": "1de8ff91b90fba9d4896b8617ed3594c2e4390d321d5a92c34f80e62e406c1b0"
+    },
+    {
+      "name": "jlibdeflate-0.2.0.jar",
+      "bytes": 297939,
+      "sha256": "db5ba08f964c265ddb8f17dec1a8dcb206132a4b68afe2a60206b7adaa9b2b80"
+    },
+    {
+      "name": "fastutil-8.5.18.jar",
+      "bytes": 23965563,
+      "sha256": "9094ae67d01d0ad246f886f11ad557fc2e79c72cbf3feed83e1512a8ae90a74a"
+    },
+    {
+      "name": "zt-zip-1.18.2.jar",
+      "bytes": 114406,
+      "sha256": "6330946d07c42b39aefad49f8318dee096a7fb5d0d57227e8feb59167bb17cff"
+    },
+    {
+      "name": "asm-9.10.1.jar",
+      "bytes": 126151,
+      "sha256": "ed825d10ab1399c8c0cb669e688cf0c8c82629b4c8399b58352b68e92ca10fcb"
+    },
+    {
+      "name": "byte-buddy-1.18.11.jar",
+      "bytes": 4656510,
+      "sha256": "e32f454c2c1f4aca982f9ec764ed892d9a6eee7e8a77f435cbdd180f6ffdb821"
+    },
+    {
+      "name": "byte-buddy-agent-1.18.11.jar",
+      "bytes": 267557,
+      "sha256": "780b3601c34150ab9fb822673c472f7229c1041e8e2a12facf6a5de9ba7a2d64"
+    },
+    {
+      "name": "dom4j-2.2.0.jar",
+      "bytes": 331953,
+      "sha256": "3fae79e081096e1410645eb3557c63b79ca266d510ab479889511109becd1690"
+    },
+    {
+      "name": "jaxen-2.0.6.jar",
+      "bytes": 225431,
+      "sha256": "3e2a755b283fd492fa4be204294c7abb7cd63ac94fb366baab9c7bb9afb00b6d"
+    },
+    {
+      "name": "snakeyaml-2.2.jar",
+      "bytes": 334352,
+      "sha256": "1467931448a0817696ae2805b7b8b20bfb082652bf9c4efaed528930dc49389b"
+    },
+    {
+      "name": "joml-1.10.8.jar",
+      "bytes": 778846,
+      "sha256": "bf19510145178df82cd3bd37edd514c13f411531ec5545299fd3abcbc98fe7c2"
+    },
+    {
+      "name": "maven-resolver-impl-1.9.18.jar",
+      "bytes": 317884,
+      "sha256": "6bb9c90d007098004749c867da2eaf5785fc1139907718749c1097bdb2929bf8"
+    },
+    {
+      "name": "maven-resolver-named-locks-1.9.18.jar",
+      "bytes": 37917,
+      "sha256": "098de7bbc5b0b26c3eff74ac30ffba6680fdab9bf4aebab95c3f5e2fe9eaeea8"
+    },
+    {
+      "name": "slf4j-api-2.0.17.jar",
+      "bytes": 69908,
+      "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+    },
+    {
+      "name": "brigadier-1.3.10.jar",
+      "bytes": 80082,
+      "sha256": "c8ee4136e474ac7723ca2b432ec8d1a2bc88ef7d1ec57c314ba9e33cdc83dd75"
+    },
+    {
+      "name": "option-1.1.0.jar",
+      "bytes": 32200,
+      "sha256": "97b69b4b17dfe02217c9131ad342564cbc9aebd04c75eb689639b5f78fd4b11c"
+    },
+    {
+      "name": "jspecify-1.0.0.jar",
+      "bytes": 3819,
+      "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+    },
+    {
+      "name": "checker-qual-3.49.2.jar",
+      "bytes": 238217,
+      "sha256": "33b1d8b2c4b00f7d4f4b4931424274f3f729474ce3a87cea09a879976a1dcaeb"
+    },
+    {
+      "name": "biz.aQute.bnd.annotation-7.1.0.jar",
+      "bytes": 102646,
+      "sha256": "f69c2de3a695c113d125ac8053c92a680a3ce9d02ea25845095cf2d4626a7663"
+    },
+    {
+      "name": "error_prone_annotations-2.49.0.jar",
+      "bytes": 20255,
+      "sha256": "3b1003e51b8ae56fdbd7c71073e81d1683b97e6c4dff5a9151164d59b769d13c"
+    },
+    {
+      "name": "org.osgi.annotation.bundle-2.0.0.jar",
+      "bytes": 29130,
+      "sha256": "b9c9546ec5be3ebc2e85ba4919150ad76d64594805282fc895133a47d264a7ae"
+    },
+    {
+      "name": "org.osgi.annotation.versioning-1.1.2.jar",
+      "bytes": 15077,
+      "sha256": "f51f235e80df8ffbc30ef1b557b6ea38a696632d675404ec117e952978b8b863"
+    },
+    {
+      "name": "failureaccess-1.0.3.jar",
+      "bytes": 10763,
+      "sha256": "cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb"
+    },
+    {
+      "name": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+      "bytes": 2199,
+      "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99"
+    },
+    {
+      "name": "j2objc-annotations-3.1.jar",
+      "bytes": 16762,
+      "sha256": "84d3a150518485f8140ea99b8a985656749629f6433c92b80c75b36aba3b099b"
+    },
+    {
+      "name": "protectionlib-1.0.8.jar",
+      "bytes": 44418,
+      "sha256": "4335e1c8d23e97738f41b7992254b3673f8f4543dc567b68a878f4650562cd73"
+    },
+    {
+      "name": "kotlin-stdlib-2.0.21.jar",
+      "bytes": 1747660,
+      "sha256": "f31cc53f105a7e48c093683bbd5437561d1233920513774b470805641bedbc09"
+    },
+    {
+      "name": "runtime-2.1.9.jar",
+      "bytes": 172721,
+      "sha256": "225982d1c3eea914ff0360dabc3282eb4f5cc5a0528d6c11a108559a13ac810a"
+    },
+    {
+      "name": "examination-string-1.3.0.jar",
+      "bytes": 13135,
+      "sha256": "7d01fc25a4bb3af0e1662685455f4541fbf4626216ea5846e455c1491e156b8c"
+    },
+    {
+      "name": "examination-api-1.3.0.jar",
+      "bytes": 23446,
+      "sha256": "c9237ffecb05428f6eff86216246ac70ce0b47b04c08ea7ca35020fde57f8492"
+    },
+    {
+      "name": "annotations-26.0.2-1.jar",
+      "bytes": 31170,
+      "sha256": "2037be378980d3ba9333e97955f3b2cde392aa124d04ca73ce2eee6657199297"
+    },
+    {
+      "name": "bstats-base-3.2.1.jar",
+      "bytes": 22388,
+      "sha256": "ea9af6291004e1e7b1ae820105c48803f513ffdd0229edfd5f2402ea7e8ff9a0"
+    },
+    {
+      "name": "jna-platform-5.17.0.jar",
+      "bytes": 1378617,
+      "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0"
+    },
+    {
+      "name": "jna-5.17.0.jar",
+      "bytes": 2002589,
+      "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0"
+    },
+    {
+      "name": "maven-model-3.9.6.jar",
+      "bytes": 217563,
+      "sha256": "4f8f07fdb6b8701fa89a23a2edf830808fd65892d90cce40c0e6df7c8f2fcb62"
+    },
+    {
+      "name": "maven-repository-metadata-3.9.6.jar",
+      "bytes": 28440,
+      "sha256": "e047a67b204c434994253e2ab5bdff5fe8cb7ada9316ac3e754c39f900ea847b"
+    },
+    {
+      "name": "maven-resolver-spi-1.9.18.jar",
+      "bytes": 51715,
+      "sha256": "d364fce9a17b0e0b073c26efa92af95b29c00c42943dced4a1168a7923fd3fe1"
+    },
+    {
+      "name": "maven-resolver-util-1.9.18.jar",
+      "bytes": 196023,
+      "sha256": "2eb0ea667bc489384478231dda7516407d4b5b22a138077229871de9362a7ae2"
+    },
+    {
+      "name": "maven-resolver-api-1.9.18.jar",
+      "bytes": 157111,
+      "sha256": "ebfb9e1dfeea3c2017905184581e007874b4eaac9d28bfffcfe5133d70ac6339"
+    },
+    {
+      "name": "plexus-utils-3.5.1.jar",
+      "bytes": 269335,
+      "sha256": "86e0255d4c879c61b4833ed7f13124e8bb679df47debb127326e7db7dd49a07b"
+    },
+    {
+      "name": "javax.inject-1.jar",
+      "bytes": 2497,
+      "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff"
+    },
+    {
+      "name": "org.osgi.resource-1.0.0.jar",
+      "bytes": 33028,
+      "sha256": "81fc50f1f1d38a4af28e131907d4afe213249aab05060484edca0e60c4af9b4a"
+    },
+    {
+      "name": "org.osgi.service.serviceloader-1.0.0.jar",
+      "bytes": 12109,
+      "sha256": "8f876ce2a9aa4e95b1f1952950255103e2487425050a654f3285447ba601c154"
+    },
+    {
+      "name": "plexus-interpolation-1.26.jar",
+      "bytes": 85348,
+      "sha256": "b3b5412ce17889103ea564bcdfcf9fb3dfa540344ffeac6b538a73c9d7182662"
+    },
+    {
+      "name": "maven-builder-support-3.9.6.jar",
+      "bytes": 14347,
+      "sha256": "e1f4d2784459ce8a34b9dae1829a1999b569e483e21ee9faa7368691e729296e"
+    },
+    {
+      "name": "org.eclipse.sisu.inject-0.9.0.M2.jar",
+      "bytes": 424617,
+      "sha256": "9b62bcfc352a2ec87da8b01e37c952a54d358bbb1af3f212648aeafe7ab2dbb5"
+    },
+    {
+      "name": "auto-service-annotations-1.1.1.jar",
+      "bytes": 3172,
+      "sha256": "16a76dd00a2650568447f5d6e3a9e2c809d9a42367d56b45215cfb89731f4d24"
+    },
+    {
+      "name": "iris-spi-4.3.5.jar",
+      "bytes": 34898,
+      "sha256": "3818e88b574a14ca73d569f70835c74c28c2c79ecf935988da8a95636582c607"
+    },
+    {
+      "name": "native-api-local-SNAPSHOT.jar",
+      "bytes": 194315,
+      "sha256": "ae9811600d80c54e3e6550d0996b56679c4eba55fa6a52e3333575a2085ece61"
+    },
+    {
+      "name": "native-terrain-api-local-SNAPSHOT.jar",
+      "bytes": 47761,
+      "sha256": "e3ee453f1f467d28178cd593cdca99213c7267d21a763776171d5fc1bae30470"
+    },
+    {
+      "name": "shared-local-SNAPSHOT.jar",
+      "bytes": 2167857,
+      "sha256": "15207d64bcc11b727b20c3ba2757ea40595454bd3ea360aba86d11e067fd310b"
+    },
+    {
+      "name": "junit-4.13.2.jar",
+      "bytes": 384581,
+      "sha256": "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3"
+    },
+    {
+      "name": "hamcrest-core-1.3.jar",
+      "bytes": 45024,
+      "sha256": "66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9"
+    }
+  ],
+  "result": {
+    "successful": false,
+    "runCount": 1,
+    "failureCount": 1,
+    "failures": [
+      {
+        "test": "allStylesRetainPinnedSamples(art.arcane.iris.generation.noise.NoiseSeedCohesionTest)",
+        "exception": "java.lang.AssertionError",
+        "message": "All noise style samples expected:<5059606393854142913> but was:<3659164368724912644>"
+      }
+    ]
+  },
+  "expectedAssertionUnchanged": true,
+  "registryExport": false,
+  "statePairChecks": 0,
+  "browserVerified": false,
+  "releaseReferenceQualified": false,
+  "scopeLimit": "Exactly one original native JUnit method, freshly compiled from the unmodified pinned source and using verified captured artifact inputs. Explicit native Billow disabled/no-EcoItems development profile. No full native suite, per-sample capture, historical profiles, registry/state export, browser, GPU or GitHub workflow.",
+  "validationCommand": "node tools/checks/native-noise-checksum.mjs",
+  "expectedCommandExitCode": 1
+}

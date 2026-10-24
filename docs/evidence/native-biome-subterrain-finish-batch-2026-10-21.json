@@ -1,0 +1,354 @@
+{
+  "scope": "native-physical-biome-subterrain-finish-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "9f4349a9ca659326fb2b44b69bf8d9f3165557cbb9a4ee8cd7c57170156b1694",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "6f65e4e4e8951a35dbee1ebc0adfb72670af6b70739529ce743a136e9e24bfee",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisBiomeActuator.java",
+      "sha256": "11fcb621193433eac2d78fd83b5ddd043c8cfaace40bd5f8679cf2f8f4868dd8"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/biome/IrisBiomeDerivatives.java",
+      "sha256": "89b026f18e56e7d9570a5727bd5813cc32d397b25b9c2037bcfeaf1458ace8ea"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisCarveModifier.java",
+      "sha256": "c7c73fb7b22a3e6ea660184008f17e5449af8354f72df58f569f4aa6905fbbfe"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeOverworld.java",
+      "sha256": "47a586944056125ec16618d2e0dcda2a23ebef576933c395ea7230b0fc316abb"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainBiomeStage.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java",
+    "packages/iris-engine/client.mjs",
+    "tools/engine-build/build.mjs"
+  ],
+  "focusedCheck": {
+    "result": "pass",
+    "scope": "native-biome-subterrain-final-development-targeted",
+    "fixtures": 3,
+    "seeds": 1,
+    "biomeProbesCompared": 24,
+    "materialProbesCompared": 9,
+    "results": [
+      {
+        "sky": false,
+        "probes": [
+          [
+            -16,
+            -32,
+            -15,
+            "minecraft:badlands"
+          ],
+          [
+            -16,
+            31,
+            -15,
+            "minecraft:badlands"
+          ],
+          [
+            -15,
+            -32,
+            -12,
+            "minecraft:badlands"
+          ],
+          [
+            -15,
+            31,
+            -12,
+            "minecraft:badlands"
+          ],
+          [
+            -13,
+            -32,
+            -10,
+            "minecraft:badlands"
+          ],
+          [
+            -13,
+            31,
+            -10,
+            "minecraft:badlands"
+          ],
+          [
+            -9,
+            -32,
+            -8,
+            "minecraft:badlands"
+          ],
+          [
+            -9,
+            31,
+            -8,
+            "minecraft:badlands"
+          ],
+          [
+            -5,
+            -32,
+            -4,
+            "minecraft:badlands"
+          ],
+          [
+            -5,
+            31,
+            -4,
+            "minecraft:badlands"
+          ],
+          [
+            -1,
+            -32,
+            -1,
+            "minecraft:badlands"
+          ],
+          [
+            -1,
+            31,
+            -1,
+            "minecraft:badlands"
+          ]
+        ],
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "23c8ee99a4115eb9adf250285b4f5bcc46ed5b0d6e8809c8db9868af05ccb739"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "782af9402c0f81fe06d9849eadeb55635ad75ae58370f887ce3ff77d4c4c48b5"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "sky": true,
+        "probes": [
+          [
+            -16,
+            -32,
+            -15,
+            "minecraft:forest"
+          ],
+          [
+            -16,
+            31,
+            -15,
+            "minecraft:forest"
+          ],
+          [
+            -15,
+            -32,
+            -12,
+            "minecraft:forest"
+          ],
+          [
+            -15,
+            31,
+            -12,
+            "minecraft:forest"
+          ],
+          [
+            -13,
+            -32,
+            -10,
+            "minecraft:forest"
+          ],
+          [
+            -13,
+            31,
+            -10,
+            "minecraft:forest"
+          ],
+          [
+            -9,
+            -32,
+            -8,
+            "minecraft:forest"
+          ],
+          [
+            -9,
+            31,
+            -8,
+            "minecraft:forest"
+          ],
+          [
+            -5,
+            -32,
+            -4,
+            "minecraft:forest"
+          ],
+          [
+            -5,
+            31,
+            -4,
+            "minecraft:forest"
+          ],
+          [
+            -1,
+            -32,
+            -1,
+            "minecraft:forest"
+          ],
+          [
+            -1,
+            31,
+            -1,
+            "minecraft:forest"
+          ]
+        ],
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "23c8ee99a4115eb9adf250285b4f5bcc46ed5b0d6e8809c8db9868af05ccb739"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "252c8a4689975302ddee60cd15ef1fc0f9409b90e21ee9a004aa2727ae56599f"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "finalProbes": [
+      [
+        1,
+        20,
+        13,
+        "minecraft:stone"
+      ],
+      [
+        1,
+        21,
+        13,
+        "minecraft:stone"
+      ],
+      [
+        1,
+        22,
+        13,
+        "minecraft:lava[level=0]"
+      ],
+      [
+        1,
+        25,
+        13,
+        "minecraft:lava[level=0]"
+      ],
+      [
+        1,
+        26,
+        13,
+        "minecraft:cave_air"
+      ],
+      [
+        1,
+        36,
+        13,
+        "minecraft:cave_air"
+      ],
+      [
+        1,
+        37,
+        13,
+        "minecraft:stone"
+      ],
+      [
+        1,
+        38,
+        13,
+        "minecraft:stone"
+      ],
+      [
+        0,
+        0,
+        0,
+        "minecraft:bedrock"
+      ]
+    ],
+    "subterrain": {
+      "nativePlanner": true,
+      "enabled": true,
+      "preservationApplied": true,
+      "samplingWorkCharged": 616448,
+      "workLimit": 16777216
+    },
+    "workerClientWithActualWasm": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "cacheReuse": true,
+    "worldYRefusalAndRecovery": true,
+    "controlledStageCancellation": true,
+    "wasmSha256": "9f4349a9ca659326fb2b44b69bf8d9f3165557cbb9a4ee8cd7c57170156b1694",
+    "sourceSha256": "6f65e4e4e8951a35dbee1ebc0adfb72670af6b70739529ce743a136e9e24bfee",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "checkCommands": [
+    "node tools/checks/native-biome-finish-smoke.mjs"
+  ],
+  "implemented": [
+    "Original IrisBiomeActuator over a bounded 16-by-native-height-by-16 hunk, native physical biome keys, one world-Y slice serialized; no replacement biome-selection algorithm or fallback key.",
+    "Original IrisCarveModifier.preserveSubterrain after the existing material-finishing prefix, under the existing cumulative rasterizer sampling admission.",
+    "Dimension snapshot capture, field selection, categorical map and voxel preview routing, world-Y bounds, cache reuse and immediate cancellation for the two synchronous stage previews."
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "Physical biome evidence covers 24 selected cells in two tiny authored ground/sky-scatter cases, one seed, two world-Y slices including negative minimum Y. Sampled categories are checked against Java; this does not cover every scatter outcome or option.",
+    "The actuator fills a bounded native chunk hunk; transport returns only the requested 256-cell slice. No biome volumes are attached to material chunks yet.",
+    "The final subterrain fixture is one small lava tube with nine selected cells. Full terrain/content/decorator/custom-block interactions and every preservation branch remain unqualified.",
+    "The preservation preview follows the existing material-finishing prefix with content/custom stages explicitly pending. Existing procedural previews retain their previous prefix; this is not completed native mode/Mantle/REAL ordering.",
+    "The actual Wasm module and worker/client code run under Node with the existing separate 20-type registry fixture. Worker hosting and the held-dispatch cancellation check use a controlled VM/Worker shim, not a browser. The fixture is not a production registry installation.",
+    "Custom biome registry contributions, dimension stacks, saved-world transitions, hydrology, assets, browser/GPU/GC/performance and dependency/release qualification remain outstanding."
+  ],
+  "nextMilestone": "Connect remaining native custom/platform services, complete biome volumes and native mode/Mantle finalization; retain explicit unsupported boundaries until implemented.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}

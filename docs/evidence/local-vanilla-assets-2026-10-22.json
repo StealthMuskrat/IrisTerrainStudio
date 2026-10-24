@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-22",
+  "scope": "local-verified-vanilla-asset-preparation",
+  "result": "pass",
+  "input": {
+    "minecraftVersion": "26.3",
+    "versionMetadataUrl": "https://piston-meta.mojang.com/v1/packages/61fff1316bd50312624a858bbb5eb18fa45208ed/26.3.json",
+    "versionMetadataSha1": "61fff1316bd50312624a858bbb5eb18fa45208ed",
+    "clientUrl": "https://piston-data.mojang.com/v1/objects/e877b6a07acd633fb3bb475002175cec036e7b87/client.jar",
+    "clientBytes": 41483720,
+    "clientSha1": "e877b6a07acd633fb3bb475002175cec036e7b87",
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "resourceFormat": [
+      97,
+      1
+    ],
+    "qualification": "Official download identity and embedded version checked. This does not qualify client rendering, the native server registry or Iris release parity. Assets are local inputs, not repository deliverables."
+  },
+  "preparation": {
+    "minecraftVersion": "26.3",
+    "resourceFormat": [
+      97,
+      1
+    ],
+    "assetFiles": 11604,
+    "assetBytes": 6195583,
+    "archiveBytes": 8296696,
+    "archiveSha256": "4af418c4e5728947df1aaa90e2f346a7c729c275bbea3a06fb1cdd41f453e832",
+    "clientRenderingVerified": false
+  },
+  "checks": {
+    "result": "pass",
+    "minecraftVersion": "26.3",
+    "types": 3,
+    "dependencyFiles": 26,
+    "identityMismatchPreservesExistingOutput": true,
+    "weightedSelectionStillRefused": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingVerified": false
+  },
+  "commands": [
+    "npm run assets:vanilla -- --client <authorized-local-26.3-client.jar>",
+    "node tools/checks/vanilla-assets-smoke.mjs"
+  ],
+  "limitations": [
+    "Original assets stay in gitignored local storage and are not redistributed.",
+    "The pack metadata is an explicit local baseline wrapper; no custom pack conversion/overlay/filter implementation is claimed.",
+    "Three selected dependency roots are inspected; no block-state or generated-volume sweep, texture decode, real browser or WebGPU run.",
+    "Weighted model selection still refuses without exact client selection. UV-lock, fluids, biome tint and interpolation client adapters are unfinished.",
+    "The supplied F8thful archive is absent; no public substitute was silently installed."
+  ],
+  "terrainParityVerified": false,
+  "clientRenderingVerified": false,
+  "releaseMatchVerified": false
+}

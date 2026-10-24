@@ -1,0 +1,251 @@
+{
+  "scope": "native-material-biomes-and-volume-slices-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "37b00ac33f49e012376684cf3f0a7e976542d42e71eb900871199eace9adc324",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "0134258e7c23e6d7aad65040792f35196a7528880540d15de3c3c7d049b609fb",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisBiomeActuator.java",
+      "sha256": "11fcb621193433eac2d78fd83b5ddd043c8cfaace40bd5f8679cf2f8f4868dd8"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisFloatingChildBiomeModifier.java",
+      "sha256": "fda2c45f55f44c278379db9c41481f105992a31d49bd7ab7c88c82717934d016"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/context/ChunkContext.java",
+      "sha256": "87b52cd1c66f5132625c3c186d06e5a5a2e86cd7675d26b0952c2f73f7443ab6"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeOverworld.java",
+      "sha256": "47a586944056125ec16618d2e0dcda2a23ebef576933c395ea7230b0fc316abb"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/terrain/TerrainBiomeStage.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCaveMaterials.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainPaintStage.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendSources": [
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "316442ae9b5fdf4dcdd8bd0906cda33cc71aff3db659909f04e9749cddea8193"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "63165cdf2c32dc144852dae4d80eb4fb3b9274325b11e8f4bbe8d8565fa90b66"
+    },
+    {
+      "path": "packages/voxel-renderer/biome-slice.mjs",
+      "sha256": "add1a95948d994dada5dac58a2a592b88c2bef7284a26c9ce68b93a10b96a695"
+    }
+  ],
+  "focusedCheck": {
+    "result": "pass",
+    "scope": "native-material-biome-output-development-targeted",
+    "fixtures": 1,
+    "seeds": 1,
+    "materialProbesCompared": 8,
+    "biomeProbesCompared": 8,
+    "results": [
+      {
+        "field": "carving-stage",
+        "materialProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            80,
+            8,
+            "minecraft:air"
+          ],
+          [
+            15,
+            95,
+            15,
+            "minecraft:air"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            80,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            15,
+            95,
+            15,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      {
+        "field": "floating-stage",
+        "materialProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            80,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            15,
+            95,
+            15,
+            "minecraft:air"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            80,
+            8,
+            "minecraft:forest"
+          ],
+          [
+            15,
+            95,
+            15,
+            "minecraft:plains"
+          ]
+        ]
+      }
+    ],
+    "sourceEmptyContentAndInitialPaintBiomeProbes": 2,
+    "mapSliceLookups": 18,
+    "slicesDoNotGenerate": true,
+    "sliceBoundsRefuse": true,
+    "actualWasmWorkerClient": true,
+    "biomeBufferTransfers": 2,
+    "cacheReuse": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "aac7fb50886880702d6abe5b83443599eb4328271cdec4ac5bfed62520120e4d"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "fd09829f6d4e77b91c8df2f3c536aaa328f443df2f44787d9949069e025bd6db"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      },
+      {
+        "path": "biomes/island.json",
+        "sha256": "66456053af5c484ca06ddcd4a6122a0a33299e9d96fdd5c089d64116e34fba84"
+      }
+    ],
+    "wasmSha256": "37b00ac33f49e012376684cf3f0a7e976542d42e71eb900871199eace9adc324",
+    "sourceSha256": "0134258e7c23e6d7aad65040792f35196a7528880540d15de3c3c7d049b609fb",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "checkCommands": [
+    "node tools/checks/native-material-biomes-smoke.mjs"
+  ],
+  "implemented": [
+    "Original IrisBiomeActuator now initializes/binds native terrain-biome output on the actual ChunkContext before material painting/carving and subsequent floating/content/material stages. Original floating child-biome setNaturalBiome writes now reach the retained hunk.",
+    "Initial paint, dimension cave, component/later material and procedural placement/source/neighborhood serializers carry original physical biome keys. Shared worker validation/transfers reuse existing client buffer accounting and voxel inspection.",
+    "A generated-volume biome slice helper copies one already-validated Y slice; editor Biome slice action and Slice Y changes reuse stored output without native generation. Invalid slices refuse; category inspection reads the displayed data."
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "One controlled fixture/seed with parent plains and floating forest: eight native material and eight native biome probes across pre-floating and floating stages. Two additional source/initial-paint biome probes and 18 derived-slice lookups pass. This is not full geometry, stage/option or collision qualification.",
+    "Native initialization uses the original biome actuator; later physical biome changes are only those written by the connected original stages. No cave/subterrain/other physical biome mapping is invented. Custom registry, history/transition and stacked/upper dimension services remain unavailable.",
+    "Shared worker transport accepts absent optional biome output from older partial-stage artifacts and reports physicalBiomeVolume=false. Mode-stage output still requires biome coverage. No fallback palette or biome is synthesized.",
+    "The map helper operates on an already-validated VoxelVolume and copies only one slice. UI wiring was implemented and syntax checked; real DOM/WebGPU interaction, responsive layout, GPU transfer and accessibility qualification remain deferred.",
+    "The actual module and worker/client execute under Node with the existing separate 20-type registry fixture and a controlled VM/Worker shim. This is not a production registry installation or real browser verification.",
+    "Only the selected pre-floating/floating and empty-source/initial-paint paths are sampled. Dimension cave, manual placement, populated neighborhoods, all material finishes and interactions remain unqualified in this batch.",
+    "Complete native Overworld mode/Mantle/REAL ordering, custom/platform services, hydrology, durable persistence, biome tints/assets and dependency/release qualification remain unfinished."
+  ],
+  "nextMilestone": "Continue native Overworld custom/platform services and full mode/Mantle lifecycle; extend remaining terrain/resource paths without fabricating physical biome or release support.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}

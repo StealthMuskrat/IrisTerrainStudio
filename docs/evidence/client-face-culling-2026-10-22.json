@@ -1,0 +1,246 @@
+{
+  "scope": "minecraft-client-face-culling-targeted",
+  "result": "pass",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "cullingInputSha256": "e7d408aba03a870cbe2e27866d90686a21597fc77c166eff80502231b3cc913e",
+  "referenceKey": "fba6aa47978b8396ac1da77afba3524ea1c30eaf1e7864b7dc8383621bb84ce7",
+  "decisions": [
+    {
+      "block": {
+        "id": "minecraft:glass"
+      },
+      "neighbor": {
+        "id": "minecraft:glass"
+      },
+      "direction": "north",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:glass"
+      },
+      "neighbor": {
+        "id": "minecraft:tinted_glass"
+      },
+      "direction": "north",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "neighbor": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "direction": "east",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "neighbor": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "top"
+        }
+      },
+      "direction": "east",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:stone"
+      },
+      "neighbor": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "direction": "north",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "neighbor": {
+        "id": "minecraft:stone"
+      },
+      "direction": "north",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:short_grass"
+      },
+      "neighbor": {
+        "id": "minecraft:oak_slab",
+        "properties": {
+          "type": "bottom"
+        }
+      },
+      "direction": "north",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:mangrove_roots"
+      },
+      "neighbor": {
+        "id": "minecraft:mangrove_roots"
+      },
+      "direction": "up",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:mangrove_roots"
+      },
+      "neighbor": {
+        "id": "minecraft:mangrove_roots"
+      },
+      "direction": "north",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:glass_pane",
+        "properties": {
+          "east": "true"
+        }
+      },
+      "neighbor": {
+        "id": "minecraft:glass_pane",
+        "properties": {
+          "west": "true"
+        }
+      },
+      "direction": "east",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:glass_pane",
+        "properties": {
+          "east": "false"
+        }
+      },
+      "neighbor": {
+        "id": "minecraft:glass_pane",
+        "properties": {
+          "west": "true"
+        }
+      },
+      "direction": "east",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:glass_pane"
+      },
+      "neighbor": {
+        "id": "minecraft:glass_pane"
+      },
+      "direction": "up",
+      "render": false
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_leaves"
+      },
+      "neighbor": {
+        "id": "minecraft:jungle_leaves"
+      },
+      "direction": "north",
+      "render": true
+    },
+    {
+      "block": {
+        "id": "minecraft:oak_leaves"
+      },
+      "neighbor": {
+        "id": "minecraft:jungle_leaves"
+      },
+      "direction": "north",
+      "cutoutLeaves": false,
+      "render": false
+    }
+  ],
+  "metadata": {
+    "classifiedTypes": 1286,
+    "methodOwners": {
+      "net.minecraft.world.level.block.HalfTransparentBlock": 31,
+      "net.minecraft.world.level.block.IronBarsBlock": 26,
+      "net.minecraft.world.level.block.LeavesBlock": 14,
+      "net.minecraft.world.level.block.LiquidBlock": 2,
+      "net.minecraft.world.level.block.MangroveRootsBlock": 1,
+      "net.minecraft.world.level.block.PowderSnowBlock": 1,
+      "net.minecraft.world.level.block.state.BlockBehaviour": 1211
+    },
+    "statePairsEvaluatedDuringCapture": 0
+  },
+  "actualMeshWorker": {
+    "cells": 2,
+    "fullFaces": 2,
+    "clippedFaces": 2,
+    "originalOwnersRetained": true
+  },
+  "shapeUnion": {
+    "splitCoverage": true,
+    "holePreserved": true
+  },
+  "cacheLimit": 256,
+  "cutoutLeaves": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "recordedAt": "2026-10-22",
+  "commands": [
+    "node tools/engine-build/client-culling-inputs.mjs",
+    "node tools/checks/client-face-culling-smoke.mjs",
+    "node tools/checks/client-fluid-tint-smoke.mjs --reuse-reference",
+    "node --check (six changed JavaScript modules)",
+    "git diff --check",
+    "node tools/build-app.mjs --require-engine"
+  ],
+  "nativeWasmSha256": "09673f10fa8c639952dcc885a4c328a11f86b8ece4b3b07261d36cf37aa2442a",
+  "workspaceSha256": {
+    "packages/resource-packs/face-culling.mjs": "79bcad4e970d0453d161c5b0e43369b543550270c7add8aa4c239ef530f76bd8",
+    "packages/resource-packs/face-shapes.mjs": "6903c701279ce5f159694b77bafc51fa37fefcc05b6a934a5eba84ec113dd30e",
+    "packages/resource-packs/client-culling-data.json": "e7d408aba03a870cbe2e27866d90686a21597fc77c166eff80502231b3cc913e",
+    "packages/voxel-renderer/mesh-worker.mjs": "12960824869ec4c76476b13cbdba376e9b1022df83558db7c12825b65f260729",
+    "packages/voxel-renderer/fluids.mjs": "e4f5a4bf0a46e5bbfe5b80c4f8e508baeb47ac2ee38200696ec7814ecfec83d5",
+    "tools/checks/MinecraftCullingCapture.java": "68efcdc6970fec4d529a600fa691edc109b94dd1ef7019aae43cdf80cc50450d",
+    "tools/checks/MinecraftFaceCheck.java": "e0fa312ec37b314383395e28612f73e4a093827d3538de128289cdddd700cbb0",
+    "tools/checks/client-face-culling-smoke.mjs": "76b6c59a9fb97545fa4803c49207c258c5950bd3d8dd9bef8c94875453074d72",
+    "tools/checks/fixtures/client-face-culling.json": "f16b6b7cdebe07e3f8b19aec7c088ba30067cf9180f5e51a648de17bcbbfb997",
+    "tools/engine-build/client-culling-inputs.mjs": "aef97984ffd9d6479c6906e3f1f35d6217b8309830f63d3e855ee4f8145689ed"
+  },
+  "limits": [
+    "Fourteen selected decisions are not an exhaustive state/tag/shape comparison.",
+    "Preview uses cutout leaves; the checked fast-leaves function is not an exposed graphics setting.",
+    "Actual browser/GPU/UI and complete lighting/material/biome/release qualification remain open."
+  ],
+  "developmentBuild": {
+    "command": "node tools/build-app.mjs --require-engine",
+    "result": "pass",
+    "nativeWasmUnchanged": true,
+    "qualifiedRelease": false
+  }
+}

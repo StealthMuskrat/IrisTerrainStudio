@@ -1,0 +1,175 @@
+{
+  "date": "2026-10-23",
+  "scope": "Diagnostic greedy face emission, exact stored-cell selection, bounded spatial picking and retained geometry summary",
+  "result": "pass",
+  "greedyCells": {
+    "date": "2026-10-23",
+    "scope": "Greedy diagnostic identity cells, individual-face picking, clip/cache ownership and geometry summary",
+    "result": "pass",
+    "actualMeshWorker": true,
+    "fixtureCells": [
+      24,
+      24,
+      8
+    ],
+    "cases": [
+      "52 exposed faces become six quads with identical surface colors/materials/coverage and exact individual-cell selection",
+      "clip exposes cut faces; empty clip and return reuse keep cached buffers/stats and retained voxels intact",
+      "blocks color boundaries and an air hole preserve surface coverage",
+      "biomes color boundaries and an air hole preserve surface coverage",
+      "world-aligned sections retain their separate rectangles without internal faces",
+      "actual preview-details helper reports retained geometry reduction in a controlled host"
+    ],
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "performanceMeasured": false,
+    "nativeTerrainChanged": false,
+    "fullTexturedGreedySupport": false,
+    "projectFinished": false,
+    "prism": {
+      "exposedFaces": 52,
+      "mergedQuads": 6,
+      "beforeBytes": 20384,
+      "afterBytes": 2352
+    },
+    "pickingRays": 8,
+    "sourceHashes": {
+      "packages/voxel-renderer/cell-view.mjs": "d869928f2e2b58cbda05bf3d6ff82c2d688687584e1aa12daa50aa22b6efefc9",
+      "packages/voxel-renderer/cell-geometry.mjs": "7119b52659fa37fd798b7d4f8bdc283f74de77eddc4f24ac130b9839d9020e8a",
+      "packages/voxel-renderer/greedy-cells.mjs": "3850bacad09ad1fbf69e7f910da770cee1663d1b972ccab3621e9a0234a5adb8",
+      "packages/voxel-renderer/mesh-worker.mjs": "25d92b4e5006604d5eb2f34eeefd0b84724603ab17efb3c32fcdadbb5c68044f",
+      "packages/voxel-renderer/picking.mjs": "e43b7b4aa9a6f33b5eefee3f7c22ef40540be12f31cb053584dec58d4a08d0b3",
+      "apps/web/main.mjs": "cbe1a4df20813dca117952aa5a8f502835e102b57c2bf36870919d2ae88aa31b",
+      "tools/checks/greedy-cells-smoke.mjs": "6bd5939058129d48e6f45b5a17ddd03048211163ea46c147f9773e6338e3e7e7"
+    }
+  },
+  "spatialPicking": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "Bounded spatial buckets for exact emitted-face picking",
+    "actualMeshWorker": true,
+    "storedCells": [
+      128,
+      80
+    ],
+    "emittedFaces": [
+      304,
+      480
+    ],
+    "probes": [
+      {
+        "indexed": 14,
+        "linear": 304
+      },
+      {
+        "indexed": 8,
+        "linear": 304
+      },
+      {
+        "indexed": 8,
+        "linear": 304
+      },
+      {
+        "indexed": 14,
+        "linear": 304
+      }
+    ],
+    "indexBytes": [
+      3272,
+      14256
+    ],
+    "sameTriangleAlphaAndOwnerResultsAsLinear": true,
+    "alphaPassThrough": true,
+    "miss": true,
+    "overhangOutsideStoredBounds": true,
+    "nonfiniteGeometryRefusal": true,
+    "sourceHashes": {
+      "packages/voxel-renderer/picking.mjs": "e43b7b4aa9a6f33b5eefee3f7c22ef40540be12f31cb053584dec58d4a08d0b3",
+      "packages/voxel-renderer/pick-index.mjs": "6c2fd63fa5e0cede8dcfbc895f1d652331be5c6c21327e2408307633808cbfb5",
+      "tools/checks/pick-index-smoke.mjs": "6f42dfb17912fc48ef7112c92df2281bdd55667f76da28cc33965adfc9ff992c"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "performanceMeasured": false,
+    "nativeTerrainChanged": false,
+    "projectFinished": false
+  },
+  "smallRegressions": {
+    "cellViews": {
+      "storedCells": 4,
+      "occupiedCells": 3,
+      "result": "pass",
+      "checks": [
+        "explicit cell modes need no block assets; air is omitted and nonair unit extents are neighbor-culled",
+        "per-cell physical biome colors distinguish the same block ID; picking retains original blocks/biomes/coordinates",
+        "negative section alignment, clipping and cached return preserve identity colors without resending cell data",
+        "missing biome/color data refuses explicitly; textured mode retains missing-asset diagnostics without cell fallback",
+        "cell identity draw uniforms bypass texture lighting; palette keys deduplicate/search/page without scanning cells",
+        "application mode changes persist locally and reuse generated data; active cell meshes ignore irrelevant pack replacement",
+        "closed legends reject stale input, failed mesh publication rolls preferences back, and pending cell results survive pack changes"
+      ]
+    },
+    "sectionCache": {
+      "storedCells": 50,
+      "occupiedCells": 5,
+      "result": "pass",
+      "checks": [
+        "unchanged sections reused; boundary halo rebuilt and compared byte-for-byte with uncached geometry/picking",
+        "negative/unaligned origins, opaque/blended ranges and overhangs preserved",
+        "actual transferable output leaves worker cache reusable; snapshot sent only once",
+        "slices/empty views, bounded LRU eviction and oversized section bypass preserve output",
+        "cancelled jobs and invalid clips cannot commit; fatal worker errors recreate the snapshot",
+        "renderer reuses sessions across clips, skips equivalent bounds and preserves appearance camera",
+        "same committed input reuses validated volume; new atlas gets a fresh geometry cache",
+        "failed staged upload retains committed session/picker/atlas; clear disposes pending work"
+      ],
+      "fixtureMaintenance": "Current raw RGBA/model-group input and admitted atlas size replace stale canvas/legacy model services. Current results written locally; historical evidence unchanged."
+    }
+  },
+  "build": {
+    "requiredEngineAppPackage": "pass",
+    "nativeRuntimeRebuilt": false,
+    "wasmSha256": "238f161c6d1f1154879d31792056cb8a16ee96e4b1a874d29e373a96da767752",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "e8d5a0d222933d58534ebae1d63810b138335be80e48bedd2f73cd5d0de049e5",
+    "nativeModuleAndArchiveChanged": false,
+    "registryReexported": false,
+    "terrainGenerated": false,
+    "exhaustiveStateSweep": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "worldChunksModified": false
+  },
+  "budgets": {
+    "mergedCellMaskBytes": 1024,
+    "sectionAxis": 16,
+    "maximumEmittedQuads": 250000,
+    "compactPickerBytes": 25165824,
+    "spatialIndexBytesPerGroup": 10485760,
+    "maximumCombinedIndexBytesAtAdmittedFaceLimit": 13000000,
+    "interactiveQuads": 32768,
+    "interactiveAlphaSamples": 4096
+  },
+  "sourceHashes": {
+    "apps/web/main.mjs": "cbe1a4df20813dca117952aa5a8f502835e102b57c2bf36870919d2ae88aa31b",
+    "packages/voxel-renderer/cell-geometry.mjs": "7119b52659fa37fd798b7d4f8bdc283f74de77eddc4f24ac130b9839d9020e8a",
+    "packages/voxel-renderer/cell-view.mjs": "d869928f2e2b58cbda05bf3d6ff82c2d688687584e1aa12daa50aa22b6efefc9",
+    "packages/voxel-renderer/greedy-cells.mjs": "3850bacad09ad1fbf69e7f910da770cee1663d1b972ccab3621e9a0234a5adb8",
+    "packages/voxel-renderer/mesh-worker.mjs": "25d92b4e5006604d5eb2f34eeefd0b84724603ab17efb3c32fcdadbb5c68044f",
+    "packages/voxel-renderer/pick-index.mjs": "6c2fd63fa5e0cede8dcfbc895f1d652331be5c6c21327e2408307633808cbfb5",
+    "packages/voxel-renderer/picking.mjs": "e43b7b4aa9a6f33b5eefee3f7c22ef40540be12f31cb053584dec58d4a08d0b3",
+    "tools/checks/greedy-cells-smoke.mjs": "6bd5939058129d48e6f45b5a17ddd03048211163ea46c147f9773e6338e3e7e7",
+    "tools/checks/pick-index-smoke.mjs": "6f42dfb17912fc48ef7112c92df2281bdd55667f76da28cc33965adfc9ff992c",
+    "tools/checks/section-cache-smoke.mjs": "aca92a6eb5446b113ad61b83bb5d526251a8e9ed6eb5b0e59de8bc9de1ce367c"
+  },
+  "qualification": {
+    "fullTexturedGreedySupport": false,
+    "allRasterEdgesAndOverlapsVerified": false,
+    "measuredPerformance": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "projectFinished": false
+  }
+}

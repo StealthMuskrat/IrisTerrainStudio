@@ -1,0 +1,308 @@
+{
+  "scope": "minecraft-client-fluid-tints-targeted",
+  "result": "pass",
+  "referenceKey": "4e701e4b0966ce0cc14a56d42033f1180e0b0e51cda4c38fb44b435ecd15c0b8",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "renderInputSha256": "3ceb502b3fca1b099883d118f4ce86c5d06f02af789fdef1b680ccdb00439ac9",
+  "fluidResults": [
+    {
+      "name": "isolated source",
+      "quads": 11,
+      "flow": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "slope and slab occlusion",
+      "quads": 6,
+      "flow": [
+        -0.7071067337713417,
+        0,
+        -0.7071068286017501
+      ]
+    },
+    {
+      "name": "waterlogged slab and glass overlay",
+      "quads": 8,
+      "flow": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "falling lava beside wall",
+      "quads": 9,
+      "flow": [
+        0,
+        -0.9863939238321437,
+        0.1643989873053573
+      ]
+    },
+    {
+      "name": "covered column",
+      "quads": 8,
+      "flow": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "tintResults": [
+    {
+      "block": "minecraft:grass_block",
+      "biome": "minecraft:plains",
+      "color": 4281511250,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:grass_block",
+      "biome": "minecraft:dark_forest",
+      "color": 4282012171,
+      "samplePositions": [
+        [
+          -17,
+          64,
+          31
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:short_grass",
+      "biome": "minecraft:swamp",
+      "color": 4285165625,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:short_grass",
+      "biome": "minecraft:swamp",
+      "color": 4285165625,
+      "samplePositions": [
+        [
+          400,
+          64,
+          -900
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:tall_grass",
+      "biome": "minecraft:plains",
+      "color": 4281511250,
+      "samplePositions": [
+        [
+          2,
+          64,
+          2
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:oak_leaves",
+      "biome": "minecraft:plains",
+      "color": 4281511338,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:leaf_litter",
+      "biome": "minecraft:plains",
+      "color": 4281511170,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:water_cauldron",
+      "biome": "minecraft:swamp",
+      "color": 4284578660,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:redstone_wire",
+      "biome": "minecraft:plains",
+      "color": 4290838528,
+      "samplePositions": []
+    },
+    {
+      "block": "minecraft:melon_stem",
+      "biome": "minecraft:plains",
+      "color": 4288730900,
+      "samplePositions": []
+    },
+    {
+      "block": "minecraft:lily_pad",
+      "biome": "minecraft:plains",
+      "color": 4280320048,
+      "samplePositions": []
+    },
+    {
+      "block": "minecraft:spruce_leaves",
+      "biome": "minecraft:plains",
+      "color": 4284586337,
+      "samplePositions": []
+    },
+    {
+      "block": "minecraft:pink_petals",
+      "biome": "minecraft:plains",
+      "color": 4281511250,
+      "samplePositions": [
+        [
+          0,
+          64,
+          0
+        ]
+      ]
+    },
+    {
+      "block": "minecraft:stone",
+      "biome": "minecraft:plains",
+      "color": 4294967295,
+      "samplePositions": []
+    }
+  ],
+  "materialResults": [
+    {
+      "sprite": "minecraft:block/stone",
+      "forceTranslucent": false
+    },
+    {
+      "sprite": "minecraft:block/stone",
+      "forceTranslucent": true
+    },
+    {
+      "sprite": "minecraft:block/glass",
+      "forceTranslucent": true
+    }
+  ],
+  "actualMeshWorker": {
+    "cells": 2,
+    "perCellTints": true,
+    "fluidPickingOwnerRetained": true,
+    "clipRebuild": true
+  },
+  "dependencyClosure": {
+    "fluidTextures": 3,
+    "invisibleBlockstateSkipped": true,
+    "materialSpriteRetained": true
+  },
+  "metadata": {
+    "states": 35723,
+    "profiles": 570,
+    "faceShapes": 108,
+    "biomes": 67,
+    "method": "one-time-native-rendering-input-extraction",
+    "statePairChecks": 0
+  },
+  "tintMode": {
+    "source": "stored-physical-biome",
+    "blendRadius": 0
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "recordedAt": "2026-10-22",
+  "commands": [
+    "node tools/checks/client-fluid-tint-smoke.mjs",
+    "node --check (changed JavaScript)",
+    "git diff --check",
+    "node tools/checks/client-fluid-tint-smoke.mjs --reuse-reference",
+    "node tools/build-app.mjs --require-engine"
+  ],
+  "nativeWasmSha256": "09673f10fa8c639952dcc885a4c328a11f86b8ece4b3b07261d36cf37aa2442a",
+  "referenceConstruction": {
+    "fluidTesselator": "original pinned FluidRenderer.tesselate",
+    "world": "controlled BlockAndTintGetter proxy",
+    "sprites": "UV-only carriers allocated without image/GPU initialization",
+    "colormaps": "authored numerical fixtures",
+    "lighting": "reference default cardinal colors; application retains Studio directional light/fog"
+  },
+  "limits": [
+    "Biome colors use stored physical biomes and explicit radius zero; native jitter and neighborhood blending remain open.",
+    "Full geometry/shape/selector and native material/lightmap/AO/mipmap/GPU coverage remains unqualified.",
+    "Pipeline depth/culling descriptors changed; actual rasterization is not verified.",
+    "No fluid simulation or unknown block/biome fallback.",
+    "Official local Chromium startup remains blocked by the recorded SIGTRAP.",
+    "F8thful and native release/provenance/checksum gates remain open."
+  ],
+  "workspaceSha256": {
+    "packages/resource-packs/client-render-data.json": "3ceb502b3fca1b099883d118f4ce86c5d06f02af789fdef1b680ccdb00439ac9",
+    "packages/resource-packs/biome-tints.mjs": "d58c81ce862142c3424f9ad2031e45e9477880ea4019363c1a4fe1d60ca765f5",
+    "packages/resource-packs/client-math.mjs": "4af69c2b6351a64ffef5d5f0afdf4cbe8176bce2cd8ace562172d0fbb36f87ae",
+    "packages/resource-packs/render-inputs.mjs": "234af03df358759eaa9c997b8d9180b7c494d305a5299d580e33029ace8a8c46",
+    "packages/resource-packs/material.mjs": "15efca6c2895afceb8b388edcf1d3bfaa34de6cd5b6b45d7d0fa84780e73772e",
+    "packages/resource-packs/pack.mjs": "744d6515d02b8e163751b4e4a4916c6ffe4df0d5b2aad8e60070f87817fe0d9b",
+    "packages/resource-packs/dependencies.mjs": "d4e05845e8c429fa6b59c0744f3f5765b51cc89eb1be9f08f72b01920a539029",
+    "packages/voxel-renderer/fluids.mjs": "57f00b5420716f1f3e99aae4845dd240a66a658a9249b5bb930a042c17e26077",
+    "packages/voxel-renderer/models.mjs": "a2afb355fd54a01e0404aab892293bb4a5af38aabdd4fe29aae3b3981d705696",
+    "packages/voxel-renderer/mesh-worker.mjs": "b9c811f3c976ce0af1597026463ba4a48dba8f2e9fc426bc3115aeab2576bc6f",
+    "packages/voxel-renderer/mesh-session.mjs": "b908db51df6daf9092905cb7b61892a5651bf46ceb7e80bc5e25b490260a2423",
+    "packages/voxel-renderer/world.mjs": "bdaa2a4479c6214ee18de66543f600071e4f1541eda06415e7d8ab0351c8d1e6",
+    "tools/checks/MinecraftRenderInputCapture.java": "8bdad5700f0520f41234dd846b50705b9fae5feb27c4b3c750149a7b449b3c59",
+    "tools/checks/MinecraftFluidTintCheck.java": "09caa0d066311af1ec6a9257030116b9daad5d9920822f9c8f62e4e228c69e0b",
+    "tools/checks/client-fluid-tint-smoke.mjs": "4f29c1ebc164f6f32af91e48b294b3563e42285d47c7076f718c7c8864bcba51",
+    "tools/checks/fixtures/client-fluids-tints.json": "bc33ec010575e5fb52c72be5d88dcea582d3730c5454dc578f44312c59a42fbf",
+    "tools/engine-build/client-render-inputs.mjs": "528dd20504c4338778da1b5781bc2495cdf17c17e4bae5260938f7d062733fbd",
+    "tools/engine-build/render-input-format.mjs": "6bf6ab4ea030c082afa67f8bf6134c11adff85de8a6de5366146c4f91973f109"
+  },
+  "nativeAssets": {
+    "files": 13,
+    "sha256": {
+      "assets/minecraft/blockstates/grass_block.json": "f428a88833a320ceae681bd4ce88dee75307b2517864c4b1a72e5f995071d1cb",
+      "assets/minecraft/models/block/grass_block.json": "fdea6afda5fa7d47241f181b56879e6807efc2b18a119133e3a871c411bf661a",
+      "assets/minecraft/models/block/block.json": "212df16c5aa3e6aef3f4d3e080532d28a86cf9b2071618e4ca587ee9ef3c6d09",
+      "assets/minecraft/textures/colormap/grass.png": "6a7da1db5e76cdd74ba5c837afffc1f4ffa32442d7d087f3e1b414e590eb7486",
+      "assets/minecraft/textures/block/dirt.png": "67197d5371efc3ca1638217c38349665dbd5a977b47bfb20075c858dff87d510",
+      "assets/minecraft/textures/block/grass_block_top.png": "52f44b64ce884a13dfe35e4b4da2e35898b790dd4d7a5ea536f1b0c0d56d29b4",
+      "assets/minecraft/textures/block/grass_block_side.png": "76a677640eb91d6a9aed844bc66e329b1894f89e241a0071333b6678c0854580",
+      "assets/minecraft/textures/block/grass_block_side_overlay.png": "872056682c3b059c04aba88f8b4e706f2526b907e1acef12626a9f912f573a85",
+      "assets/minecraft/textures/block/water_still.png": "683df6ad9c23a50b7ce9323a5fe231aa79f94a63c6d750f3cf87a1fd44422551",
+      "assets/minecraft/textures/block/water_flow.png": "1d1f27fe65b12dea2ec8995f1955f0ac9c5efe60b9bc4322625217c205382981",
+      "assets/minecraft/textures/block/water_overlay.png": "fa3b49e0cc1a0cd6506b385280a6696324b98d2184bc9d74801238d7b178476d",
+      "assets/minecraft/textures/block/water_still.png.mcmeta": "e9b8025fde1b09b0a4d2a38427b04f98f28a593045be6d177eb2b29164c872b0",
+      "assets/minecraft/textures/block/water_flow.png.mcmeta": "802acdb8f55f30146d5ed18414b21ba35650d4e550f81825ea104131c12dc4fc"
+    },
+    "grassFaces": 10,
+    "tintedFaces": 5,
+    "rawUploads": 8,
+    "waterAnimated": true
+  },
+  "developmentBuild": {
+    "command": "node tools/build-app.mjs --require-engine",
+    "result": "pass",
+    "qualifiedRelease": false,
+    "nativeWasmUnchanged": true
+  }
+}

@@ -1,0 +1,1256 @@
+{
+  "date": "2026-10-23",
+  "scope": "original procedural ruin variants, bounded source/placement/neighborhood and registered Overworld integration",
+  "result": "pass",
+  "reference": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "sourceServerJarSha256": "203daf198d4e63a1db4ec807d65b835669481efdbb2812802d0628a6119674b9",
+    "developmentInputsSha256": "2443bdb6f6f8da616ed206825f353bcab4822c429cb0fc9f65024084c9e71297",
+    "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+    "nativeClassSha256": {
+      "art/arcane/iris/generation/decoration/ruin/IrisRuin": "e2d357cd1d2bdc35e5cf506ff44783836f7746d1809d4c0a7576ddc6aa698858",
+      "art/arcane/iris/generation/decoration/ruin/RuinGenerator": "05bcf842c5db8ff5701ceec4f1cc104f23712d306c2d9c726484d7b2f34491fd",
+      "art/arcane/iris/generation/decoration/ruin/RuinShapes": "3e3a17d4140ecabed388cc7e482d91c30173b2954a9dfbc52614ef8219647605",
+      "art/arcane/iris/generation/decoration/ruin/RuinBlockCanvas": "354cf73ac4edd4df647882b4ed729c47105155b51bded863cc8a8c314d7619c8",
+      "art/arcane/iris/generation/decoration/ruin/RuinDecoratorApplier": "c224c56191b0468fc6b9d75e6a8c58332429dbb30a81a8e7fdb93cd73c63ff73"
+    }
+  },
+  "focusedCheck": {
+    "result": "pass",
+    "nativeReferenceIdentity": "ac6016917cbf0e2bba59aa9d7a1cbb04111d75e0427ee2ffec1afc7d9f36872c",
+    "nativeReferenceReused": true,
+    "baseFixtures": 1,
+    "forms": [
+      "PILLAR",
+      "WALL",
+      "ARCH",
+      "FLOOR_SLAB",
+      "RUBBLE"
+    ],
+    "accentTargets": [
+      "TOP",
+      "SURFACE",
+      "BASE_SCATTER"
+    ],
+    "variantProbes": 15,
+    "terrainProbes": 21,
+    "reference": {
+      "variants": [
+        {
+          "index": 0,
+          "form": "PILLAR",
+          "seed": "17",
+          "key": "procedural/tiny-pillar#0",
+          "blockCount": 33,
+          "origin": [
+            -1,
+            -2,
+            -1
+          ],
+          "size": [
+            3,
+            5,
+            3
+          ],
+          "probes": [
+            [
+              -1,
+              -2,
+              -1,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              1,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              2,
+              -1,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "form": "WALL",
+          "seed": "18",
+          "key": "procedural/tiny-wall#0",
+          "blockCount": 75,
+          "origin": [
+            -2,
+            -2,
+            -3
+          ],
+          "size": [
+            5,
+            4,
+            7
+          ],
+          "probes": [
+            [
+              -2,
+              -2,
+              -1,
+              "minecraft:moss_carpet"
+            ],
+            [
+              -1,
+              -2,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              0,
+              "minecraft:cobblestone"
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "form": "ARCH",
+          "seed": "19",
+          "key": "procedural/tiny-arch#0",
+          "blockCount": 55,
+          "origin": [
+            -1,
+            -3,
+            -2
+          ],
+          "size": [
+            3,
+            6,
+            5
+          ],
+          "probes": [
+            [
+              -1,
+              -3,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -3,
+              2,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              0,
+              2,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "form": "FLOOR_SLAB",
+          "seed": "20",
+          "key": "procedural/tiny-floor_slab#0",
+          "blockCount": 38,
+          "origin": [
+            -1,
+            -1,
+            -2
+          ],
+          "size": [
+            3,
+            3,
+            5
+          ],
+          "probes": [
+            [
+              -1,
+              -1,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -1,
+              1,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              1,
+              -1,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 4,
+          "form": "RUBBLE",
+          "seed": "21",
+          "key": "procedural/tiny-rubble#0",
+          "blockCount": 40,
+          "origin": [
+            -2,
+            -2,
+            -3
+          ],
+          "size": [
+            5,
+            4,
+            7
+          ],
+          "probes": [
+            [
+              -2,
+              -2,
+              -1,
+              "minecraft:moss_carpet"
+            ],
+            [
+              -1,
+              -2,
+              -2,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              0,
+              "minecraft:mossy_cobblestone"
+            ]
+          ]
+        }
+      ],
+      "placement": {
+        "placedY": 34,
+        "journaledCells": 33,
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            7,
+            32,
+            7,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            8,
+            32,
+            7,
+            "minecraft:cobblestone"
+          ],
+          [
+            7,
+            36,
+            7,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "source": {
+        "placedY": 0,
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "sourcePlan": {
+          "destinations": 1,
+          "replayedDestinations": 1,
+          "retainedBytes": 848
+        },
+        "journalWindow": [
+          [
+            0,
+            0,
+            33
+          ]
+        ],
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "neighborhood": {
+        "nativeGenerateLayer": true,
+        "placedY": 0,
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "mode": {
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air",
+            "minecraft:plains"
+          ]
+        ],
+        "journaledCells": 33,
+        "selectedJournalProbes": 0,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "componentFlags": [
+          [
+            -2,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            0,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          [
+            0,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "contentPhase": true,
+        "activeLeasesAfter": 0,
+        "matterWindow": [
+          [
+            -2,
+            -2,
+            true,
+            false
+          ],
+          [
+            -2,
+            -1,
+            true,
+            false
+          ],
+          [
+            -2,
+            0,
+            true,
+            false
+          ],
+          [
+            -2,
+            1,
+            true,
+            false
+          ],
+          [
+            -2,
+            2,
+            true,
+            false
+          ],
+          [
+            -1,
+            -2,
+            true,
+            false
+          ],
+          [
+            -1,
+            -1,
+            true,
+            false
+          ],
+          [
+            -1,
+            0,
+            true,
+            false
+          ],
+          [
+            -1,
+            1,
+            true,
+            false
+          ],
+          [
+            -1,
+            2,
+            true,
+            false
+          ],
+          [
+            0,
+            -2,
+            true,
+            false
+          ],
+          [
+            0,
+            -1,
+            true,
+            false
+          ],
+          [
+            0,
+            0,
+            true,
+            true
+          ],
+          [
+            0,
+            1,
+            true,
+            false
+          ],
+          [
+            0,
+            2,
+            true,
+            false
+          ],
+          [
+            1,
+            -2,
+            true,
+            false
+          ],
+          [
+            1,
+            -1,
+            true,
+            false
+          ],
+          [
+            1,
+            0,
+            true,
+            false
+          ],
+          [
+            1,
+            1,
+            true,
+            false
+          ],
+          [
+            1,
+            2,
+            true,
+            false
+          ],
+          [
+            2,
+            -2,
+            true,
+            false
+          ],
+          [
+            2,
+            -1,
+            true,
+            false
+          ],
+          [
+            2,
+            0,
+            true,
+            false
+          ],
+          [
+            2,
+            1,
+            true,
+            false
+          ],
+          [
+            2,
+            2,
+            true,
+            false
+          ]
+        ],
+        "terrainStages": 4,
+        "contentStages": 9
+      }
+    },
+    "results": [
+      {
+        "field": "procedural-placement",
+        "journaledCells": 33,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            7,
+            32,
+            7,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            8,
+            32,
+            7,
+            "minecraft:cobblestone"
+          ],
+          [
+            7,
+            36,
+            7,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "procedural-source",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "procedural-neighborhood",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "cache": {
+          "lookups": 9,
+          "builds": 9,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 9,
+          "retainedBytes": 8678,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "overworld-mode",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "cache": {
+          "lookups": 9,
+          "builds": 9,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 9,
+          "retainedBytes": 8678,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air",
+            "minecraft:plains"
+          ]
+        ]
+      }
+    ],
+    "actualWasmWorkerClient": true,
+    "descriptors": true,
+    "clientCacheReuse": true,
+    "dimensionAccentAndWorkRefusals": true,
+    "recovery": true,
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "11e09ae6ccafed107362a54fe4c1413410776072f4ef2a9e76384be2f739b3dc"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "wasmSha256": "41e337fd5413408b5f14ecf9f7601c834dcba9a8726108fb02e306cb42058832",
+    "sourceSha256": "1a5bff7cf495bae6bc458506fd74e62266c46d2c2783e2248efa6f0bed65eea0",
+    "importedStructuresSupported": false,
+    "fullRuinOptionParity": false,
+    "crossSourceCollisionParity": false,
+    "fullEngineLifecycle": false,
+    "terrainParityVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "sharedCanvasRegression": {
+    "result": "pass",
+    "fixtures": 1,
+    "familiesChecked": 2,
+    "variantsPerFamily": 1,
+    "blockProbes": 4,
+    "workerGenerations": 3,
+    "results": [
+      {
+        "family": "trees",
+        "key": "procedural/tree/small-oak#0",
+        "blockCount": 95,
+        "origin": [
+          -3,
+          -2,
+          -3
+        ],
+        "size": [
+          7,
+          7,
+          7
+        ],
+        "probes": [
+          [
+            -3,
+            2,
+            0,
+            "minecraft:oak_leaves[distance=4,persistent=false,waterlogged=false]"
+          ],
+          [
+            0,
+            -1,
+            0,
+            "minecraft:oak_log[axis=y]"
+          ]
+        ],
+        "seed": "9007199254740993"
+      },
+      {
+        "family": "formations",
+        "key": "procedural/small-rock#0",
+        "blockCount": 28,
+        "origin": [
+          -1,
+          0,
+          -1
+        ],
+        "size": [
+          3,
+          4,
+          3
+        ],
+        "probes": [
+          [
+            -1,
+            0,
+            -1,
+            "minecraft:stone"
+          ],
+          [
+            -1,
+            0,
+            0,
+            "minecraft:stone"
+          ]
+        ],
+        "seed": "17"
+      }
+    ],
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "15c10d4f9525cec598e70a122073493b41771a8d87b39d59f9bf733504df4f2c"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "wasmSha256": "41e337fd5413408b5f14ecf9f7601c834dcba9a8726108fb02e306cb42058832",
+    "sourceSha256": "1a5bff7cf495bae6bc458506fd74e62266c46d2c2783e2248efa6f0bed65eea0",
+    "checks": [
+      "native descriptors and exact long seed",
+      "native pool key, bounds and block count",
+      "four material probes",
+      "native plausible leaf state",
+      "typed volume and local coordinates",
+      "cache reuse",
+      "native input ownership released after serialization",
+      "out-of-range variant refusal"
+    ],
+    "worldPlacementVerified": false,
+    "browserVerified": false,
+    "unverifiedFamilies": [
+      "coral",
+      "fungi",
+      "crystals"
+    ]
+  },
+  "roundingBoundary": {
+    "reason": "Source-inspected TeaVM 0.16.0 rounds negative half doubles away from zero instead of toward positive infinity; the initial native/Wasm tiny pillar had 33/31 blocks and a selected accent differed.",
+    "teavmTMathClassSha256": "410e700e678ffe78a63366f5d26663a3b74db4dd1b4f2a9ec6d7523c1dfc8a59",
+    "originalGeneratorCalls": 8,
+    "originalShapesCalls": 4,
+    "adapter": "packages/iris-engine/java/studio/engine/expression/WorkerJdkRound.java",
+    "globalRoundingReplaced": false,
+    "otherCallersQualified": false
+  },
+  "build": {
+    "nativeJavaAndWasm": "pass",
+    "requiredEngineAppPackage": "pass",
+    "wasmSha256": "41e337fd5413408b5f14ecf9f7601c834dcba9a8726108fb02e306cb42058832",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "1a5bff7cf495bae6bc458506fd74e62266c46d2c2783e2248efa6f0bed65eea0",
+    "archiveMatchesCurrentSources": [
+      "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "packages/iris-engine/java/studio/engine/terrain/ProceduralPreview.java",
+      "packages/iris-engine/java/studio/engine/terrain/ProceduralSourcePreview.java",
+      "packages/iris-engine/java/studio/engine/terrain/WorkerProceduralMap.java",
+      "packages/iris-engine/java/studio/engine/expression/WorkerJdkRound.java",
+      "packages/iris-engine/client.mjs",
+      "tools/engine-build/build.mjs"
+    ],
+    "registryReexported": false,
+    "exhaustiveStateSweep": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "worldChunksModified": false
+  },
+  "sourceHashes": {
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java": "e2d63145cc79533f527b993794982204019f44c3997fedf8317036b66af3ca7c",
+    "packages/iris-engine/java/studio/engine/terrain/ProceduralPreview.java": "708fe1e9cd790a9f5b7320dc2adc456597ef1c3e1f4c14b818249b7df2043017",
+    "packages/iris-engine/java/studio/engine/terrain/ProceduralSourcePreview.java": "2cbfd43a57870f4e5ed3adba7c4686b80120c93a1b1a55e9f5421dab2c75cb53",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerProceduralMap.java": "89982ce8672b22b2ab4742052617fb4511e8e7e46661d1fb8ca5f29734bc1f7f",
+    "packages/iris-engine/java/studio/engine/expression/WorkerJdkRound.java": "2b6522d07c1be86fbb28477e092641153884a9006f860e781347909caf2026c2",
+    "packages/iris-engine/client.mjs": "a579a4043a13278c1d818bf48a928d46369b8f769b810e3fdcff1fe99514de08",
+    "tools/engine-build/build.mjs": "721386d6ee4f9f023474355f7828c62472feba710ceedb5d5f4db43eb758d4f7",
+    "tools/checks/NativeRuinLinkCheck.java": "f489a581feb8ee5e4435f02c647d04e88fd52f867fa4c36a755c94c9a17f6208",
+    "tools/checks/NativeTerrainLinkCheck.java": "f6d3bd774e88071608239460e9c469a918bbe2a195bc16db14dbb43c5db3cb7d",
+    "tools/checks/native-ruins-smoke.mjs": "0bbe83f74d48a997311577b77e31d46b9f82212673b249bdd8e68d1efbaab563",
+    "apps/web/main.mjs": "f1d49b2020bf837e39673fbfc53443ad7fff917f913b009622380ca7de0cf091"
+  },
+  "qualification": {
+    "allRuinOptions": false,
+    "completeCollisionBehavior": false,
+    "fullEngineLifecycle": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "projectFinished": false
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-21",
+  "scope": "committed model triangle picking, current atlas alpha, selected face outline and stored voxel inspection",
+  "fixture": {
+    "storedCells": 2,
+    "emittedFaces": 2,
+    "compactPickingBytes": 176,
+    "sourcePixels": 0
+  },
+  "checks": [
+    "slab empty-space and nearest actual triangles",
+    "current alpha pass-through and 2/255 versus 3/255 cutoff",
+    "opaque backface and blended two-sided picking",
+    "negative-world overhang owner and whole-cell clips",
+    "rotated model geometry and rotated UV interpolation",
+    "bounded compact coverage and malformed ray/alpha refusal",
+    "current one-pixel atlas reads, per-ray texel reuse and disposal",
+    "valid line-pipeline descriptor, selection buffer reuse, click miss, Escape, drag suppression and errors",
+    "remesh clears selection; stale same-volume inspection cannot focus",
+    "actual renderer camera ray and UI stored fields",
+    "unchanged block and biome buffers"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/picking.mjs": "cc68bad2b8e7576f898b00c5a9efd99b8e2badd9c7d1a521a5972808da1df374",
+    "packages/voxel-renderer/selection.mjs": "32bc0053412e7c19d174eb2f17dff508fd02f2280c15d39b3ddb1dfab4304a72",
+    "packages/voxel-renderer/mesh-worker.mjs": "1b926c8fba850210dcd121e52e5d5c5ea0cbaa305190e2ef93d8eaa6fef0de94",
+    "packages/voxel-renderer/world.mjs": "f2f37d9110b45533847bb7aef6b15394267f811e4d14e7becb6cc9314886f71f",
+    "packages/resource-packs/atlas.mjs": "636b88538fe0befef28fc08ce86363f650aa1d9be1e10551b7494bb1ff5c2fff",
+    "packages/voxel-renderer/mesh-buffers.mjs": "efb21c83bd3705b2d4922576492f921759dd8aae9698be26da73723f5ca5013e",
+    "apps/web/main.mjs": "991038b3dcb751723495a7e072217e4ad72dcd4164004cf48a526ce3d8a74d38",
+    "apps/web/index.html": "677d99777763ae1092dc3600e631d9da280c648564dc1726e87c31948723d3c2",
+    "tools/checks/model-picking-smoke.mjs": "2e600a1e14df258463f8e36498b36be13d7ffc6b75a90bb1273eaaa835ecfd65"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "minecraftClientParityVerified": false,
+  "complete": false,
+  "limits": "Controlled Node worker/canvas/device/input probes only. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. GPU raster edge/texel-boundary agreement and outline rendering remain unqualified."
+}

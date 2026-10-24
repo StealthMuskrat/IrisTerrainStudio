@@ -1,0 +1,338 @@
+{
+  "overlays": [
+    {
+      "entries": [
+        {
+          "directory": "old",
+          "formats": {
+            "min_inclusive": 15,
+            "max_inclusive": 64
+          }
+        },
+        {
+          "directory": "current",
+          "min_format": [
+            97,
+            1
+          ],
+          "max_format": [
+            97,
+            1
+          ],
+          "formats": {
+            "min_inclusive": 97,
+            "max_inclusive": 97
+          }
+        },
+        {
+          "directory": "newer",
+          "min_format": [
+            97,
+            2
+          ],
+          "max_format": 98,
+          "formats": {
+            "min_inclusive": 97,
+            "max_inclusive": 98
+          }
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "directory": "first",
+          "min_format": 97,
+          "max_format": 97
+        },
+        {
+          "directory": "last",
+          "min_format": [
+            97,
+            1
+          ],
+          "max_format": [
+            97,
+            1
+          ]
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "directory": "broken",
+          "min_format": 97
+        }
+      ]
+    },
+    {
+      "entries": [
+        {
+          "directory": "future",
+          "formats": 97
+        }
+      ]
+    }
+  ],
+  "formats": [
+    {
+      "min_format": 97,
+      "max_format": 97
+    },
+    {
+      "pack_format": 97
+    },
+    {
+      "pack_format": 15
+    },
+    {
+      "min_format": [
+        97,
+        2
+      ],
+      "max_format": [
+        97,
+        1
+      ]
+    },
+    {
+      "min_format": 97,
+      "max_format": 97,
+      "supported_formats": 97
+    }
+  ],
+  "filters": [
+    {
+      "filter": {
+        "block": [
+          {
+            "namespace": "^minecraft$",
+            "path": "^textures/block/stone\\.png$"
+          },
+          {
+            "namespace": "^demo$",
+            "path": "models/block/.*"
+          }
+        ]
+      },
+      "locations": [
+        [
+          "minecraft",
+          "textures/block/stone.png"
+        ],
+        [
+          "demo",
+          "textures/block/stone.png"
+        ],
+        [
+          "minecraft",
+          "models/block/a.json"
+        ],
+        [
+          "other",
+          "models/block/a.json"
+        ],
+        [
+          "minecraft",
+          "extra/textures/block/stone.png"
+        ]
+      ]
+    },
+    {
+      "filter": {
+        "block": [
+          {
+            "path": "block/[a-z_]+\\.png"
+          }
+        ]
+      },
+      "locations": [
+        [
+          "minecraft",
+          "textures/block/oak_log.png"
+        ],
+        [
+          "demo",
+          "block/a.png.mcmeta"
+        ],
+        [
+          "demo",
+          "textures/block/7.png"
+        ]
+      ]
+    }
+  ],
+  "animations": [
+    {
+      "width": 6,
+      "height": 2,
+      "animation": {
+        "interpolate": true,
+        "frametime": 4
+      },
+      "ticks": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        8,
+        12
+      ]
+    },
+    {
+      "width": 6,
+      "height": 4,
+      "animation": {
+        "width": 2,
+        "frametime": 3
+      },
+      "ticks": [
+        0,
+        2,
+        3,
+        6
+      ]
+    },
+    {
+      "width": 2,
+      "height": 6,
+      "animation": {
+        "frames": [],
+        "interpolate": true
+      },
+      "ticks": [
+        0,
+        1,
+        5
+      ]
+    },
+    {
+      "width": 2,
+      "height": 6,
+      "animation": {
+        "frames": [
+          2
+        ]
+      },
+      "ticks": [
+        0,
+        1,
+        5
+      ]
+    },
+    {
+      "width": 2,
+      "height": 6,
+      "animation": {
+        "frames": [
+          0,
+          {
+            "index": 2,
+            "time": 3
+          },
+          0
+        ],
+        "interpolate": true,
+        "frametime": 2
+      },
+      "ticks": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "resources": {
+    "packs": [
+      {
+        "name": "baseline",
+        "metadata": {
+          "pack": {
+            "min_format": 97,
+            "max_format": 97
+          }
+        },
+        "files": {
+          "assets/demo/models/block/chosen.json": "baseline",
+          "assets/demo/textures/block/shared.png": "baseline-pixels",
+          "assets/demo/textures/block/shared.png.mcmeta": "{\"animation\":{\"frametime\":9}}",
+          "assets/demo/models/block/masked.json": "masked-lower",
+          "assets/minecraft/models/block/cross.json": "cross-lower"
+        }
+      },
+      {
+        "name": "overrides",
+        "metadata": {
+          "pack": {
+            "min_format": 97,
+            "max_format": 97
+          },
+          "overlays": {
+            "entries": [
+              {
+                "directory": "first",
+                "min_format": 97,
+                "max_format": 97
+              },
+              {
+                "directory": "future",
+                "min_format": [
+                  97,
+                  2
+                ],
+                "max_format": 98
+              },
+              {
+                "directory": "last",
+                "min_format": [
+                  97,
+                  1
+                ],
+                "max_format": [
+                  97,
+                  1
+                ]
+              }
+            ]
+          },
+          "filter": {
+            "block": [
+              {
+                "namespace": "demo",
+                "path": "masked"
+              },
+              {
+                "namespace": "minecraft",
+                "path": "cross"
+              }
+            ]
+          }
+        },
+        "files": {
+          "assets/demo/models/block/chosen.json": "override-root",
+          "first/assets/demo/models/block/chosen.json": "first-layer",
+          "future/assets/demo/models/block/chosen.json": "future-layer",
+          "last/assets/demo/models/block/chosen.json": "last-layer",
+          "assets/demo/textures/block/shared.png": "override-pixels",
+          "assets/demo/models/block/own.json": "own-value",
+          "assets/demo/models/block/masked-owned.json": "own-masked-value"
+        }
+      }
+    ],
+    "queries": [
+      "demo:models/block/chosen.json",
+      "demo:textures/block/shared.png",
+      "demo:models/block/masked.json",
+      "minecraft:models/block/cross.json",
+      "demo:models/block/own.json",
+      "demo:models/block/masked-owned.json"
+    ]
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "scope": "native-noise-tile-browser-storage-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "afbaad7cb82282075e096575a47353dcc0655bce843d099c8387b7893a6ce1b0",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "583c670929d4a6535a3f93ab72b7ce435312980d3988feaee50751fce5ac674d",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass",
+    "sourceArchive": "Repackaged after final JS host edits; modified native Java matches the successful compiled input."
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/noise/CNG.java",
+      "sha256": "75dc964677e193e4a719d5a4102dc0c507a134ff5e1ad558e30847c54b17b78b"
+    },
+    {
+      "project": "VolmLib",
+      "path": "shared/src/main/java/art/arcane/volmlib/util/cache/FloatCache.java",
+      "sha256": "5774fb4b0082b4f8d2ccf66958aac9df6cadf3eebe22f0c69ee0518862cb22ff"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisGeneratorStyle.java",
+      "sha256": "a8f6ce1cd16104d3fb14275449ef951d464627866bd395b077edd742fc7e10fe"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "packages/iris-engine/java/studio/engine/noise/MemoryNoiseStore.java",
+    "packages/iris-engine/noise-cache-store.mjs",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendAndCheckSources": [
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "87fd6631293b2a78909371cc132ddb4c3290b25017c9699045c37c684c2fe789"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "1e2da4e0560e525eb3e9fdbb8dc95ca2c08eb97361f9d22057ae20dac61db715"
+    },
+    {
+      "path": "tools/checks/native-noise-persistence-smoke.mjs",
+      "sha256": "c3cc65e4032bf15f10a08637b3b31c560ae344b51f7187b1823fca907cce6554"
+    },
+    {
+      "path": "tools/checks/noise-persistence-stale-save.mjs",
+      "sha256": "e1c49554b6775258a2d578acdee61c171dac6f09593cad934286d1af07bb3871"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-noise-persistence-development-targeted",
+    "nativeFixtures": 1,
+    "nativeTileBytes": 44,
+    "nativeTileSize": 3,
+    "nativeScalarPoints": 4,
+    "scalarComparisonsAcrossColdRestoreAndCorruption": 12,
+    "reference": {
+      "samples": [
+        [
+          "3fd201b68c3d0317",
+          "3fd19a3afeed057a",
+          "3fd220dcc76214d2",
+          "3fd1d6c5e1e60d9b"
+        ]
+      ],
+      "files": [
+        {
+          "name": "noise-55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488-style-2814413354-seed-1-eng-0-oct-1-sz-3-src-0.cnm",
+          "bytes": 44,
+          "sha256": "866079ae62909fdeebbf86f1056ff86ad79ed3a9d081fe8c38fe458b259aaa01"
+        }
+      ]
+    },
+    "rows": [
+      {
+        "phase": "cold",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 0,
+          "writes": 1,
+          "atomicMoves": 1,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 0,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "miss",
+            "restoredFiles": 0,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      },
+      {
+        "phase": "restored",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 1,
+          "writes": 0,
+          "atomicMoves": 0,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 1,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "restored",
+            "restoredFiles": 1,
+            "restoredBytes": 44,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      },
+      {
+        "phase": "corrupt",
+        "cache": {
+          "scope": "worker-pack-snapshot",
+          "files": 1,
+          "bytes": 44,
+          "byteLimit": 8388608,
+          "allocationWorkCharged": 4240,
+          "workLimit": 67108864,
+          "reads": 0,
+          "writes": 1,
+          "atomicMoves": 1,
+          "deletes": 0,
+          "prefixes": 1,
+          "maxTileSize": 1024,
+          "restoredFiles": 0,
+          "durablePersistence": true,
+          "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+          "persistence": {
+            "status": "discarded",
+            "restoredFiles": 0,
+            "saveStatus": "saved",
+            "savedFiles": 1,
+            "savedBytes": 44
+          }
+        }
+      }
+    ],
+    "namespaceInputAndBuildIsolation": true,
+    "viewportReusesNamespace": true,
+    "staleRestoreDoesNotTouchNative": true,
+    "checksumCorruptionRebuilds": true,
+    "controlledEvictionAndQuotaRollback": true,
+    "clearRemovesIndexAndPayload": true,
+    "nativeImportPathHeaderDuplicateRefusals": true,
+    "actualWasmWorkerClient": true,
+    "indexedDbAdapter": "production actions over controlled request/store objects; real browser open/durability not qualified",
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "afbaad7cb82282075e096575a47353dcc0655bce843d099c8387b7893a6ce1b0",
+    "sourceSha256": "583c670929d4a6535a3f93ab72b7ce435312980d3988feaee50751fce5ac674d",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false,
+    "sourceArchiveRepackagedAfterFinalHostEdits": true
+  },
+  "staleSaveCheck": {
+    "result": "pass",
+    "staleBeforeTransactionCreatesNoTransaction": true,
+    "staleBeforePutAbortsTransaction": true,
+    "staleWriteCount": 0
+  },
+  "implemented": [
+    "Native CNM binary-string import/export restricted to an owned fresh snapshot; path, header, square dimensions, exact encoded length, file count and stored bytes validated. Original FloatCache decoding and CNG refill-on-IO-failure remain unchanged.",
+    "Automatic browser-local reuse for cached scalar/style/height/region/biome/density previews. No generated samples, terrain or tiles are sent to the server.",
+    "SHA-256 namespace includes Wasm/runtime/kernel/server/registry identity, seed, dimension/buffet choice, style/native/derived generator configuration and actual pack content hashes; viewport coordinates do not invalidate native tiles.",
+    "IndexedDB payload/index writes and oldest-use eviction share a transaction; max eight namespaces/32 MiB encoded payload globally, 64 files/8 MiB per snapshot, native tile side <=1024. Storage unavailability falls back to native construction.",
+    "Checksums and headers are checked before any native restore; corrupt records are removed and rebuilt. Async request identity checks prevent stale restore and save mutations, including after DB open and before queued puts.",
+    "Workspace settings action invalidates previews and clears the dedicated tile/index stores. Worker scalar results expose cold/restore/discard/save diagnostics."
+  ],
+  "limitations": [
+    "One 3x3 tile/44 encoded bytes and four native points reused across cold/restored/corrupt phases: 12 scalar comparisons. No full tile/state/output sweeps.",
+    "Production IndexedDB transaction actions were exercised with controlled request/store objects, including eviction/rollback and stale boundaries. Actual browser database opening, cross-tab behavior, quota policy, persistence after restart, DOM settings action and GPU are not qualified.",
+    "Current automatic persistence covers scalar previews only; voxel-stage, procedural and marker previews remain snapshot-memory-only. Native filesystem/world persistence is unavailable.",
+    "32 MiB is an encoded payload admission limit, not total database size or measured peak heap. Browsers may evict local storage. Cache errors do not qualify native results.",
+    "Pinned source/dependency/native checksum issue #15, full registry/schema/assets, complete terrain options and mode/Mantle/REAL/browser lifecycle remain unqualified."
+  ],
+  "nextMilestone": "Extend original native generation stages and remaining host adapters; qualify real browser storage/UI and full application behavior when implementation is complete.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Broad application/native suites",
+    "Registry state or placement-pair exports/sweeps",
+    "Whole-volume output comparisons",
+    "GitHub test workflows"
+  ]
+}

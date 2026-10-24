@@ -30,3 +30,9 @@ The executed experiments do not attribute the checksum failure to the tested noi
 This upstream assertion provides an expected aggregate, not expected per-sample bits. The diagnostic can locate differences between captures, but an aggregate alone cannot identify the original fixture's first differing coordinate. Recovering its reference environment or expected capture remains necessary.
 
 The next investigation must establish the complete historical dependency and platform inputs, and obtain a justified fixture/reference environment or an evidenced upstream correction. Keep the original expectation, source pins, negative/large/fractional coordinates and seed coverage. Do not replace the checksum just to produce a green native test result.
+
+## Current 4.3.5 confirmation
+
+The single original `NoiseSeedCohesionTest.allStylesRetainPinnedSamples` assertion now also runs against Iris `c3359e0a16438b1bb8468901c6171dcefdf63f7f` and synchronized development VolmLib `210705c5ab1321dc74b86b48457fd6d5e0452944`. The fixture is freshly compiled without edits. Captured classpath JAR hashes and source commits are verified; the explicit no-EcoItems profile and disabled native Billow remain development inputs. One JUnit method executes and fails: expected `5059606393854142913`, observed `3659164368724912644`. No other suite, historical profile or per-sample capture is repeated.
+
+`node tools/checks/native-noise-checksum.mjs` writes local evidence and exits 1 on this real assertion failure. The runner does not supply an alternate expectation or swallow the failing command status. [Current evidence](../evidence/native-noise-checksum-4.3.5-2026-10-23.json) records source/fixture/runner/class/artifact identities. The same aggregate on the updated candidate does not identify the discrepancy's cause or establish shipping provenance. Recovering the original fixture environment/expected samples or an evidenced upstream correction remains necessary.

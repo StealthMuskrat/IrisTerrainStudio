@@ -1,0 +1,643 @@
+{
+  "scope": "native-upper-and-stack-layers-targeted",
+  "result": "pass",
+  "fixtures": 4,
+  "seeds": 1,
+  "layerColumns": 8,
+  "materialProbes": 16,
+  "physicalBiomeProbes": 16,
+  "invalidInputsRefused": 6,
+  "recoveryAndRelease": true,
+  "actualWorkerProtocol": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "wasmSha256": "09c1571351c59091ec625931bf7964df0cbad0961fb0ae3bf44120c367a9d3b2",
+  "sourceSha256": "535bcea5f17615f90f5ae9506a929ecfeebd99bb5f1425bb7a3c6675901c8475",
+  "layerKernelInputs": {
+    "scope": "native-layer-kernel-host-boundary",
+    "nativeClass": "art/arcane/iris/world/history/GenerationKernelV1",
+    "nativeClassSha256": "0ae0ab49bfafbb7048f8dbd23930551a97fcf1e862d80ede6ca07f07c5d98003",
+    "adaptedClassSha256": "a401dfa10d1aabcd1d39b2e1ad1276bd2c82aa2f5ecd0a4b7c5a4d5a7ffd91fc",
+    "methods": [
+      "<init>",
+      "createDimensionStackContext",
+      "createUpperContext",
+      "registerDimensionStack"
+    ],
+    "callbacks": 2,
+    "hostCalls": 3,
+    "adaptation": "Concrete IrisEngine parameter/call owners become Engine; native method instructions and lambda ordering retained. Runtime fingerprint, unrelated factory services and interface removed."
+  },
+  "results": [
+    {
+      "kind": "upper-cross",
+      "columns": [
+        {
+          "x": 1,
+          "z": 1,
+          "worldMinY": -32,
+          "upperDimension": "sky",
+          "dimensionStackLayers": 0,
+          "scalarFields": "host-dimension",
+          "upper": {
+            "surfaceY": 103,
+            "biome": "sky",
+            "region": "sky"
+          }
+        },
+        {
+          "x": -17,
+          "z": 33,
+          "worldMinY": -32,
+          "upperDimension": "sky",
+          "dimensionStackLayers": 0,
+          "scalarFields": "host-dimension",
+          "upper": {
+            "surfaceY": 103,
+            "biome": "sky",
+            "region": "sky"
+          }
+        }
+      ],
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          102,
+          1,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          103,
+          1,
+          "minecraft:diorite",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          127,
+          1,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ]
+      ],
+      "terrainStages": 1,
+      "contentStages": 0,
+      "resources": [
+        {
+          "path": "dimensions/terrain3d.json",
+          "sha256": "26305f1894bf97464a94abbd9cd58541382dc03b2fedb95bc8d54ff29b3c7a62"
+        },
+        {
+          "path": "dimensions/sky.json",
+          "sha256": "fbe27f33087879e7145949a6cf93d70d1d881daa0c9c5515312fd883074ecfa1"
+        },
+        {
+          "path": "dimensions/middle.json",
+          "sha256": "710791f18c84eb188402066d6c1be8cf253e158405c05a63d6941a41e22731c5"
+        },
+        {
+          "path": "regions/floor.json",
+          "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+        },
+        {
+          "path": "regions/sky.json",
+          "sha256": "eed3663723e46fef05e61ffcd227857efb585ca1918186f894d9786fc1bfcbea"
+        },
+        {
+          "path": "regions/middle.json",
+          "sha256": "ea2c66ba5453207a2a7ff1cb4ed3250b8161e60225c8a386e146b05a8e6bb9ca"
+        },
+        {
+          "path": "biomes/floor.json",
+          "sha256": "0f90d168ea541747e285fbb2ebb8ba63e69adeffb799554b8b4463667cef8e5a"
+        },
+        {
+          "path": "biomes/sky.json",
+          "sha256": "32b50f1426981836a3a6836ce640e2f0abb1b27c6fd2c5fc3dc33a8fb6cd6b50"
+        },
+        {
+          "path": "biomes/middle.json",
+          "sha256": "1342ed2f60c3236f526c54110aae8e4a633a21cacca9d750f9d3e24fefc19bea"
+        },
+        {
+          "path": "generators/flat.json",
+          "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+        }
+      ]
+    },
+    {
+      "kind": "upper-self",
+      "columns": [
+        {
+          "x": 1,
+          "z": 1,
+          "worldMinY": -32,
+          "upperDimension": "terrain3d",
+          "dimensionStackLayers": 0,
+          "scalarFields": "host-dimension",
+          "upper": {
+            "surfaceY": 79,
+            "biome": "floor",
+            "region": "floor"
+          }
+        },
+        {
+          "x": -17,
+          "z": 33,
+          "worldMinY": -32,
+          "upperDimension": "terrain3d",
+          "dimensionStackLayers": 0,
+          "scalarFields": "host-dimension",
+          "upper": {
+            "surfaceY": 79,
+            "biome": "floor",
+            "region": "floor"
+          }
+        }
+      ],
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          78,
+          1,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          79,
+          1,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          127,
+          1,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ]
+      ],
+      "terrainStages": 1,
+      "contentStages": 0,
+      "resources": [
+        {
+          "path": "dimensions/terrain3d.json",
+          "sha256": "5061ea70cbd39eb2e3bf3b05dc26ccc4d4423f72dc952aaf3cb587ec4b6744a4"
+        },
+        {
+          "path": "dimensions/sky.json",
+          "sha256": "fbe27f33087879e7145949a6cf93d70d1d881daa0c9c5515312fd883074ecfa1"
+        },
+        {
+          "path": "dimensions/middle.json",
+          "sha256": "710791f18c84eb188402066d6c1be8cf253e158405c05a63d6941a41e22731c5"
+        },
+        {
+          "path": "regions/floor.json",
+          "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+        },
+        {
+          "path": "regions/sky.json",
+          "sha256": "eed3663723e46fef05e61ffcd227857efb585ca1918186f894d9786fc1bfcbea"
+        },
+        {
+          "path": "regions/middle.json",
+          "sha256": "ea2c66ba5453207a2a7ff1cb4ed3250b8161e60225c8a386e146b05a8e6bb9ca"
+        },
+        {
+          "path": "biomes/floor.json",
+          "sha256": "0f90d168ea541747e285fbb2ebb8ba63e69adeffb799554b8b4463667cef8e5a"
+        },
+        {
+          "path": "biomes/sky.json",
+          "sha256": "32b50f1426981836a3a6836ce640e2f0abb1b27c6fd2c5fc3dc33a8fb6cd6b50"
+        },
+        {
+          "path": "biomes/middle.json",
+          "sha256": "1342ed2f60c3236f526c54110aae8e4a633a21cacca9d750f9d3e24fefc19bea"
+        },
+        {
+          "path": "generators/flat.json",
+          "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+        }
+      ]
+    },
+    {
+      "kind": "stack-blend",
+      "columns": [
+        {
+          "x": 1,
+          "z": 1,
+          "worldMinY": -32,
+          "upperDimension": null,
+          "dimensionStackLayers": 3,
+          "scalarFields": "host-dimension",
+          "stack": {
+            "terrainTopY": 102,
+            "topY": 102,
+            "layersBottomToTop": [
+              {
+                "dimension": "terrain3d",
+                "baseY": 0,
+                "surfaceY": 48,
+                "fluidY": 32,
+                "contentTopY": 48,
+                "renderMinY": 0,
+                "renderMaxY": 48,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "floor"
+              },
+              {
+                "dimension": "middle",
+                "baseY": 57,
+                "surfaceY": 70,
+                "fluidY": 57,
+                "contentTopY": 70,
+                "renderMinY": 57,
+                "renderMaxY": 70,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "middle"
+              },
+              {
+                "dimension": "sky",
+                "baseY": 78,
+                "surfaceY": 102,
+                "fluidY": 78,
+                "contentTopY": 102,
+                "renderMinY": 78,
+                "renderMaxY": 102,
+                "seamOffsetBelow": -1,
+                "visible": true,
+                "biome": "sky"
+              }
+            ]
+          }
+        },
+        {
+          "x": -17,
+          "z": 33,
+          "worldMinY": -32,
+          "upperDimension": null,
+          "dimensionStackLayers": 3,
+          "scalarFields": "host-dimension",
+          "stack": {
+            "terrainTopY": 100,
+            "topY": 100,
+            "layersBottomToTop": [
+              {
+                "dimension": "terrain3d",
+                "baseY": 0,
+                "surfaceY": 48,
+                "fluidY": 32,
+                "contentTopY": 48,
+                "renderMinY": 0,
+                "renderMaxY": 48,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "floor"
+              },
+              {
+                "dimension": "middle",
+                "baseY": 57,
+                "surfaceY": 68,
+                "fluidY": 57,
+                "contentTopY": 68,
+                "renderMinY": 57,
+                "renderMaxY": 68,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "middle"
+              },
+              {
+                "dimension": "sky",
+                "baseY": 76,
+                "surfaceY": 100,
+                "fluidY": 76,
+                "contentTopY": 100,
+                "renderMinY": 76,
+                "renderMaxY": 100,
+                "seamOffsetBelow": -1,
+                "visible": true,
+                "biome": "sky"
+              }
+            ]
+          }
+        }
+      ],
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          49,
+          1,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          58,
+          1,
+          "minecraft:stone",
+          "minecraft:desert"
+        ],
+        [
+          1,
+          102,
+          1,
+          "minecraft:diorite",
+          "minecraft:forest"
+        ]
+      ],
+      "terrainStages": 5,
+      "contentStages": 9,
+      "resources": [
+        {
+          "path": "dimensions/terrain3d.json",
+          "sha256": "ce20b6832cbc7feec9b1aa4adb54f8efbaf91c45f08e95660451d449621f3148"
+        },
+        {
+          "path": "dimensions/sky.json",
+          "sha256": "fbe27f33087879e7145949a6cf93d70d1d881daa0c9c5515312fd883074ecfa1"
+        },
+        {
+          "path": "dimensions/middle.json",
+          "sha256": "710791f18c84eb188402066d6c1be8cf253e158405c05a63d6941a41e22731c5"
+        },
+        {
+          "path": "regions/floor.json",
+          "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+        },
+        {
+          "path": "regions/sky.json",
+          "sha256": "eed3663723e46fef05e61ffcd227857efb585ca1918186f894d9786fc1bfcbea"
+        },
+        {
+          "path": "regions/middle.json",
+          "sha256": "ea2c66ba5453207a2a7ff1cb4ed3250b8161e60225c8a386e146b05a8e6bb9ca"
+        },
+        {
+          "path": "biomes/floor.json",
+          "sha256": "0f90d168ea541747e285fbb2ebb8ba63e69adeffb799554b8b4463667cef8e5a"
+        },
+        {
+          "path": "biomes/sky.json",
+          "sha256": "32b50f1426981836a3a6836ce640e2f0abb1b27c6fd2c5fc3dc33a8fb6cd6b50"
+        },
+        {
+          "path": "biomes/middle.json",
+          "sha256": "523c578efe3716ebf4124458f388d01de24b701428b5b71d905b57179d487981"
+        },
+        {
+          "path": "generators/flat.json",
+          "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+        }
+      ]
+    },
+    {
+      "kind": "stack-simple",
+      "columns": [
+        {
+          "x": 1,
+          "z": 1,
+          "worldMinY": -32,
+          "upperDimension": null,
+          "dimensionStackLayers": 3,
+          "scalarFields": "host-dimension",
+          "stack": {
+            "terrainTopY": 102,
+            "topY": 102,
+            "layersBottomToTop": [
+              {
+                "dimension": "terrain3d",
+                "baseY": 0,
+                "surfaceY": 48,
+                "fluidY": 32,
+                "contentTopY": 48,
+                "renderMinY": 0,
+                "renderMaxY": 48,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "floor"
+              },
+              {
+                "dimension": "middle",
+                "baseY": 57,
+                "surfaceY": 69,
+                "fluidY": 57,
+                "contentTopY": 69,
+                "renderMinY": 57,
+                "renderMaxY": 69,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "middle"
+              },
+              {
+                "dimension": "sky",
+                "baseY": 78,
+                "surfaceY": 102,
+                "fluidY": 78,
+                "contentTopY": 102,
+                "renderMinY": 78,
+                "renderMaxY": 102,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "sky"
+              }
+            ]
+          }
+        },
+        {
+          "x": -17,
+          "z": 33,
+          "worldMinY": -32,
+          "upperDimension": null,
+          "dimensionStackLayers": 3,
+          "scalarFields": "host-dimension",
+          "stack": {
+            "terrainTopY": 102,
+            "topY": 102,
+            "layersBottomToTop": [
+              {
+                "dimension": "terrain3d",
+                "baseY": 0,
+                "surfaceY": 48,
+                "fluidY": 32,
+                "contentTopY": 48,
+                "renderMinY": 0,
+                "renderMaxY": 48,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "floor"
+              },
+              {
+                "dimension": "middle",
+                "baseY": 57,
+                "surfaceY": 69,
+                "fluidY": 57,
+                "contentTopY": 69,
+                "renderMinY": 57,
+                "renderMaxY": 69,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "middle"
+              },
+              {
+                "dimension": "sky",
+                "baseY": 78,
+                "surfaceY": 102,
+                "fluidY": 78,
+                "contentTopY": 102,
+                "renderMinY": 78,
+                "renderMaxY": 102,
+                "seamOffsetBelow": 0,
+                "visible": true,
+                "biome": "sky"
+              }
+            ]
+          }
+        }
+      ],
+      "probes": [
+        [
+          0,
+          0,
+          0,
+          "minecraft:bedrock",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          49,
+          1,
+          "minecraft:air",
+          "minecraft:plains"
+        ],
+        [
+          1,
+          58,
+          1,
+          "minecraft:stone",
+          "minecraft:desert"
+        ],
+        [
+          1,
+          102,
+          1,
+          "minecraft:diorite",
+          "minecraft:forest"
+        ]
+      ],
+      "terrainStages": 2,
+      "contentStages": 1,
+      "resources": [
+        {
+          "path": "dimensions/terrain3d.json",
+          "sha256": "5384ce85d4ac29ef7121b7861b74fac6199c6632f418842da0dc5b3fc2a95ba3"
+        },
+        {
+          "path": "dimensions/sky.json",
+          "sha256": "fbe27f33087879e7145949a6cf93d70d1d881daa0c9c5515312fd883074ecfa1"
+        },
+        {
+          "path": "dimensions/middle.json",
+          "sha256": "710791f18c84eb188402066d6c1be8cf253e158405c05a63d6941a41e22731c5"
+        },
+        {
+          "path": "regions/floor.json",
+          "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+        },
+        {
+          "path": "regions/sky.json",
+          "sha256": "eed3663723e46fef05e61ffcd227857efb585ca1918186f894d9786fc1bfcbea"
+        },
+        {
+          "path": "regions/middle.json",
+          "sha256": "ea2c66ba5453207a2a7ff1cb4ed3250b8161e60225c8a386e146b05a8e6bb9ca"
+        },
+        {
+          "path": "biomes/floor.json",
+          "sha256": "0f90d168ea541747e285fbb2ebb8ba63e69adeffb799554b8b4463667cef8e5a"
+        },
+        {
+          "path": "biomes/sky.json",
+          "sha256": "32b50f1426981836a3a6836ce640e2f0abb1b27c6fd2c5fc3dc33a8fb6cd6b50"
+        },
+        {
+          "path": "biomes/middle.json",
+          "sha256": "1342ed2f60c3236f526c54110aae8e4a633a21cacca9d750f9d3e24fefc19bea"
+        },
+        {
+          "path": "generators/flat.json",
+          "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+        }
+      ]
+    }
+  ],
+  "date": "2026-10-22",
+  "nativeInputProfile": "terrain-no-eco-items",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "platformSourceServerJarSha256": "2488c374c69e4828d2088fbc258c3fde0851e57f02f3a1cebbe5c191b1a21a9b",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "registryManifestSha256": "839b5370aa88a9d9b947478efd7e18771b75132ddb4aa7dbec4e6422b5a5b7fc",
+  "commands": [
+    "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "node tools/checks/native-layers-smoke.mjs"
+  ],
+  "nativeBuildTestsRun": false,
+  "registryExportRun": false,
+  "fullStateOrVolumeComparisonRun": false,
+  "fullSuiteRun": false,
+  "githubWorkflowRun": false,
+  "sourceFiles": {
+    "tools/engine-build/GenerateLayerKernel.java": "d7e7fdf2bc7c764f7edfe2a1f1025860e24524e73f7278a1120114e61d82fd53",
+    "tools/checks/native-layers-smoke.mjs": "a2ba49f0df7acb1f2db79509f434e923e08331caaf66db84bb702592ff1520aa",
+    "tools/checks/NativeTerrainLinkCheck.java": "30c9825b8b10f87e35e4e54d23e33533dbd8621d5fe27a0d6d2a2016ebcbd21b",
+    "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java": "1d457345908cd4f18bf967af909c3023c3a94bc272ae8058cd25103cc580e853",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerLayerLayoutCache.java": "662c4e33bb9a23bd3b6890a9822fff15ae911f21f4a5506093bbcd0e23c8d480",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java": "c4db62d2292eff5674249691843480cd8298f9d22484983d7628a4311b8d23a2"
+  },
+  "limitations": [
+    "Native original terrain math is retained; the Java reference host and worker substitute platform storage/host services.",
+    "One seed and selected columns/probes do not qualify all layer options, collisions or full chunks.",
+    "Actual worker/client protocol is exercised under a Node VM/Worker transport shim; this is not a real browser/GPU run.",
+    "Imported upper object placement, active custom services, hydrology, saved-world transitions/transforms and full IrisEngine/REAL lifecycle remain unavailable.",
+    "Standalone cave/component diagnostics refuse dimension stacks; registered modes carry native stack ordering.",
+    "Dependency release provenance and the existing native all-style checksum mismatch remain unresolved."
+  ],
+  "releaseMatchVerified": false,
+  "completePipeline": false,
+  "distribution": {
+    "command": "node tools/build-app.mjs --require-engine",
+    "result": "pass",
+    "engineInstalled": true,
+    "matchingRegistryInstalled": true,
+    "qualifiedTerrainEngine": false,
+    "clientAssetsIncluded": false
+  }
+}

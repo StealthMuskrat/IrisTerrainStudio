@@ -1,0 +1,246 @@
+{
+  "scope": "minecraft-face-materials-targeted",
+  "result": "pass",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "nativeClassSha256": {
+    "net/minecraft/client/renderer/chunk/ChunkSectionLayer": "ff7872789c797fb1071c02659dc6cc1a201dfca91dfba3904ee65aebf8dd0ee6",
+    "net/minecraft/client/renderer/RenderPipelines": "ff85be3a108175ab731292d845325d2535996bdb0afb2a0d8369503a2aba6ad0",
+    "net/minecraft/client/renderer/texture/SpriteContents": "388655770b6c410bf85bf7f33d731daf15a67606b447b49e08f679e0caa1c615",
+    "com/mojang/blaze3d/platform/NativeImage": "1f3e80fdefd541829eaaaf24bb35bdd5fa2c8f45c3122805c6ffe872ceda85df",
+    "net/minecraft/client/resources/model/cuboid/CuboidModelElement$Deserializer": "2b304adeafe888f9add1f458e5ded9d68b68c9364c3cdbdccc152fafab12c30e"
+  },
+  "sourceSprites": 5,
+  "uvDecisions": 30,
+  "metadataDecisions": 8,
+  "layers": {
+    "opaque": {
+      "layer": "SOLID",
+      "alphaCutoff": 0,
+      "cull": true
+    },
+    "cutout": {
+      "layer": "CUTOUT",
+      "alphaCutoff": 0.5,
+      "cull": true
+    },
+    "blend": {
+      "layer": "TRANSLUCENT",
+      "alphaCutoff": 0.1,
+      "cull": true
+    }
+  },
+  "actualWorker": {
+    "storedCells": 4,
+    "faces": 4,
+    "materialBuffersTransferred": true,
+    "sectionCacheReuse": true,
+    "sourceVoxelsUnchanged": true
+  },
+  "controlledGpu": {
+    "materialBuffersBoundPerStream": true,
+    "indexedSortingPreservesMaterials": true,
+    "bufferCapacityReused": true,
+    "malformedBeforeUploadRefused": true,
+    "disposeExactlyOnce": true
+  },
+  "picking": {
+    "cutoutBoundary": true,
+    "translucentBoundary": true,
+    "nativeBackFacePolicy": true,
+    "metadataRetained": true
+  },
+  "animationInterpolationRetainsCutout": true,
+  "sourcePixelsUnchanged": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "recordedAt": "2026-10-22",
+  "nativeWasmSha256": "d5630df0d4352e4409fda2d3f31f89ada2a2c189fddc8788c3dce6441d58badb",
+  "nativeSourceArchiveSha256": "58ade1e26c3f8d6a1044574bdbd174b55f513e6716f9d39f574ed1655a493176",
+  "nativeWasmUnchanged": true,
+  "referenceRecord": {
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "captureSourceSha256": "fbba92247150d07d3a942d84200326284e95c9b8c079529a27694b3f66700b66",
+    "requestSha256": "cb40504b62a2900cdb494a15f8412a80cad66d0fafe7c07a07c9228e5c64c586",
+    "nativeClassSha256": {
+      "net/minecraft/client/renderer/chunk/ChunkSectionLayer": "ff7872789c797fb1071c02659dc6cc1a201dfca91dfba3904ee65aebf8dd0ee6",
+      "net/minecraft/client/renderer/RenderPipelines": "ff85be3a108175ab731292d845325d2535996bdb0afb2a0d8369503a2aba6ad0",
+      "net/minecraft/client/renderer/texture/SpriteContents": "388655770b6c410bf85bf7f33d731daf15a67606b447b49e08f679e0caa1c615",
+      "com/mojang/blaze3d/platform/NativeImage": "1f3e80fdefd541829eaaaf24bb35bdd5fa2c8f45c3122805c6ffe872ceda85df",
+      "net/minecraft/client/resources/model/cuboid/CuboidModelElement$Deserializer": "2b304adeafe888f9add1f458e5ded9d68b68c9364c3cdbdccc152fafab12c30e"
+    }
+  },
+  "referenceHost": "Original SpriteContents/NativeImage transparency bodies with owned image memory and animation frame-address hosts; original layer/pipeline metadata and element parsers execute unchanged.",
+  "pickingRegression": {
+    "date": "2026-10-21",
+    "scope": "committed model triangle picking, current atlas alpha, selected face outline and stored voxel inspection",
+    "fixture": {
+      "storedCells": 2,
+      "emittedFaces": 2,
+      "compactPickingBytes": 176,
+      "sourcePixels": 0
+    },
+    "checks": [
+      "slab empty-space and nearest actual triangles",
+      "current alpha pass-through and 127/255 versus 128/255 cutout",
+      "native opaque and blended backface culling",
+      "negative-world overhang owner and whole-cell clips",
+      "rotated model geometry and rotated UV interpolation",
+      "bounded compact coverage and malformed ray/alpha refusal",
+      "current one-pixel atlas reads, per-ray texel reuse and disposal",
+      "valid line-pipeline descriptor, selection buffer reuse, click miss, Escape, drag suppression and errors",
+      "remesh clears selection; stale same-volume inspection cannot focus",
+      "actual renderer camera ray and UI stored fields",
+      "unchanged block and biome buffers"
+    ],
+    "workspaceSha256": {
+      "packages/voxel-renderer/picking.mjs": "17c6ea22491eaec41335df7c23aa4f9929009dc7431a3ec4119a8aae3dad02db",
+      "packages/voxel-renderer/selection.mjs": "32bc0053412e7c19d174eb2f17dff508fd02f2280c15d39b3ddb1dfab4304a72",
+      "packages/voxel-renderer/mesh-worker.mjs": "187ebd6acdf1604a0807a4fb593003f428111634929fd8b7a54f8b0200d3635b",
+      "packages/voxel-renderer/world.mjs": "0d50766c4af56359cd8938f05590f88ec9b846b94bf3e888dabeed588ac74729",
+      "packages/resource-packs/atlas.mjs": "ea82f75626c00f70b5c1b2c6f325d0223c822691cbc81a8290469ed41afeb4eb",
+      "packages/voxel-renderer/mesh-buffers.mjs": "efb21c83bd3705b2d4922576492f921759dd8aae9698be26da73723f5ca5013e",
+      "apps/web/main.mjs": "2699caa3bca66cffb9b32a96efdd5dc08939c892920569e11b02ca853f07fe8d",
+      "apps/web/index.html": "22f39a5dea7990ebf8daf44f2d66d09d2c7f91248ab2ec94ac7bd03584584ec8",
+      "tools/checks/model-picking-smoke.mjs": "2f5564ca4a3866f92c61ac94c9246c2f287460bdb0a797afb932a67293ba0200"
+    },
+    "realBrowserVerified": false,
+    "webGpuVerified": false,
+    "minecraftClientParityVerified": false,
+    "complete": false,
+    "limits": "Controlled Node worker/canvas/device/input probes only. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. GPU raster edge/texel-boundary agreement and outline rendering remain unqualified."
+  },
+  "retainedMipmapRegression": {
+    "scope": "minecraft-client-mipmaps-targeted",
+    "result": "pass",
+    "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+    "nativeClassSha256": {
+      "net/minecraft/client/renderer/texture/MipmapGenerator": "fc7b87c713631960f7b89d364f8b2247cd5f537b48b4f2ce10733cdf0d058721",
+      "com/mojang/blaze3d/platform/TextureUtil": "4a0b84bfacb721967f27a695f9933ac15d131850b61cc29ea7c18cb504f0fa3b",
+      "net/minecraft/util/ARGB": "03cc9d35c6482408a96fdec73db7ab71ffb1b52e39b3b6fa7cb6e23fed126fee"
+    },
+    "referenceMethod": "Original MipmapGenerator/TextureUtil bytecode; only NativeImage allocation/pixel IO remapped to owned integer arrays. Original ARGB lookup tables and metadata codec execute unchanged.",
+    "cases": [
+      {
+        "name": "authored:block/mean",
+        "strategy": "mean",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:block/cutout",
+        "strategy": "cutout",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:item/cutout",
+        "strategy": "cutout",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:block/strict_cutout",
+        "strategy": "strict_cutout",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:block/dark_cutout",
+        "strategy": "dark_cutout",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:block/auto",
+        "strategy": "auto",
+        "levels": 3,
+        "pixels": 64
+      },
+      {
+        "name": "authored:block/opaque",
+        "strategy": "auto",
+        "levels": 2,
+        "pixels": 16
+      },
+      {
+        "name": "authored:block/empty",
+        "strategy": "auto",
+        "levels": 2,
+        "pixels": 16
+      },
+      {
+        "name": "authored:block/sheet",
+        "strategy": "cutout",
+        "levels": 2,
+        "pixels": 128
+      }
+    ],
+    "metadataCases": 8,
+    "metadataMatches": true,
+    "sourcePixelsUnchanged": true,
+    "controlledAtlas": {
+      "requestedLevels": 4,
+      "animatedSheetLevels": 3,
+      "smallSpriteClampsTo": 2,
+      "allLevelsAnimate": true,
+      "unchangedTickUploads": 0,
+      "alignedGutters": true,
+      "basePickingAlpha": true,
+      "failedEntryRetainsOwnership": true,
+      "byteBudgetRefusal": true,
+      "disposeExactlyOnce": true
+    },
+    "limits": {
+      "sourcePixels": 1048576,
+      "retainedMipBytes": 67108864
+    },
+    "inputSha256": "e86d87194ec48568d68ea91e325517fd5c7c3e935b14865bdad563fa32a01ea1",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingParity": false,
+    "terrainParityVerified": false
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "2699caa3bca66cffb9b32a96efdd5dc08939c892920569e11b02ca853f07fe8d",
+    "packages/resource-packs/atlas.mjs": "ea82f75626c00f70b5c1b2c6f325d0223c822691cbc81a8290469ed41afeb4eb",
+    "packages/voxel-renderer/mesh-worker.mjs": "187ebd6acdf1604a0807a4fb593003f428111634929fd8b7a54f8b0200d3635b",
+    "packages/voxel-renderer/models.mjs": "bc10e1d647bd2637881f6ac9cf43002715c5842c1a40306d8aaaa38b781963f4",
+    "packages/voxel-renderer/picking.mjs": "17c6ea22491eaec41335df7c23aa4f9929009dc7431a3ec4119a8aae3dad02db",
+    "packages/voxel-renderer/world.mjs": "0d50766c4af56359cd8938f05590f88ec9b846b94bf3e888dabeed588ac74729",
+    "tools/checks/client-face-culling-smoke.mjs": "313b0219ad91cb97883c36a49d36144f113ab09384ee732547cba14efc73ca21",
+    "tools/checks/client-fluid-tint-smoke.mjs": "0dc6f3b3ae3f02c31b1e24a2da66b54b1aaeafb463127c95bc3bf3b40d721c88",
+    "tools/checks/client-model-smoke.mjs": "372fb2823c6fbef18d61d46909f81d212e43da1adf9f10c5c716e2807aee2ee3",
+    "tools/checks/mesh-visibility-smoke.mjs": "e29a855a63c3c4ef6b94f01f2fd28ab59b4deabc7fc999a5f1da81b97b1814cd",
+    "tools/checks/model-picking-smoke.mjs": "2f5564ca4a3866f92c61ac94c9246c2f287460bdb0a797afb932a67293ba0200",
+    "tools/checks/voxel-sections-smoke.mjs": "53a5ca5e9136715067940e7079a053aa59749f2cbad2f54fdc14b9c56d7265a7",
+    "packages/resource-packs/client-face-material-data.json": "69b2992cbbf3cb637e9d3996ec301c4f9a12d55045ed0933cc23b200962e9db3",
+    "packages/resource-packs/face-materials.mjs": "56bf0c8a5ead6bffa48a7b1bf4efe9e875bd7cca8d01fd7dcf7a0bdb46dcdc81",
+    "packages/voxel-renderer/mesh-materials.mjs": "468ad09bbdac7a5ee1e1e967feba9b17c9357d052ccb962b9ed4d724789795b0",
+    "tools/checks/MinecraftFaceMaterialCheck.java": "fbba92247150d07d3a942d84200326284e95c9b8c079529a27694b3f66700b66",
+    "tools/checks/capture-client-face-materials.py": "a83853e77846834b03ffaf26b0a46c21524dce10017fcf2529635133bc053675",
+    "tools/checks/client-face-materials-smoke.mjs": "34b5cee3a9df179d82e6ecd8a0bafa1efe981483892e6dd813402a2c786f138a"
+  },
+  "commands": [
+    "python3 tools/checks/capture-client-face-materials.py --write-inputs",
+    "node tools/checks/client-face-materials-smoke.mjs",
+    "node tools/checks/model-picking-smoke.mjs",
+    "node tools/checks/client-mipmaps-smoke.mjs",
+    "node --check (changed JavaScript modules)",
+    "git diff --check",
+    "node tools/build-app.mjs --require-engine"
+  ],
+  "limits": [
+    "Actual browser/WebGPU execution and filtered/edge-pixel picking agreement remain unqualified.",
+    "Shade-direction override and light-emission metadata is retained and inspected, without implementing native world lighting.",
+    "32 Mi-pixel cumulative face-classification budget, 32-entry partial-UV LRU per texture and 1,048,576 source-pixel sheet cap bound new inspection work.",
+    "One vec4 per retained face is additional CPU/GPU data under existing section/mesh owners; parsed views are shared between upload and picking.",
+    "Full geometry/options/lighting/biome/native terrain/reference/release gates and supplied F8thful assets remain open."
+  ],
+  "developmentBuild": {
+    "result": "pass",
+    "nativeWasmUnchanged": true,
+    "qualifiedRelease": false
+  }
+}

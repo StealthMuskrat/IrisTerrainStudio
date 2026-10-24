@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-23",
+  "scope": "Local authorized default asset provisioning and native stacked-region spans",
+  "defaultAssets": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "One authored block type, two tiny source packs and a session-only custom pack; local default provisioning and authenticated startup",
+    "roots": 1,
+    "originalMetadataAndOverlayBytes": true,
+    "noticesRetained": true,
+    "unrelatedAndInactiveAssetsOmitted": true,
+    "baselineIncludesOverrideDependencies": true,
+    "atomicExistingOutputRefusal": true,
+    "installedDefaultsAutoLoad": true,
+    "enabledPreferenceRestores": true,
+    "noDuplicateArchiveStorage": true,
+    "customReplacementKeepsBaseline": true,
+    "storageUnavailableSessionWorks": true,
+    "realAuthenticatedHttp": true,
+    "clientHashRefusal": true,
+    "pathRefusal": true,
+    "optInStandalonePackaging": true,
+    "corruptInstallationRefusal": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "productionF8thfulVerified": false,
+    "projectFinished": false
+  },
+  "regionSpans": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "storedCells": 4,
+    "compressedBytes": 28,
+    "selectedRegionPicks": 8,
+    "bothActualMeshEmitters": true,
+    "noHeightExpandedIndices": true,
+    "cacheReuse": true,
+    "retainedBuffersUnchanged": true,
+    "malformedSpanRefusals": 6,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "nativeRegions": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "originalStackedPack": true,
+    "selectedOriginalRegionProbes": 10,
+    "points": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        15,
+        0
+      ],
+      [
+        0,
+        16,
+        0
+      ],
+      [
+        0,
+        31,
+        0
+      ],
+      [
+        0,
+        127,
+        0
+      ],
+      [
+        15,
+        0,
+        15
+      ],
+      [
+        15,
+        16,
+        15
+      ],
+      [
+        15,
+        32,
+        15
+      ],
+      [
+        15,
+        64,
+        15
+      ],
+      [
+        15,
+        127,
+        15
+      ]
+    ],
+    "expected": [
+      "bottom",
+      "bottom",
+      "bottom",
+      "middle",
+      "bottom",
+      "bottom",
+      "bottom",
+      "middle",
+      "bottom",
+      "bottom"
+    ],
+    "originalDefaultMethodExecuted": true,
+    "actualWasmWorkerClient": true,
+    "regionCount": 3,
+    "retainedSpans": 1280,
+    "nativeBoundaryQueries": 1536,
+    "retainedRegionBytes": 6148,
+    "expandedEquivalentBytes": 65536,
+    "cacheCharge": true,
+    "retainedAfterRelease": true,
+    "wasmSha256": "4dce63ee84c3fa6d4e4de454e2bcaed8c71c26552c7527301a2997c90b9298b7",
+    "sourceSha256": "af52e346025ce54c7b485455dc7cfc9443aab78911c9009e10bd0058f979f621",
+    "sourceHashes": {
+      "packages/iris-engine/java/studio/engine/terrain/TerrainRegionSnapshot.java": "d9c8d52b0bbc109179ee1afb4b4cb222707d1ee744deab7bf7b47b1bffd47c40",
+      "packages/shared/region-columns.mjs": "efff0591d720b87ad9063dde6fefcc5ebafbd97cc4f253c4576eb2ea997b85d7",
+      "apps/web/workers/iris-worker.js": "1a60fd7f87fda28bf69c67136e16e18f7984d1c708db7e2fc1ab34c4de319c7c",
+      "packages/iris-engine/client.mjs": "f32d1d484e854ec48f963e334142294b102f6fd6afc8cac6ac168abee0967378",
+      "tools/checks/NativeTerrainLinkCheck.java": "4f4c619f250db5e1c7c39324760c0a1116bca02c4d49c887f4578ed50bc5fc07"
+    },
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParity": false,
+    "projectFinished": false
+  },
+  "currentTextureLibraryRegression": "pass; four tiny JSON packs with controlled storage/dialog hosts",
+  "unstackedRegionRegression": "pass; four stored cells",
+  "sourceHashes": {
+    "apps/server/default-assets.mjs": "db0b69dc94e5154abf4dadcbf98d46980cf1c74643d904a2e8dd0e38295ec83e",
+    "apps/server/index.mjs": "33f755eeb90c9f0f3b24f8eb6b2289584fc4ccf47a58bbef97d058f9d21911b6",
+    "apps/web/lib/default-assets.mjs": "ad167fe0db021444530d2dea69e20a7d702fad84270af2f17859a17ff3535fd3",
+    "apps/web/lib/texture-library.mjs": "82dccc02ad70c030ade5c7c2fd6344683ae67243357fe5997f48e9d6b626aef7",
+    "apps/web/main.mjs": "8771cfe2ec67c61d889cdffee57b736cee92ccd611e47be36978c9d914712ee9",
+    "tools/assets/prepare-defaults.mjs": "3205aefaacefb774a33830a1b9e81cffeccaba7fd42f6c1279fba821280fdd95",
+    "tools/build-app.mjs": "0bd1e00da29b08c25cca415c4449db3ce90a4728d19cf4255e53e8c7c76afa2d",
+    "packages/shared/region-columns.mjs": "efff0591d720b87ad9063dde6fefcc5ebafbd97cc4f253c4576eb2ea997b85d7",
+    "packages/voxel-renderer/volume.mjs": "99d6a83c38f87f5be9843bbf9d03fd56008b4463c0ea4bbbda1e8c9d32f66bab",
+    "packages/voxel-renderer/cell-view.mjs": "df983571e30afa5fecf64477c864b26be02cb07136262623f5b7d8d4a2715992",
+    "packages/voxel-renderer/greedy-cells.mjs": "0332ed33c7aff42042268bafe08be65d8a7ad3840ce06d98730ef0f9011a4779",
+    "packages/voxel-renderer/mesh-worker.mjs": "1b90107e2c3f1ed4a3eac6096a0994404e4fb4bc9a6804fcca42be7a327e3584",
+    "tools/checks/default-assets-smoke.mjs": "43eff86057cc808fb59ede5a12b06cdcb1e82f1ec265361a16872c2a7ab660c7",
+    "tools/checks/region-spans-smoke.mjs": "4f4208667aabe41de0266b6125b38fcaa0c8f20818e7db44aadb6b164792177d",
+    "tools/checks/native-region-spans-smoke.mjs": "e67836cbd01ff990bbcc25213928ed7f4d826eda6abe34eb62d6c9ca0e0442a1",
+    "tools/checks/texture-library-smoke.mjs": "8d431a309acd2c264d419643beea0b7dbfc0c48f915cda1ad0e94c84e00baf01"
+  },
+  "latestStableObserved": {
+    "version": "4.3.5",
+    "commit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "publishedAt": "2026-10-22T18:02:45Z",
+    "source": "https://api.github.com/repos/VolmitSoftware/Iris/releases/latest",
+    "currentBridgeUpgraded": false
+  },
+  "noRegistryExport": true,
+  "noStateSweep": true,
+  "noBroadSuite": true,
+  "noGithubWorkflow": true,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "dockerExecuted": false,
+  "productionF8thfulVerified": false,
+  "projectFinished": false
+}

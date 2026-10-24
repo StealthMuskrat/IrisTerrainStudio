@@ -1,0 +1,213 @@
+{
+  "date": "2026-10-23",
+  "scope": "Native content-addressed custom biome authoring handles, retained definitions, colors and inspection/download",
+  "result": "pass",
+  "reference": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "developmentInputsSha256": "2443bdb6f6f8da616ed206825f353bcab4822c429cb0fc9f65024084c9e71297",
+    "registryInputsSha256": "ce9f1d5ac73c726077fd42a9dedcbd85b5ffa3cdf9770835fea9bd499a8e36ed",
+    "sourceServerJarSha256": "203daf198d4e63a1db4ec807d65b835669481efdbb2812802d0628a6119674b9",
+    "openJdkColorSourceSha256": "174e5a33418a93b70c21aa49ce2b8d39f11fe02d0db96961286f1426ee1fe002",
+    "nativeClassSha256": {
+      "art/arcane/iris/world/history/GenerationRegistryContractFactory": "6ce65b823c624a1839afe94f1733389578b454dc0cdfc12d81e6087665b1680c",
+      "art/arcane/iris/generation/biome/IrisBiomeCustom": "76c97019222fcf370edc9f2c8d1a8115bb68a9ebc807588fc12227ad206b841e",
+      "art/arcane/iris/generation/stage/IrisBiomeActuator": "13b66b9b06471499d92ccb6880e74fc573fd9f75496d9f37ba1b599b38e5017d",
+      "art/arcane/iris/pack/datapack/v263/DataFixerV263": "7e5ca4f0710a634d20082420dcd3f6323bb5302beffac97bee0d7edc5fb9d5fa",
+      "art/arcane/iris/pack/datapack/v1217/DataFixerV1217": "0dd7d8726be34bb83beff63db5d5567d289a7de990d7a3eaa9769d6e6ccc329c",
+      "net/minecraft/world/level/biome/Biome": "e256ccf440142ae8e73cc46fb32d1723f91e6307fc1ab93b36f070ad282062bb",
+      "net/minecraft/world/level/biome/BiomeSpecialEffects": "4bdf4045a43378140826906c2280086987b27bf7ab272962294ba06a9734b3ea"
+    },
+    "nativeSourceSha256": {
+      "core/src/main/java/art/arcane/iris/world/history/GenerationRegistryContractFactory.java": "7e3cb603950659ff7c1e942bb18a2cf6a6d019cdefc25ce71cff4a0b0f9643b6",
+      "core/src/main/java/art/arcane/iris/generation/biome/IrisBiomeCustom.java": "1c2d5322383b6b5979224fde5fcac9fc6e493f678524a8b822a65a0d2c62d777",
+      "core/src/main/java/art/arcane/iris/generation/stage/IrisBiomeActuator.java": "11fcb621193433eac2d78fd83b5ddd043c8cfaace40bd5f8679cf2f8f4868dd8",
+      "core/src/main/java/art/arcane/iris/pack/datapack/v263/DataFixerV263.java": "ffcf5f2abe91b97f9dc660ccbd3c71f38765c399f228a01d562c616c1e40d009",
+      "core/src/main/java/art/arcane/iris/pack/datapack/v1217/DataFixerV1217.java": "b8040ac60447d6d54b2cbc6d17481ea1ea6f9cd0912f05d993ba4a89bb60b81b"
+    },
+    "physicalBiomeScope": "Original native factory and actuator with virtual custom NativeBiome handles; no registered Minecraft world or epoch",
+    "colorScope": "Original Minecraft effects codec and Biome color methods with authored colormaps; no production pack color qualification"
+  },
+  "focusedCheck": {
+    "result": "pass",
+    "nativeReferenceIdentity": "4f7176a3ef7784b99cbd67a36de889a0898388e43a3db6f5e21d5d925d64de79",
+    "nativeReferenceReused": true,
+    "definitions": 2,
+    "physicalBiomeProbes": 4,
+    "materialProbes": 2,
+    "colorProbes": 8,
+    "reference": {
+      "definitions": [
+        {
+          "key": "iris:biomes/e907a2bfc136fa017e5b8586b81d742ddc187b3190874817a27451a50d19885e",
+          "id": "jade_雪",
+          "definitionJson": "{\n    \"surface_builder\": \"minecraft:grass\",\n    \"depth\": 0.125,\n    \"scale\": 0.05,\n    \"temperature\": 0.25,\n    \"downfall\": 0.6,\n    \"has_precipitation\": true,\n    \"precipitation\": \"rain\",\n    \"category\": \"plains\",\n    \"effects\": {\n        \"water_color\": \"#102030\",\n        \"grass_color\": \"#112233\",\n        \"foliage_color\": \"#445566\"\n    },\n    \"starts\": [],\n    \"carvers\": [],\n    \"features\": [],\n    \"attributes\": {\n        \"minecraft:visual/sky_color\": \"#79a8e1\",\n        \"minecraft:visual/fog_color\": \"#c0d8e1\",\n        \"minecraft:visual/water_fog_color\": \"#050533\",\n        \"minecraft:gameplay/natural_mob_spawns\": {\n            \"argument\": {\n                \"spawns_by_category\": {},\n                \"spawn_costs\": {}\n            },\n            \"modifier\": \"overlay\"\n        }\n    }\n}",
+          "colors": {
+            "grass": 4279312947,
+            "foliage": 4282668390,
+            "dry_foliage": 4290762903,
+            "water": 4279246896
+          }
+        },
+        {
+          "key": "iris:biomes/dbb489a463a0f0073f0de9137ff789fd1747ed9fa7ed1e7efc7338196d68dfa8",
+          "id": "copper",
+          "definitionJson": "{\n    \"surface_builder\": \"minecraft:grass\",\n    \"depth\": 0.125,\n    \"scale\": 0.05,\n    \"temperature\": 1.3,\n    \"downfall\": 0.2,\n    \"has_precipitation\": true,\n    \"precipitation\": \"rain\",\n    \"category\": \"plains\",\n    \"effects\": {\"water_color\": \"#abcdef\"},\n    \"starts\": [],\n    \"carvers\": [],\n    \"features\": [],\n    \"attributes\": {\n        \"minecraft:visual/sky_color\": \"#79a8e1\",\n        \"minecraft:visual/fog_color\": \"#c0d8e1\",\n        \"minecraft:visual/water_fog_color\": \"#050533\",\n        \"minecraft:gameplay/natural_mob_spawns\": {\n            \"argument\": {\n                \"spawns_by_category\": {},\n                \"spawn_costs\": {}\n            },\n            \"modifier\": \"overlay\"\n        }\n    }\n}",
+          "colors": {
+            "grass": 4278242048,
+            "foliage": 4278242048,
+            "dry_foliage": 4278242048,
+            "water": 4289449455
+          }
+        }
+      ],
+      "biomes": [
+        [
+          0,
+          0,
+          0,
+          "iris:biomes/dbb489a463a0f0073f0de9137ff789fd1747ed9fa7ed1e7efc7338196d68dfa8"
+        ],
+        [
+          8,
+          8,
+          8,
+          "iris:biomes/e907a2bfc136fa017e5b8586b81d742ddc187b3190874817a27451a50d19885e"
+        ],
+        [
+          15,
+          31,
+          15,
+          "iris:biomes/e907a2bfc136fa017e5b8586b81d742ddc187b3190874817a27451a50d19885e"
+        ],
+        [
+          4,
+          16,
+          12,
+          "iris:biomes/e907a2bfc136fa017e5b8586b81d742ddc187b3190874817a27451a50d19885e"
+        ]
+      ],
+      "blocks": [
+        [
+          8,
+          8,
+          8,
+          "minecraft:grass_block[snowy=false]"
+        ],
+        [
+          8,
+          7,
+          8,
+          "minecraft:stone"
+        ]
+      ]
+    },
+    "actualWasmWorkerClient": true,
+    "actualMeshWorker": true,
+    "modelAndFluidTints": true,
+    "retainedDefinitionOwnership": true,
+    "controlledInspectionAndExactDownload": true,
+    "staleDownloadRefusal": true,
+    "cacheCharge": 4466,
+    "clientCacheReuse": true,
+    "scopeAndFailureRecovery": true,
+    "metadataRefusals": true,
+    "retainedBuffersUnchanged": true,
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "0ebcb848a50e6114a6328221672f09e2ca02970e7e33a74c65fa469d0791123d"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "025fee9de85dd73550ab5b219112db58637adbb17a3ae28ab97951aaaed1865a"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "wasmSha256": "238f161c6d1f1154879d31792056cb8a16ee96e4b1a874d29e373a96da767752",
+    "sourceSha256": "e8d5a0d222933d58534ebae1d63810b138335be80e48bedd2f73cd5d0de049e5",
+    "nativePhysicalReference": "virtual custom key handles; original key factory and biome actuator execute, not a registered world",
+    "nativeColorReference": "original Minecraft effects codec and biome color methods over authored colormaps",
+    "nativeRegistryEpoch": false,
+    "fullCustomBiomeParity": false,
+    "terrainParityVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "ownershipAndBounds": {
+    "definitions": 128,
+    "definitionCharacters": 65536,
+    "totalDefinitionCharacters": 1048576,
+    "idCharacters": 256,
+    "spawnsPerDefinition": 64,
+    "semanticJsonNodes": 4096,
+    "semanticJsonDepth": 64,
+    "clientCacheByteCharge": 4466,
+    "releaseAndFailedConstructionClearBindings": true,
+    "retainedDefinitionsSurviveRelease": true,
+    "worldChunksModified": false
+  },
+  "build": {
+    "nativeJavaAndWasm": "pass",
+    "requiredEngineAppPackage": "pass",
+    "wasmSha256": "238f161c6d1f1154879d31792056cb8a16ee96e4b1a874d29e373a96da767752",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "e8d5a0d222933d58534ebae1d63810b138335be80e48bedd2f73cd5d0de049e5",
+    "sourceArchiveRefresh": "Post-compile JavaScript/build-description/source-retention updates only; runtime Java unchanged after successful compilation",
+    "archiveMatchesCurrentSources": [
+      "packages/iris-engine/client.mjs",
+      "packages/iris-engine/custom-biomes.mjs",
+      "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "packages/iris-engine/java/studio/engine/biome/WorkerBiomeColor.java",
+      "packages/iris-engine/java/studio/engine/biome/WorkerCustomBiomes.java",
+      "packages/iris-engine/java/studio/engine/registry/BrowserRegistries.java",
+      "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java",
+      "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java",
+      "tools/engine-build/build.mjs",
+      "tools/engine-build/bundle-source.py"
+    ],
+    "registryReexported": false,
+    "exhaustiveStateSweep": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false
+  },
+  "sourceHashes": {
+    "apps/web/main.mjs": "c5c311360526cee5ae8cb5a28d40bcf09b5fd4ade545ec7e5a2825393c8a4de9",
+    "packages/iris-engine/client.mjs": "6654c15a5c16ce193c6190d37fb438ef22682ba16807230db255a2b69d4597e1",
+    "packages/iris-engine/custom-biomes.mjs": "a45ef1dcf794e54d719bb2ed758286ba5fb523b469fce1018f55568b1541e207",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "ff470e7562f6cc9ee3ba0a6d324050083347f82e91f0fc9edaf2aaef34de9c31",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java": "b3a1bfee82431d06e2ec52a152c6ab2daee7bc557a76c2ff835c9cd8dcc0127a",
+    "packages/iris-engine/java/studio/engine/biome/WorkerBiomeColor.java": "ee797c58962192f87f4543d33a3eba4700c8f9645d1846f55243053e9271eda0",
+    "packages/iris-engine/java/studio/engine/biome/WorkerCustomBiomes.java": "3884f6e324d59d0fe2e265d0381177b60238e29e36aa2cb1a8757b84aa41212a",
+    "packages/iris-engine/java/studio/engine/registry/BrowserRegistries.java": "153e8bff0aad5ad98848f61318381c09284282f9bb0ac8204259af1635bc00ff",
+    "packages/iris-engine/java/studio/engine/terrain/BrowserTerrainEngine.java": "1bf32c1916ac4613a71099323ad2e5bbbf1a453b3906d9b2acdef2609f7472b6",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainLayerDiagnostic.java": "fd97cf43e239ea7e3fb22abcb84da31d15d5e44e655572a9f01372a09ff7f4da",
+    "packages/resource-packs/biome-tints.mjs": "f38da981c35bc17d947ca1c29e3d1751ba4af2d22fbc29f18c347890fd860ada",
+    "packages/voxel-renderer/mesh-worker.mjs": "b8637b2dc611bb7a6095484129803d5f6663324b21d975d0e8bf483bed2a90bb",
+    "tools/checks/NativeCustomBiomeCheck.java": "9e9f6d4440b80c3a766b0a93e080311e73298e20cd52dd32e9ed64cdb58bcbd0",
+    "tools/checks/NativeTerrainLinkCheck.java": "bcb3321fd1e0e218e4d9330163b4f75a8b0855adc9c5616d53324d550181541e",
+    "tools/checks/native-custom-biomes-smoke.mjs": "e82f0d3974c294b3ad93950b097cbc0c6b0d3135bd57a3bfa7d06825644681d1",
+    "tools/engine-build/build.mjs": "f8df0e966c132ca8db260077b499d09d204e8bed44260eacd8358fe70fed7e35",
+    "tools/engine-build/bundle-source.py": "b4719d6725203d1e8c931ed4da0d1d124281e11b7ab74608ce55fc69f923c2f5"
+  },
+  "qualification": {
+    "nativeRegistryEpoch": false,
+    "liveRegistryInstallation": false,
+    "fullCustomBiomeParity": false,
+    "fullEngineLifecycle": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "nativeChecksumIssue15Resolved": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "projectFinished": false
+  }
+}

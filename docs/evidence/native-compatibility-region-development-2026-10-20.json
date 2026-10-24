@@ -1,0 +1,370 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-compatibility-and-region-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "2f825fb91dd1dc7e4f93a27fad2c48675fca80b8c172045be98102bc1fd00ff0",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "474bdf84e0d777723f39802fa87431df91ee53474f3f580a1277c04616319cf7",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "registry": {
+    "sourceServerJarSha256": "841f58fe2a961c24705720054db0cc671bc7760db1e0e6992ed463b19cb8aa89",
+    "browserInputSha256": "c581f6fc425cf104723a7a0de8d7a33a0447cecc21ecf2d89aab3b30adb2bb47",
+    "browserInputBytes": 6720017,
+    "blocks": 1286,
+    "states": 35723,
+    "files": {
+      "blocks.json": {
+        "sha256": "f0dc818bc1dc0547feccbb0c7707bcdcb2cba699f09859aa3286068e3a236d54",
+        "sourceReportSha256": "7a0de8aaf7b04d00c40b8ffdc4cfe75184cff2e821d336a020573201867105a4",
+        "bytes": 3753935
+      },
+      "registries.json": {
+        "sha256": "9bf25314dd593ee4e48a79c88af57dc749b8320d43653512de87a52ca748e947",
+        "sourceReportSha256": "6516af3f795065942317b87fc7ee005bfa5a65bfe560eb5053edc9b414ad3711",
+        "bytes": 357890
+      },
+      "native-predicates.json": {
+        "sha256": "cb4ea6a0dfca404276a80fb17b2ec9d84c7e3332d78a6794b0317185b1c4312f",
+        "bytes": 636871
+      },
+      "native-registries.json": {
+        "sha256": "5a12036e829a9cd38feee4828688f2ecee1cae007f6df92cb21ff23d8022044e",
+        "bytes": 220741
+      },
+      "browser-registry.json": {
+        "sha256": "c581f6fc425cf104723a7a0de8d7a33a0447cecc21ecf2d89aab3b30adb2bb47",
+        "bytes": 6720017
+      }
+    }
+  },
+  "focusedCheck": {
+    "command": "node tools/checks/native-registry-link.mjs",
+    "result": "pass",
+    "stateParserCases": 18,
+    "partialPropertyMatchCases": 4,
+    "compatibilityScenarios": 6,
+    "regionSelections": 192,
+    "worldSeeds": [
+      "0",
+      "1",
+      "-9007199254740993",
+      "9223372036854775807"
+    ],
+    "nativeOracle": "Unmodified NativeBlockResolver/ModdedBlockState, ContentGate/CompatWalker and RegionSelection.restore, with actual headless native registries and actual IrisData/Gson loading",
+    "caseResults": [
+      {
+        "name": "baseline",
+        "excluded": false,
+        "findings": [],
+        "incomplete": false,
+        "regions": [
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ]
+        ]
+      },
+      {
+        "name": "missing-biome",
+        "excluded": true,
+        "findings": [
+          "minecraft:studio_missing_biome (biome)",
+          "  excluded biome ledges at derivative",
+          "  excluded region ledges at no land biomes remain",
+          "  excluded dimension terrain3d at no regions remain",
+          "  dropped region ledges at landBiomes[0] ledges",
+          "  dropped dimension terrain3d at regions[0] ledges"
+        ],
+        "incomplete": false
+      },
+      {
+        "name": "missing-block",
+        "excluded": true,
+        "findings": [
+          "minecraft:studio_missing_block (block)",
+          "  excluded biome ledges at layers[0].palette[0]",
+          "  excluded region ledges at no land biomes remain",
+          "  excluded dimension terrain3d at no regions remain",
+          "  dropped region ledges at landBiomes[0] ledges",
+          "  dropped dimension terrain3d at regions[0] ledges"
+        ],
+        "incomplete": false
+      },
+      {
+        "name": "fallback",
+        "excluded": false,
+        "findings": [
+          "minecraft:studio_missing_block (block)",
+          "  substituted biome ledges at layers[0].palette[0] (fallback minecraft:stone)"
+        ],
+        "incomplete": false,
+        "regions": [
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ]
+        ]
+      },
+      {
+        "name": "backup",
+        "excluded": false,
+        "findings": [
+          "minecraft:studio_missing_block (block)",
+          "  substituted biome ledges at layers[0].palette[0] (backup minecraft:stone)"
+        ],
+        "incomplete": false,
+        "regions": [
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ]
+        ]
+      },
+      {
+        "name": "weighted-regions",
+        "excluded": false,
+        "findings": [],
+        "incomplete": false,
+        "regions": [
+          [
+            "alternate",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "alternate"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "alternate",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "alternate",
+            "ledges",
+            "ledges",
+            "ledges"
+          ],
+          [
+            "ledges",
+            "ledges",
+            "alternate",
+            "alternate",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges",
+            "ledges"
+          ]
+        ]
+      }
+    ]
+  },
+  "implementation": [
+    "Native report-backed Java PlatformRegistries, adapter-owned immutable state handles, actual predicate bits, placement pairs, ore conversions, entity categories and leaf types",
+    "Actual native compatibility walker with preserved field, annotation and generic reflection metadata",
+    "Equivalent raw field metadata avoids TeaVM 0.16 Wasm reflection emitter null-generic bug; no native policy rewrite",
+    "Ordinary unfocused native RegionSelection.select uses real pack resources, filtered pools and actual SeedManager/CNG",
+    "Worker registry inputs are verified against the export manifest before installation",
+    "Inspector displays actual native exclusions and compatibility findings",
+    "Categorical WebGPU region map retains native region keys; stable identity colors are display encoding only",
+    "Exclusive engine-build lock and atomic generated-field JAR publication prevent concurrent build writes"
+  ],
+  "limitations": [
+    "No browser UI, GPU or complete application verification performed",
+    "No complete native block-parser or content-gating qualification",
+    "Custom block/content providers and custom biome registry contributions are not connected",
+    "Focused/buffet region selection and image-map sources fail explicitly",
+    "Biome composition, height/voxel generation, volumetric/cave/hydrology/material/decorator/object/tree systems remain unfinished",
+    "Native checksum mismatch and production release dependency provenance remain unresolved"
+  ]
+}

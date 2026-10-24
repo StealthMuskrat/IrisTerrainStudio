@@ -1,0 +1,265 @@
+{
+  "scope": "native-image-map-authoring-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "wasmSha256": "9476df8b496ec38e839a134ad2743cde1dbadbd03f3560149677889de9951c50",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "d6e3e04be51a317ff23909c097ad1f63d4073349c62afbc59c153e1ff65b3e81"
+  },
+  "compiler": {
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass",
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ]
+  },
+  "implementation": [
+    "Owned packed grayscale transparency expands to the pinned JDK 8-bit raster; scale-before-key comparison preserved at depths 1/2/4.",
+    "Native map inspection reports source/filter/edge/alpha metadata and clipped/unknown-color counts.",
+    "Editor samples one to sixteen finite world-coordinate pairs against unsaved map text and saved assets.",
+    "Original native sampler supplies scalar/height/legend outcomes and source/kernel bounds; per-coordinate errors retained.",
+    "Sampling requests share cancellation/stale async decode and cleanup ownership with inspection."
+  ],
+  "focusedCheck": {
+    "result": "pass",
+    "scope": "native-image-map-authoring-development-targeted",
+    "images": [
+      {
+        "name": "packed-key-1",
+        "width": 5,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 8,
+        "colorMode": "UNSUPPORTED"
+      },
+      {
+        "name": "packed-key-zero-2",
+        "width": 5,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 8,
+        "colorMode": "UNSUPPORTED"
+      },
+      {
+        "name": "packed-key-4",
+        "width": 5,
+        "height": 2,
+        "channels": 2,
+        "bitDepth": 8,
+        "colorMode": "UNSUPPORTED"
+      },
+      {
+        "name": "author-rgb",
+        "width": 2,
+        "height": 2,
+        "channels": 3,
+        "bitDepth": 8,
+        "colorMode": "RGB"
+      },
+      {
+        "name": "author-gray",
+        "width": 2,
+        "height": 2,
+        "channels": 1,
+        "bitDepth": 8,
+        "colorMode": "GRAYSCALE"
+      }
+    ],
+    "rawBandSamplesCompared": 76,
+    "maps": [
+      {
+        "key": "author-0",
+        "config": {
+          "source": "author-gray",
+          "type": "GRAYSCALE_HEIGHT",
+          "sampling": "BILINEAR",
+          "outOfBounds": "CLAMP",
+          "minimumHeight": 8,
+          "maximumHeight": 48,
+          "verticalOffset": 10
+        },
+        "contentHash": "3f26f95efc25b429f366ab34c4fdb540bd1c9fef7fd0dddb8e27dc64e3e5985b",
+        "clippedPixelCount": 1,
+        "unknownColorPixelCount": 0,
+        "samples": [
+          {
+            "x": 0,
+            "z": 0,
+            "type": "GRAYSCALE_HEIGHT",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "normalized": 0,
+            "worldHeight": 18
+          },
+          {
+            "x": 0.5,
+            "z": 0.5,
+            "type": "GRAYSCALE_HEIGHT",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "normalized": 0.5000000074505806,
+            "worldHeight": 38.000000298023224
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "GRAYSCALE_HEIGHT",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "normalized": 1,
+            "worldHeight": 48
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "GRAYSCALE_HEIGHT",
+            "insideSource": false,
+            "samplingKernelInsideSource": false,
+            "normalized": 0,
+            "worldHeight": 18
+          }
+        ]
+      },
+      {
+        "key": "author-1",
+        "config": {
+          "source": "author-rgb",
+          "type": "COLOR_MAP",
+          "colors": {
+            "#FF0000": "minecraft:stone"
+          },
+          "unknownColor": "FALLBACK",
+          "fallbackTarget": "minecraft:dirt"
+        },
+        "contentHash": "05d32b8ba95517fd85c9b5f565d6c8b364a2681a7916392ae92cadb46d2f6b3d",
+        "clippedPixelCount": 0,
+        "unknownColorPixelCount": 3,
+        "samples": [
+          {
+            "x": 0,
+            "z": 0,
+            "type": "COLOR_MAP",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "target": "minecraft:stone"
+          },
+          {
+            "x": 0.5,
+            "z": 0.5,
+            "type": "COLOR_MAP",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "target": "minecraft:stone"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "COLOR_MAP",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "target": "minecraft:dirt"
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "type": "COLOR_MAP",
+            "insideSource": false,
+            "samplingKernelInsideSource": false,
+            "target": "minecraft:dirt"
+          }
+        ]
+      },
+      {
+        "key": "author-2",
+        "config": {
+          "source": "author-rgb",
+          "type": "RGB_HEIGHT",
+          "sampling": "BICUBIC",
+          "outOfBounds": "ERROR"
+        },
+        "contentHash": "f0b7cf3014cf39a316993819f31d0fccee8cf68cf10b6806f1b8d5dd9a63601d",
+        "clippedPixelCount": 0,
+        "unknownColorPixelCount": 0,
+        "samples": [
+          {
+            "x": 0,
+            "z": 0,
+            "type": "RGB_HEIGHT",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "normalized": 0.9960938096046448,
+            "worldHeight": 318.5000228881836
+          },
+          {
+            "x": 0.5,
+            "z": 0.5,
+            "error": "Source coordinate -1 is outside 0..1"
+          },
+          {
+            "x": 1,
+            "z": 1,
+            "type": "RGB_HEIGHT",
+            "insideSource": true,
+            "samplingKernelInsideSource": true,
+            "normalized": 1,
+            "worldHeight": 320
+          },
+          {
+            "x": -1,
+            "z": 0,
+            "error": "Source coordinate -1 is outside 0..1"
+          }
+        ]
+      }
+    ],
+    "nativeMapSamplesCompared": 12,
+    "packedTransparencyDepths": [
+      1,
+      2,
+      4
+    ],
+    "nativePackedScaleBeforeKeyComparisonPreserved": true,
+    "actualWasmInspection": true,
+    "actualWorkerSampleErrorsRecoveryAndStaleDecode": true,
+    "clientValidationDispatchCancellation": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "9476df8b496ec38e839a134ad2743cde1dbadbd03f3560149677889de9951c50",
+    "sourceSha256": "d6e3e04be51a317ff23909c097ad1f63d4073349c62afbc59c153e1ff65b3e81",
+    "browserVerified": false,
+    "terrainParityVerified": false
+  },
+  "workspaceSha256": {
+    "apps/web/main.mjs": "121d38ca457a8bce67e18858a4fa68b5f50d8978edea2901275fc8c6de7ea008",
+    "apps/web/workers/iris-worker.js": "d5bc772db08bde885346afb6cec4170b62e16e6cd5e63ec580e7d31f8903a34a",
+    "packages/iris-engine/client.mjs": "42a38f036142ad2048e0a2da4879bfc9606b447b7aa64e70f68c2020bcc8abc0",
+    "packages/iris-engine/png.mjs": "631a70a0a929e05b40d5dbed8d88c3e8164089d70d06a0de75599725b2336ad9",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "dcfef3d90de153b5e1864696a499b7a5a2a1e3aeab2d6ed6587d187e731da205",
+    "packages/iris-engine/java/studio/engine/image/ImageMapInspection.java": "f91778cf67c55da5cb18e8888bac1d8895cb64187e4cccda3e7d87445978ba94",
+    "tools/checks/NativeImageAuthoringFixtures.java": "d9e57f9ad3f46da1ea019e9b2d24b37a4ec3b668d07bf65319e10d8ea80ae576",
+    "tools/checks/NativePngModesFixtures.java": "5268197790186dfdf7c4e8421235b41a30301c569a4fd3f13cd240e0d5bd490e",
+    "tools/checks/native-image-authoring-smoke.mjs": "05e2a4379f393491f187054a342fbda9e56d0f9f5e7417464e8cc7e7e146f926"
+  },
+  "algorithmReferences": [
+    "Pinned Iris IrisImage, CompiledIrisImageMap, IrisImageMapCompiler and IrisImageMapSourceMetadata; original class bytecode retained.",
+    "Pinned JDK java.desktop/com/sun/imageio/plugins/png/PNGImageReader.java; read-only reference included in source.zip."
+  ],
+  "limitations": [
+    "Real browser UI/IndexedDB/GPU verification remains pending.",
+    "Full map options and categorical dimension interactions remain unqualified.",
+    "Animation/profile/HDR input semantics remain unavailable.",
+    "Gray-alpha/indexed/native high-depth compiler eligibility remains unchanged.",
+    "Production registry/assets and dependency/release reference remain unqualified.",
+    "Application, full terrain and release verification remain incomplete."
+  ],
+  "broadSuiteRun": false,
+  "terrainVolumeSweepRun": false,
+  "registryExportOrSweepRun": false,
+  "githubWorkflowRun": false,
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false
+}

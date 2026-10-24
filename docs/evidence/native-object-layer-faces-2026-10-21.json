@@ -1,0 +1,616 @@
+{
+  "scope": "native-object-layer-and-decorator-faces-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "140dffe2de3d440e970f3c03cf09ba39dbcdb93bc45d87c0fcc241c7892b4838",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "2b7e10ea440ca87d609cc2b869824609fb6c65edc201bfc99645430a650365fd",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "implemented": [
+    "Original MantleObjectComponent.generateLayer including native source scheduling, cache calls, private plan builder, application, continuation capture, commit and logging",
+    "Engine-owned source-plan field host delegates to original native cache with existing explicit budgets/pass ownership; no native heap-derived default allocation",
+    "Remove worker scheduling loop, private source-plan builder bridge and unavailable cache holder",
+    "Original NativeBlockFaces and ModdedDecoratorHooks over owned state/property handles, native opposite-direction identities and captured FULL support predicates",
+    "Prepared sparse matter primary neighbor reads, original native secondary hunk bounds and cross-chunk support; explicit out-of-window refusal"
+  ],
+  "nativeInputs": [
+    {
+      "repository": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleObjectComponent.java",
+      "sha256": "3da3ee187aa85a08f7aabd9cf3436681c85cc3785f60cc1295bc4ac19ccf4d78"
+    },
+    {
+      "repository": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/world/history/HistoricalObjectContinuations.java",
+      "sha256": "d4876d8fc5e7fae202b5d5c9345510c8882a97db863fbacf109da571c498fce7"
+    },
+    {
+      "repository": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngine.java",
+      "sha256": "9aa598e40c93cae52f3f46b3069858823956f3388cf8fffc1f37d749b2e891ff"
+    },
+    {
+      "repository": "VolmLib",
+      "path": "native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeBlockFaces.java",
+      "sha256": "72c6fead1edc7bb13ed1726ab1dd145bcc49d1f48c6b6e5c51dff92b0b3eb3f1"
+    },
+    {
+      "repository": "Iris",
+      "path": "adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedDecoratorHooks.java",
+      "sha256": "f36162dae10f2a64277f959b3d4a99dc63ddecb44b1bcac49112dd1e3afc8bbe"
+    }
+  ],
+  "rotationAndFaceInputs": {
+    "scope": "pinned-native-rotation-inputs",
+    "sourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "jarSha256": "484eac9b112ea3bfe730326e81dc84343847b770029ef64338de82aea4ffd506",
+    "nativeSources": [
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateRotator.java",
+        "sha256": "98ccf4ccec61f30d812996b9ac65dc8620745333a6a1bba089da9630300dfb3a"
+      },
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeStateMerger.java",
+        "sha256": "abdda87c8618d8b258bf6fba0ae6311733aba835677eab4cf64acc610802173d"
+      },
+      {
+        "path": ".upstream/Iris/adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedStateRotator.java",
+        "sha256": "1c4555ed3e8817b7603c1952be362fd27079320d5eeb23b2f7e74405459d5a7d"
+      },
+      {
+        "path": ".upstream/VolmLib/native/minecraft-common/src/main/java/art/arcane/volmlib/nativelib/minecraft26_2/modded/NativeBlockFaces.java",
+        "sha256": "72c6fead1edc7bb13ed1726ab1dd145bcc49d1f48c6b6e5c51dff92b0b3eb3f1"
+      },
+      {
+        "path": ".upstream/Iris/adapters/modded-common/src/main/java/art/arcane/iris/modded/ModdedDecoratorHooks.java",
+        "sha256": "f36162dae10f2a64277f959b3d4a99dc63ddecb44b1bcac49112dd1e3afc8bbe"
+      }
+    ],
+    "minecraftClasses": {
+      "net/minecraft/world/level/block/state/properties/RotationSegment.class": "5ede57cefcb87f28ccdc2154f2d88ca69c3713d384e31c874d4b379f63a87025",
+      "net/minecraft/util/SegmentedAnglePrecision.class": "03fded4de6a259fafbab1446ae160b1a7d92bae48ecea6ac706ae19c3c7b0e7c"
+    },
+    "metadataSha256": "d1c144e4dfcd26b964504658460c1e0a8f1c71d13996cadc848d59d09e5c2666",
+    "generatedSources": [
+      {
+        "path": "RotationBindings.java",
+        "sha256": "836380eb99357fcd2c470b28e14b2cd202d1a2aae93e118dd7f5a74dca7d208f"
+      },
+      {
+        "path": "RotationTokens.java",
+        "sha256": "2f680b3ff3901d6c3badd850873e38d1619b3b4cffb7ba43f1762a6e148afe10"
+      }
+    ]
+  },
+  "focusedChecks": {
+    "nativeFaces": {
+      "scope": "native-decorator-face-correction-targeted",
+      "result": "pass",
+      "operations": 10,
+      "cases": [
+        {
+          "key": "minecraft:vine[north=true]",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": []
+          },
+          "result": "minecraft:vine[east=true,north=false,south=false,up=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [],
+            "secondary": []
+          },
+          "result": "minecraft:vine[east=false,north=false,south=false,up=true,west=false]"
+        },
+        {
+          "key": "minecraft:glow_lichen",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [],
+            "secondary": []
+          },
+          "result": "minecraft:glow_lichen[down=true,east=false,north=false,south=false,up=false,waterlogged=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                0,
+                0,
+                -1,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": [
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ]
+          },
+          "result": "minecraft:vine[east=true,north=true,south=false,up=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [],
+            "secondary": [
+              [
+                0,
+                0,
+                -1,
+                "minecraft:stone"
+              ]
+            ]
+          },
+          "result": "minecraft:vine[east=false,north=true,south=false,up=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 15,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": []
+          },
+          "result": "minecraft:vine[east=true,north=false,south=false,up=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                0,
+                1,
+                0,
+                "minecraft:oak_slab[type=top]"
+              ],
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": []
+          },
+          "result": "minecraft:vine[east=true,north=false,south=false,up=false,west=false]"
+        },
+        {
+          "key": "minecraft:vine",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                0,
+                1,
+                0,
+                "minecraft:oak_slab[type=bottom]"
+              ],
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": []
+          },
+          "result": "minecraft:vine[east=true,north=false,south=false,up=true,west=false]"
+        },
+        {
+          "key": "minecraft:glow_lichen[north=true,south=true,waterlogged=true]",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                0,
+                -1,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": [
+              [
+                -1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ]
+          },
+          "result": "minecraft:glow_lichen[down=true,east=false,north=false,south=false,up=false,waterlogged=true,west=true]"
+        },
+        {
+          "key": "minecraft:stone",
+          "neighbors": {
+            "x": 8,
+            "y": 4,
+            "z": 8,
+            "primary": [
+              [
+                1,
+                0,
+                0,
+                "minecraft:stone"
+              ]
+            ],
+            "secondary": []
+          },
+          "result": "minecraft:stone"
+        }
+      ],
+      "invalidStateCleanup": true,
+      "invalidNeighborOverflowRefused": true,
+      "wasmSha256": "140dffe2de3d440e970f3c03cf09ba39dbcdb93bc45d87c0fcc241c7892b4838",
+      "sourceSha256": "2b7e10ea440ca87d609cc2b869824609fb6c65edc201bfc99645430a650365fd",
+      "registryFixture": {
+        "scope": "test-only-native-session-registry",
+        "fixtureInput": true,
+        "blocks": 20,
+        "states": 252,
+        "placementPairs": 400,
+        "sourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+        "sha256": "3354603a05f6bd13eb74be13bcf8538c68e7eb2e7cc792532f170cae71de34a3",
+        "bytes": 199049
+      },
+      "nativeAlgorithmSha256": "72c6fead1edc7bb13ed1726ab1dd145bcc49d1f48c6b6e5c51dff92b0b3eb3f1",
+      "terrainGenerationVerified": false,
+      "browserVerified": false
+    },
+    "originalNativeObjectLayer": {
+      "result": "pass",
+      "scope": "native-cached-neighborhood-development-targeted",
+      "baseFixtures": 1,
+      "nativeGenerateLayer": true,
+      "seeds": 1,
+      "destinations": 2,
+      "requests": 4,
+      "probesCompared": 15,
+      "results": [
+        {
+          "x": 0,
+          "cache": {
+            "lookups": 9,
+            "builds": 9,
+            "replays": 0,
+            "drained": 0,
+            "retired": 0,
+            "retained": 9,
+            "retainedBytes": 51114,
+            "budgetBytes": 8388608,
+            "continuationChunks": 4,
+            "continuationBytes": 3171
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 2,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 50152
+          },
+          "journaledCells": 147,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              2,
+              34,
+              6,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              1,
+              36,
+              4,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        },
+        {
+          "x": 16,
+          "cache": {
+            "lookups": 18,
+            "builds": 12,
+            "replays": 0,
+            "drained": 0,
+            "retired": 0,
+            "retained": 12,
+            "retainedBytes": 67658,
+            "budgetBytes": 8388608,
+            "continuationChunks": 9,
+            "continuationBytes": 9155
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 3,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 16226
+          },
+          "journaledCells": 169,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              15,
+              34,
+              0,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              13,
+              36,
+              0,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        },
+        {
+          "x": 0,
+          "cache": {
+            "lookups": 27,
+            "builds": 14,
+            "replays": 2,
+            "drained": 0,
+            "retired": 0,
+            "retained": 12,
+            "retainedBytes": 67658,
+            "budgetBytes": 8388608,
+            "continuationChunks": 9,
+            "continuationBytes": 9155
+          },
+          "neighborhood": {
+            "sourceChunks": 9,
+            "contributingSources": 2,
+            "placementRadius": 7,
+            "inputChunkRadius": 2,
+            "sourceChunkRadius": 1,
+            "builtPlanBytes": 11448
+          },
+          "journaledCells": 147,
+          "probes": [
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ],
+            [
+              8,
+              8,
+              8,
+              "minecraft:stone"
+            ],
+            [
+              8,
+              63,
+              8,
+              "minecraft:air"
+            ],
+            [
+              2,
+              34,
+              6,
+              "minecraft:oak_log[axis=y]"
+            ],
+            [
+              1,
+              36,
+              4,
+              "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+            ]
+          ]
+        }
+      ],
+      "freshContextBuilds": 9,
+      "registryFixture": {
+        "scope": "test-only-native-session-registry",
+        "fixtureInput": true,
+        "blocks": 20,
+        "states": 252,
+        "placementPairs": 400,
+        "sourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+        "sha256": "3354603a05f6bd13eb74be13bcf8538c68e7eb2e7cc792532f170cae71de34a3",
+        "bytes": 199049
+      },
+      "wasmSha256": "140dffe2de3d440e970f3c03cf09ba39dbcdb93bc45d87c0fcc241c7892b4838",
+      "sourceSha256": "2b7e10ea440ca87d609cc2b869824609fb6c65edc201bfc99645430a650365fd",
+      "fullGeometryParityVerified": false,
+      "browserVerified": false
+    }
+  },
+  "checksExecuted": [
+    "node tools/checks/session-registry-fixture.mjs",
+    "node tools/checks/native-decorator-faces-smoke.mjs",
+    "node tools/checks/native-cached-neighborhood-smoke.mjs",
+    "targeted node syntax and git diff whitespace checks; artifact hash and pinned source identity checks"
+  ],
+  "continuationAudit": {
+    "historicalReplay": "HistoricalObjectContinuations.at returns empty without a TransitionGenerationPlan; historical fragments are not an additional ordinary-preview placement pass",
+    "nativeCompletion": "IrisEngine.generate removes the destination continuation slice and sets REAL only after its complete mode finishes",
+    "currentPreview": "Partial diagnostics retain bounded worker bytes; no invented historical consumption, complete-mode/REAL claims or persistent Minecraft world IO"
+  },
+  "limits": [
+    "Node-Wasm execution, not real browser/GPU verification",
+    "Ten supplied face-neighbor operations and 15 oak material probes; complete geometry/options and collision qualification remain open",
+    "Full mode ordering/completion, tile/custom-state and remaining terrain/resource adapters remain incomplete",
+    "Saved-world transition replay and disk persistence are unavailable",
+    "Test-only native registry has 20 types, 252 states and 400 selected placement pairs; not installed as application production registry",
+    "Fresh mapped server-JAR identity remains unqualified; historical captures are not silently substituted",
+    "Default full core/reference profile still affected by Eco dependency HTTP 521; explicit terrain profile excludes only the server inventory provider",
+    "Existing native all-style checksum mismatch remains unresolved"
+  ],
+  "changedSourceInputs": [
+    {
+      "path": "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerObjectSession.java",
+      "sha256": "d5c4b2441209ab1fb3624f0119378d94f100eb0f5131b538a478c6d40695d2fc"
+    },
+    {
+      "path": "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerObjectTransactions.java",
+      "sha256": "8110e124df5094b419bbbc27c3171f9c62c0abb9b6426e044587cdc6137d86c4"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "sha256": "00e39f70853be944470206fa1961b8dfb6606cf05b714b6f6f150ff5b58a3dc2"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "sha256": "133604c84686d1dbe61e8a24c955dda3030806f05f9ef51d978d644ff108a5a2"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerCaveStorage.java",
+      "sha256": "a7803c8b39363f3cdbabef3b1d7c8c24c35607110cd77f8e4c86042c6d1d1b77"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/WorkerDecoratorHooks.java",
+      "sha256": "e6441f126b391b61cbbaa5d2025324a1b1dcff559adec84f1854e3a578337703"
+    },
+    {
+      "path": "tools/checks/NativeSessionRegistryFixture.java",
+      "sha256": "6c6b1d905ba725648a5996e976e97b5b27e51ee3f57c0d11603a2e20724205c8"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "a22f7d024b1a3089a592a0e34569fd6498954f77b5d29e91044a741381c88243"
+    },
+    {
+      "path": "tools/checks/native-cached-neighborhood-smoke.mjs",
+      "sha256": "a307f1cfa038f4956d1739c58a4164ee8302771c3364c5bd1c7a9e64c96174b6"
+    },
+    {
+      "path": "tools/checks/session-registry-fixture.mjs",
+      "sha256": "729a9e9c6568a3a255361e613b8367e70738f9509720ccd7d2ea77b111a77364"
+    },
+    {
+      "path": "tools/engine-build/GenerateRotationBindings.java",
+      "sha256": "8a8716987ab00c3d80e3a7ad00adb825eb44bf67f09de9eae99ce02a17f6d22d"
+    },
+    {
+      "path": "tools/engine-build/build.mjs",
+      "sha256": "755092cea546184a543a8035f4a551c9d9ba4037ed8aff3647487d9963b64fbb"
+    },
+    {
+      "path": "tools/engine-build/rotation.mjs",
+      "sha256": "516a8e5045d605edaf1be33afc94845786d0afb7c5deeae03e6f22a4b7b02055"
+    },
+    {
+      "path": "packages/iris-engine/java/art/arcane/iris/generation/mantle/WorkerNativeSourcePlans.java",
+      "sha256": "decbb69ef0700423bba89360979583d58298d0e09ce345f5d06d280d173c4a85"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/registry/WorkerStateFaces.java",
+      "sha256": "013e7fccd4e80ceada8f53e63659e1a2b7a0a0695668282a4b9a311d637f54b8"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/DecoratorFaceDiagnostic.java",
+      "sha256": "7b0f66116708ff8b8487288bd6d4083022f4bfd31f4805dd58d20be48b48f25f"
+    },
+    {
+      "path": "tools/checks/NativeDecoratorFaceReference.java",
+      "sha256": "3f1123beb5f804535cdc9bbc86b7dc290c7c2bcba08de35246e44a3723ec9a05"
+    },
+    {
+      "path": "tools/checks/native-decorator-faces-smoke.mjs",
+      "sha256": "b0823b9d1fff5774275331811498884f1c8569977aac56eb8c669b464f6fe70b"
+    }
+  ],
+  "fullRegistryExportExecuted": false,
+  "broadSuiteExecuted": false,
+  "githubTestWorkflowInvoked": false,
+  "browserVerified": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "completePipeline": false
+}

@@ -1,0 +1,379 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-overworld-floating-material-stage-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "7ef22c6baec23f13cf3b678fbe5b187e0a34bd2840174a8cbb1fbbbec1744587",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "893846f3a083c4d213b5882b3b6460eafd757dcc0472450efbd5f83575e2b2e6",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "f294d1e62a2bc03f5554ab655fc7069a717901ec7bd842ebe1dd297e0e3d7529",
+  "focusedCheck": {
+    "command": "node tools/checks/native-floating-stage-link.mjs",
+    "result": "pass",
+    "chunks": 36,
+    "exactBlockStateComparisons": 2490368,
+    "worldSeeds": [
+      "0",
+      "9223372036854775807"
+    ],
+    "chunkOrigins": [
+      [
+        0,
+        0
+      ],
+      [
+        -16,
+        32
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "none",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 220,
+            "sha256": "5aa4057dce74c50d93d973a5978a3c4fc205623f8e6c2363f59aa9825e7f5179"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "flat",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 441,
+            "sha256": "6c7a7db638805720d1e32face2b677324d88d476774f11363b484e9eeb18c5c7"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "noise",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 557,
+            "sha256": "9aa21f7e052884cad61ae28c7f788f7ab98eae302957403c3eb3c66c43ac53c1"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "biome",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 442,
+            "sha256": "2645d86243e7cb2ad2b6b7270bb249437436d4f5ad38464e2d56db2a55107637"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "mirror",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 474,
+            "sha256": "49906cd621d2741fe67365fdd3a46684d3c2de77eadb506bb8a37e833f88adbe"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "custom",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 558,
+            "sha256": "3a60bca7b3a2f4b388334495d9ee1cc93a6a988622f7e00eda85e5bd8752f731"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "merged",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 695,
+            "sha256": "6a1c2c62a785f90bc873fa9305c56e98c500fd1ba0090dd88e546a461dd077db"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/second.json",
+            "bytes": 197,
+            "sha256": "a49273f149366113aec8486d3614043034c021258f87495de6c0c4e91c381e14"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "carved-fluid",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 556,
+            "sha256": "c91dc075f2271846668946a52b0fad2e2cfce5fe0c4edd4017646ab80e396549"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 268,
+            "sha256": "32c16d4c91ae36c89a63868217e1d6ec1673351f0f5f7267e38cc5ea6287a027"
+          }
+        ]
+      },
+      {
+        "name": "negative",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 229,
+            "sha256": "cc710e67246665e507d4a21e60ef7c59af2f832b8bf28e1cd8e8a55b6067978c"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 479,
+            "sha256": "0954deae035afa4fa68d0808d5e4219ba50c7a8a2c62669995aa530b7c3e1e27"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 140,
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          },
+          {
+            "path": "biomes/island.json",
+            "bytes": 286,
+            "sha256": "0db54710c1b44fa5ab6963271b6abf4ae2c597b77e25e6b97427d63a699ad4b2"
+          }
+        ]
+      }
+    ],
+    "statesExercised": [
+      "minecraft:air",
+      "minecraft:andesite",
+      "minecraft:bedrock",
+      "minecraft:diorite",
+      "minecraft:glass",
+      "minecraft:granite",
+      "minecraft:stone",
+      "minecraft:water[level=0]"
+    ],
+    "guards": [
+      "No entries agree exactly with preceding post stage",
+      "Flat island writes granite at world Y 188 above terrain",
+      "Negative-minimum absolute-Y clipping retains all island materials within 176..184",
+      "Custom biome registry contributions refuse instead of being silently skipped",
+      "Non-Overworld mode and unaligned origins refuse",
+      "Valid request succeeds after refusal"
+    ],
+    "reference": "Java 25 executes actual five-chunk MantleCarvingComponent, terrain painting, carve/post modification and IrisFloatingChildBiomeModifier in native Overworld prefix order. No saved world region is loaded or written."
+  },
+  "workerCheck": {
+    "command": "node tools/checks/native-floating-stage-worker.mjs",
+    "result": "pass",
+    "runtime": "Actual worker script and Wasm hosted in Node, not a browser",
+    "volumeCells": 98304,
+    "minWorldY": -64,
+    "origin": [
+      16,
+      -64,
+      -16
+    ],
+    "clientCacheBytes": 393216,
+    "checks": [
+      "Exact native-export cells and canonical palette",
+      "World-Y bedrock and island inspection",
+      "Cave-air properties and rendering metadata",
+      "Native component five-chunk source and floating/post/Overworld metadata",
+      "No-entry path",
+      "Non-Overworld refusal",
+      "Cancellation suppresses result",
+      "Typed client transfer and cache reuse with completion timeout"
+    ]
+  },
+  "harnesses": {
+    "tools/checks/native-floating-stage-link.mjs": "401ee68dbe0a284b69ff05a491e8488ea3cf0bb2ce61affc576572a707f62094",
+    "tools/checks/NativeTerrainLinkCheck.java": "bd18d64a01f83517f1fafd3de6e50774f46b90acda3cc0db69dbcb35ad1114cf",
+    "tools/checks/native-floating-stage-worker.mjs": "648df3bc50a37eefca70b021a9199238f277afa5ec6879b0ef280db57601e24e",
+    "apps/web/workers/iris-worker.js": "c87ce2fca1c216ee090d960c4b5aa24ab43acbe43bc01ffaa0ff2647844d86d1",
+    "packages/iris-engine/client.mjs": "b253b6fd085a5cbf6ef317deae285a99649c64c384f644ad6c949f860390cd79"
+  },
+  "boundaries": [
+    "Original IrisFloatingChildBiomeModifier and FloatingIslandSample algorithms are unchanged",
+    "Native top shape, edge ownership, merged-entry sampling, palette modes, feature ownership, local carving/fluid and context overlays remain native",
+    "Per-thread floating caches are cleared after preview, including failure",
+    "Custom biome resource-key epoch/registry services are explicit unsupported boundaries",
+    "Earlier post, component, dimension-cave and painting diagnostics remain separate"
+  ],
+  "limitations": [
+    "Block-state-only incomplete Overworld prefix; complete generated biome volume is not exposed",
+    "Natural cave decoration, content/deposit insertion, surface/floating decorators, perfection/custom stages and full Mantle/mode scheduling remain unfinished",
+    "Subterrain, hydrology, transitions, transforms, upper/stacked dimensions and terrain buffet remain unsupported",
+    "Complete floating-option coverage, custom registry contributions, browser/GPU/GC and final application verification remain unqualified",
+    "Image maps, expressions, persistent float caches and binary resources remain unconnected",
+    "Native checksum mismatch, release dependency provenance and authorized asset inputs remain release gates",
+    "No comprehensive application suite or GitHub workflow was run"
+  ]
+}

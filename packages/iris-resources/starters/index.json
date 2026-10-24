@@ -1,0 +1,42 @@
+{
+  "formatVersion": 1,
+  "starters": [
+    {
+      "id": "iris-terrain3d",
+      "name": "Volumetric stone terrain",
+      "description": "One linked dimension, region, biome and generator. Includes the source license and notice.",
+      "dimension": "dimensions/terrain3d.json",
+      "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+      "files": [
+        {
+          "path": "biomes/ledges.json",
+          "source": "probe/src/test/resources/terrain3d-pack/biomes/ledges.json",
+          "sha256": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90"
+        },
+        {
+          "path": "dimensions/terrain3d.json",
+          "source": "probe/src/test/resources/terrain3d-pack/dimensions/terrain3d.json",
+          "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+        },
+        {
+          "path": "generators/flat.json",
+          "source": "probe/src/test/resources/terrain3d-pack/generators/flat.json",
+          "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+        },
+        {
+          "path": "regions/ledges.json",
+          "source": "probe/src/test/resources/terrain3d-pack/regions/ledges.json",
+          "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+        },
+        {
+          "path": "LICENSE.txt",
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+        },
+        {
+          "path": "SOURCE-NOTICE.txt",
+          "sha256": "b23a664498dd8208b83b308a65483060d6613fd97b71b4cc6694e33ec4348b2f"
+        }
+      ]
+    }
+  ]
+}

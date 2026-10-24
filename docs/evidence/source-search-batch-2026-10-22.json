@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-22",
+  "scope": "bounded pack JSON source search, exact navigation and reviewed buffer replacements",
+  "fixture": {
+    "authoredSources": 3,
+    "sourceBytes": 117,
+    "pageBoundaryMatches": 33,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "literal regex metacharacters/non-overlap, Unicode case-fold offsets, exact line/column/source spans, CRLF-to-textarea selection mapping and bounded/cancelled/incomplete captures",
+    "selected source splices preserve BOM/CRLF/exact number and unknown tokens, treat $ replacement text literally, repair syntax and refuse duplicate/schema/stale/overlapping changes",
+    "controlled pack search includes actual unsaved source and invalid JSON, exact match navigation and pending capture cancellation",
+    "reviewed selected/cross-page replacement updates only the live buffer once in undo history; changed review text and stale ownership refuse without saving",
+    "actual application source navigation rejects stale disk/open text, and modal/native-field shortcuts cannot undo hidden workspace edits; implicit browsing-dialog submit stays open"
+  ],
+  "workspaceSha256": {
+    "packages/iris-resources/source-search.mjs": "7e4e929ecbdf171e92df3015e9ae72cf70081868b9e008e4406d63d74b79c2e3",
+    "apps/web/lib/search-tools.mjs": "d388740cfa7e740ea9172b3bcd97a1952461562bdc09f85013c283c39ade7549",
+    "apps/web/lib/json-navigation.mjs": "f4e7b8ecad816e986be75555077b6c12f824b9390d6a3f57eb9fe23e26e54c46",
+    "apps/web/main.mjs": "9c8e519b3f592d3e4e7a0cdd7cdd73fe265e724645fd4573e8f6c00369569e31",
+    "apps/web/index.html": "6eea4b30b11e1a22069540619b99e2fa0d3287232c98dbebbf382377e072519f",
+    "apps/web/styles.css": "16361887e6f23c4051097e71088aee669b5b03ae83ae084e6f34c764c6fa2c20"
+  },
+  "realBrowserVerified": false,
+  "indexedDbVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Three tiny authored sources, one 33-match UI boundary, pure modules and controlled Node DOM/application hosts. Literal source search is not semantic/native reference validation; JSON escapes are searched as written. Match/capture budgets and incomplete diagnostics are explicit; current-buffer replacement requires a complete capture and bounded valid JSON/schema result. Browser layout/focus/native selection/keyboard/storage/network interleaving and native/client/release verification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

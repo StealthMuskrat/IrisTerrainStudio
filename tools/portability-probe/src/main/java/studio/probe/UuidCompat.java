@@ -9,6 +9,11 @@ import java.nio.charset.StandardCharsets;
 
 /** Missing JDK UUID-v3 operations for TeaVM, checked independently against the native JDK. */
 public final class UuidCompat {
+    public static UUID fromBits(long most,long least){
+        String hi=Long.toHexString(most),lo=Long.toHexString(least);
+        hi="0000000000000000".substring(hi.length())+hi;lo="0000000000000000".substring(lo.length())+lo;
+        return UUID.fromString(hi.substring(0,8)+"-"+hi.substring(8,12)+"-"+hi.substring(12)+"-"+lo.substring(0,4)+"-"+lo.substring(4));
+    }
     private static final int[] SHIFTS = {
         7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,
         5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,

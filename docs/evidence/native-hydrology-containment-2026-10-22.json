@@ -1,0 +1,446 @@
+{
+  "scope": "native-hydrology-contained-deep-fluid-targeted",
+  "result": "pass",
+  "fixtures": 1,
+  "seeds": 1,
+  "blockProbes": 12,
+  "physicalBiomeProbes": 12,
+  "column": {
+    "scope": "native-hydrology-column-development",
+    "x": 59,
+    "z": 28,
+    "worldMinY": 0,
+    "runtimeSettingsFingerprint": "aca49614e28b69b8",
+    "settingsFingerprintPortable": false,
+    "tileSize": 256,
+    "publicationRadius": 32,
+    "available": true,
+    "present": true,
+    "heightBits": "4050000000000000",
+    "biome": "floor",
+    "naturalHeight": 64,
+    "seaLevel": 16,
+    "ocean": false,
+    "parentBiome": "floor",
+    "layers": [
+      {
+        "featureId": "482542c04a9a0168",
+        "featureType": "DEEP_POOL",
+        "courseId": "909e56d7f681606e",
+        "segmentId": "2faf7ea3658700f8",
+        "bedY": 18,
+        "fluidHeadY": 20,
+        "ceilingY": 20,
+        "channel": true,
+        "shore": false,
+        "grading": false,
+        "terrainOwned": true,
+        "fluidOwned": true,
+        "connectedFluid": true,
+        "fallingFluid": false,
+        "receivingPool": false,
+        "oceanApron": false,
+        "profile": "deep_lava",
+        "biome": "floor"
+      }
+    ],
+    "containment": {
+      "selection": "native-publication-halo",
+      "totalPlans": 2,
+      "maximumReportedPlans": 128,
+      "truncated": false,
+      "plans": [
+        {
+          "sourceId": "cfea7db18ae02e47",
+          "mode": "GENERATED_GROTTO",
+          "accepted": true,
+          "rejection": "NONE",
+          "actions": 41,
+          "baselinePreconditions": 41,
+          "touchesColumn": false,
+          "waterHeadY": 20,
+          "entry": [
+            60,
+            21,
+            -228
+          ],
+          "target": [
+            60,
+            20,
+            -228
+          ]
+        },
+        {
+          "sourceId": "909e56d7f681606e",
+          "mode": "GENERATED_GROTTO",
+          "accepted": true,
+          "rejection": "NONE",
+          "actions": 37,
+          "baselinePreconditions": 37,
+          "touchesColumn": true,
+          "waterHeadY": 20,
+          "entry": [
+            60,
+            21,
+            28
+          ],
+          "target": [
+            60,
+            20,
+            28
+          ]
+        }
+      ]
+    },
+    "admittedRoots": 2,
+    "admittedPlanningCalls": 2,
+    "admittedCarvingChunks": 3,
+    "chargedCarvingInputCells": 98304,
+    "terrainParityVerified": false
+  },
+  "results": [
+    {
+      "field": "overworld-terrain",
+      "probes": [
+        [
+          11,
+          18,
+          12,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          19,
+          12,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          20,
+          12,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          21,
+          12,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          12,
+          21,
+          12,
+          "minecraft:cave_air",
+          "minecraft:plains"
+        ],
+        [
+          0,
+          20,
+          0,
+          "minecraft:stone",
+          "minecraft:plains"
+        ]
+      ],
+      "hydrology": {
+        "nativeComponentFlag": true,
+        "wetSources": 10,
+        "fallingFluids": 0,
+        "dryAir": 1,
+        "sealGuards": 26,
+        "fluidUpdates": 0,
+        "sections": [
+          {
+            "internalSectionY": 1,
+            "wetSources": 10,
+            "fallingFluids": 0,
+            "dryAir": 1,
+            "sealGuards": 26,
+            "fluidUpdates": 0
+          }
+        ],
+        "profiles": [
+          {
+            "key": "deep_lava",
+            "wetSources": 10,
+            "fallingFluids": 0,
+            "dryAir": 1,
+            "sealGuards": 26
+          }
+        ],
+        "fluidSimulationExecuted": false,
+        "completePipeline": false
+      },
+      "admission": {
+        "planningRoots": 4,
+        "planningCalls": 4,
+        "carvingChunks": 6,
+        "carvingInputChunks": [
+          [
+            -13,
+            -31
+          ],
+          [
+            -13,
+            -15
+          ],
+          [
+            -13,
+            1
+          ],
+          [
+            3,
+            -31
+          ],
+          [
+            3,
+            -15
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "chargedCarvingInputCells": 196608,
+        "publicationLayerCellsCharged": 1024
+      }
+    },
+    {
+      "field": "overworld-mode",
+      "probes": [
+        [
+          11,
+          18,
+          12,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          19,
+          12,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          20,
+          12,
+          "minecraft:lava[level=0]",
+          "minecraft:plains"
+        ],
+        [
+          11,
+          21,
+          12,
+          "minecraft:stone",
+          "minecraft:plains"
+        ],
+        [
+          12,
+          21,
+          12,
+          "minecraft:cave_air",
+          "minecraft:plains"
+        ],
+        [
+          0,
+          20,
+          0,
+          "minecraft:stone",
+          "minecraft:plains"
+        ]
+      ],
+      "hydrology": {
+        "nativeComponentFlag": true,
+        "wetSources": 10,
+        "fallingFluids": 0,
+        "dryAir": 1,
+        "sealGuards": 26,
+        "fluidUpdates": 0,
+        "sections": [
+          {
+            "internalSectionY": 1,
+            "wetSources": 10,
+            "fallingFluids": 0,
+            "dryAir": 1,
+            "sealGuards": 26,
+            "fluidUpdates": 0
+          }
+        ],
+        "profiles": [
+          {
+            "key": "deep_lava",
+            "wetSources": 10,
+            "fallingFluids": 0,
+            "dryAir": 1,
+            "sealGuards": 26
+          }
+        ],
+        "fluidSimulationExecuted": false,
+        "completePipeline": false
+      },
+      "admission": {
+        "planningRoots": 4,
+        "planningCalls": 4,
+        "carvingChunks": 6,
+        "carvingInputChunks": [
+          [
+            -13,
+            -31
+          ],
+          [
+            -13,
+            -15
+          ],
+          [
+            -13,
+            1
+          ],
+          [
+            3,
+            -31
+          ],
+          [
+            3,
+            -15
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "chargedCarvingInputCells": 196608,
+        "publicationLayerCellsCharged": 1024
+      }
+    }
+  ],
+  "referenceKey": "62686104fe8291613cd2f25c5ffb68edc12117688b3f2ce91c9d7e7c95932056",
+  "actualWorkerClient": true,
+  "clientCacheReuse": true,
+  "carvingInputIdentityValidated": true,
+  "controlledStoredMetadataRefusals": {
+    "missingInput": true,
+    "contentOutsideScheduler": true,
+    "additionalTerrainGenerations": 0
+  },
+  "recoveryAndRelease": true,
+  "resources": [
+    {
+      "path": "dimensions/terrain3d.json",
+      "sha256": "0ad4a0fe7a12eb7f6c135d043ba3b9d816cd19881ab2863ae56d4aebf23da090"
+    },
+    {
+      "path": "regions/floor.json",
+      "sha256": "68001e74240beab097b0ef63d20ac7c5859cb201ef7bcfbf553939050246f07d"
+    },
+    {
+      "path": "biomes/floor.json",
+      "sha256": "24c913e5e334b855658f8b02fc242b1809a31853f1c5f3576d53474028fe0fd8"
+    },
+    {
+      "path": "generators/flat.json",
+      "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+    }
+  ],
+  "wasmSha256": "09673f10fa8c639952dcc885a4c328a11f86b8ece4b3b07261d36cf37aa2442a",
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "nativeInputProfile": "terrain-no-eco-items",
+  "platformSourceServerJarSha256": "a488d15f96528a935bd0860dceb84f46777551be15d1203b65bab5916bb5a35d",
+  "sourceSha256": "fe7cb5297ae66396475c927a251e860d29c91ec3279f0d910f9419d2f7be82ad",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "platform": {
+    "scope": "native-hydrology-column-development",
+    "declaredHeapBytes": 536870912,
+    "maximumPlanningRoots": 32,
+    "maximumPlanningCalls": 64,
+    "maximumSparseCarvingChunks": 256,
+    "maximumCarvingInputCells": 16777216,
+    "maximumPublicationLayerCells": 1048576,
+    "settingsFingerprintScope": "runtime-local-enum-identity",
+    "registeredOverworldMatter": true,
+    "registeredOverworldTransport": true,
+    "surfacePlanningMap": true,
+    "maximumHydrologyMapAxis": 256,
+    "maximumHydrologyMapSpan": 256,
+    "sharedCache": false,
+    "persistence": false,
+    "fullTerrainHydrology": false
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "860bdd7528e3648948dab173834c2fb3290881cafe8510e1df4c37e15489b91d"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "7fa6eeb4c074789c01bfdcb4da1eda782472d3c614c8914bf87085a335ff96bd"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/HydrologyDiagnostic.java",
+      "sha256": "926328dd7b2c309d638b1ddfb2351489d3842e9d3be9a11af4d2eccb786c762b"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/HydrologyMatterSnapshot.java",
+      "sha256": "89304323da3981149434bebc912f1d4582fd01c3921d9d7d8702a931f0d63f62"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/hydrology/WorkerHydrologyMatter.java",
+      "sha256": "6392cd160b1d0f9c1129f7e22ffab22e6e50755f63ef60260193bd7e4a7af8ed"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/terrain/OverworldTerrainStage.java",
+      "sha256": "5154907998c208732f89c6866de126e62eb87f92465a747445dcf0ce666c54f7"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "88f5469b8591724bd52540bd77963b986a07b4237530f67f63f43aacda70cab3"
+    },
+    {
+      "path": "tools/checks/hydrology-fixture.mjs",
+      "sha256": "3d0bea8e8b6fdbe877686b31df0dc589ff31366f91655e40276c8952f88b8539"
+    },
+    {
+      "path": "tools/checks/native-hydrology-containment-smoke.mjs",
+      "sha256": "217b963300188d90c54cc52a3fc6f8b07e2b653c06b9062c0ebb83d470d9597d"
+    }
+  ],
+  "settingsFingerprintComparison": {
+    "compared": false,
+    "reason": "Original enum identity hashes are runtime-local. Only fingerprint and platform admission counters are excluded from the semantic column comparison.",
+    "nativeRuntimeSettingsFingerprint": "29e79c8e816e6b53",
+    "workerRuntimeSettingsFingerprint": "aca49614e28b69b8"
+  },
+  "coverage": {
+    "acceptedNativeContainment": true,
+    "nativeCarvingInputExecution": true,
+    "nativeWetDrySealMatter": true,
+    "sectionAndProfileSummaries": true,
+    "outlyingInputTransport": true,
+    "fallingFluidExecution": false,
+    "fluidUpdateExecution": false,
+    "rejectedCaveDecisions": false,
+    "inputBudgetRefusal": false,
+    "fullOptionAndInteractionCoverage": false,
+    "actualBrowserUi": false,
+    "fullVolumeComparison": false,
+    "broadSuite": false,
+    "githubTests": false
+  },
+  "validation": {
+    "focusedCommand": "node tools/checks/native-hydrology-containment-smoke.mjs --reuse-reference",
+    "strictAdvancedWasmBuild": "pass",
+    "requiredEngineDevelopmentDistribution": "pass",
+    "changedJavaScriptSyntax": "pass",
+    "gitDiffCheck": "pass"
+  }
+}

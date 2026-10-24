@@ -1,0 +1,291 @@
+{
+  "scope": "native-terrain-mode-biome-volumes-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "33329c240fadd0e00c307f6d044f325fce0e6a65e3457e272814b9eff4bc6a7e",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "b462e8c1bf10d7462ee06d5601fca5fd0afaf9d2e7b1d994f3e265120df17099",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/EngineMode.java",
+      "sha256": "4ab6ad938165febae2167775b999c6a77ba177f4e89fa023934a5c6e18fe5397"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngineMode.java",
+      "sha256": "ad4d9d7b70d2b308d4431005fc42df31d9bbe7e8ecc908c7d17873cbabab8257"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeSuperFlat.java",
+      "sha256": "5a44a366ed3e4cd662a833298d58f09cc8f1028832be585aaa699c727fff821b"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeEnclosure.java",
+      "sha256": "fb98687aa67a0eed5613eb65f3da3e480241bcbe3dcb3e9424c439846f52d504"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mode/ModeIslands.java",
+      "sha256": "b5122b6cf8b64222f83ed6e75f5b7462a6cc4e2f6fc72ac44bf65b26523a42d3"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisBiomeActuator.java",
+      "sha256": "11fcb621193433eac2d78fd83b5ddd043c8cfaace40bd5f8679cf2f8f4868dd8"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisTerrainNormalActuator.java",
+      "sha256": "abb1c3a8075c9a92d4a95319617448a499cc7d367cc73435c948312bfc30cd05"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisTransitionGeometryActuator.java",
+      "sha256": "5c7ac83b0d26d121d7a528aef934c6972d03da764cc3c4c0182f2327f9d5142d"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/client.mjs",
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainModeStage.java",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerModeDispatch.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainBiomeStage.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainPaintStage.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "focusedCheck": {
+    "result": "pass",
+    "scope": "native-terrain-mode-volume-development-targeted",
+    "fixtures": 3,
+    "seeds": 1,
+    "blockProbesCompared": 12,
+    "biomeProbesCompared": 12,
+    "results": [
+      {
+        "mode": "SUPERFLAT",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:desert"
+          ],
+          [
+            3,
+            16,
+            6,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:desert"
+          ]
+        ],
+        "terrainStages": 1,
+        "contentStages": 0,
+        "cacheBytes": 98304,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "79904fc5cc304f064f51282eb34d32c498087087ff0a461f605b45cd45a6ea2d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "d8120c086cb1ac52a25a69182cfcc9997c168a2de7a564666ec3ae62eda48f03"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "mode": "ENCLOSURE",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:desert"
+          ],
+          [
+            3,
+            16,
+            6,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:desert"
+          ]
+        ],
+        "terrainStages": 1,
+        "contentStages": 0,
+        "cacheBytes": 98304,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "da78a6a5d779c4b2089fe3c57b9e48181f929a1d01bee2b97a4377a80ae2380d"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "d8120c086cb1ac52a25a69182cfcc9997c168a2de7a564666ec3ae62eda48f03"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "mode": "ISLANDS",
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:desert"
+          ],
+          [
+            3,
+            16,
+            6,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            8,
+            32,
+            8,
+            "minecraft:stone",
+            "minecraft:desert"
+          ],
+          [
+            15,
+            63,
+            15,
+            "minecraft:air",
+            "minecraft:desert"
+          ]
+        ],
+        "terrainStages": 1,
+        "contentStages": 0,
+        "cacheBytes": 98304,
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "4f0e855f2437ba6a22d16ab990d9fde2da0e87c4305db1acefd22b25570647e4"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "d8120c086cb1ac52a25a69182cfcc9997c168a2de7a564666ec3ae62eda48f03"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "actualWasmWorkerClient": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "voxelBiomeLookupAndRaycast": true,
+    "biomeBufferCacheAccountingAndEviction": true,
+    "nativeStageFailureAndRecovery": true,
+    "overworldModeRefuses": true,
+    "invalidBiomeCoverageRefuses": true,
+    "optionalOlderVolumesPreserved": true,
+    "controlledCancellation": true,
+    "wasmSha256": "33329c240fadd0e00c307f6d044f325fce0e6a65e3457e272814b9eff4bc6a7e",
+    "sourceSha256": "b462e8c1bf10d7462ee06d5601fca5fd0afaf9d2e7b1d994f3e265120df17099",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "checkCommands": [
+    "node tools/checks/native-modes-volume-smoke.mjs"
+  ],
+  "implemented": [
+    "Original ModeSuperFlat, ModeEnclosure and ModeIslands stage registration, EngineMode.generateTerrain, inline burst stage loop/context/failure handling, transition no-plan path and close lifecycle.",
+    "Bounded original block and physical-biome hunk serialization, typed biome-buffer transfer, client cache accounting/eviction and optional voxel biome lookup/raycast inspection.",
+    "Unsaved native snapshot/field routing and editor labels for the registered mode-stage preview; physical biome slice fixed-span controls."
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "The browser runner calls generateTerrain with a native ChunkContext; it does not call EngineMode.generate, IrisEngine.generate, saved-world capture/continuations, dimension-stack cleanup or Mantle/REAL finalization. Complete-pipeline flags remain false.",
+    "SUPERFLAT, ENCLOSURE and ISLANDS each register the same two actuators in the pinned source. The three small fixtures yield identical selected materials; this is not evidence of distinct topology, complete mode/options coverage or production support.",
+    "Only multicore=false dispatch is connected. WorkerModeDispatch executes tasks immediately; the original EngineMode stage loop, context scopes, failure capture and exception propagation remain native bytecode. Returned Future values are discarded at the pinned call site. burstAround and its helper lambdas explicitly refuse.",
+    "Physical biome volume output is connected for this mode-stage preview only; existing material/procedural stage previews keep their previous output. Custom biome registry contributions, historical transitions, transforms and upper/stacked dimensions remain unavailable.",
+    "The voxel inspector reports physical keys; biome tint/color lookup is not implemented and no colors are fabricated. Matching local assets remain required for rendering.",
+    "The actual Wasm module and worker/client execute under Node using the existing separate 20-type registry fixture and a controlled VM/Worker shim. Cancellation uses held dispatch; real browser transfer/GPU/GC/performance is unverified.",
+    "One fixture per mode, one seed, four selected block and biome cells each. Full geometry/option/collision, hydrology, custom registry, durable persistence and dependency/release qualification remain outstanding."
+  ],
+  "nextMilestone": "Continue Overworld custom/platform services and native mode/Mantle finalization, then extend authoritative biome output and remaining terrain resources without bypassing unsupported boundaries.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}

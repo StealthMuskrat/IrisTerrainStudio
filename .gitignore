@@ -12,3 +12,13 @@ __pycache__/
 .env
 .env.*
 !.env.example
+/packs/
+/apps/web/engine/generated/
+/.local-tools/
+/apps/web/engine/iris-generated/
+
+/apps/web/engine/registry-generated/
+
+/apps/web/engine/schema-generated/
+
+/logs/

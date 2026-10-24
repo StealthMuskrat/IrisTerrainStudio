@@ -1,0 +1,1880 @@
+{
+  "date": "2026-10-23",
+  "scope": "OpenJDK round(float/double) at original native Iris/VolmLib and pinned rotation call sites",
+  "result": "pass",
+  "reference": {
+    "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+    "sourceServerJarSha256": "203daf198d4e63a1db4ec807d65b835669481efdbb2812802d0628a6119674b9",
+    "developmentInputsSha256": "2443bdb6f6f8da616ed206825f353bcab4822c429cb0fc9f65024084c9e71297",
+    "openJdkMathSourceSha256": "a7196d1d35ff4b9e08117f39c6ca892e2219f19ca21c49b721a96e5ecbedb928",
+    "teavmTMathClassSha256": "410e700e678ffe78a63366f5d26663a3b74db4dd1b4f2a9ec6d7523c1dfc8a59",
+    "nativeClassSha256": {
+      "CNG": "a591a6965d69103f73bd1d0e95821ea4a5ed2cabd3eb6a59f4e2ed8494cb25d4",
+      "HexagonalNoise": "275a45471b07985e5b28d66a40f23b11e01b4aeda45dbd519e58d6402b8797c2"
+    }
+  },
+  "focusedCheck": {
+    "result": "pass",
+    "nativeReferenceIdentity": "8a4956beccbed0e48095afd5b8d8882a6751245adf7999d98bd9f047afed1aa5",
+    "nativeReferenceReused": false,
+    "doubleProbes": 26,
+    "floatProbes": 26,
+    "nativeCngFitProbes": 48,
+    "originalCngOverloads": 3,
+    "actualWasm": true,
+    "malformedInputRefused": true,
+    "recovery": true,
+    "bindings": [
+      {
+        "className": "studio.engine.NativeRoundingDiagnostic",
+        "doubleCalls": 1,
+        "floatCalls": 1
+      },
+      {
+        "className": "art.arcane.iris.generation.noise.IrisInterpolator",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.noise.IrisGenerator",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.runtime.IrisComplex",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IrisObjectRotation",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.terrain.Terrain3DColumn",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.image.IrisImage",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.math.RNG",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.noise.CNG",
+        "doubleCalls": 9,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.runtime.UpperDimensionContext",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.runtime.DimensionStackContext",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.runtime.IrisHydrologyRuntime",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.mantle.EngineMantle",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.subterrain.SubterrainPlan",
+        "doubleCalls": 10,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.context.ChunkContext",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.matter.Matter",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IrisObjectPlacement",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IObjectPlacer",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.stage.IrisDecorantActuator",
+        "doubleCalls": 1,
+        "floatCalls": 10
+      },
+      {
+        "className": "art.arcane.iris.generation.mantle.MantleCarvingComponent",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.stage.IrisPostModifier",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.biome.FloatingIslandSample",
+        "doubleCalls": 6,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.nativelib.minecraft26_2.modded.NativeStateRotator",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.IrisDepositGenerator",
+        "doubleCalls": 1,
+        "floatCalls": 3
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.fungus.IrisFungus",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.IrisProceduralTree",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.world.loot.IrisLoot",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.simd.ScalarSimdKernels",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.configuration.IrisSettings$IrisSettingsPregen",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.noise.HexagonalNoise",
+        "doubleCalls": 6,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.context.ChunkedDoubleDataCache",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.IrisShoreLineDecorator",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "net.minecraft.util.SegmentedAnglePrecision",
+        "doubleCalls": 0,
+        "floatCalls": 1
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.runtime.IrisHydrologyRoutingTerrainSampler",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.SurfaceCourseBuilder",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRouteGeometry",
+        "doubleCalls": 8,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRoutePath",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologySurfaceCoursePlanner",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologySegmentBuilder",
+        "doubleCalls": 11,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyFeatureSitePlanner",
+        "doubleCalls": 6,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalPlanner",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalRoute",
+        "doubleCalls": 16,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalHydraulics",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyFootprintCompiler",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.SurfaceFootprintCompiler",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyFootprintRasterizer",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyChannelGeometry",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyOceanReceiver",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalTributaries",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyDrainageGeometry",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.SurfaceCenterline",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.ValleyProfileSolver",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.ErosionFieldCompiler",
+        "doubleCalls": 13,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.SurfaceBankSupport",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.ChannelProfileBuilder",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.surface.RiverProfileSolver",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.stream.convert.RoundingStream",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.stage.IrisTerrainNormalActuator$ColumnPainter",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.mantle.MantleHydrologyCaveVoxelView",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.world.history.TransitionGenerationPlan$TerrainSample",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.mantle.SurfaceFluidBoundaryPlan",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.IrisSugarCane",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IrisObjectVacuum",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.pack.value.IrisRaritySelection",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.world.history.GenerationBlend",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalFlow",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalMorphology",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalRoute$CorridorSamples",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.hydrology.HydrologyRegionalRoute$CurvePoint",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.noise.CellGenerator",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.formation.FormationShapeBuilder",
+        "doubleCalls": 34,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeFunctions",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.coral.CoralGenerator",
+        "doubleCalls": 21,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.fungus.FungusGenerator",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.ruin.RuinGenerator",
+        "doubleCalls": 8,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.crystal.CrystalShardBuilder",
+        "doubleCalls": 6,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.fungus.FungusShelfBuilder",
+        "doubleCalls": 1,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.ruin.RuinShapes",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeTrunkBuilder",
+        "doubleCalls": 5,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeCanopyBuilder",
+        "doubleCalls": 14,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeDecoratorApplier",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeRootBuilder",
+        "doubleCalls": 15,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeSupport",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.fungus.FungusStemBuilder",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.fungus.FungusCapBuilder",
+        "doubleCalls": 4,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.generation.decoration.tree.TreeProfiles",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IrisObjectPlacementRunner",
+        "doubleCalls": 20,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.IrisObjectTransforms",
+        "doubleCalls": 3,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.iris.structure.object.HeightmapObjectPlacer",
+        "doubleCalls": 2,
+        "floatCalls": 0
+      },
+      {
+        "className": "art.arcane.volmlib.util.interpolation.Interpolation3D",
+        "doubleCalls": 30,
+        "floatCalls": 0
+      }
+    ],
+    "reference": [
+      {
+        "doubleBits": "0000000000000000",
+        "floatBits": "00000000",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "8000000000000000",
+        "floatBits": "80000000",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "3fd0000000000000",
+        "floatBits": "3e800000",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "bfd0000000000000",
+        "floatBits": "be800000",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "3fe0000000000000",
+        "floatBits": "3f000000",
+        "doubleRound": "1",
+        "floatRound": 1,
+        "nativeCngEqualRange": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "doubleBits": "bfe0000000000000",
+        "floatBits": "bf000000",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "3fdfffffffffffff",
+        "floatBits": "3effffff",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "3fe0000000000001",
+        "floatBits": "3f000001",
+        "doubleRound": "1",
+        "floatRound": 1,
+        "nativeCngEqualRange": [
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "doubleBits": "bfdfffffffffffff",
+        "floatBits": "beffffff",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "bfe0000000000001",
+        "floatBits": "bf000001",
+        "doubleRound": "-1",
+        "floatRound": -1,
+        "nativeCngEqualRange": [
+          -1,
+          -1,
+          -1
+        ]
+      },
+      {
+        "doubleBits": "3ff8000000000000",
+        "floatBits": "3fc00000",
+        "doubleRound": "2",
+        "floatRound": 2,
+        "nativeCngEqualRange": [
+          2,
+          2,
+          2
+        ]
+      },
+      {
+        "doubleBits": "bff8000000000000",
+        "floatBits": "bfc00000",
+        "doubleRound": "-1",
+        "floatRound": -1,
+        "nativeCngEqualRange": [
+          -1,
+          -1,
+          -1
+        ]
+      },
+      {
+        "doubleBits": "4004000000000000",
+        "floatBits": "40200000",
+        "doubleRound": "3",
+        "floatRound": 3,
+        "nativeCngEqualRange": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "doubleBits": "c004000000000000",
+        "floatBits": "c0200000",
+        "doubleRound": "-2",
+        "floatRound": -2,
+        "nativeCngEqualRange": [
+          -2,
+          -2,
+          -2
+        ]
+      },
+      {
+        "doubleBits": "0000000000000001",
+        "floatBits": "00000001",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "8000000000000001",
+        "floatBits": "80000001",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "doubleBits": "4340000000000000",
+        "floatBits": "4b000000",
+        "doubleRound": "9007199254740992",
+        "floatRound": 8388608,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "c340000000000000",
+        "floatBits": "cb000000",
+        "doubleRound": "-9007199254740992",
+        "floatRound": -8388608,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "43e0000000000000",
+        "floatBits": "4f000000",
+        "doubleRound": "9223372036854775807",
+        "floatRound": 2147483647,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "c3e0000000000000",
+        "floatBits": "cf000000",
+        "doubleRound": "-9223372036854775808",
+        "floatRound": -2147483648,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "43dfffffffffffff",
+        "floatBits": "4effffff",
+        "doubleRound": "9223372036854774784",
+        "floatRound": 2147483520,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "c3e0000000000001",
+        "floatBits": "cf000001",
+        "doubleRound": "-9223372036854775808",
+        "floatRound": -2147483648,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "7ff0000000000000",
+        "floatBits": "7f800000",
+        "doubleRound": "9223372036854775807",
+        "floatRound": 2147483647,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "fff0000000000000",
+        "floatBits": "ff800000",
+        "doubleRound": "-9223372036854775808",
+        "floatRound": -2147483648,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "7ff8000000000001",
+        "floatBits": "7fc00001",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": null
+      },
+      {
+        "doubleBits": "fff8000000000001",
+        "floatBits": "ffc00001",
+        "doubleRound": "0",
+        "floatRound": 0,
+        "nativeCngEqualRange": null
+      }
+    ],
+    "wasmSha256": "b4ef5214d87794a629061a1e6081b4b5ca2aa3414c9d2850ba95b6eded12fea9",
+    "sourceSha256": "b7e3c074dde18ec28860afc8069c05d445419f2bd623bcaef9a52bca368f19fc",
+    "registryLoaded": false,
+    "terrainGenerated": false,
+    "broadSuiteRun": false,
+    "terrainParityVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "ruinRegression": {
+    "result": "pass",
+    "nativeReferenceIdentity": "ac6016917cbf0e2bba59aa9d7a1cbb04111d75e0427ee2ffec1afc7d9f36872c",
+    "nativeReferenceReused": true,
+    "baseFixtures": 1,
+    "forms": [
+      "PILLAR",
+      "WALL",
+      "ARCH",
+      "FLOOR_SLAB",
+      "RUBBLE"
+    ],
+    "accentTargets": [
+      "TOP",
+      "SURFACE",
+      "BASE_SCATTER"
+    ],
+    "variantProbes": 15,
+    "terrainProbes": 21,
+    "reference": {
+      "variants": [
+        {
+          "index": 0,
+          "form": "PILLAR",
+          "seed": "17",
+          "key": "procedural/tiny-pillar#0",
+          "blockCount": 33,
+          "origin": [
+            -1,
+            -2,
+            -1
+          ],
+          "size": [
+            3,
+            5,
+            3
+          ],
+          "probes": [
+            [
+              -1,
+              -2,
+              -1,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              1,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              2,
+              -1,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 1,
+          "form": "WALL",
+          "seed": "18",
+          "key": "procedural/tiny-wall#0",
+          "blockCount": 75,
+          "origin": [
+            -2,
+            -2,
+            -3
+          ],
+          "size": [
+            5,
+            4,
+            7
+          ],
+          "probes": [
+            [
+              -2,
+              -2,
+              -1,
+              "minecraft:moss_carpet"
+            ],
+            [
+              -1,
+              -2,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              0,
+              "minecraft:cobblestone"
+            ]
+          ]
+        },
+        {
+          "index": 2,
+          "form": "ARCH",
+          "seed": "19",
+          "key": "procedural/tiny-arch#0",
+          "blockCount": 55,
+          "origin": [
+            -1,
+            -3,
+            -2
+          ],
+          "size": [
+            3,
+            6,
+            5
+          ],
+          "probes": [
+            [
+              -1,
+              -3,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -3,
+              2,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              0,
+              2,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 3,
+          "form": "FLOOR_SLAB",
+          "seed": "20",
+          "key": "procedural/tiny-floor_slab#0",
+          "blockCount": 38,
+          "origin": [
+            -1,
+            -1,
+            -2
+          ],
+          "size": [
+            3,
+            3,
+            5
+          ],
+          "probes": [
+            [
+              -1,
+              -1,
+              -2,
+              "minecraft:mossy_cobblestone"
+            ],
+            [
+              -1,
+              -1,
+              1,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              1,
+              -1,
+              "minecraft:moss_carpet"
+            ]
+          ]
+        },
+        {
+          "index": 4,
+          "form": "RUBBLE",
+          "seed": "21",
+          "key": "procedural/tiny-rubble#0",
+          "blockCount": 40,
+          "origin": [
+            -2,
+            -2,
+            -3
+          ],
+          "size": [
+            5,
+            4,
+            7
+          ],
+          "probes": [
+            [
+              -2,
+              -2,
+              -1,
+              "minecraft:moss_carpet"
+            ],
+            [
+              -1,
+              -2,
+              -2,
+              "minecraft:cobblestone"
+            ],
+            [
+              -1,
+              -2,
+              0,
+              "minecraft:mossy_cobblestone"
+            ]
+          ]
+        }
+      ],
+      "placement": {
+        "placedY": 34,
+        "journaledCells": 33,
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            7,
+            32,
+            7,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            8,
+            32,
+            7,
+            "minecraft:cobblestone"
+          ],
+          [
+            7,
+            36,
+            7,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "source": {
+        "placedY": 0,
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "sourcePlan": {
+          "destinations": 1,
+          "replayedDestinations": 1,
+          "retainedBytes": 848
+        },
+        "journalWindow": [
+          [
+            0,
+            0,
+            33
+          ]
+        ],
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "neighborhood": {
+        "nativeGenerateLayer": true,
+        "placedY": 0,
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "scope": "native-procedural-placement-development",
+        "x": 0,
+        "z": 0,
+        "minY": 0,
+        "height": 64,
+        "selected": 3,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ],
+        "biomeProbes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:plains"
+          ]
+        ]
+      },
+      "mode": {
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air",
+            "minecraft:plains"
+          ]
+        ],
+        "journaledCells": 33,
+        "selectedJournalProbes": 0,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "componentFlags": [
+          [
+            -2,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -2,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            -1,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            0,
+            true,
+            true,
+            true,
+            true,
+            true
+          ],
+          [
+            0,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            0,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            1,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            -2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            -1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            0,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            1,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          [
+            2,
+            2,
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        ],
+        "contentPhase": true,
+        "activeLeasesAfter": 0,
+        "matterWindow": [
+          [
+            -2,
+            -2,
+            true,
+            false
+          ],
+          [
+            -2,
+            -1,
+            true,
+            false
+          ],
+          [
+            -2,
+            0,
+            true,
+            false
+          ],
+          [
+            -2,
+            1,
+            true,
+            false
+          ],
+          [
+            -2,
+            2,
+            true,
+            false
+          ],
+          [
+            -1,
+            -2,
+            true,
+            false
+          ],
+          [
+            -1,
+            -1,
+            true,
+            false
+          ],
+          [
+            -1,
+            0,
+            true,
+            false
+          ],
+          [
+            -1,
+            1,
+            true,
+            false
+          ],
+          [
+            -1,
+            2,
+            true,
+            false
+          ],
+          [
+            0,
+            -2,
+            true,
+            false
+          ],
+          [
+            0,
+            -1,
+            true,
+            false
+          ],
+          [
+            0,
+            0,
+            true,
+            true
+          ],
+          [
+            0,
+            1,
+            true,
+            false
+          ],
+          [
+            0,
+            2,
+            true,
+            false
+          ],
+          [
+            1,
+            -2,
+            true,
+            false
+          ],
+          [
+            1,
+            -1,
+            true,
+            false
+          ],
+          [
+            1,
+            0,
+            true,
+            false
+          ],
+          [
+            1,
+            1,
+            true,
+            false
+          ],
+          [
+            1,
+            2,
+            true,
+            false
+          ],
+          [
+            2,
+            -2,
+            true,
+            false
+          ],
+          [
+            2,
+            -1,
+            true,
+            false
+          ],
+          [
+            2,
+            0,
+            true,
+            false
+          ],
+          [
+            2,
+            1,
+            true,
+            false
+          ],
+          [
+            2,
+            2,
+            true,
+            false
+          ]
+        ],
+        "terrainStages": 4,
+        "contentStages": 9
+      }
+    },
+    "results": [
+      {
+        "field": "procedural-placement",
+        "journaledCells": 33,
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            7,
+            32,
+            7,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            8,
+            32,
+            7,
+            "minecraft:cobblestone"
+          ],
+          [
+            7,
+            36,
+            7,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "procedural-source",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "procedural-neighborhood",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "cache": {
+          "lookups": 9,
+          "builds": 9,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 9,
+          "retainedBytes": 8678,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air"
+          ],
+          [
+            1,
+            32,
+            5,
+            "minecraft:mossy_cobblestone"
+          ],
+          [
+            2,
+            32,
+            5,
+            "minecraft:cobblestone"
+          ],
+          [
+            1,
+            36,
+            5,
+            "minecraft:moss_carpet"
+          ]
+        ]
+      },
+      {
+        "field": "overworld-mode",
+        "journaledCells": 33,
+        "objectTags": {
+          "cells": 33,
+          "placements": 1,
+          "treeMaterials": 0
+        },
+        "cache": {
+          "lookups": 9,
+          "builds": 9,
+          "replays": 0,
+          "drained": 1,
+          "retired": 0,
+          "retained": 9,
+          "retainedBytes": 8678,
+          "budgetBytes": 8388608,
+          "continuationChunks": 0,
+          "continuationBytes": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            8,
+            8,
+            "minecraft:stone",
+            "minecraft:plains"
+          ],
+          [
+            8,
+            63,
+            8,
+            "minecraft:air",
+            "minecraft:plains"
+          ]
+        ]
+      }
+    ],
+    "actualWasmWorkerClient": true,
+    "descriptors": true,
+    "clientCacheReuse": true,
+    "dimensionAccentAndWorkRefusals": true,
+    "recovery": true,
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "61ce6247aa07df65b0a8ba44853e3d3b2f8d5541ab26b69f9be66fb15121561e"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "11e09ae6ccafed107362a54fe4c1413410776072f4ef2a9e76384be2f739b3dc"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "wasmSha256": "b4ef5214d87794a629061a1e6081b4b5ca2aa3414c9d2850ba95b6eded12fea9",
+    "sourceSha256": "b7e3c074dde18ec28860afc8069c05d445419f2bd623bcaef9a52bca368f19fc",
+    "importedStructuresSupported": false,
+    "fullRuinOptionParity": false,
+    "crossSourceCollisionParity": false,
+    "fullEngineLifecycle": false,
+    "terrainParityVerified": false,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "bindingScope": {
+    "nativeNamespacePrefixes": [
+      "art.arcane.iris.",
+      "art.arcane.volmlib."
+    ],
+    "pinnedMinecraftClasses": [
+      "net.minecraft.world.level.block.state.properties.RotationSegment",
+      "net.minecraft.util.SegmentedAnglePrecision"
+    ],
+    "controlledDiagnostic": "studio.engine.NativeRoundingDiagnostic",
+    "classesRecordedDuringCompilation": 90,
+    "callsRecordedDuringCompilation": 411,
+    "recordedCallsAreBehaviorComparisons": false,
+    "unrelatedMathChanged": false,
+    "globalJdkReplaced": false
+  },
+  "cacheIdentityReview": {
+    "nativeContextAndPersistentNoiseIncludeWasmSha256": true,
+    "sources": [
+      "apps/web/workers/iris-worker.js",
+      "packages/iris-engine/noise-cache-store.mjs"
+    ],
+    "review": "Existing build identities separate corrected results from older engine caches; source reviewed, cache code unchanged."
+  },
+  "build": {
+    "nativeJavaAndWasm": "pass",
+    "requiredEngineAppPackage": "pass",
+    "wasmSha256": "b4ef5214d87794a629061a1e6081b4b5ca2aa3414c9d2850ba95b6eded12fea9",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "b7e3c074dde18ec28860afc8069c05d445419f2bd623bcaef9a52bca368f19fc",
+    "archiveMatchesCurrentSources": [
+      "packages/iris-engine/java/studio/engine/BrowserEngine.java",
+      "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+      "packages/iris-engine/java/studio/engine/NativeRoundingPlugin.java",
+      "packages/iris-engine/java/studio/engine/NativeRoundingDiagnostic.java",
+      "packages/iris-engine/java/studio/engine/expression/WorkerJdkRound.java",
+      "packages/iris-engine/resources/META-INF/services/org.teavm.vm.spi.TeaVMPlugin",
+      "tools/engine-build/build.mjs"
+    ],
+    "registryReexported": false,
+    "exhaustiveStateSweep": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "worldChunksModified": false
+  },
+  "sourceHashes": {
+    "packages/iris-engine/java/studio/engine/BrowserEngine.java": "4f80d6c925fcce914b9c04b3ee119171f032648a7681abb841c7f578de66dab3",
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java": "0f8268565f494e71b469fc41d465b4eb5c7430917e95de06dcd9f9ac1fd7754d",
+    "packages/iris-engine/java/studio/engine/NativeRoundingPlugin.java": "d341a58e7de7c77e2724bed54563a70f6e81dcca12ec517395caadc60f315348",
+    "packages/iris-engine/java/studio/engine/NativeRoundingDiagnostic.java": "758be9f801e25caba1b4306df290b7a195e4e15823a3c29343bdb687e1686d14",
+    "packages/iris-engine/java/studio/engine/expression/WorkerJdkRound.java": "4b9a460e8062241a8698dd0476627af91e50aa089046e1f4fb8d9fb85aaaf7fe",
+    "packages/iris-engine/resources/META-INF/services/org.teavm.vm.spi.TeaVMPlugin": "0b111d8ec2587fe0349b3a8b03dad15f5316d9588b0c5deccd0e5e7023e448f2",
+    "tools/engine-build/build.mjs": "b3aa22f01aae039d9fc695f5bfcd2ada498b6058d5f2e24ff66266e2cfd25d4d",
+    "tools/checks/NativeRoundingCheck.java": "25dd6479b432f7552ceba90a3501f62d10d45e722428d0a4c3c2e31a3d4f7015",
+    "tools/checks/native-rounding-smoke.mjs": "9ebf8514d0864c93ddb18e449415cb4eaa5bcd158cb9029aa1eedd2946815abf"
+  },
+  "qualification": {
+    "allCallersVerified": false,
+    "fullNoiseParity": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false,
+    "nativeChecksumIssue15Resolved": false,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "projectFinished": false
+  }
+}

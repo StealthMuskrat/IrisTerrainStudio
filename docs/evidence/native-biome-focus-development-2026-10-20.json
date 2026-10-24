@@ -1,0 +1,63 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-biome-copy-and-focused-region-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "48e2fc22fd6040a30df1c358fd33918568618594543c6ad29375ff9abe2ff1d3",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "152a72412db6be340fcc2dcbc7782419c64d2b5fdb9d969375ae7e5deee05496",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "cfb8edb7d059df981903f021ad233ac61413a61e0a7e817244cf737e9562c5fc",
+  "focusedCheck": {
+    "command": "node tools/checks/native-registry-link.mjs",
+    "result": "pass",
+    "stateParserCases": 18,
+    "partialPropertyMatchCases": 4,
+    "compatibilityInputs": 9,
+    "regionSelections": 336,
+    "inferredBiomeViews": 28,
+    "nativeGsonRoundTripOrErrorCases": 4,
+    "worldSeeds": [
+      "0",
+      "1",
+      "-9007199254740993",
+      "9223372036854775807"
+    ],
+    "scenarios": [
+      "baseline",
+      "missing-biome",
+      "missing-block",
+      "fallback",
+      "backup",
+      "weighted-regions",
+      "focus",
+      "buffet",
+      "null-alias"
+    ],
+    "oracle": "Actual native IrisData/Gson, IrisBiome.withInferredType, RegionSelection.restore and native registry helpers",
+    "numericComparison": "Declared integer fields use exact decimal comparison; float fields compare float32 values; doubles compare float64 values. Unknown source fields remain in editor source, while native model copies follow Gson serialization.",
+    "nativeReferenceRetainedLocally": true
+  },
+  "implementation": [
+    "Generated streaming writers for the 126 native configuration classes at the inferred-biome Gson copy boundary",
+    "Native constructor defaults, null-field omission, serialized field aliases, enum names/aliases and the actual custom subterrain-fluid adapter",
+    "The original native inferred-type cache/control flow is retained; only its two Gson copy calls use generated streaming IO",
+    "Original RegionSelection.restore now supplies ordinary, focused and buffet choices",
+    "Existing native-verified UUID/UTF-8 helpers supply focus-region identifiers",
+    "KSet key views use supported map/set interfaces without copying membership",
+    "A Studio layout control enables the native dimension studio mode for region previews",
+    "Asynchronous build-lock cleanup runs in finally on both successful and failed builds"
+  ],
+  "limitations": [
+    "No complete serializer/parser conformance or browser UI/GPU qualification",
+    "Biome composition, height/voxel generation and remaining terrain systems are unfinished",
+    "Image-map binding, expressions, persistent float caches and binary resources remain unsupported",
+    "Production dependency provenance, checksum mismatch and asset inputs remain unresolved"
+  ]
+}

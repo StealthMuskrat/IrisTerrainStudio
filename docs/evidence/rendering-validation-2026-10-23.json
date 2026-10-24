@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-23",
+  "scope": "scalar publication fix and rendering startup/model diagnostics",
+  "gpuAndModel": {
+    "date": "2026-10-23",
+    "scope": "validated WebGPU startup, empty native model diagnostics, explicit recovery and retained resource lifecycle",
+    "fixture": {
+      "storedVoxels": 2,
+      "storedMapSamples": 2,
+      "decodedPixels": 0,
+      "selectedOriginalModels": 1,
+      "shaderModules": 4,
+      "pipelines": 6,
+      "generatedTerrainCells": 0,
+      "controlledDevice": true
+    },
+    "checks": [
+      "failed/late device acquisition, partial construction rollback, loss/validation reporting and idempotent all-owner cleanup",
+      "real renderer disposal clears CPU/GPU ownership, observers/animation and pointer handlers; repeated construction does not duplicate input",
+      "disposed renderers refuse allocations; constructor failures release partial canvas/GPU resources",
+      "startup waits for all four actual shader modules and six pipelines, reports source locations/warnings and rejects scoped asynchronous allocation failures",
+      "startup error scopes are popped before yielding; compilation failure or disposal during validation releases both renderers and cannot publish readiness",
+      "one original vanilla chest model emits an explicit empty-model notice, exports a bounded report without voxel buffers and remains inspectable as six identity-cell faces through the actual Node mesh worker",
+      "explicit recovery preserves samples/validated voxels, independent inputs, map settings, slice linkage, camera/clip and pending retry without generation; offline edits do not schedule GPU work",
+      "device loss during startup or asynchronous mesh restoration cannot publish an orphaned GPU session",
+      "map/voxel upload failures keep CPU ownership and expose independent retries; clear during acquisition and stale loss cannot restore old views"
+    ],
+    "workspaceSha256": {
+      "packages/voxel-renderer/gpu-validation.mjs": "e9796ec9205435267027c4e7795d0d72b2cfac1a7c636983c3cc7641888ffc3f",
+      "apps/web/lib/render-diagnostics.mjs": "03002a776f25afaea524c88c348402b56238aa3e2da2976f272b175a88dade91",
+      "packages/voxel-renderer/models.mjs": "b7c173f98cad71c7f7ebab03e1bd2d52fc347a18b0ad91f899452a3069195ca6",
+      "packages/voxel-renderer/gpu-session.mjs": "efec183807f088d70acceda96ff53e37431ef1df6a11f0fcd02b53861e58cfde",
+      "packages/voxel-renderer/map.mjs": "0ac49cbb6b037acabb1858a2d71391437295375cf494d6e7a66a277f8b1c5626",
+      "packages/voxel-renderer/world.mjs": "9fdf6d6d9ab8b0046bc9f07f9bb3c228a32b6d869b1f0a169bd3772939c0d45d",
+      "apps/web/main.mjs": "3c133a2e2bcb4add9910dc9f566244c83c482f6c3c2836abc2ad4b22d54a0b67",
+      "apps/web/index.html": "18644635b505e906cee3fe1ee896b4366c141d543794ae3993905be599557a36",
+      "tools/checks/gpu-recovery-smoke.mjs": "427f6f93a51deeeb0fa0673a7922f211ac912b550def7b49b833c594ce3ac5a2"
+    },
+    "realBrowserVerified": false,
+    "webGpuVerified": false,
+    "performanceMeasured": false,
+    "nativeParityVerified": false,
+    "complete": false,
+    "limits": "Controlled Node compiler/device/loss/canvas and application hosts, one original vanilla chest definition and an actual Node mesh worker; no actual WGSL compilation, adapter reset, rasterization or terrain generation. Recreates rendering resources from retained immutable CPU data; one pending voxel result remains explicit. Complete device-loss/interleaving/GPU-memory/client qualification remains open. No native build, registry/state sweep, broad suite or GitHub workflow."
+  },
+  "retainedApplication": {
+    "date": "2026-10-23",
+    "scope": "retained preview transactions, independent map/voxel inputs, rendering retry, cancellation/clear and display-only framing",
+    "fixture": {
+      "storedVoxelsPerVolume": 2,
+      "scalarSamplesPerMap": 2,
+      "generatedTerrainCells": 0,
+      "controlledEngine": true,
+      "controlledRendering": true
+    },
+    "checks": [
+      "generation and view reset retain existing map/voxel buffers; scalar publication keeps independently owned voxels and biome access",
+      "actual rendering-diagnostics dialog exports displayed-volume notices without copying voxels, regenerating or replacing either preview",
+      "failed/cancelled generation and map admission preserve the committed display and provenance",
+      "generated voxels survive mesh failure; pending cross-sections retry rendering without generation; texture replacement after a scalar preview rebuilds retained 3D",
+      "resource-pack handoff cancels an obsolete mesh and publishes the same generated result through the new stack",
+      "biome slices keep their last valid data on invalid Y; read-only details report actual retained inputs",
+      "debounced input changes cancel work immediately and reschedule even before the first successful field; Cancel clears queued work",
+      "retained-map drag uses actual X/Z coverage and rejects replaced map ownership",
+      "explicit clear releases pending/committed preview ownership and ignores late results without changing stored cells"
+    ],
+    "workspaceSha256": {
+      "apps/web/lib/preview-inputs.mjs": "c031e299b72bcd2a00bc1da1cfe2dcb9c9c66a37012c7114c3a8ff502929ceba",
+      "apps/web/main.mjs": "3c133a2e2bcb4add9910dc9f566244c83c482f6c3c2836abc2ad4b22d54a0b67",
+      "apps/web/index.html": "18644635b505e906cee3fe1ee896b4366c141d543794ae3993905be599557a36",
+      "apps/web/styles.css": "2adb5992c0dea40b11b2b81fda4ee983be8c1ce155141fd03afc7d0e00333b4e",
+      "tools/checks/preview-retention-smoke.mjs": "ceb0494d195982fe0bb085680ee30dc91713c881d2212f244ac211dea91e8be0"
+    },
+    "realBrowserVerified": false,
+    "webGpuVerified": false,
+    "nativeParityVerified": false,
+    "performanceMeasured": false,
+    "complete": false,
+    "limits": "Actual application functions with controlled engine/render/DOM/timer services and tiny stored data only. No native build, terrain/registry/state sweep, broad suite or GitHub workflow. Map and voxel rendering remain independently retained; one pending voxel result may coexist with the committed result. Inputs are descriptive metadata, not replayable engine snapshots. Real browser UI/GPU/cancellation interleavings and total memory remain unqualified."
+  },
+  "standalone": {
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "standalone rendering module delivery",
+    "modules": [
+      {
+        "url": "/app/main.mjs",
+        "sha256": "3c133a2e2bcb4add9910dc9f566244c83c482f6c3c2836abc2ad4b22d54a0b67"
+      },
+      {
+        "url": "/app/lib/render-diagnostics.mjs",
+        "sha256": "03002a776f25afaea524c88c348402b56238aa3e2da2976f272b175a88dade91"
+      },
+      {
+        "url": "/packages/voxel-renderer/gpu-validation.mjs",
+        "sha256": "e9796ec9205435267027c4e7795d0d72b2cfac1a7c636983c3cc7641888ffc3f"
+      },
+      {
+        "url": "/packages/voxel-renderer/gpu-session.mjs",
+        "sha256": "efec183807f088d70acceda96ff53e37431ef1df6a11f0fcd02b53861e58cfde"
+      },
+      {
+        "url": "/packages/voxel-renderer/models.mjs",
+        "sha256": "b7c173f98cad71c7f7ebab03e1bd2d52fc347a18b0ad91f899452a3069195ca6"
+      },
+      {
+        "url": "/packages/voxel-renderer/world.mjs",
+        "sha256": "9fdf6d6d9ab8b0046bc9f07f9bb3c228a32b6d869b1f0a169bd3772939c0d45d"
+      },
+      {
+        "url": "/packages/voxel-renderer/map.mjs",
+        "sha256": "0ac49cbb6b037acabb1858a2d71391437295375cf494d6e7a66a277f8b1c5626"
+      },
+      {
+        "url": "/packages/voxel-renderer/selection.mjs",
+        "sha256": "f26356d6721780ed37e26831f6c9f3eeeb251747f0299c65e2aec5de6f6f0f88"
+      },
+      {
+        "url": "/packages/voxel-renderer/hydrology-overlay.mjs",
+        "sha256": "c0b62d808ccb13b0054a9b3259e529e9826ddee496109f01c08dfd827989eaea"
+      }
+    ],
+    "healthAndDiagnosticsControl": true,
+    "engineAndRegistryPresent": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "sourceSha256": "527d2ddcbd5bf1bdefb5b7ed97a1bb66eef319604bb77bac8721dd5be59d5c8f",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "projectFinished": false
+  },
+  "checks": [
+    "node tools/checks/gpu-recovery-smoke.mjs",
+    "node tools/checks/preview-retention-smoke.mjs",
+    "node tools/build-app.mjs --require-engine --include-local-assets",
+    "node tools/checks/standalone-render-smoke.mjs dist",
+    "node --check apps/web/main.mjs",
+    "git diff --check"
+  ],
+  "nativeEngineRebuilt": false,
+  "nativeSourceArchiveChanged": false,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "nativeTerrainParityVerified": false,
+  "projectFinished": false,
+  "limits": "Controlled Node compilation/device/canvas/app services, one exact native vanilla model and an actual Node mesh worker. Real local HTTP serves the unchanged pinned engine and changed rendering modules. No actual WGSL compilation/rasterization, browser UI/performance/Docker qualification, native reference correction or full program verification is claimed. No registry/state sweep, broad suite or GitHub workflow."
+}

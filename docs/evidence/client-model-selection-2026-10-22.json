@@ -1,0 +1,278 @@
+{
+  "scope": "minecraft-client-model-selection-uv-targeted",
+  "result": "pass",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "modelInputSha256": "731dec363cca37c7fcec24b3824b17d949dad754c856ec80bef9a610f36f9ce6",
+  "referenceKey": "354982428436bbee1d82c4bee6a902531c7414e7c29ea2f7fee3d9e4cd8f2b8f",
+  "transforms": [
+    {
+      "uv": [
+        0.6875,
+        0.125
+      ],
+      "point": [
+        0.625,
+        0.75,
+        0.125
+      ]
+    },
+    {
+      "uv": [
+        0.06250005960464478,
+        0.8749999403953552
+      ],
+      "point": [
+        0.625,
+        0.75,
+        0.125
+      ]
+    },
+    {
+      "uv": [
+        0.8125,
+        0.2500000298023224
+      ],
+      "point": [
+        0.125,
+        0.375,
+        0.25
+      ]
+    },
+    {
+      "uv": [
+        0.8750000596046448,
+        0.8750000596046448
+      ],
+      "point": [
+        0.75,
+        0.375,
+        0.125
+      ]
+    },
+    {
+      "uv": [
+        0.3125,
+        0.375
+      ],
+      "point": [
+        0.75,
+        0.875,
+        0.375
+      ]
+    },
+    {
+      "uv": [
+        0.4375,
+        0.25
+      ],
+      "point": [
+        0.75,
+        0.875,
+        0.375
+      ]
+    },
+    {
+      "uv": [
+        0.875,
+        0.1875
+      ],
+      "point": [
+        0.625,
+        0.875,
+        0.75
+      ]
+    },
+    {
+      "uv": [
+        0.3125,
+        0.8125
+      ],
+      "point": [
+        0.25,
+        0.625,
+        0.125
+      ]
+    }
+  ],
+  "selections": [
+    {
+      "seed": "60165349410229",
+      "parts": [
+        "0:0"
+      ]
+    },
+    {
+      "seed": "-20769809685848",
+      "parts": [
+        "0:1"
+      ]
+    },
+    {
+      "seed": "60458568495641",
+      "parts": [
+        "0:1"
+      ]
+    },
+    {
+      "seed": "-116576541928874",
+      "parts": [
+        "0:1"
+      ]
+    },
+    {
+      "seed": "-18861282116143",
+      "parts": [
+        "0:1"
+      ]
+    },
+    {
+      "seed": "-33019620718755",
+      "parts": [
+        "0:2"
+      ]
+    },
+    {
+      "seed": "-33019620718755",
+      "parts": [
+        "0:2"
+      ]
+    },
+    {
+      "seed": "5053647052754",
+      "parts": [
+        "0:0"
+      ]
+    },
+    {
+      "seed": "-34941671962904",
+      "parts": [
+        "0:0"
+      ]
+    },
+    {
+      "seed": "0",
+      "parts": [
+        "0:1",
+        "1:0",
+        "2:1"
+      ]
+    },
+    {
+      "seed": "-105251492768946",
+      "parts": [
+        "0:1",
+        "1:0",
+        "2:1"
+      ]
+    }
+  ],
+  "conditions": [
+    false,
+    true,
+    true
+  ],
+  "actualMeshWorker": {
+    "cells": 3,
+    "worldOrigin": [
+      -1,
+      0,
+      -1
+    ],
+    "nativeChoicesMatch": true
+  },
+  "variantPrecedence": true,
+  "zRotationAndUvLockBaking": true,
+  "metadataCapture": {
+    "blockTypeMethodOwners": 1286,
+    "distinctOrientations": 24,
+    "faceMatrices": 144,
+    "blockStatesEvaluated": 0
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "clientRenderingParity": false,
+  "terrainParityVerified": false,
+  "completePipeline": false,
+  "capturedAt": "2026-10-22",
+  "sourceFiles": [
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "553e1ca0303de27478b2e73acfa08d3e52c94d89a36f1da18a31f5e8506fceef"
+    },
+    {
+      "path": "packages/resource-packs/client-model-data.json",
+      "sha256": "731dec363cca37c7fcec24b3824b17d949dad754c856ec80bef9a610f36f9ce6"
+    },
+    {
+      "path": "packages/resource-packs/model-transform.mjs",
+      "sha256": "a9f2ff75c776958ee569be65b25e9843d624a130bcb47479fc0017d73e2092c2"
+    },
+    {
+      "path": "packages/resource-packs/model-selection.mjs",
+      "sha256": "52fa383bff952b8c4dd9dfa92a2ad8da97687be1e3c8581deaea2ec559dda1c0"
+    },
+    {
+      "path": "packages/resource-packs/pack.mjs",
+      "sha256": "61cb6b41d968fffbfb529af0fcaa328fd49b6981356c90775ac1c08d12c5eacf"
+    },
+    {
+      "path": "packages/voxel-renderer/models.mjs",
+      "sha256": "e5a6832f71d2cef7e1542d58b7e015062208e8f5129649995d6c08fad5d4b6bd"
+    },
+    {
+      "path": "packages/voxel-renderer/mesh-worker.mjs",
+      "sha256": "de69fa811df802e252fb54878b693c3925e789d19f50bc7c6d61222480417054"
+    },
+    {
+      "path": "packages/voxel-renderer/world.mjs",
+      "sha256": "ae56b6a2b8f758fb3e510f2b4d15db10b499ca71849d254a7d31de8fba9a1ae8"
+    },
+    {
+      "path": "tools/engine-build/client-model-inputs.mjs",
+      "sha256": "7bcce464b46f2d95193c3fdaf08fdacb96f946fd1ea5983186965a6f7e1e6c59"
+    },
+    {
+      "path": "tools/checks/MinecraftModelInputCapture.java",
+      "sha256": "603a93fa7e67e17fa86c13cb2fbc47ebb96c2bc28f76e5be542b23c275487072"
+    },
+    {
+      "path": "tools/checks/MinecraftModelCheck.java",
+      "sha256": "5eef74e9ec09ba738e6d261cedfe48b4123880a91edafa31862712f47522d881"
+    },
+    {
+      "path": "tools/checks/client-model-smoke.mjs",
+      "sha256": "010067be24bd273c66ac436d3f283561f0896a9de99ec7610b8d756a6b2b3f88"
+    },
+    {
+      "path": "tools/checks/fixtures/client-models.json",
+      "sha256": "0f6414804870b90725895ddb8eb03772b723cabfd439ad6a44b614d4e18eb705"
+    }
+  ],
+  "unchangedNativeWasmSha256": "09673f10fa8c639952dcc885a4c328a11f86b8ece4b3b07261d36cf37aa2442a",
+  "refreshedCorrespondingSourceSha256": "41a4e509c53df672070478cf88485f543e5c098a92ca0f483551674b538cc42b",
+  "conditionOutcomesCompared": 3,
+  "selectedModelIdentityInspector": {
+    "implemented": true,
+    "actualBrowserVerified": false
+  },
+  "limits": {
+    "selectedGroups": 128,
+    "candidatesPerGroup": 128,
+    "candidatesPerBlock": 512,
+    "candidateFacesPerBlock": 8192,
+    "weightTotal": 2147483647
+  },
+  "validation": {
+    "focusedCommand": "node tools/checks/client-model-smoke.mjs",
+    "requiredEngineDevelopmentDistribution": "pass",
+    "broadSuite": false,
+    "githubTests": false,
+    "terrainGeneration": false
+  },
+  "remaining": [
+    "Block/model offsets and every selector/property option",
+    "Fluid/tint/material/mipmap semantics",
+    "Actual browser/GPU/UI and full geometry/rendering comparison",
+    "Native reference/dependency/checksum/release gates and supplied F8thful input"
+  ]
+}

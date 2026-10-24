@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-22",
+  "scope": "bounded local recovery center, deleted-resource edit recovery, guarded deletion and portable draft bundles",
+  "fixture": {
+    "drafts": 2,
+    "sourceAndBaseBytes": 141,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "two exact source/base bundle round trips retain BOM/CRLF/64-bit numeric tokens and unfinished JSON; invalid locations/fields/duplicates refuse before import; differing existing drafts are skipped",
+    "actual bounded cursor stops at entry/source admission without deleting records; actual draft/version and shared-view guards preserve changed copies, atomic quota abort rolls back imports and ordered writes settle before management",
+    "controlled recovery dialog selects exact bundle/source downloads, requires explicit recovery, and cancelled listing/file reads cannot populate or replace a successor dialog",
+    "actual app recovery opens invalid unfinished source for an absent file without writing, retains original base/undo and marks recreation review, preserves an existing newer buffer, and refuses cancelled/stale reads"
+  ],
+  "workspaceSha256": {
+    "apps/web/lib/draft-library.mjs": "0e8133137dc67eab734bee43896050be234cbbeb3767e3f2ab0ff3ac46c92824",
+    "apps/web/lib/draft-tools.mjs": "a898285f05aed716f9baf1cb593da80fb95d1f4b0b0927822a8e1be52dbc2beb",
+    "apps/web/lib/local-store.mjs": "71badad328333357f19d074f6d051f99fdcd386d4304db9b395389a89aa2499f",
+    "apps/web/lib/edit-workspace.mjs": "595952deb4ea6a2baac2b66727971c4638fafa88fd490a1cb576c8ad6523294c",
+    "apps/web/main.mjs": "35349b4be2f90510943e1225a6235185a88d1540437ac523a2205044a60b8d1e",
+    "apps/web/index.html": "bc6f6e3441d93086aedb547b840c364d942714aeef8a0e8d9246c7127854c633"
+  },
+  "realBrowserVerified": false,
+  "indexedDbDurabilityVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Two tiny drafts and controlled Node IndexedDB/modal/editor hosts only. Draft snapshots are limited to 128 entries / 16 MiB counted source with explicit incomplete listings; individual source/base strings admit 8 MiB UTF-8; bundles admit 32 MiB / 2048 structural nodes. Invalid or oversized stored records are retained. Recovery does not write pack files; normal Save validates/reviews conflicts and absent-path recreation. Open buffers take priority. Ordinary autosave remains last-writer-wins across tabs; draft management/import guards do not establish cross-tab editor ownership. Actual browser focus/layout/IndexedDB durability/quota/multi-tab and native/client/release qualification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

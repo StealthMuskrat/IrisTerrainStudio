@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-21",
+  "scope": "native field display normalization, range/legend/sample exploration and retained-volume focus",
+  "fixture": {
+    "categoricalCells": 6,
+    "scalarCells": 3,
+    "legendPageBoundary": 70,
+    "voxelCells": 12,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "closely spaced and extreme finite scalar normalization without modifying values",
+    "category counts/search/paging/sample wrap and exact indices",
+    "GPU display uploads, range reuse and failed replacement allocation ownership",
+    "local chunk-grid remainder at large positive/negative origins",
+    "map sample pin, stored identity inspection and retained-volume camera focus",
+    "coordinate handoff and no synthetic height or terrain generation",
+    "legend/range/focus stale-owner refusal and selection clear",
+    "actual pointer routing inspects retained slices without generation"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/field-data.mjs": "666f3fb170aef5caf7d836a04822b9b483d755cac130e31fb1ed972c737596a3",
+    "packages/voxel-renderer/map.mjs": "c2afedadbefb317c61e1ff51712dc1e50f8f23d19aa78293bd1e99d1468a3f31",
+    "apps/web/lib/map-tools.mjs": "6829f69768195145f7e014d61d7a9bf896a260ba2b9a3bc7165a2f32793d44d9",
+    "apps/web/main.mjs": "e712e7129616859b7e38dda62b7d25b6cd7127aae935bfe7551eddbb9a9d2a0e",
+    "apps/web/index.html": "caf50e32f6d39cec2af67e7b859375f35f259028a41938948d8a4c4001d44b9f",
+    "apps/web/styles.css": "05a7c67daa5e6e4870357547a5da807484db06f5c3acad177fa1e2e9f31ef4d9",
+    "tools/checks/map-exploration-smoke.mjs": "68439285571898d4ae8a2821381b7053a68afea2f76173ecfa5f8a09415bd478"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "performanceMeasured": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Controlled Node value/device/DOM probes only. No native build, terrain generation, registry/state sweep, broad suite or GitHub workflow. Full browser UI/GPU and display-boundary qualification remain pending."
+}

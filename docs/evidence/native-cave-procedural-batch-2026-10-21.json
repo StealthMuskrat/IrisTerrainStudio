@@ -1,0 +1,349 @@
+{
+  "scope": "native-cave-procedural-placement-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "1853a080f620488add224f4a59f3baa3779d89d4b3a0a1cb5819d392da192dfd",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "13cc2b2bcda7a5a8bbc3e8c56f99f53e64c5cbc2d899923dc1ef39ccf2e578f1",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleObjectComponent.java",
+      "sha256": "3da3ee187aa85a08f7aabd9cf3436681c85cc3785f60cc1295bc4ac19ccf4d78"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/CaveObjectPlacementTransaction.java",
+      "sha256": "eb197fa04e2f01796026ef9563bf5194f30f60ffac5686234652ca9f067f5762"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/ObjectDestinationTransaction.java",
+      "sha256": "e662cd702fffad66dbe529de4c76328bc76214af7da75b6a9af817c475525633"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleWriter.java",
+      "sha256": "82eceffca0ed15d99e25437fc244edd4302ea316b020f5ae5e32e6fb81be1e79"
+    }
+  ],
+  "correspondingSourcesVerified": [
+    "packages/iris-engine/java/studio/engine/BrowserPlatformPlugin.java",
+    "packages/iris-engine/java/studio/engine/terrain/ProceduralSourcePreview.java",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerProceduralMap.java",
+    "tools/engine-build/build.mjs"
+  ],
+  "frontendSources": [
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "8d512e252eaacd4ba5de6a0b19774aad4cdd47463d02b8f106c41ceb1a81c2c5"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "86cdf03ad81f936eef58f6d3795490daf796b8f28cd3e7de873dc8c661a795a2"
+    },
+    {
+      "path": "tools/checks/NativeTerrainLinkCheck.java",
+      "sha256": "9be1783e98302ceb8541a1a222ccaceeaa6e3ffba7cee0b6ddffdc1937d925c7"
+    },
+    {
+      "path": "tools/checks/native-cave-procedural-smoke.mjs",
+      "sha256": "5b4027e7ea9fc66b6aae29e9f19bec9ff5345d7938ec2c2264b5161b62188fc1"
+    }
+  ],
+  "targetedCheck": {
+    "result": "pass",
+    "scope": "native-cave-procedural-development-targeted",
+    "fixtures": 4,
+    "seeds": 1,
+    "destinationsPerFixture": 1,
+    "materialProbesCompared": 16,
+    "results": [
+      {
+        "kind": "floor",
+        "journaledCells": 105,
+        "objectTags": {
+          "cells": 105,
+          "placements": 3,
+          "treeMaterials": 105
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            20,
+            8,
+            "minecraft:cave_air"
+          ],
+          [
+            8,
+            48,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            7,
+            13,
+            2,
+            "minecraft:oak_log[axis=y]"
+          ],
+          [
+            0,
+            15,
+            0,
+            "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+          ]
+        ],
+        "caveSearch": {
+          "columnWorkCharged": 1728,
+          "workLimit": 1048576
+        },
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "2178b660d943823b69528125197642c7cc4be04b34a7cc1f7fa6c7ac0d27fa65"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "77308c88057def589a9bd7577fea9f1cc3240a38a4381282bfa1a67bda215c89"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "kind": "ceiling-profile",
+        "journaledCells": 105,
+        "objectTags": {
+          "cells": 105,
+          "placements": 3,
+          "treeMaterials": 105
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            20,
+            8,
+            "minecraft:cave_air"
+          ],
+          [
+            8,
+            48,
+            8,
+            "minecraft:stone"
+          ],
+          [
+            7,
+            24,
+            2,
+            "minecraft:oak_log[axis=y]"
+          ],
+          [
+            0,
+            26,
+            0,
+            "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]"
+          ]
+        ],
+        "caveSearch": {
+          "columnWorkCharged": 1728,
+          "workLimit": 1048576
+        },
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "547797005e39865dcae26808cbf41251188ae234107e6f03bc0ff720763ef62a"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "a92a6ac7dd10d318f08d163cb2738a5c34e711a7fd5c1cde4788da3a50d40846"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "kind": "ceiling-hang-rejection",
+        "journaledCells": 0,
+        "objectTags": {
+          "cells": 0,
+          "placements": 0,
+          "treeMaterials": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            20,
+            8,
+            "minecraft:cave_air"
+          ],
+          [
+            8,
+            48,
+            8,
+            "minecraft:stone"
+          ]
+        ],
+        "caveSearch": {
+          "columnWorkCharged": 1728,
+          "workLimit": 1048576
+        },
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "2178b660d943823b69528125197642c7cc4be04b34a7cc1f7fa6c7ac0d27fa65"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "2da212af74205f62ae9348e6ab5413735a599ba05ae661e5879b6ae2866f7e65"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      },
+      {
+        "kind": "containment-rejection",
+        "journaledCells": 0,
+        "objectTags": {
+          "cells": 0,
+          "placements": 0,
+          "treeMaterials": 0
+        },
+        "probes": [
+          [
+            0,
+            0,
+            0,
+            "minecraft:bedrock"
+          ],
+          [
+            8,
+            20,
+            8,
+            "minecraft:cave_air"
+          ],
+          [
+            8,
+            48,
+            8,
+            "minecraft:stone"
+          ]
+        ],
+        "caveSearch": {
+          "columnWorkCharged": 1728,
+          "workLimit": 1048576
+        },
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "sha256": "2178b660d943823b69528125197642c7cc4be04b34a7cc1f7fa6c7ac0d27fa65"
+          },
+          {
+            "path": "regions/ledges.json",
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "sha256": "de191ebb7698362e5222b78dd5b72e50b2451a396afcf0342f7e8f9139f68b84"
+          },
+          {
+            "path": "generators/flat.json",
+            "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+          }
+        ]
+      }
+    ],
+    "nativeGenerateLayer": true,
+    "actualWasmWorkerClient": true,
+    "probeSelection": "populated-native-placement-journal-only",
+    "searchBudgetRefusalAndRecovery": true,
+    "oneSourceCavePlacement": true,
+    "cacheReuse": true,
+    "registryInput": "existing-20-type-fixture-only",
+    "wasmSha256": "1853a080f620488add224f4a59f3baa3779d89d4b3a0a1cb5819d392da192dfd",
+    "sourceSha256": "13cc2b2bcda7a5a8bbc3e8c56f99f53e64c5cbc2d899923dc1ef39ccf2e578f1",
+    "browserVerified": false,
+    "fullTerrainParityVerified": false
+  },
+  "implemented": [
+    "Original MantleObjectComponent cave-anchor retry/column cache, biome/fluid acceptance and profile selection; algorithms unchanged.",
+    "Original contained cave transaction: floor/center alignment, native ceiling search, buffered mutations, buried/ceiling/transition/subterrain/hydrology checks and atomic commit/discard.",
+    "Per-preview conservative anchor work admission: resolved retries times native world height, cumulative limit 1,048,576; exposed in source/neighborhood metadata. Existing prepared-window guards and native source cache ownership remain active.",
+    "Native reference probe selection from populated journal cells; no full-volume probe search for these checks.",
+    "Worker/client source and neighborhood transport plus updated preview descriptions."
+  ],
+  "limitations": [
+    "Development comparison uses a 20-block-type fixture and a controlled Node Worker shim; no real DOM/GPU/browser or full registry qualification.",
+    "Ceiling-profile placement with authored y=-8 translation matches native output. The separate default CEILING_HANG tree fixture is rejected by native and Wasm; this is not proof of all hanging-object options.",
+    "Anchor admission is a conservative work estimate, not a measured count of native cell reads; cache hits may charge no new searches. It does not measure containment work or peak memory.",
+    "Four small configurations, one seed and one destination per configuration; 16 selected material probes only. One-source placement has a focused execution/metadata check, not another complete source comparison.",
+    "Full mode/Mantle/REAL ordering, native hydrology runtime, custom blocks, source collision qualification, durable storage and complete geometry/options remain unfinished.",
+    "Native checksum issue #15, exact dependency/server identity, production schemas/registry and authorized asset inputs remain unqualified."
+  ],
+  "nextMilestone": "Continue original native chunk-stage ordering and remaining platform adapters with small targeted checks, then complete application/browser verification after implementation.",
+  "readiness": {
+    "complete": false,
+    "browserVerified": false,
+    "terrainParityVerified": false,
+    "releaseMatchVerified": false
+  },
+  "checksNotRun": [
+    "Broad application or native suites",
+    "Registry state or placement-pair sweeps",
+    "Whole-volume output comparisons",
+    "GitHub test workflows"
+  ]
+}

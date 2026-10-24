@@ -1,0 +1,556 @@
+{
+  "scope": "native-subterrain-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "wasmSha256": "266c79feda165a3e9dbfd397331c7271afeb19b0a4e2fb75742964c9abb94986",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "68ee4dc748bb1717dbd3df25b3893ef28ecaae80c356ea48ef60b537f60f3296",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "nativeAlgorithmSources": [
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/subterrain/SubterrainPlanner.java",
+      "sha256": "97f99ddacf3acb14dfd10f549a53cf3468e1ae8eff6483b93404eb134344460e"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/subterrain/SubterrainPlan.java",
+      "sha256": "8042566a1e30f90dd5581914a7f9ff413d89d6600fae97c461b0b64c077a33a7"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/subterrain/SubterrainRasterizer.java",
+      "sha256": "3877797e7e315e4ffa31414d0cbe192e17fdd3d3f6a4eee2837622021ae4cc77"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/subterrain/SubterrainSurfaceMaterials.java",
+      "sha256": "fc405c00de70da8f4f69f195576658f240a7acefb4aedee2030b27595fd6a9a8"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleCarvingComponent.java",
+      "sha256": "1935d5bff8c41c2c148374ed79e52955fa49010b50c264a93afa11192173b80a"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/mantle/MantleWriter.java",
+      "sha256": "82eceffca0ed15d99e25437fc244edd4302ea316b020f5ae5e32e6fb81be1e79"
+    },
+    {
+      "path": "core/src/main/java/art/arcane/iris/generation/stage/IrisCarveModifier.java",
+      "sha256": "c7c73fb7b22a3e6ea660184008f17e5449af8354f72df58f569f4aa6905fbbfe"
+    }
+  ],
+  "implementation": [
+    "Original MantleCarvingComponent rasterizeSubterrain and lambda bytecode restored; only native Mantle height/chunk service calls use owned prepared memory.",
+    "Original native MantleWriter construction and set/clear calls execute, including material classification, bedrock/hydrology/placement protection and sparse matter storage.",
+    "Original planner geometry, fluid-seal sampling, biome ownership, IrisCarveModifier resolution and SubterrainSurfaceMaterials restoration execute unchanged.",
+    "Cumulative rasterizer admission charges 256 * inclusive native plan Y span * candidate plan count * 7 before native loops, limited to 16777216 work units per preview; seven accounts for six possible fluid-neighbor samples. This is conservative potential work, not elapsed time or heap usage.",
+    "World-coordinate inspectSubterrainCell export reports native kinds, material, owner/family/biome, floor/ceiling/fluid head and reserved flags; invalid world-Y/coordinate queries refuse.",
+    "Component/later-stage and procedural worker volumes carry subterrain activation/work metadata. Preview storage and work accounting reset on success or failure."
+  ],
+  "checks": {
+    "nativeCells": {
+      "result": "pass",
+      "scope": "native-subterrain-development-targeted",
+      "fixtures": 2,
+      "seeds": 1,
+      "chunks": 2,
+      "materialProbesCompared": 18,
+      "cellDiagnosticsCompared": 18,
+      "negativeWorldMinimum": true,
+      "results": [
+        {
+          "family": "CENOTE",
+          "finish": false,
+          "x": -16,
+          "z": 0,
+          "minY": -32,
+          "probes": [
+            [
+              1,
+              55,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              56,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              57,
+              13,
+              "minecraft:water[level=0]"
+            ],
+            [
+              1,
+              60,
+              13,
+              "minecraft:water[level=0]"
+            ],
+            [
+              1,
+              61,
+              13,
+              "minecraft:cave_air"
+            ],
+            [
+              1,
+              71,
+              13,
+              "minecraft:cave_air"
+            ],
+            [
+              1,
+              72,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              73,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ]
+          ],
+          "diagnostics": [
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": true
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": true
+            },
+            {
+              "kind": "WATER",
+              "material": "minecraft:water",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "WATER",
+              "material": "minecraft:water",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "AIR",
+              "material": "minecraft:cave_air",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": true,
+              "reservedSolid": false
+            },
+            {
+              "kind": "AIR",
+              "material": "minecraft:cave_air",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "CENOTE",
+              "biome": "ledges",
+              "floorY": 24,
+              "ceilingY": 40,
+              "fluidHeadY": 28,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "OUTSIDE",
+              "material": ""
+            }
+          ],
+          "subterrain": {
+            "nativePlanner": true,
+            "enabled": true,
+            "samplingWorkCharged": 225792,
+            "workLimit": 16777216
+          },
+          "resources": [
+            {
+              "path": "dimensions/terrain3d.json",
+              "sha256": "e2707533eeae99d88bca5b6205a143997ac679944e8b9b950d7549f7f6312f0a"
+            },
+            {
+              "path": "regions/ledges.json",
+              "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+            },
+            {
+              "path": "biomes/ledges.json",
+              "sha256": "8276a8a4a2ee3c9bc0b1780b47ff80b39bee3e59157d6d29a1fc40e024a22071"
+            },
+            {
+              "path": "generators/flat.json",
+              "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+            }
+          ]
+        },
+        {
+          "family": "LAVA_TUBE",
+          "finish": true,
+          "x": -16,
+          "z": 0,
+          "minY": -32,
+          "probes": [
+            [
+              1,
+              20,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              21,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              22,
+              13,
+              "minecraft:lava[level=0]"
+            ],
+            [
+              1,
+              25,
+              13,
+              "minecraft:lava[level=0]"
+            ],
+            [
+              1,
+              26,
+              13,
+              "minecraft:cave_air"
+            ],
+            [
+              1,
+              36,
+              13,
+              "minecraft:cave_air"
+            ],
+            [
+              1,
+              37,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              1,
+              38,
+              13,
+              "minecraft:stone"
+            ],
+            [
+              0,
+              0,
+              0,
+              "minecraft:bedrock"
+            ]
+          ],
+          "diagnostics": [
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": true
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": true
+            },
+            {
+              "kind": "LAVA",
+              "material": "minecraft:lava",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "LAVA",
+              "material": "minecraft:lava",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "AIR",
+              "material": "minecraft:cave_air",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": true,
+              "reservedSolid": false
+            },
+            {
+              "kind": "AIR",
+              "material": "minecraft:cave_air",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "SOLID",
+              "material": "minecraft:stone",
+              "featureId": "small-room:30508fcc62933080",
+              "family": "LAVA_TUBE",
+              "biome": "ledges",
+              "floorY": -11,
+              "ceilingY": 5,
+              "fluidHeadY": -7,
+              "reservedPassage": false,
+              "reservedSolid": false
+            },
+            {
+              "kind": "OUTSIDE",
+              "material": ""
+            }
+          ],
+          "subterrain": {
+            "nativePlanner": true,
+            "enabled": true,
+            "samplingWorkCharged": 564480,
+            "workLimit": 16777216
+          },
+          "resources": [
+            {
+              "path": "dimensions/terrain3d.json",
+              "sha256": "d62b4bafa591f1dbc4f1ce87a266d939efd1c8cbf513ae1ff9c19bd416231a8a"
+            },
+            {
+              "path": "regions/ledges.json",
+              "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+            },
+            {
+              "path": "biomes/ledges.json",
+              "sha256": "8276a8a4a2ee3c9bc0b1780b47ff80b39bee3e59157d6d29a1fc40e024a22071"
+            },
+            {
+              "path": "generators/flat.json",
+              "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+            }
+          ]
+        }
+      ],
+      "wasmSha256": "266c79feda165a3e9dbfd397331c7271afeb19b0a4e2fb75742964c9abb94986",
+      "sourceSha256": "68ee4dc748bb1717dbd3df25b3893ef28ecaae80c356ea48ef60b537f60f3296",
+      "browserVerified": false,
+      "fullTerrainParityVerified": false
+    },
+    "workBudget": {
+      "result": "pass",
+      "scope": "subterrain-native-work-budget-targeted",
+      "featureDefinitions": 64,
+      "overBudgetRefused": true,
+      "refusal": "Subterrain preview exceeds its bounded native sampling budget",
+      "cleanupAfterFailure": true,
+      "recoveryMaterialProbes": 1,
+      "recoveryHeight": 16,
+      "wasmSha256": "266c79feda165a3e9dbfd397331c7271afeb19b0a4e2fb75742964c9abb94986",
+      "sourceSha256": "68ee4dc748bb1717dbd3df25b3893ef28ecaae80c356ea48ef60b537f60f3296"
+    },
+    "workerContract": {
+      "scope": "worker-terrain-context-contract-mocked-api",
+      "result": "pass",
+      "successfulRequests": 8,
+      "failedRequests": 1,
+      "trace": [
+        {
+          "id": 1,
+          "prepare": 1,
+          "reused": false
+        },
+        {
+          "id": 2,
+          "prepare": 1,
+          "reused": true
+        },
+        {
+          "id": 3,
+          "prepare": 2,
+          "reused": false
+        },
+        {
+          "id": 4,
+          "prepare": 3,
+          "reused": false
+        },
+        {
+          "id": 5,
+          "prepare": 4,
+          "reused": false
+        },
+        {
+          "id": 6,
+          "prepare": 5,
+          "reused": false
+        },
+        {
+          "id": 7,
+          "prepare": 6,
+          "reused": false
+        },
+        {
+          "id": 9,
+          "prepare": 7,
+          "reused": false
+        }
+      ],
+      "counts": {
+        "prepare": 7,
+        "clear": 9,
+        "registered": 14
+      },
+      "idleInvalidationReleasesContext": true,
+      "mismatchedServerInputsRefused": true,
+      "subterrainMetadataPreserved": true,
+      "workerSha256": "7d3889bde07caf1112e05b2144b67af35257aee03c1385e174d12598a5593927",
+      "clientSha256": "e99bdd7d34e039746960a0127d4a2ff4a7b705ac7ca99b35716334b5ed68eb83",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    }
+  },
+  "checkCommands": [
+    "node tools/checks/native-subterrain-smoke.mjs",
+    "node tools/checks/subterrain-budget-smoke.mjs",
+    "node tools/checks/worker-terrain-context-smoke.mjs"
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "Only two authored families, one seed and two selected chunks received native material/diagnostic comparisons; faults, terraces, warping, priority overlaps, region constraints, custom surfaces and placement interactions require later qualification.",
+    "Budget refusal exercises 64 original feature definitions; it is a preflight refusal fixture, not a geometry/state sweep. Recovery compares one block in a 16-high chunk.",
+    "Worker metadata/context transport check uses an explicitly mocked native API; native generation checks run in Node-hosted Wasm, not a real browser/GPU.",
+    "The older dimension-profile-only cave material diagnostic still refuses active subterrain; use the carving-component and later native prefixes.",
+    "Hydrology, transitions, upper/stacked dimensions, complete mode/Mantle/REAL ordering, custom registry contributions and unconnected paths remain unavailable.",
+    "Expressions, persistent float caches, remaining image/terrain options, assets, dependency/release provenance and native checksum qualification remain unfinished."
+  ],
+  "nextMilestone": "Connect remaining resource-driven styles, expressions/float-cache IO and in-scope stage adapters; qualify full mode ordering after implementation.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}

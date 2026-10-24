@@ -1,0 +1,9 @@
+studio.probe.UuidTeaVMPlugin
+studio.engine.BrowserPlatformPlugin
+studio.engine.cache.SourcePlanCachePlugin
+studio.engine.matter.SourceMatterPlugin
+studio.engine.image.ImagePlatformPlugin
+studio.engine.noise.NoiseCachePlatformPlugin
+studio.engine.expression.ExpressionPlatformPlugin
+studio.engine.hydrology.HydrologyPlatformPlugin
+studio.engine.NativeRoundingPlugin

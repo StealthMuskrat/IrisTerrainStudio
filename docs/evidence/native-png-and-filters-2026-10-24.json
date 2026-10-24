@@ -1,0 +1,796 @@
+{
+  "date": "2026-10-24",
+  "scope": "native PNG default-image metadata, bounded Java resource filters and GPU fault recovery",
+  "nativePng": {
+    "irisCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "volmLibCandidate": "210705c5ab1321dc74b86b48457fd6d5e0452944",
+    "nativeBuildProfile": "terrain-no-eco-items",
+    "workspaceSha256": {
+      "packages/iris-engine/png.mjs": "245579e17c29beeb6ae987f6a96ba70940caf045bea45c07fd9a177348bff025",
+      "packages/resource-packs/texture-pixels.mjs": "5ed9870d4c6421005759c3a6df0db6b7b6a020b18c7d5439e895b1a4ffbc0856",
+      "apps/web/workers/iris-worker.js": "ea51b785d8e1a18528b40c83624993043b1b90c6605f3eae159be375cb615863",
+      "apps/web/lib/image-source.mjs": "c41404add776a26620ec1604b57aafae4936f9aef35ffca4d38e9e30df69c739",
+      "tools/checks/NativePngMetadataCheck.java": "4102784b9be30bd0f9dfd69f195b8e404f80aac4fb9ac21d8129514f2bb9bdeb",
+      "tools/checks/native-png-metadata-smoke.mjs": "5b95db83142d6541e5e247de8490fe34c38748dc08c12747695edc20a104453d"
+    },
+    "nativeClassSha256": {
+      "art/arcane/iris/generation/image/IrisImage.class": "79d2439115347eaa18858a52bdba3aaff5c8a1fd3fa44530dfb9185aa1e4ea47",
+      "art/arcane/iris/generation/image/CompiledIrisImageMap.class": "c6cc98ba8a94aad129075c65690c29493b7a422066ece0e43edaf370485dd8f1"
+    },
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "native JDK PNG metadata/default-image decoding",
+    "rows": [
+      {
+        "name": "apng-frame",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "56a0cff7fac9c066b2b0add7ddab97c80e9bd59c24cc92b355c251d3e84ee581",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "b59e63f2cf215851c59a2fca1f1329a1d8657c134b0a0ae6dc5156665301e462",
+        "sourceMetadata": {
+          "path": "images/apng-frame.png",
+          "policy": "jdk-png-default-image",
+          "colorChunks": [],
+          "animationChunks": [
+            "acTL",
+            "fcTL",
+            "fdAT"
+          ]
+        }
+      },
+      {
+        "name": "apng-poster",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "ec85b0d25840fdb18019d4c41b49951e02eb16a29d73d8ec1ab07c4914d88cbf",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "86b3f2ebad36195a518d71766c3c167e7d860fe23e7f1394ca483db39d69b484",
+        "sourceMetadata": {
+          "path": "images/apng-poster.png",
+          "policy": "jdk-png-default-image",
+          "colorChunks": [],
+          "animationChunks": [
+            "acTL",
+            "fcTL",
+            "fdAT"
+          ]
+        }
+      },
+      {
+        "name": "base",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "66f14f7f52e2b7695309e6d54c112595542e16ce7021f6c079ecbb5d8a94ed0b",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "a9cf6044f548dc92759b2727ce4bc8339553aa3c19b914c1987187e5a86f5d6c",
+        "sourceMetadata": null
+      },
+      {
+        "name": "combined",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "7c26c44a10faf5158488022512eefab328b365bd68d4a46f43faf01aee637dc0",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "582524ceb616144a5b7f76baefb943e59aa029bfb12fe82f06f855f8cdcc416e",
+        "sourceMetadata": {
+          "path": "images/combined.png",
+          "policy": "jdk-png-default-image",
+          "colorChunks": [
+            "iCCP",
+            "cICP",
+            "mDCV",
+            "cLLI"
+          ],
+          "animationChunks": [
+            "acTL",
+            "fcTL",
+            "fdAT"
+          ]
+        }
+      },
+      {
+        "name": "hdr",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "fbc8d2fd1640dd9467c41622cb51207fef14d1708a890d589056f1e405e72126",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "d6c14c420a615d485acd1cc60a80e2b68cfaaa7c916ba182fe3efbddd78d6ec6",
+        "sourceMetadata": {
+          "path": "images/hdr.png",
+          "policy": "jdk-png-default-image",
+          "colorChunks": [
+            "cICP",
+            "mDCV",
+            "cLLI"
+          ],
+          "animationChunks": []
+        }
+      },
+      {
+        "name": "icc",
+        "width": 2,
+        "height": 1,
+        "channels": 4,
+        "bitDepth": 8,
+        "colorMode": "RGBA",
+        "hasAlpha": true,
+        "bands": [
+          11,
+          22,
+          33,
+          255,
+          44,
+          55,
+          66,
+          127
+        ],
+        "previewArgb": [
+          -16050655,
+          2133604162
+        ],
+        "contentHash": "ed82e9def20113c1d48821ccc421df203710e1c699dd0f68c3d7f10d44f55ed8",
+        "sourceHash": "86e434fe1cc268c1b689e7595e228336242cf26e30b05bfa47b0c12e7a856b5f",
+        "normalized": [
+          "3ff0000000000000",
+          "3fdfdfdfe0000000"
+        ],
+        "pngSha256": "213facb56a29338ce6046d5ae9fb1915b2371f45bbfc5cff2469ec2b986cda85",
+        "sourceMetadata": {
+          "path": "images/icc.png",
+          "policy": "jdk-png-default-image",
+          "colorChunks": [
+            "iCCP"
+          ],
+          "animationChunks": []
+        }
+      }
+    ],
+    "rawBandsCompared": 48,
+    "mapSamplesCompared": 12,
+    "originalJdkReaderAndIrisCompiler": true,
+    "actualWasmAndWorker": true,
+    "linearIccNotApplied": true,
+    "hdrMetadataNotApplied": true,
+    "apngDefaultInAndOutsideAnimation": true,
+    "laterFramesNotInflated": true,
+    "inspectorMetadataOwnershipAndDottedLookup": true,
+    "plainTextureBehaviorRetained": true,
+    "metadataTextureAdmissionUnchanged": true,
+    "corruptionRefusedAndRecovery": true,
+    "sourceNotes": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "sourceSha256": "400bcd2f4c6abb77f9a854473fa01b38accd17894bd8b7d19aaebc712762f14c",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "fullTerrainParityVerified": false,
+    "projectFinished": false
+  },
+  "resourceFilters": {
+    "workspaceSha256": {
+      "packages/resource-packs/resource-filter.mjs": "72687f1cb1b1227db43079b316c721afdee8e073aa710d4000496e294cbcb4d2",
+      "tools/checks/NativeResourcePatternCheck.java": "9aca1c8c86df13badc0fd5cead15e88f31652bbd7559cb724a1fb4788bc06ecd",
+      "tools/checks/resource-pattern-groups-smoke.mjs": "dd0989fca9dd55ddd28efe5b642433501f00990c0535577ea3cde451d8f7d7e0"
+    },
+    "jdk": "25.0.4.1+1",
+    "date": "2026-10-23",
+    "result": "pass",
+    "scope": "bounded Java resource-filter groups and repetitions",
+    "patterns": [
+      {
+        "pattern": "^textures/(block|item)/.*\\.png$",
+        "values": [
+          "textures/block/stone.png",
+          "textures/item/apple.png",
+          "textures/entity/pig.png",
+          "xtextures/block/stone.png"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "(?:oak|birch)_(?:log|planks)",
+        "values": [
+          "block/oak_log",
+          "birch_planks.json",
+          "spruce_log",
+          "oak_log_extra"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "pattern": "^(ab){2,3}$",
+        "values": [
+          "ab",
+          "abab",
+          "ababab",
+          "abababab",
+          "xabab"
+        ],
+        "matches": [
+          false,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^(?:ab|c){2}$",
+        "values": [
+          "abab",
+          "abc",
+          "cab",
+          "cc",
+          "c",
+          "abcc"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^[a-z]{2,4}/[0-9]{1,}\\.json$",
+        "values": [
+          "ab/1.json",
+          "abcd/123.json",
+          "a/1.json",
+          "abcde/12.json",
+          "ab/a.json"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "(ab|c)+?d",
+        "values": [
+          "xabcd",
+          "cccd",
+          "abd",
+          "ab",
+          "d"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^a{0,2}?b{2,}$",
+        "values": [
+          "bb",
+          "abb",
+          "aabbb",
+          "aaabb",
+          "ab"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^(a?)*b$",
+        "values": [
+          "b",
+          "ab",
+          "aaab",
+          "aaac"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          false
+        ]
+      },
+      {
+        "pattern": "^(?:|ab){2,3}$",
+        "values": [
+          "",
+          "ab",
+          "abab",
+          "ababab",
+          "abababab"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          true,
+          false
+        ]
+      },
+      {
+        "pattern": "\\A(?:foo|bar)\\z",
+        "values": [
+          "foo",
+          "bar",
+          "foobar",
+          "xfoo"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "\\A(?:foo|bar)\\Z",
+        "values": [
+          "foo",
+          "bar",
+          "foobar",
+          "xbar"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^(?:[a-z0-9_-]+/){1,3}[^/]+$",
+        "values": [
+          "a/b",
+          "ab/c/d",
+          "a/b/c/d",
+          "a/b/c/d/e",
+          "ab"
+        ],
+        "matches": [
+          true,
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "(ab){0}",
+        "values": [
+          "",
+          "ab",
+          "anything"
+        ],
+        "matches": [
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "pattern": "^a{1024}$",
+        "values": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "matches": [
+          true,
+          false
+        ]
+      },
+      {
+        "pattern": "^(?:a|aa)*b$",
+        "values": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"
+        ],
+        "matches": [
+          true,
+          false
+        ]
+      },
+      {
+        "pattern": "^[]a]+$",
+        "values": [
+          "a",
+          "aa",
+          "b"
+        ],
+        "matches": [
+          true,
+          true,
+          false
+        ]
+      },
+      {
+        "pattern": "^[--a]+$",
+        "values": [
+          "a",
+          "b",
+          "/",
+          "_",
+          "9"
+        ],
+        "matches": [
+          true,
+          false,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "pattern": "^[\\d_]+$",
+        "values": [
+          "_",
+          "123_",
+          "a",
+          "a1"
+        ],
+        "matches": [
+          true,
+          true,
+          false,
+          false
+        ]
+      },
+      {
+        "pattern": "^[^a-c]+$",
+        "values": [
+          "d_z",
+          "abc",
+          "xyz"
+        ],
+        "matches": [
+          true,
+          false,
+          true
+        ]
+      }
+    ],
+    "nativePredicateComparisons": 78,
+    "actualJavaPatternAsPredicate": true,
+    "capturingAndNoncapturingGroups": true,
+    "nativeAsciiCharacterClassAndRangeParsing": true,
+    "nestedAlternationAndCountedRepeats": true,
+    "reluctantBooleanFind": true,
+    "emptyGroupCycles": true,
+    "absoluteAnchors": true,
+    "longInputRefusal": true,
+    "compileDepthAndStateBudgets": true,
+    "unsupportedAssertionsBackreferencesAndPossessiveExplicit": true,
+    "actualPackOwnAssetsBeforeFilterAndUnblockedFallback": true,
+    "sourceSha256": "72687f1cb1b1227db43079b316c721afdee8e073aa710d4000496e294cbcb4d2",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "clientRenderingParity": false,
+    "projectFinished": false
+  },
+  "asyncImageSnapshot": {
+    "scope": "native-image-snapshot-worker-contract-mocked-api",
+    "result": "pass",
+    "nativeFolderCaptured": true,
+    "imageOnlyStyleDiscoverable": true,
+    "nativeImageReferenceResolved": true,
+    "unknownJsonNumberTextPreserved": true,
+    "ownedPngBytes": true,
+    "escapedPropertyRouting": true,
+    "staleAsyncImageRegistrationSuppressed": true,
+    "staleInspectionDoesNotClearNewerContext": true,
+    "pngRegisteredWithRawBands": true,
+    "cachedStyleSnapshotRouting": true,
+    "cacheOnlyStyleDiscoverable": true,
+    "cacheStatisticsTransported": true,
+    "expressionOnlyStyleDiscoverable": true,
+    "unsavedExpressionTextPreserved": true,
+    "expressionPreviewRoute": true,
+    "expressionStatisticsTransported": true,
+    "workerSha256": "ea51b785d8e1a18528b40c83624993043b1b90c6605f3eae159be375cb615863",
+    "nativeTerrainVerified": false,
+    "browserVerified": false
+  },
+  "textureRegression": {
+    "scope": "raw-pixel-texture-pipeline-targeted",
+    "result": "pass",
+    "authoredPngs": 5,
+    "decodedPixels": 9,
+    "rawRgbaAndHiddenColor": true,
+    "paletteAndGrayTransparency": true,
+    "sixteenBitHighBytes": true,
+    "irisPackedGrayDefaultUnchanged": true,
+    "controlledUploadDevice": true,
+    "interpolatedAlphaAndGutters": true,
+    "tickOnlyUpdates": true,
+    "repeatedFramesAndRestore": true,
+    "ownedDecodeCache": true,
+    "metadataFailureRecovery": true,
+    "admissionWithoutLargeAllocation": true,
+    "disposedPendingAtlasRefused": true,
+    "browserVerified": false,
+    "webGpuVerified": false
+  },
+  "sourceRefresh": {
+    "method": "single-host-decoder-source-update",
+    "previousSourceSha256": "527d2ddcbd5bf1bdefb5b7ed97a1bb66eef319604bb77bac8721dd5be59d5c8f",
+    "sourceSha256": "400bcd2f4c6abb77f9a854473fa01b38accd17894bd8b7d19aaebc712762f14c",
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceFilesCompared": 5597,
+    "changedSourceEntries": [
+      "packages/iris-engine/png.mjs"
+    ],
+    "unchangedJavaFiles": 127,
+    "nativeAndBuildInputsUnchanged": true,
+    "wasmRecompiled": false,
+    "jdkPngReaderSha256": "9f98dfd09a5b811b452ae7ca93f117698476254ee0709a891425c503ccb18a3c"
+  },
+  "standalone": {
+    "date": "2026-10-24",
+    "result": "pass",
+    "scope": "standalone rendering and image-input module delivery",
+    "modules": [
+      {
+        "url": "/app/main.mjs",
+        "sha256": "af5cc110ccbb2b874fd2d829e0062c6e04cf501dc169412b5cb7509e423c4e2d"
+      },
+      {
+        "url": "/app/lib/render-diagnostics.mjs",
+        "sha256": "03002a776f25afaea524c88c348402b56238aa3e2da2976f272b175a88dade91"
+      },
+      {
+        "url": "/app/lib/image-source.mjs",
+        "sha256": "c41404add776a26620ec1604b57aafae4936f9aef35ffca4d38e9e30df69c739"
+      },
+      {
+        "url": "/app/workers/iris-worker.js",
+        "sha256": "ea51b785d8e1a18528b40c83624993043b1b90c6605f3eae159be375cb615863"
+      },
+      {
+        "url": "/packages/iris-engine/png.mjs",
+        "sha256": "245579e17c29beeb6ae987f6a96ba70940caf045bea45c07fd9a177348bff025"
+      },
+      {
+        "url": "/packages/resource-packs/texture-pixels.mjs",
+        "sha256": "5ed9870d4c6421005759c3a6df0db6b7b6a020b18c7d5439e895b1a4ffbc0856"
+      },
+      {
+        "url": "/packages/resource-packs/resource-filter.mjs",
+        "sha256": "72687f1cb1b1227db43079b316c721afdee8e073aa710d4000496e294cbcb4d2"
+      },
+      {
+        "url": "/packages/voxel-renderer/gpu-validation.mjs",
+        "sha256": "e9796ec9205435267027c4e7795d0d72b2cfac1a7c636983c3cc7641888ffc3f"
+      },
+      {
+        "url": "/packages/voxel-renderer/gpu-session.mjs",
+        "sha256": "3521dd366a0ae97483944248721c27d898126b2e0d69a83e02f218312bc237ff"
+      },
+      {
+        "url": "/packages/voxel-renderer/models.mjs",
+        "sha256": "b7c173f98cad71c7f7ebab03e1bd2d52fc347a18b0ad91f899452a3069195ca6"
+      },
+      {
+        "url": "/packages/voxel-renderer/world.mjs",
+        "sha256": "9fdf6d6d9ab8b0046bc9f07f9bb3c228a32b6d869b1f0a169bd3772939c0d45d"
+      },
+      {
+        "url": "/packages/voxel-renderer/map.mjs",
+        "sha256": "0ac49cbb6b037acabb1858a2d71391437295375cf494d6e7a66a277f8b1c5626"
+      },
+      {
+        "url": "/packages/voxel-renderer/selection.mjs",
+        "sha256": "f26356d6721780ed37e26831f6c9f3eeeb251747f0299c65e2aec5de6f6f0f88"
+      },
+      {
+        "url": "/packages/voxel-renderer/hydrology-overlay.mjs",
+        "sha256": "c0b62d808ccb13b0054a9b3259e529e9826ddee496109f01c08dfd827989eaea"
+      }
+    ],
+    "healthAndDiagnosticsControl": true,
+    "engineAndRegistryPresent": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "sourceSha256": "400bcd2f4c6abb77f9a854473fa01b38accd17894bd8b7d19aaebc712762f14c",
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "projectFinished": false
+  },
+  "commands": [
+    "node --experimental-vm-modules tools/checks/native-png-metadata-smoke.mjs",
+    "node tools/checks/resource-pattern-groups-smoke.mjs",
+    "node --experimental-vm-modules tools/checks/image-snapshot-worker-smoke.mjs",
+    "node tools/checks/texture-pipeline-smoke.mjs",
+    "node tools/checks/gpu-recovery-smoke.mjs",
+    "node tools/build-app.mjs --require-engine --include-local-assets",
+    "node tools/checks/standalone-render-smoke.mjs dist"
+  ],
+  "registryReexported": false,
+  "stateOrPairEnumeration": false,
+  "terrainGenerationRun": false,
+  "fullProgramSuiteRun": false,
+  "githubWorkflowRun": false,
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "projectFinished": false,
+  "limits": "Six two-pixel native image fixtures, 78 selected original Java predicate answers, tiny existing async/texture checks and exact static HTTP module delivery. Original native Wasm/runtime unchanged; only the PNG host source entry changes in its accompanying archive. APNG is static default-image input for terrain, not animation decoding. Minecraft profile/HDR/APNG texture admission stays unchanged. Extra Java regex syntax fails explicitly. Reference checksum/provenance and complete supported-scope/browser/GPU/deployment qualification remain open. Uncaptured GPU faults exercise controlled device/canvas/application recovery; this is not a driver or GPU execution qualification.",
+  "gpuRecovery": {
+    "date": "2026-10-23",
+    "scope": "validated WebGPU startup, empty native model diagnostics, explicit recovery and retained resource lifecycle",
+    "fixture": {
+      "storedVoxels": 2,
+      "storedMapSamples": 2,
+      "decodedPixels": 0,
+      "selectedOriginalModels": 1,
+      "shaderModules": 4,
+      "pipelines": 6,
+      "generatedTerrainCells": 0,
+      "controlledDevice": true
+    },
+    "checks": [
+      "failed/late device acquisition, partial construction rollback, loss/validation reporting and idempotent all-owner cleanup",
+      "real renderer disposal clears CPU/GPU ownership, observers/animation and pointer handlers; repeated construction does not duplicate input",
+      "disposed renderers refuse allocations; constructor failures release partial canvas/GPU resources",
+      "startup waits for all four actual shader modules and six pipelines, reports source locations/warnings and rejects scoped asynchronous allocation failures",
+      "startup error scopes are popped before yielding; compilation failure or disposal during validation releases both renderers and cannot publish readiness",
+      "one original vanilla chest model emits an explicit empty-model notice, exports a bounded report without voxel buffers and remains inspectable as six identity-cell faces through the actual Node mesh worker",
+      "explicit recovery preserves samples/validated voxels, independent inputs, map settings, slice linkage, camera/clip and pending retry without generation; offline edits do not schedule GPU work",
+      "device loss during startup or asynchronous mesh restoration cannot publish an orphaned GPU session",
+      "uncaptured asynchronous GPU faults invalidate both renderers, retain committed/pending CPU data, expose recovery and restore without generation; later physical loss cannot report the same fault twice",
+      "map/voxel upload failures keep CPU ownership and expose independent retries; clear during acquisition and stale loss cannot restore old views"
+    ],
+    "workspaceSha256": {
+      "packages/voxel-renderer/gpu-validation.mjs": "e9796ec9205435267027c4e7795d0d72b2cfac1a7c636983c3cc7641888ffc3f",
+      "apps/web/lib/render-diagnostics.mjs": "03002a776f25afaea524c88c348402b56238aa3e2da2976f272b175a88dade91",
+      "packages/voxel-renderer/models.mjs": "b7c173f98cad71c7f7ebab03e1bd2d52fc347a18b0ad91f899452a3069195ca6",
+      "packages/voxel-renderer/gpu-session.mjs": "3521dd366a0ae97483944248721c27d898126b2e0d69a83e02f218312bc237ff",
+      "packages/voxel-renderer/map.mjs": "0ac49cbb6b037acabb1858a2d71391437295375cf494d6e7a66a277f8b1c5626",
+      "packages/voxel-renderer/world.mjs": "9fdf6d6d9ab8b0046bc9f07f9bb3c228a32b6d869b1f0a169bd3772939c0d45d",
+      "apps/web/main.mjs": "af5cc110ccbb2b874fd2d829e0062c6e04cf501dc169412b5cb7509e423c4e2d",
+      "apps/web/index.html": "18644635b505e906cee3fe1ee896b4366c141d543794ae3993905be599557a36",
+      "tools/checks/gpu-recovery-smoke.mjs": "94cc37cb8c699f1c3956870c6e3ead782b1fb4677aa6dca2b04374cf132c606f"
+    },
+    "realBrowserVerified": false,
+    "webGpuVerified": false,
+    "performanceMeasured": false,
+    "nativeParityVerified": false,
+    "complete": false,
+    "limits": "Controlled Node compiler/device/loss/canvas and application hosts, one original vanilla chest definition and an actual Node mesh worker; no actual WGSL compilation, adapter reset, rasterization or terrain generation. Recreates rendering resources from retained immutable CPU data; one pending voxel result remains explicit. Complete device-loss/interleaving/GPU-memory/client qualification remains open. No native build, registry/state sweep, broad suite or GitHub workflow."
+  },
+  "latestStableAudit": {
+    "checkedAt": "2026-10-24",
+    "tag": "4.3.5-26.1.2-26.3",
+    "publishedAt": "2026-10-22T18:02:45Z",
+    "url": "https://github.com/VolmitSoftware/Iris/releases/tag/4.3.5-26.1.2-26.3",
+    "prerelease": false,
+    "assets": [],
+    "pinnedVersionStillLatest": true
+  }
+}

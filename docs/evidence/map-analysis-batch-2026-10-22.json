@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-22",
+  "scope": "retained-map sample-window statistics, stored-cell transects and exact CSV/JSON exports",
+  "fixture": {
+    "scalarCells": 6,
+    "categoricalCells": 6,
+    "extremeScalarCells": 2,
+    "yieldBoundaryBytes": 16384,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "six retained scalar samples: cropped/full statistics, finite extreme-value mean, centre coordinates, stored-cell transect/endpoints and exact negative-zero/subnormal bit strings",
+    "JSON decimal strings and IEEE-754 bits round-trip every fixture value; CSV ZIP contains original grid indices/centres plus source metadata and preserves entered versus engine seeds",
+    "categorical counts omit numeric means; exact potentially formula-like category keys stay in JSON metadata, not CSV cells; category indices and transect distances remain bound to stored samples",
+    "metadata-only oversized selection and small label budgets refuse; a single 16 KiB yield-boundary buffer demonstrates cancellable statistics/export without generating or enumerating terrain",
+    "controlled analysis UI computes a window, uses a selected endpoint, traces/selects a sample, exports captured data, works from CPU-only retained data, refuses changed maps and suppresses a closed async export",
+    "actual application handoff exposes retained CPU map data with its own generation labels even when no GPU renderer exists"
+  ],
+  "workspaceSha256": {
+    "packages/voxel-renderer/field-analysis.mjs": "d7b5a36acfc09f73c3ad6da545d44e86a4414542ff83034618bec0a32820cc76",
+    "apps/web/lib/map-analysis-tools.mjs": "e3ce168f8451ead956dc05c0d7a0d577c6b04e129af7a63b4ea7a498c351b27c",
+    "apps/web/main.mjs": "62005fdd1b300187f7dccbb258362193a4d90b5e5961c85d07f4669823feb4b4",
+    "apps/web/index.html": "3bf8caabe82b1e6b6abd210d3c31888f8de38c4dd353bf0abb0f61591d56d990",
+    "apps/web/styles.css": "b321bba645b3a16ffc9d1b28398ef77345ab90e5f47d169815bd229a6cfa51eb"
+  },
+  "realBrowserVerified": false,
+  "webGpuVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "Six scalar/categorical cells, two extreme values, a single 16 KiB cooperative-yield boundary and controlled Node modal/application hosts. Derived statistics and Bresenham sample paths describe retained cells only, with no interpolation, new terrain or native algorithm changes. Window admission is 262,144 samples, profiles 4,096 cells, export payloads 64 MiB and source labels 64 KiB. Bounds are payload/admission limits, not measured heap/performance guarantees. Real browser focus/layout/file download/cancellation/device loss and full native/client/release qualification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

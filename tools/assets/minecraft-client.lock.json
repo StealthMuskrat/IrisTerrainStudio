@@ -1,0 +1,11 @@
+{
+  "minecraftVersion": "26.3",
+  "versionMetadataUrl": "https://piston-meta.mojang.com/v1/packages/61fff1316bd50312624a858bbb5eb18fa45208ed/26.3.json",
+  "versionMetadataSha1": "61fff1316bd50312624a858bbb5eb18fa45208ed",
+  "clientUrl": "https://piston-data.mojang.com/v1/objects/e877b6a07acd633fb3bb475002175cec036e7b87/client.jar",
+  "clientBytes": 41483720,
+  "clientSha1": "e877b6a07acd633fb3bb475002175cec036e7b87",
+  "clientSha256": "4508d006323f24fa02876310c192d739af56516eb259000ac50f0909a68c9a2d",
+  "resourceFormat": [97, 1],
+  "qualification": "Official download identity and embedded version checked. This does not qualify client rendering, the native server registry or Iris release parity. Assets are local inputs, not repository deliverables."
+}

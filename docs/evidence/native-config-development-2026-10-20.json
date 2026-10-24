@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-20",
+  "scope": "local native configuration/data-adapter development; not terrain or browser qualification",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "compiledWasmSha256": "f10212c59ed55247bfcfaae6f2e29aa07f28e5a678b36c28c78e3b6f66b3da86",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "configTypes": 126,
+  "configFields": 1312,
+  "nativePredicateExport": {
+    "states": 35723,
+    "blocks": 1286,
+    "flagNames": [
+      "isAir",
+      "isSolid",
+      "isOccluding",
+      "isFluid",
+      "isWater",
+      "isWaterLogged",
+      "isLit",
+      "isUpdatable",
+      "isFoliage",
+      "isTreeBlock",
+      "isFoliagePlantable",
+      "isDecorant",
+      "isStorage",
+      "isStorageChest",
+      "isOre",
+      "isDeepSlate",
+      "isVineBlock",
+      "hasTileEntity"
+    ],
+    "allowedPlacementPairs": 1611301,
+    "sha256": "cb4ea6a0dfca404276a80fb17b2ec9d84c7e3332d78a6794b0317185b1c4312f"
+  },
+  "implementation": [
+    "Generated Gson streaming readers assign native config fields and preserve original constructor/method bytecode.",
+    "Native style/generator snippet resolution follows the actual snippet-bearing field types.",
+    "Standalone generator and style JSON, plus raw dimension continent/region control noise, are connected to the worker.",
+    "Generation request keys use SHA-256 with bounded entry counts, rather than retaining large JSON request keys."
+  ],
+  "focusedCheck": {
+    "command": "node tools/checks/native-json-link.mjs",
+    "result": "Three generator samples matched original native Gson and snippet loading; large signed seeds, unknown fields and surface-cache paths included.",
+    "scope": "This focused check ran on the first four-type reader integration before the broader 126-type extension. It is not current full-reader/browser coverage."
+  },
+  "remaining": [
+    "Native pack resource lookup, version-content gates, region/biome selection and complete terrain composition.",
+    "Native image/expression/float-cache adapters.",
+    "Full Minecraft rendering and user-supplied asset baselines.",
+    "Comprehensive program verification after development."
+  ]
+}

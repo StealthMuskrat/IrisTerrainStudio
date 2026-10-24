@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-22",
+  "scope": "saved-version browsing, exact source review and guarded restore ownership",
+  "fixture": {
+    "authoredFiles": 1,
+    "initialBytes": 62,
+    "historyPageBoundary": 33,
+    "generatedTerrainCells": 0
+  },
+  "checks": [
+    "authenticated no-store backup endpoint returns exact UTF-8/BOM/CRLF source and saved ETag; direct ID lookup avoids history rescans; path/id, checksum and backup-version mismatch refuse",
+    "actual restore preserves prior disk version, rejects stale disk tokens and recreates deleted files only while absent",
+    "33-row pagination/filter, exact preview/download, default keep-open choice, stale edit/pack refusal and cancelled pending read publication",
+    "actual main restore keeps delayed new typing/draft dirty, updates disk base/ETag, preserves undo, handles inactive target without navigation, rejects a still-loading target and leaves buffers untouched on disk conflict"
+  ],
+  "workspaceSha256": {
+    "apps/server/pack-store.mjs": "34a06a2ca325f4c8a03eabf4c8e815a9b9c462d24800d23d74b9b6bad86ea544",
+    "apps/server/index.mjs": "6f01cb8cde66bbd146e24827044852bb3baeac2077810d2e7de6d8eb44ef28ee",
+    "apps/web/lib/history-tools.mjs": "98d6b322f6811a1f2a412ead113bc44b862d664b4d39fe303f8c37010075b576",
+    "apps/web/lib/api.mjs": "9f59763b49a49be2ea3f17ea0b7354dc461fc1897179aea37757cf405852e70b",
+    "apps/web/main.mjs": "db1cb7256fd418959e1d26f319764cb622bdb01fca447f544b4a6dfc606610e9",
+    "apps/web/styles.css": "61944e2b717cb9eec9a35f6f75f30131dda45f8ad5c38dec7f05fba287e9cafa"
+  },
+  "realBrowserVerified": false,
+  "indexedDbVerified": false,
+  "nativeParityVerified": false,
+  "complete": false,
+  "limits": "One tiny authored resource, actual local HTTP/PackStore and controlled Node modal/application/draft hosts. Source comparison is linear prefix/suffix span reporting, not semantic or minimal diff. Source display stops at 65,536 UTF-16 units per version; excerpts stop at 4,096, downloads retain exact text. History lists admit at most 50,000 records. Browser layout/focus/storage/multi-tab and full native/client/release qualification remain pending. No native build/generation, registry/state sweep, GPU work, broad suite or GitHub workflow."
+}

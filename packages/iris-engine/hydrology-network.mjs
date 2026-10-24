@@ -1,0 +1,35 @@
+export const HYDROLOGY_NETWORK_LIMITS=Object.freeze({tiles:32,courses:256,segments:1024,points:32768,nodes:4096,outlets:1024});
+const courseTypes=new Set(['SURFACE','UNDERGROUND','DEEP_FLUID','SURFACE_POOL','SEA_CAVE']),featureTypes=new Set(['SURFACE_POOL','RIFFLE','CASCADE','WATERFALL','RIDGE_BORE','UNDERGROUND_POOL','UNDERGROUND_DROP','SINKHOLE','COASTAL_GROTTO','INLAND_GROTTO','MOUTH','DEEP_POOL','DEEP_CHANNEL','STANDING_POOL']),fail=()=>{throw new Error('Native hydrology network metadata is incomplete or exceeds its bounded transport. Rebuild the local engine if it predates route diagnostics.');},integer=value=>Number.isInteger(value)&&value>=-2147483648&&value<=2147483647,id=value=>typeof value==='string'&&/^[0-9a-f]{1,16}$/.test(value),point=value=>Array.isArray(value)&&value.length===3&&value.every(integer),object=value=>value&&typeof value==='object'&&!Array.isArray(value);
+export function validateHydrologyNetwork(network){
+  if(!object(network)||network.version!==1||network.selection!=='native-publication-halo'||network.coordinates!=='native-hydrology-x-headY-z'||!integer(network.tileSize)||network.tileSize<1||!integer(network.publicationRadius)||network.publicationRadius<0||!Number.isSafeInteger(network.totalOwnerTiles)||network.totalOwnerTiles<1||!object(network.limits)||!object(network.counts)||!object(network.omitted)||typeof network.truncated!=='boolean'||!Array.isArray(network.tiles)||network.tiles.length>HYDROLOGY_NETWORK_LIMITS.tiles)fail();
+  const counts={tiles:network.tiles.length,courses:0,segments:0,points:0,nodes:0,outlets:0},tiles=new Set();
+  for(const tile of network.tiles){if(!object(tile)||!integer(tile.x)||!integer(tile.z)||tiles.has(tile.x+','+tile.z))fail();tiles.add(tile.x+','+tile.z);const courseIds=new Set(),segmentIds=new Set(),nodeIds=new Set(),outletIds=new Set();
+    for(const key of ['courses','nodes','outlets'])if(!Array.isArray(tile[key])||tile[key].length>HYDROLOGY_NETWORK_LIMITS[key])fail();
+    for(const node of tile.nodes){if(!object(node)||!id(node.id)||nodeIds.has(node.id)||!point(node.point)||!id(node.outletId)||!Number.isFinite(node.potential)||node.potential<0)fail();nodeIds.add(node.id);if(++counts.nodes>HYDROLOGY_NETWORK_LIMITS.nodes)fail();}
+    for(const outlet of tile.outlets){if(!object(outlet)||!id(outlet.id)||outletIds.has(outlet.id)||!['MOUTH','COASTAL_GROTTO','INLAND_GROTTO'].includes(outlet.type)||!id(outlet.nodeId)||!point(outlet.landward)||!point(outlet.connection)||!integer(outlet.seaLevel)||typeof outlet.directOcean!=='boolean')fail();outletIds.add(outlet.id);if(++counts.outlets>HYDROLOGY_NETWORK_LIMITS.outlets)fail();}
+    for(const course of tile.courses){if(!object(course)||!id(course.id)||courseIds.has(course.id)||!courseTypes.has(course.type)||typeof course.profile!=='string'||!course.profile.length||course.profile.length>1024||!integer(course.discharge)||course.discharge<1||course.sourceNodeId!==null&&!id(course.sourceNodeId)||course.outletId!==null&&!id(course.outletId)||!Array.isArray(course.segments)||!course.segments.length||course.segments.length>HYDROLOGY_NETWORK_LIMITS.segments)fail();courseIds.add(course.id);if(++counts.courses>HYDROLOGY_NETWORK_LIMITS.courses)fail();
+      for(const segment of course.segments){if(!object(segment)||!id(segment.id)||segmentIds.has(segment.id)||!featureTypes.has(segment.type)||!integer(segment.upstreamHeadY)||!integer(segment.downstreamHeadY)||segment.upstreamHeadY<segment.downstreamHeadY||!integer(segment.width)||segment.width<1||!integer(segment.depth)||segment.depth<1||typeof segment.fallingFluid!=='boolean'||typeof segment.receivingPool!=='boolean'||!Array.isArray(segment.points)||!segment.points.length||segment.points.length>HYDROLOGY_NETWORK_LIMITS.points)fail();segmentIds.add(segment.id);counts.segments++;counts.points+=segment.points.length;if(counts.segments>HYDROLOGY_NETWORK_LIMITS.segments||counts.points>HYDROLOGY_NETWORK_LIMITS.points)fail();
+        for(const p of segment.points)if(!Array.isArray(p)||p.length!==5||!p.slice(0,3).every(integer)||!Number.isFinite(p[3])||p[3]<=0||p[3]>segment.width||!Number.isFinite(p[4])||p[4]<=0||p[4]>segment.depth)fail();
+      }
+    }
+    for(const[key,limit]of Object.entries(HYDROLOGY_NETWORK_LIMITS))if(counts[key]>limit)fail();
+  }
+  for(const[key,limit]of Object.entries(HYDROLOGY_NETWORK_LIMITS))if(network.limits[key]!==limit||network.counts[key]!==counts[key])fail();
+  for(const key of ['tiles','courses','nodes','outlets'])if(!Number.isSafeInteger(network.omitted[key])||network.omitted[key]<0)fail();
+  if(network.totalOwnerTiles!==counts.tiles+network.omitted.tiles||network.truncated!==Object.values(network.omitted).some(value=>value>0))fail();return network;
+}
+export class HydrologyNetworkIndex{
+  constructor(network){this.network=validateHydrologyNetwork(network);this.courses=[];this.segments=[];this.markers=[];
+    for(const tile of network.tiles){for(const node of tile.nodes)this.markers.push({type:'DRAINAGE_NODE',point:node.point,id:node.id});for(const outlet of tile.outlets)this.markers.push({type:outlet.type,point:outlet.connection,id:outlet.id});
+      for(const course of tile.courses){const row={tile:[tile.x,tile.z],course};this.courses.push(row);for(const segment of course.segments){this.segments.push({...row,segment});this.markers.push({type:segment.type,point:segment.points[0].slice(0,3),id:segment.id});}}
+    }
+  }
+  nearest(x,z,maximumDistance){
+    if(![x,z,maximumDistance].every(Number.isFinite)||maximumDistance<0)throw new Error('Choose finite route-inspection coordinates and distance.');let best=null,limit=maximumDistance*maximumDistance;
+    for(const row of this.segments){const points=row.segment.points;for(let i=0;i<Math.max(1,points.length-1);i++){const a=points[i],b=points[Math.min(i+1,points.length-1)],dx=b[0]-a[0],dz=b[2]-a[2],length=dx*dx+dz*dz,t=length?Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[2])*dz)/length)):0,px=a[0]+t*dx,pz=a[2]+t*dz,distance=(x-px)**2+(z-pz)**2;if(distance>limit)continue;limit=distance;best={...row,distance:Math.sqrt(distance),station:i,nextStation:Math.min(i+1,points.length-1),fraction:t,point:[px,a[1]+t*(b[1]-a[1]),pz],width:a[3]+t*(b[3]-a[3]),depth:a[4]+t*(b[4]-a[4])};}}
+    return best;
+  }
+}
+export function hydrologyNetworkExport(data){
+  const network=validateHydrologyNetwork(data?.hydrology?.network),payload={format:'iris-terrain-studio-hydrology-network',version:1,source:{scope:data.scope??null,sourceCommit:data.sourceCommit??null,seed:String(data.seed),window:{x:data.x,z:data.z,span:data.span,depth:data.depth},terrainInfo:data.terrainInfo??null},qualification:'Original retained planning graph and hydraulic stations. Owner-tile records may repeat cross-tile course identities. This is not a terrain or fluid-simulation result and does not include a reproducible pack snapshot.',network};const text=JSON.stringify(payload,null,2);if(new TextEncoder().encode(text).byteLength>16*1024*1024)throw new Error('Hydrology network download exceeds 16 MiB.');return new Blob([text+'\n'],{type:'application/json'});
+}

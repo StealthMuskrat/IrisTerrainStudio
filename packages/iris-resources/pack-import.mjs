@@ -1,0 +1,22 @@
+import{ARCHIVE_LIMIT,FILE_LIMIT,ENTRY_LIMIT,JSON_LIMIT,resourcePath,packId}from'../shared/paths.mjs';
+import{category}from'./catalog.mjs';
+import{writeZip}from'../shared/zip.mjs';
+export function importName(name){return String(name).replace(/\.zip$/i,'').replace(/[^a-zA-Z0-9_-]/g,'-').replace(/^[^a-zA-Z0-9]+/,'').slice(0,64)||'imported-pack';}
+export function importPlan(entries,{stripRoot=false}={}){
+  if(!Array.isArray(entries)||!entries.length||entries.length>ENTRY_LIMIT)throw new Error('Import requires 1–20,000 files.');const top=entries[0].path?.split('/')[0],canStrip=entries.every(row=>typeof row.path==='string'&&row.path.startsWith(top+'/'));
+  if(stripRoot&&!canStrip)throw new Error('Removing an enclosing folder requires all files inside exactly one folder.');const rows=[],seen=new Set();let bytes=0,zipBytes=22,json=0,excluded=0;
+  for(const entry of entries){const source=resourcePath(entry.path),path=resourcePath(stripRoot?source.slice(top.length+1):source);if(!Number.isSafeInteger(entry.size)||entry.size<0||entry.size>FILE_LIMIT||(bytes+=entry.size)>ARCHIVE_LIMIT)throw new Error('File/expanded import payload exceeds its limit (64 MiB per file / 256 MiB total).');const portable=path.normalize('NFC').toLowerCase();if(seen.has(portable))throw new Error('Duplicate or case/Unicode-colliding import path: '+path);seen.add(portable);const nameBytes=new TextEncoder().encode(path).length;zipBytes+=76+2*nameBytes+entry.size;const group=category(path),editable=/\.json$/i.test(path)&&entry.size<=JSON_LIMIT&&!group.excluded;json+=Number(editable);excluded+=Number(group.excluded);rows.push({source,path,size:entry.size,editable,excluded:group.excluded});}
+  for(const path of seen){const parts=path.split('/');for(let i=1;i<parts.length;i++){const parent=parts.slice(0,i).join('/');if(seen.has(parent))throw new Error('A file is also used as an enclosing directory: '+parent);}}
+  return{rows,bytes,zipBytes,json,excluded,canStrip,root:canStrip?top:null,stripRoot};
+}
+export function folderSelection(files){
+  if(!files?.length||files.length>ENTRY_LIMIT)throw new Error('Select 1–20,000 files from one folder.');const entries=[],omitted=[],byPath=new Map();let root;
+  for(const file of files){const parts=String(file.webkitRelativePath??'').split('/');if(parts.length<2||!parts[0]||parts.slice(1).some(part=>!part))throw new Error('Folder files need complete relative locations.');root??=parts[0];if(parts[0]!==root)throw new Error('Select files from exactly one enclosing folder.');const path=parts.slice(1).join('/');if(path.length>1024)throw new Error('Selected resource path exceeds 1,024 characters.');if(parts.slice(1).some(part=>part.startsWith('.iris-terrain-studio'))){omitted.push(path);continue;}if(byPath.has(path))throw new Error('Duplicate selected file: '+path);byPath.set(path,file);entries.push({path,size:file.size});}
+  const plan=importPlan(entries);if(plan.zipBytes>ARCHIVE_LIMIT)throw new Error('Stored ZIP upload, including directory headers, would exceed 256 MiB. Select a smaller folder.');return{entries,omitted,byPath,root,plan};
+}
+export async function folderArchive(selection,{current=()=>true,onProgress=()=>{}}={}){
+  const guard=()=>{if(!current())throw new DOMException('Folder preparation cancelled before upload.','AbortError');},data=new Map();let done=0;guard();
+  for(const row of selection.plan.rows){const file=selection.byPath.get(row.source);if(!file||file.size!==row.size)throw new Error('Selected file metadata changed. Inspect the folder again.');const bytes=new Uint8Array(await file.arrayBuffer());guard();if(bytes.length!==row.size)throw new Error('Selected file length changed: '+row.source);data.set(row.path,bytes);onProgress(++done,selection.plan.rows.length);}
+  guard();const result=writeZip(data);if(result.length>ARCHIVE_LIMIT)throw new Error('Prepared upload exceeds 256 MiB.');return result;
+}
+export function importManifest(plan,{id,kind,name,archiveBytes=null,omitted=[]}){packId(id);return JSON.stringify({format:'iris-terrain-studio-import-plan',version:1,pack:id,kind,name,archiveBytes,stripRoot:plan.stripRoot,root:plan.root,files:plan.rows,bytes:plan.bytes,editableJson:plan.json,excludedPreviewFiles:plan.excluded,omitted,contentVerified:false,notes:'Metadata plan only. File contents/UTF-8/JSON/schema/native compatibility are not qualified. The server independently checks the actual ZIP headers, decompression, CRCs, paths and publication. Empty directories are not preserved; application metadata omitted from folder selection is listed explicitly.'},null,2)+'\n';}

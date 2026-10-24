@@ -1,0 +1,503 @@
+{
+  "scope": "native-expression-emitter-development-targeted",
+  "asOf": "2026-10-21",
+  "result": "pass-with-explicit-development-limitations",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "build": {
+    "nativeInputProfile": "terrain-no-eco-items",
+    "excludedNativeSources": [
+      "core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java"
+    ],
+    "platformSourceServerJarSha256": "7a8188991b40119a346652e5f12ee97bcbdc6e99c56e1979356dd89898bb0b2e",
+    "expressionInputs": {
+      "nativeMethods": [
+        "com/dfsek/paralithic/functions/natives/NativeMath.intPow(DD)D",
+        "com/dfsek/paralithic/functions/natives/NativeMath.pow2(D)D",
+        "com/dfsek/paralithic/functions/natives/NativeMath.sigmoid(DD)D",
+        "java/lang/Math.abs(D)D",
+        "java/lang/Math.acos(D)D",
+        "java/lang/Math.asin(D)D",
+        "java/lang/Math.atan(D)D",
+        "java/lang/Math.atan2(DD)D",
+        "java/lang/Math.ceil(D)D",
+        "java/lang/Math.cos(D)D",
+        "java/lang/Math.cosh(D)D",
+        "java/lang/Math.exp(D)D",
+        "java/lang/Math.floor(D)D",
+        "java/lang/Math.log(D)D",
+        "java/lang/Math.log10(D)D",
+        "java/lang/Math.max(DD)D",
+        "java/lang/Math.min(DD)D",
+        "java/lang/Math.pow(DD)D",
+        "java/lang/Math.round(D)J",
+        "java/lang/Math.signum(D)D",
+        "java/lang/Math.sin(D)D",
+        "java/lang/Math.sinh(D)D",
+        "java/lang/Math.sqrt(D)D",
+        "java/lang/Math.tan(D)D",
+        "java/lang/Math.tanh(D)D",
+        "java/lang/Math.toDegrees(D)D",
+        "java/lang/Math.toRadians(D)D"
+      ],
+      "methodCount": 27,
+      "dependency": {
+        "version": "0.8.1",
+        "jarSha256": "ed4224311e2e16af68ddede5bf7312f27f0517f454d1fed3c1977bf5e74bd13b",
+        "sourceRepository": "https://github.com/PolyhedralDev/Paralithic",
+        "sourceCommit": "9459137e553258ce43c8dea0862b3bac7ba394a6",
+        "sourceTree": "85e258d98206391f43b0a58617120feddbeb5268",
+        "sourceQualification": "Candidate source after parser-options change; native resolved JAR bytecode is used unchanged. v0.8.1 tag predates the resolved JAR parser API; release provenance remains unqualified."
+      }
+    },
+    "noiseCacheIdentity": {
+      "releaseMatchVerified": false,
+      "revisionResource": "/META-INF/iris/generation-kernels/abi-1.revision",
+      "rngVersion": 1,
+      "generatorAbi": 1,
+      "revisionResourceSha256": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488",
+      "seedDerivationVersion": 1,
+      "implementationFingerprint": "55a6be1e8f4a8452b90a2adf611e43dfd6e3ddcdcd4e9d3d752ebe8c2694d488"
+    },
+    "wasmSha256": "f68e727d06e8a5515c1c868089b1396572d9c233977a8444e02de0c833c10f63",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "1c93de6246a3ad5293833f3c6b0d4ce633f617b7e72fc04eb5ecb32be965af8b",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "compiler": {
+    "name": "TeaVM",
+    "version": "0.16.0",
+    "mode": "strict ADVANCED Wasm GC",
+    "command": "node tools/engine-build/build.mjs --browser-terrain-inputs --reuse-native-inputs",
+    "result": "pass"
+  },
+  "algorithmSourceRecords": [
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisExpression.java",
+      "sha256": "59d71a210f7510100bb693bc7341fa1f04582b22483a0697a31b57c33dc86670"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisExpressionLoad.java",
+      "sha256": "e98119193be5651899bfa8ee458fa7b914c3bc51997f254d64e71b4d1507dd26"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/IrisExpressionFunction.java",
+      "sha256": "3573c437d8132434c961167d1e536381a5bf1dad6adff7191acceb11d2a96634"
+    },
+    {
+      "project": "Iris",
+      "path": "core/src/main/java/art/arcane/iris/generation/noise/ExpressionNoise.java",
+      "sha256": "01193884d76abd8e5fdfcf5be71df3e94a909e074b75e5b261e58c14c636edfe"
+    },
+    {
+      "project": "Paralithic",
+      "path": "src/main/java/com/dfsek/paralithic/eval/parser/Parser.java",
+      "sha256": "0d7a8b1c38cd01b7594ff78dd2ad5f8e3f605c50400afd917c49db8009d4c6f6"
+    },
+    {
+      "project": "Paralithic",
+      "path": "src/main/java/com/dfsek/paralithic/eval/ExpressionBuilder.java",
+      "sha256": "58d402f7852dbd26b569af9201d30b4b617db9652816f1a471518c539e4bd954"
+    }
+  ],
+  "jdkRoundSource": {
+    "java": "25.0.4.1+1",
+    "path": "java.base/java/lang/Math.java",
+    "sha256": "a7196d1d35ff4b9e08117f39c6ca892e2219f19ca21c49b721a96e5ecbedb928",
+    "license": "GPL-2.0-only WITH Classpath-exception-2.0",
+    "scope": "Only expression method dispatch and native expression parse-time reflection; no global Math replacement"
+  },
+  "implementation": [
+    "Original IrisExpression variable/coordinate mapping, stream caches, seeded variables/functions and ExpressionNoise execute. Original resolved Paralithic parser, simplifier and node instruction emitters remain unchanged.",
+    "ExpressionBuilder.get dynamic JVM class definition is replaced by an owned finite instruction stream and bounded interpreter. Emitted DCMPG, arithmetic, branching, short circuit, dynamic Context and native math method descriptors are retained; there is no replacement source-language parser or AST evaluator.",
+    "27 exact native math method handles are captured from the resolved JAR. Only these signatures are reflectively accessible; direct execution handles are generated. Parameter.getType metadata uses the supported native Method parameter-type query.",
+    "The JDK round edge at 0.49999999999999994 differed in the browser library. A scoped pinned OpenJDK 25 Math.round adapter fixes runtime expression dispatch and native parse-time constant folding, including long return conversion.",
+    "Original AtomicCache.aquireOnceOrThrow replaces the expression initializer aquire call, preserving valid caching while retaining failed parse causes. Mandatory variable-value/stream cache calls use original aquireOrThrow. Script-load reports preserve parser messages and an engine-failure cause instead of returning null.",
+    "Original IrisData.registerEngine/unregisterEngine now binds the worker terrain context lifecycle. Engine value/stream variables and functions use original resolution/provider caches.",
+    "Sealed JSON resource handles return logical lastModified zero because snapshots have no filesystem modification clock. Source stamps remain isolated by owned cache snapshots. The native fixture normalizes actual file mtimes to zero for the expression-cache filename/hash comparison.",
+    "Expression-only styles are discoverable, expression resources have a direct preview action, and unsaved text/snippets use the existing immutable snapshot route. Inspection and scalar worker results expose expression metadata/compilation statistics."
+  ],
+  "bounds": {
+    "textCharacters": 4096,
+    "variables": 64,
+    "functions": 32,
+    "functionArguments": 32,
+    "parenthesisDepth": 64,
+    "emittedInstructionsPerExpression": 2048,
+    "operandStackSlots": 256,
+    "localSlotUpperBound": 131,
+    "retainedFramesPerExpression": 8,
+    "nestedEvaluationCalls": 32,
+    "emittedOperationsPerRootSample": 65536,
+    "snapshotCompiledExpressions": 64,
+    "snapshotEstimatedCompileWorkLimit": 4194304,
+    "compileCharge": "65536 + 32 * expressionTextLength; admission estimate, not measured heap"
+  },
+  "checks": {
+    "nativeExpressions": {
+      "result": "pass",
+      "scope": "native-expression-emitter-development-targeted",
+      "standaloneExpressions": 6,
+      "standaloneSamples": 22,
+      "engineExpressionSamples": 4,
+      "dimensionHeightSamples": 4,
+      "checks": [
+        {
+          "key": "coords",
+          "points": [
+            [
+              1,
+              2,
+              3,
+              2,
+              "1"
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              "1"
+            ],
+            [
+              0.25,
+              -0.5,
+              0.49999999999999994,
+              3,
+              "1"
+            ],
+            [
+              -2,
+              0,
+              4,
+              2,
+              "2"
+            ]
+          ]
+        },
+        {
+          "key": "math",
+          "points": [
+            [
+              1,
+              2,
+              3,
+              2,
+              "1"
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              "1"
+            ],
+            [
+              0.25,
+              -0.5,
+              0.49999999999999994,
+              3,
+              "1"
+            ],
+            [
+              -2,
+              0,
+              4,
+              2,
+              "2"
+            ]
+          ]
+        },
+        {
+          "key": "branch",
+          "points": [
+            [
+              0,
+              0,
+              2,
+              3,
+              "1"
+            ],
+            [
+              1,
+              2,
+              -3,
+              3,
+              "1"
+            ],
+            [
+              0,
+              0,
+              2,
+              2,
+              "2"
+            ],
+            [
+              -1,
+              0,
+              3,
+              3,
+              "1"
+            ]
+          ]
+        },
+        {
+          "key": "seeded",
+          "points": [
+            [
+              1,
+              2,
+              3,
+              2,
+              "1"
+            ],
+            [
+              1,
+              2,
+              3,
+              3,
+              "1"
+            ],
+            [
+              0.25,
+              -0.5,
+              0.49999999999999994,
+              3,
+              "1"
+            ],
+            [
+              -2,
+              0,
+              4,
+              2,
+              "2"
+            ]
+          ]
+        },
+        {
+          "key": "rounding",
+          "points": [
+            [
+              0.49999999999999994,
+              0,
+              0,
+              3,
+              "1"
+            ],
+            [
+              -0.5,
+              0,
+              0,
+              3,
+              "1"
+            ],
+            [
+              -0.5000000000000001,
+              0,
+              0,
+              3,
+              "1"
+            ],
+            [
+              1.7976931348623157e+308,
+              0,
+              0,
+              3,
+              "1"
+            ]
+          ]
+        },
+        {
+          "key": "short",
+          "points": [
+            [
+              1,
+              3,
+              4,
+              2,
+              "1"
+            ],
+            [
+              2,
+              -1,
+              5,
+              3,
+              "2"
+            ]
+          ]
+        }
+      ],
+      "engineChecks": [
+        {
+          "key": "engine",
+          "points": [
+            [
+              0,
+              0,
+              0,
+              3,
+              "1"
+            ],
+            [
+              1,
+              4,
+              1,
+              2,
+              "1"
+            ]
+          ]
+        },
+        {
+          "key": "short",
+          "points": [
+            [
+              -1,
+              3,
+              4,
+              2,
+              "1"
+            ],
+            [
+              -2,
+              -1,
+              5,
+              3,
+              "2"
+            ]
+          ]
+        }
+      ],
+      "actual": [
+        [
+          "4011000000000000",
+          "402c800000000000",
+          "3feffffffffffffe",
+          "400a000000000000"
+        ],
+        [
+          "40115529e0602a26",
+          "401c930d71f61632",
+          "3ffeb5e9ad22625c",
+          "c009641dcac17ae6"
+        ],
+        [
+          "4000000000000000",
+          "4010000000000000",
+          "bff0000000000000",
+          "4008000000000000"
+        ],
+        [
+          "3fef2afcba42b274",
+          "3fea8b17334e1442",
+          "3fe9b158d3af6ff1",
+          "3feb871de1b9d53c"
+        ],
+        [
+          "0000000000000000",
+          "0000000000000000",
+          "bff0000000000000",
+          "43e0000000000000"
+        ],
+        [
+          "4010000000000000",
+          "bff0000000000000"
+        ]
+      ],
+      "engineSamples": [
+        [
+          "406299999999999a",
+          "40629fd352ee3094"
+        ],
+        [
+          "4010000000000000",
+          "bff0000000000000"
+        ]
+      ],
+      "heightBits": [
+        "4042666666666666",
+        "40427f4d4bb8c251",
+        "404310371aa70032",
+        "4042473aeec632c2"
+      ],
+      "nanComparisonFromNativeEmitter": true,
+      "shortCircuitSkipsUnavailableFunction": true,
+      "seededVariablesAndFunctions": true,
+      "jdkRoundingBoundaryAndConstantFold": true,
+      "cachedExpressionCodecMatched": true,
+      "engineLifecycleConnected": true,
+      "parseErrorReported": true,
+      "recursiveEvaluationRefused": true,
+      "aggregateInstructionWorkRefused": true,
+      "textBudgetRefused": true,
+      "wasmSha256": "f68e727d06e8a5515c1c868089b1396572d9c233977a8444e02de0c833c10f63",
+      "sourceSha256": "1c93de6246a3ad5293833f3c6b0d4ce633f617b7e72fc04eb5ecb32be965af8b",
+      "browserVerified": false,
+      "fullTerrainParityVerified": false,
+      "styleSampleCount": 8,
+      "styleBits": [
+        [
+          "c006000000000000",
+          "3fd0000000000000",
+          "3fd0000000000000",
+          "4020800000000000"
+        ],
+        [
+          "3feeb20bc6dd3fe4",
+          "3feeab72e12673ac",
+          "3feeb396c9b4d6e6",
+          "3fe741c892624ad6"
+        ]
+      ],
+      "nativeFixtureModificationTimeNormalizedToZero": true
+    },
+    "snapshotWorkerContract": {
+      "scope": "native-image-snapshot-worker-contract-mocked-api",
+      "result": "pass",
+      "nativeFolderCaptured": true,
+      "imageOnlyStyleDiscoverable": true,
+      "nativeImageReferenceResolved": true,
+      "unknownJsonNumberTextPreserved": true,
+      "ownedPngBytes": true,
+      "escapedPropertyRouting": true,
+      "staleAsyncImageRegistrationSuppressed": true,
+      "staleInspectionDoesNotClearNewerContext": true,
+      "pngRegisteredWithRawBands": true,
+      "cachedStyleSnapshotRouting": true,
+      "cacheOnlyStyleDiscoverable": true,
+      "cacheStatisticsTransported": true,
+      "expressionOnlyStyleDiscoverable": true,
+      "unsavedExpressionTextPreserved": true,
+      "expressionPreviewRoute": true,
+      "expressionStatisticsTransported": true,
+      "workerSha256": "a4cbfd68a2f3e0e62b040facf37eb40bf01c7fccf1bb59bcb918d6408d633409",
+      "nativeTerrainVerified": false,
+      "browserVerified": false
+    }
+  },
+  "checkCommands": [
+    "node tools/checks/native-expressions-smoke.mjs",
+    "node --experimental-vm-modules tools/checks/image-snapshot-worker-smoke.mjs"
+  ],
+  "developmentWorkflow": {
+    "fullRegistryExportRun": false,
+    "exhaustiveVoxelComparisonRun": false,
+    "broadSuiteRun": false,
+    "githubWorkflowRun": false,
+    "comprehensiveVerificationDeferred": true
+  },
+  "limitations": [
+    "Targeted native/Node-Wasm evidence covers six standalone resources, two seeds, 22 standalone samples, four engine-bound samples, eight cached/seeded style samples and four procedural heights. It is not complete expression/math/compiler conformance.",
+    "The native 0.8.1 artifact parser API postdates the v0.8.1 tag. Candidate source commit 9459137e553258ce43c8dea0862b3bac7ba394a6 is retained explicitly; release/source provenance remains unqualified. Runtime uses the unchanged checksum-locked resolved JAR, not rebuilt candidate classes.",
+    "The original default parser disables let expressions. VM local-load/store instructions exist for emitted input compatibility; no new authoring language option is introduced.",
+    "Only connected engine streams can execute. Hydrology/transition/upper-mode services, complete stage ordering, categorical image options, full subterrain interactions, durable persistence and custom registry contracts remain unfinished.",
+    "Real browser/GPU/GC/performance, assets, whole-program and dependency/release qualification remain outstanding. Mocked snapshot/worker checks do not certify native browser generation."
+  ],
+  "nextMilestone": "Continue remaining native platform/stage adapters and complete mode/Mantle finalization; qualify full expression/math options and browser behavior after implementation.",
+  "completePipeline": false,
+  "terrainParityVerified": false,
+  "releaseMatchVerified": false,
+  "programComplete": false
+}

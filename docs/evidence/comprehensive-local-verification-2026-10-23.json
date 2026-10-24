@@ -1,0 +1,2388 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-24T00:55:50.295947+00:00",
+  "clientDate": "2026-10-23",
+  "clientTimezone": "America/Toronto",
+  "baseCommit": "e7e0973df666332d886201cbdd73ec6d97f57156",
+  "scope": "Comprehensive available automated checks of documented development subsets; unavailable runtime and unresolved native qualification gates remain open.",
+  "summary": {
+    "applicationCheckGroupsPassed": 58,
+    "nativeCheckGroupsPassed": 57,
+    "totalDistinctCheckGroupsPassed": 115,
+    "coreTestsPassed": 22,
+    "pythonTestsPassed": 13,
+    "javascriptFilesParsed": 270,
+    "finalPackageFollowupChecksPassed": 4,
+    "initialHarnessOrSetupFailures": 25,
+    "unresolvedAutomatedRegressionFailures": 0,
+    "releasePrerequisites": "blocked",
+    "knownNativeBaselineFailingGroups": 1,
+    "totalFailingCheckGroups": 1
+  },
+  "application": [
+    {
+      "id": "unit-tests",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "--test",
+        "tests/parity.test.mjs",
+        "tests/portability.test.mjs",
+        "tests/project.test.mjs"
+      ],
+      "startedAt": "2026-10-24T00:48:44.879Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.456,
+      "logSha256": "17a0ee32c599f71e27ba5d618b290ee123dd5668c092a74d26b807048f80b338"
+    },
+    {
+      "id": "project-structure",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/check-project.mjs"
+      ],
+      "startedAt": "2026-10-24T00:48:45.337Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.063,
+      "checkSha256": "e3515b9e1cd85b80a9b7798e2a246784d1d1c923b1db0df28d835745b0f5b88b",
+      "logSha256": "538332d433a535fa4df0c12c10d791941ba4cf4a9ca315563f3fac9320c4ada6"
+    },
+    {
+      "id": "source-syntax",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/source-syntax.mjs"
+      ],
+      "startedAt": "2026-10-24T00:48:45.402Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 17.381,
+      "checkSha256": "27042fb354cc28f5f360dbf7c74a971c218510e0d8006c7dc456a440a888346c",
+      "logSha256": "3aef1a99c3371235f898f7fefbfb01e6f34f7f1a3e66be471069bec1ce3d08fc"
+    },
+    {
+      "id": "python-reference-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/native-reference",
+        "-p",
+        "test_*.py"
+      ],
+      "startedAt": "2026-10-24T00:49:02.787Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.05,
+      "logSha256": "26e4fc70ea6b6384bf46375bf00ad2ce38024aabcad5482770bd95e72ba6bbc6"
+    },
+    {
+      "id": "development-package",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/build-app.mjs",
+        "--require-engine",
+        "--include-local-assets"
+      ],
+      "startedAt": "2026-10-24T00:49:02.838Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.416,
+      "checkSha256": "0bd1e00da29b08c25cca415c4449db3ce90a4728d19cf4255e53e8c7c76afa2d",
+      "logSha256": "d7049ea6bd265af94137bbaa165154ffd4e97f20541593ee0f5993a6b6f6e161"
+    },
+    {
+      "id": "biome-blend-ui-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/biome-blend-ui-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:03.255Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.072,
+      "checkSha256": "617ea3da5df12ebf1168d97213ba274a7f18a12c0d85de46472b55e389aee74d",
+      "logSha256": "5430a29c91689b2a8722d7490b1230df3f148c631d124ee80c7b3940b3079d35"
+    },
+    {
+      "id": "camera-navigation-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/camera-navigation-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:03.328Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.134,
+      "checkSha256": "795698958f340f965effbe5c5d4e107860ac4621701820559be534a4fd06dd8f",
+      "logSha256": "ad9e5e886c59747d512a0fbfe6e221794bb184e4dd65865e3ac48c2fb6370f85"
+    },
+    {
+      "id": "cell-atlas-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/cell-atlas-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:03.463Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.096,
+      "checkSha256": "3557bcf11c51a7b03e65b25eab8d01352b66ecedee94c745a5a2951a9471a18e",
+      "logSha256": "dea2efeafd291f7ee9ba7b37b0dad1960f348fcab548e53fd020516524bf6313"
+    },
+    {
+      "id": "cell-views-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/cell-views-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:03.560Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.964,
+      "checkSha256": "e06b5cc79e957ec80aba6e3bcdacbf2344a170cbeb5bccce50bec2ef31aab7dd",
+      "logSha256": "7a4f2be136ad326f35e3e166e819adfc72a0776751782c99d09cfadb9052b8ac"
+    },
+    {
+      "id": "chunk-area-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/chunk-area-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:04.530Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.215,
+      "checkSha256": "6e05c8bba73a5ac134b36d2251d68b3944f3ca072947739e56667db607be645d",
+      "logSha256": "50ff30fa1e65ccf478d46b745a08aa54269a5e500f444377f33705ac7a797b90"
+    },
+    {
+      "id": "client-biomes-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/client-biomes-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:04.747Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.566,
+      "checkSha256": "9eecf78db63fdeb32bbccdd762cbd44a2892dc4685459190a96676d40470c370",
+      "logSha256": "cd471f77549a5efbedc8aa783a20fb20bfaa70dce5a1e2e71d98f13837303450"
+    },
+    {
+      "id": "client-cuboids-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/client-cuboids-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:05.314Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.256,
+      "checkSha256": "858401fc82ee08c84874b2530211d77603673a318b7af0b843db147836abb7f3",
+      "logSha256": "d10ef8de3a7cfef0ea20a2fda2a987cd557ac776d0bafd00ed1ef0c373242750"
+    },
+    {
+      "id": "client-face-materials-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/client-face-materials-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:05.571Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.307,
+      "checkSha256": "34b5cee3a9df179d82e6ecd8a0bafa1efe981483892e6dd813402a2c786f138a",
+      "logSha256": "c1d60179e106bb1f3de293006ecfed20368117734ed0819f44d9afed20b1acd8"
+    },
+    {
+      "id": "client-flat-lighting-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/client-flat-lighting-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:05.879Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.469,
+      "checkSha256": "59544f5e4a857d5edeaac9f78f9fa51ed398447bacc55cf542276e2793eb7890",
+      "logSha256": "188293618b5f0592a5a355aa9b6bf7746c6b0b355a40feeb0c7ed0236e9ea0e3"
+    },
+    {
+      "id": "client-mipmaps-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/client-mipmaps-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:06.351Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.176,
+      "checkSha256": "be8e7220703d460534ca06f0fb892fe035aa444410b77545dfd2458dfafaafbd",
+      "logSha256": "57055cfd6a25d828fbd847fdf218e14caee11be3282f5dd7bddede2d1b0aac2d"
+    },
+    {
+      "id": "default-assets-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/default-assets-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:06.528Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.936,
+      "checkSha256": "43eff86057cc808fb59ede5a12b06cdcb1e82f1ec265361a16872c2a7ab660c7",
+      "logSha256": "ed18ab4f2d25261f585d780b2ce78c96478c46e3539f9a3d437573e4625af272"
+    },
+    {
+      "id": "deployment-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/deployment-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:07.477Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.283,
+      "checkSha256": "cd42caab720ab0ee7d9999cc5e79515eb0cf071810fae5927df34df4e005f523",
+      "logSha256": "e02711d17f3cf746569d91aa601b72db80daa2ab9b6c2c05a4d56a30f6dd0a65"
+    },
+    {
+      "id": "draft-recovery-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/draft-recovery-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:07.764Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.11,
+      "checkSha256": "5a67e8d6c5be26de7583e0b9b0d20aea5286788d8968eeefeca22e3bfc24aecb",
+      "logSha256": "6944a51b2ac9cd8cf2ceb38705d894365b3c56311a94dc071f5a5b31c195b5a6"
+    },
+    {
+      "id": "edit-workspace-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/edit-workspace-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:07.876Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.161,
+      "checkSha256": "adb612cb09bca51c80f227af55a41810c8daa3a980562ebb09c32498bdce9537",
+      "logSha256": "fe1e48b32c1b2921b143bf8407067b50814f46d8232445fe20521c2ca9b19e9d"
+    },
+    {
+      "id": "editor-invariants.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/editor-invariants.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:08.038Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.093,
+      "checkSha256": "f30ab0d32bdde09101e5fb1f0e21420e2b90493c515bf947e5424927f37b6f07",
+      "logSha256": "6642d9bd8fe8d20a9330b9ce5dbd11b7a8eec3757983b492ce404693fcb1a69f"
+    },
+    {
+      "id": "f8thful-assets-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/f8thful-assets-smoke.mjs",
+        "<authorized F8thful ZIP>"
+      ],
+      "startedAt": "2026-10-24T00:49:08.132Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.509,
+      "checkSha256": "9492969dcc648bf62e5ca55c51bc4c921378510cbfa71f106666fe390aaf3388",
+      "logSha256": "b1605e9be3ad690f112cb29c8466fc8fa0855f42bfad5d9efbc9492d3df5a8a9"
+    },
+    {
+      "id": "gpu-recovery-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/gpu-recovery-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:08.650Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.5,
+      "checkSha256": "94cc37cb8c699f1c3956870c6e3ead782b1fb4677aa6dca2b04374cf132c606f",
+      "logSha256": "ab1e86ad9316d1a5a0b5a59a8b01ce0cb77d449c5a43deda310dc0f208e18f9a"
+    },
+    {
+      "id": "greedy-cells-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/greedy-cells-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:09.152Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 1.045,
+      "checkSha256": "6bd5939058129d48e6f45b5a17ddd03048211163ea46c147f9773e6338e3e7e7",
+      "logSha256": "f16ffc14f4eae2d88f97f4b477eacb6ab6fddba90136349e12753a0235024061"
+    },
+    {
+      "id": "history-workflow-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/history-workflow-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.197Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.245,
+      "checkSha256": "94a073bb8baa35aa382365dc86b1bc2fbfcecc0df665827cc3d5948c467ece56",
+      "logSha256": "7d8dfdba9c39eb7623c10bdc43dbcf6977baec35cff1bf39b99734b722955dc5"
+    },
+    {
+      "id": "hydrology-network-ui-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/hydrology-network-ui-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.443Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.067,
+      "checkSha256": "f122a951a07e4841f117165e5f8e179206f5d6f83a04ec712c00d95408e95e80",
+      "logSha256": "1399a4f7fbcf290b981d727385f21334fec01e91f67a2d344988023b9ca01a80"
+    },
+    {
+      "id": "image-snapshot-worker-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/image-snapshot-worker-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.512Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.107,
+      "checkSha256": "6f0fc3bf7e15811195a543c6bfe0aee8e656ed1999531a531201192b76462e2f",
+      "logSha256": "b3e3174c2fe598193e3fe2a7a4aed5efd9d32121bd1d1d2af2f18282eecf49e1"
+    },
+    {
+      "id": "map-analysis-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/map-analysis-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.620Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.096,
+      "checkSha256": "e8ae454f9c113f600b6940593de33af42cef68e712e597c63c0266ef5bf2e64d",
+      "logSha256": "2d1466adf723f492c44ea399d4a91695158d38a5e22765686ab43265add24c65"
+    },
+    {
+      "id": "map-exploration-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/map-exploration-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.717Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.146,
+      "checkSha256": "ced97a6d6d920a99f25e1956ec18bf1340f2c9dade2869cf3ac2dc6137792e3a",
+      "logSha256": "6dedfa785a26923135539daffad61af1d9aa0b3835320c890b686c265c8cdd07"
+    },
+    {
+      "id": "mesh-visibility-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/mesh-visibility-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:10.864Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.138,
+      "checkSha256": "f598b61af209776cf7c18e500231b1949e58fe66fa9a283b79d0bcbb1d9b7ec7",
+      "logSha256": "2ee0926539750ac84a8938b2fc800713b02ae5cae6695318898c48613e7a62e2"
+    },
+    {
+      "id": "model-picking-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/model-picking-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:11.006Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.174,
+      "checkSha256": "86ea7219a83dac445cad6da7577379d29e8d02121e8533da459861715f481797",
+      "logSha256": "58a04e454b31ecea3abd9d04cee0a69f209a800512833b17683f32f72d510bbf"
+    },
+    {
+      "id": "native-environment-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/native-environment-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:11.181Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.738,
+      "checkSha256": "b9a209235ea52262d1a123989c4b5d8a350512e01c81ffc374118fafac62ae4e",
+      "logSha256": "3f1a60a0f541490f22ca4c059f4daab10a5ad3bd47ebc0410438c8159cffc4a4"
+    },
+    {
+      "id": "native-schema-link.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/native-schema-link.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:11.920Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.515,
+      "checkSha256": "87fba533ac5035b155918b213831637ddfd13023b9e3f80fa4fb43eab7aeb93a",
+      "logSha256": "c0e0f6f4c5c0b67518b3993f88d2a7d7f5fc78aaa372a6b2438a71eb4b0121ea"
+    },
+    {
+      "id": "noise-persistence-stale-save.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/noise-persistence-stale-save.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:12.440Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.065,
+      "checkSha256": "0fe397b9966b9ae3e110dd724d9a0a21dced1fc7786cb667917e62cf468cdc08",
+      "logSha256": "02847dbe9b4a33e2daf7f8073ea469a218fbc83976f07aa580eeda8fac32fa45"
+    },
+    {
+      "id": "pack-import-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/pack-import-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:12.506Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.128,
+      "checkSha256": "135334a3a2ee7bfa61311be25a7493aceeeb102a992b9ca26da9cd74766d7821",
+      "logSha256": "fde80b8cdde226d5241185d48d17ed46a113f478f16eae097687c4583d110915"
+    },
+    {
+      "id": "pack-problems-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/pack-problems-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:12.636Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.137,
+      "checkSha256": "79014342f1c6e928ecd2842c325afaf14e2b1b81a506a86cf4ab0fe7ea26a0ec",
+      "logSha256": "4faff0fb5329c45be0794b04a544d59df9e5d2655e54d2b9e6b9a6e78459feb0"
+    },
+    {
+      "id": "pick-index-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/pick-index-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:12.775Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.302,
+      "checkSha256": "6f42dfb17912fc48ef7112c92df2281bdd55667f76da28cc33965adfc9ff992c",
+      "logSha256": "8c07098311e8a0754d41cb6031210bd3e78d7f7a6ba622d92ac6dc134e342f58"
+    },
+    {
+      "id": "preview-retention-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/preview-retention-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:13.079Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.079,
+      "checkSha256": "ceb0494d195982fe0bb085680ee30dc91713c881d2212f244ac211dea91e8be0",
+      "logSha256": "d77fddfe61445ab4e485fc7cc74353e16c2b862309face0c940fa9e46c545a33"
+    },
+    {
+      "id": "procedural-cancel-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/procedural-cancel-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:13.159Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.064,
+      "checkSha256": "92eceb02430f0e7cb871421372ba7d42836c7c4c7f82dc536824e8a2bd435790",
+      "logSha256": "6c6e26e869df318bd14989587050965ec97d6df05700c989e8c89eb5e3b78de6"
+    },
+    {
+      "id": "region-columns-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/region-columns-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:13.228Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.339,
+      "checkSha256": "64331db490a6ccdc8470b38afab7a78120ad43f6f4a57a884dc2b94713cf53c1",
+      "logSha256": "1d74e6f54e237c1281fa45811a23269cfce46757e647cee5eb13ce0058bb6618"
+    },
+    {
+      "id": "region-spans-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/region-spans-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:13.572Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.429,
+      "checkSha256": "4f4208667aabe41de0266b6125b38fcaa0c8f20818e7db44aadb6b164792177d",
+      "logSha256": "dd4e4d9d8e39c2a5353665010d62bbab063eaa98a52cb2f0d6218e1274e11aa0"
+    },
+    {
+      "id": "rendering-dependencies-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/rendering-dependencies-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:14.002Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.107,
+      "checkSha256": "77bd922fb6f4d1af5e20bdc9924b1690c0a64f1c871f99afee8ee225ed2aec49",
+      "logSha256": "7e94f6cb6a45afe64014b7b5ddfab7c0773cd7fef30cc4ebdbc965324a9a0022"
+    },
+    {
+      "id": "resource-references-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/resource-references-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:14.112Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.104,
+      "checkSha256": "977ca1c41c6b3c5f70e9dd76992c347602417301aed6dfa5ce41f80984f4e551",
+      "logSha256": "6ef5cb3e7940a42b6ebcfaf57ef29307ec11b56d7aaf00f81cb82a3c9ede0114"
+    },
+    {
+      "id": "runtime-packaging-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/runtime-packaging-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:14.217Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.191,
+      "checkSha256": "469192fd1db50ef3e19f2c3ec096e535367219db20405d0a9666b17dc3523732",
+      "logSha256": "030741f550bacdd5b149c37a4aeb8e47e2d248eb8b7495343537ded8cd3e251a"
+    },
+    {
+      "id": "section-cache-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/section-cache-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:14.409Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 1.116,
+      "checkSha256": "aca92a6eb5446b113ad61b83bb5d526251a8e9ed6eb5b0e59de8bc9de1ce367c",
+      "logSha256": "63be3137d818ad75450fabf4f3c6c10d938bd41fad403a956fca21e63a803697"
+    },
+    {
+      "id": "server-acceptance.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/server-acceptance.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:15.526Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.369,
+      "checkSha256": "f471cc1d88dd6628c41a58226d7dcd519cf88b16597504afce55867202e57898",
+      "logSha256": "e2f95502f2c9a055e39ac734add33a5b4ad6f2a8dbe5cabe1b7c0c00f860b21f"
+    },
+    {
+      "id": "source-reconcile-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/source-reconcile-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:15.897Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.125,
+      "checkSha256": "e598e744ad2570794ff4b895d13d435b1d3f33887433036ebec6fb3d2d6472f2",
+      "logSha256": "d33848287629902b1ab327e84a444c6b516425d645b6b3db185eb25bd99fbc22"
+    },
+    {
+      "id": "source-search-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/source-search-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:16.024Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.118,
+      "checkSha256": "34ac0740793f1e2655e34588c5861e8723b8043be2886c7dad2a4f300f2a31d6",
+      "logSha256": "05b1c386f7f57dfcdd9a92180d3b8d1557cdbeedfa2509c057aee90edeb5c355"
+    },
+    {
+      "id": "source-tools-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/source-tools-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:16.143Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.078,
+      "checkSha256": "826fc25d26dd8e4b4aea8e0215f9361c48f5826758c03c94fb9134de9169e22f",
+      "logSha256": "167f7491c045c042af578a8d5686d74ce15040d79c93b22e227ff81f925c7945"
+    },
+    {
+      "id": "standalone-render-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/standalone-render-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:16.221Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.212,
+      "checkSha256": "e61b41de5679d767d8873e124058291934d2e8d1487f001cab5bcb43c3749c74",
+      "logSha256": "d3922deb3944d09fb3de761ec8b89a42c5a90c43bd842240894c4a8856e460a2"
+    },
+    {
+      "id": "structural-editing-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/structural-editing-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:16.434Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.101,
+      "checkSha256": "47128f9b98eac01423a66d64a41f9b3c8d7ac00bb139d5b0a8296a5cb2045b5b",
+      "logSha256": "18b1605c8e1fa3754cffed0b2d9ae9ba64ed7866496d2f82bee2939659d054c5"
+    },
+    {
+      "id": "subterrain-budget-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/subterrain-budget-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:16.536Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.64,
+      "checkSha256": "a14b18f71c0055567156f99dafb3d66d41a93355e9d55e86f6c0c8169a497f33",
+      "logSha256": "4672d5d7b46978ee7822d986ea7bacc6c02b81e9ddde91cad311eadd4cbb7ee3"
+    },
+    {
+      "id": "texture-library-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/texture-library-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:17.177Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.165,
+      "checkSha256": "8d431a309acd2c264d419643beea0b7dbfc0c48f915cda1ad0e94c84e00baf01",
+      "logSha256": "deccf787db017bc55decb6c171a3933ccc9b307ce1980da8a876c6d7f952f256"
+    },
+    {
+      "id": "texture-pipeline-checks.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/texture-pipeline-checks.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:17.343Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.074,
+      "checkSha256": "639c3a0b6bf49f4e49a66eeba1744cfde0135c5d99291a8b0614fd0d5e31dba8",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "texture-pipeline-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/texture-pipeline-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:17.417Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.115,
+      "checkSha256": "3e9b93fe06133d7e6678f42e89302d0ac7660b81642a514611cbeaefed9f5a2b",
+      "logSha256": "98f5aa61386962fe6159fc1b0de6d65ee5bb6985deb303bd2f5143f56b72e488"
+    },
+    {
+      "id": "textured-greedy-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/textured-greedy-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:17.534Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.939,
+      "checkSha256": "d70427fb90624a1a77aafe3921fa144d33e50b15f0adec8312c08a686001f507",
+      "logSha256": "dd3ac92112e59cc04b9aa7c1dc2c736ae263a0bcf0d9711d684711e438c8d693"
+    },
+    {
+      "id": "view-library-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/view-library-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:18.474Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.109,
+      "checkSha256": "555f62102525f511ca2acd8be6774263ad8b177cad3a7cd21f9d78ae02c1b1c7",
+      "logSha256": "ec91034ae14d9f7e4519a10aee7dad5129bbc58b5ab8d8e6ebc52ff5db0f77a4"
+    },
+    {
+      "id": "voxel-sections-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/voxel-sections-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:18.584Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.159,
+      "checkSha256": "b4745d73dbe4b29a2d7a92949caf77b5e269237e3429a100443df75630227cf4",
+      "logSha256": "d4f6194d5fdfab578aededd40d19f6229ea3443e0ab6a0b96ffe032697a51ec1"
+    },
+    {
+      "id": "worker-terrain-context-smoke.mjs",
+      "command": [
+        "node",
+        "--experimental-vm-modules",
+        "tools/checks/worker-terrain-context-smoke.mjs"
+      ],
+      "startedAt": "2026-10-24T00:49:18.743Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.106,
+      "checkSha256": "9e6cc448343cc3a9d6231dfb4e1c09d916282ef94f50c90be4d70857dae9dabe",
+      "logSha256": "53b4ed71a08ada3a2105cd797b694726be67e2896d05eeb4bcca41cfb37b1789"
+    },
+    {
+      "id": "release-prerequisites",
+      "command": [
+        "node",
+        "tools/check-project.mjs",
+        "--release"
+      ],
+      "startedAt": "2026-10-24T00:49:18.850Z",
+      "status": "blocked",
+      "exitCode": 1,
+      "seconds": 0.075,
+      "checkSha256": "e3515b9e1cd85b80a9b7798e2a246784d1d1c923b1db0df28d835745b0f5b88b",
+      "logSha256": "fc027d8864dff0dadc02848760f4462b0bc45729951fb2cd0303ca5c30065ac3"
+    }
+  ],
+  "native": [
+    {
+      "id": "client-face-culling-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:38:43.771490+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 7.335,
+          "logSha256": "040f26bbd6ef52509abdbb62a9cb1e20c0f1f335eb590ac6e7eb485b3e7173b6"
+        },
+        {
+          "startedAt": "2026-10-24T00:48:43.381Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 6.666,
+          "checkSha256": "28ac0680b0a048855a60273604d23a5cb90083a50bd2763b95e81d78466b92c8",
+          "logSha256": "0b7429ba4755b244b28dd3a212b3300d10cc706b78332ad7b665ebc33405e8c5"
+        }
+      ]
+    },
+    {
+      "id": "client-fluid-tint-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:38:51.106618+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 7.203,
+          "logSha256": "fe8d518f674f820c7f85303bc4bd4b7b6f10fc4959229666a6346a1770e42558"
+        },
+        {
+          "startedAt": "2026-10-24T00:48:50.051Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 7.393,
+          "checkSha256": "d13aa9fc8c9891d01050d27652fa60cece7de03b2e3bcda02751321a04a3475c",
+          "logSha256": "d6f61e340af58459ce06ab7f4356f0902d0d19385c01d34056532bf7c2d7d015"
+        }
+      ]
+    },
+    {
+      "id": "client-model-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:38:58.310483+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 6.344,
+          "logSha256": "60db6abfc819e23c46142680b4dc6ddad515395641e2365aa6a2311eefe9eb96"
+        },
+        {
+          "startedAt": "2026-10-24T00:48:57.445Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 6.884,
+          "checkSha256": "2c075f9250fbf1e7ba4baab77e4c29096fc9c49ed90d6675bc4bfc1d2755feae",
+          "logSha256": "6b0fb1fd290793e8c4f6ea34647b4602990493e0d3bf8483245d295e457bf822"
+        }
+      ]
+    },
+    {
+      "id": "client-resource-pack-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:04.655345+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 2.782,
+          "logSha256": "0c11da00aae07eb340599ff86946ed335affd2b5367128953c7b200c82011f65"
+        }
+      ]
+    },
+    {
+      "id": "engine-link.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:49:04.330Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 1.513,
+          "checkSha256": "04b2c116086638da51eefbbd859acee2d373f0008a208d7dc289eea5d7377fb0",
+          "logSha256": "f24dde535233f0352ba42927459227f5dfef1763239dadd1df0933cdbfbbe00e"
+        }
+      ]
+    },
+    {
+      "id": "native-biome-finish-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:07.438040+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 19.427,
+          "logSha256": "4391c1d2c79a7b1b1f296d2fe3a2ecc1632ea6e4ae8fc08b80f95caea126327b"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:05.844Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 21.722,
+          "checkSha256": "f80b0def78307a162c6707e102b8bda5d1a0d22a44e41d2680f80772cc741806",
+          "logSha256": "8f7a1aeff0fd7836909d4ee5bfe2758a893c1cf56f31dbc47baca27647a85d51"
+        }
+      ]
+    },
+    {
+      "id": "native-cache-lifecycle-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:26.865206+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 8.068,
+          "logSha256": "156d2a22ca1f49e5397c958c420d94fc10df281d06c2e1efa9099312249fa912"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:27.567Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.825,
+          "checkSha256": "0d9da6566aa061961f6bed3943c73890f400fa477cb873dacedb954a6ec88769",
+          "logSha256": "30662b20bd9b922e242052f8a4ebdb932fe0b7632008ba6267da7f3c3d87e539"
+        }
+      ]
+    },
+    {
+      "id": "native-cached-neighborhood-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:34.933477+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.986,
+          "logSha256": "f7b38cc82fcf85749c84d8d598db99eb1fab1bea213feefde4b25678cb9cd958"
+        }
+      ]
+    },
+    {
+      "id": "native-canopy-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:43.920077+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 7.811,
+          "logSha256": "01c6eb7619a31dbf0587715c03166778b511e7b47465eced6400893b23889fb9"
+        }
+      ]
+    },
+    {
+      "id": "native-cave-procedural-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:39:51.731781+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.666,
+          "logSha256": "fff2f6835c615a6fcc99cff7e04cb232810fca8a3e112da34f900bb3769a666c"
+        }
+      ]
+    },
+    {
+      "id": "native-chunk-area-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:02.398055+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.162,
+          "logSha256": "8befaad3573d3154ceaa4de463a5b7905df6b820097c04601ca91fdf7b8b5741"
+        }
+      ]
+    },
+    {
+      "id": "native-chunk-area-smoke.mjs--overworld",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:10.560765+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.158,
+          "logSha256": "febb438649e01a71fda8b9fbf8750168a5a4d283ec781d3a604c828ec2b51849"
+        }
+      ]
+    },
+    {
+      "id": "native-custom-biomes-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:18.719751+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 8.667,
+          "logSha256": "d2fdf6b535fcacc0ef79a6d09108dd0a90838983982aa09a2de8e084c8b26a8b"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:36.393Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 0.998,
+          "checkSha256": "0e689211da2a63af2618c12e844a0107a1d3db90ac2067cd4af202192c145da9",
+          "logSha256": "bf748ec45413eaa669504048d66d31cccb1db0b69ae5144d13aa935044adb2f7"
+        }
+      ]
+    },
+    {
+      "id": "native-decorator-faces-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:27.387129+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 6.363,
+          "logSha256": "7e5940b69e43a4143f444b2b446f171d249d03dc3bff1d367b1b4be3ef20f725"
+        }
+      ]
+    },
+    {
+      "id": "native-deposit-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:33.750527+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 8.315,
+          "logSha256": "f914e19119c189767a64c7361eda0597ad024fd4a3b5abbfd8de2327dfd5f089"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:37.393Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.483,
+          "checkSha256": "ac09d57a1d98f4eb007686aca903ca813c1f53afac7b363c0d2d7185551d295b",
+          "logSha256": "c7e50082a11910a4c6040a477d7d3e845dfceed7d58660147ca52bf28568fdd9"
+        }
+      ]
+    },
+    {
+      "id": "native-dimension-images-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:42.066195+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.066,
+          "logSha256": "b3bc6b54942212a8657ebcd8bd26d2cda7d6cee577f5c8d937aa7d6fbe7e594a"
+        }
+      ]
+    },
+    {
+      "id": "native-edited-placement-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:50.132322+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.374,
+          "logSha256": "5b55f359393f8661ccb2fb9921b1c8af4a1cdcc4451c2c2f02974d0cc87b0a96"
+        }
+      ]
+    },
+    {
+      "id": "native-expressions-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:40:58.506382+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.364,
+          "logSha256": "25bf3483fb498e9e79f2f3bd22ee8b99ce166842ba19c80afbb82e107799f3e7"
+        }
+      ]
+    },
+    {
+      "id": "native-hydrology-containment-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:06.870406+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.338,
+          "logSha256": "c6f3e3417a3de746b7319fc4f387d9824466d56c5ad5d967a56b786e8d22d169"
+        }
+      ]
+    },
+    {
+      "id": "native-hydrology-map-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:17.209301+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.863,
+          "logSha256": "8b4dbf6b5d47b8f9427bcd87c829ca332e1e542aa40605ce7a4ec22b6033cc1b"
+        }
+      ]
+    },
+    {
+      "id": "native-hydrology-matter-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:28.072459+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.601,
+          "logSha256": "ffdb9a93fdfca42985f925f106e8994fbbc9d8ae95fc670969aa4cb9be175651"
+        }
+      ]
+    },
+    {
+      "id": "native-hydrology-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:38.673748+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 11.299,
+          "logSha256": "3e132e22ee4b1814c07b23fc4c693394b92ca67b9e8d3c6c2d7d325ea3cdb30f"
+        }
+      ]
+    },
+    {
+      "id": "native-image-authoring-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:49.973626+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 2.646,
+          "logSha256": "c560c2708b22e7e5244538a282a7719b8cae1317b9770aaaedb148bcdba3abdb"
+        }
+      ]
+    },
+    {
+      "id": "native-image-maps-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:41:52.620284+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.07,
+          "logSha256": "1591375891369d4f1a9a9a578d01bcd5a6dc478f5232545e965b9729a28a260d"
+        }
+      ]
+    },
+    {
+      "id": "native-json-link.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:49:45.877Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 1.711,
+          "checkSha256": "7d22e40241c79323a88175e2178c65b19170c5fc39ed2b21837bab11b5658dc1",
+          "logSha256": "0a7514b4603e4d410fef39e0c73ad8af31400b615abae127f2e41f855b2c9d4c"
+        }
+      ]
+    },
+    {
+      "id": "native-layers-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:42:01.691311+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 27.356,
+          "logSha256": "b10079681df228fa379b7512879229c51974638d6835dc3f13ea0d83a04eba24"
+        }
+      ]
+    },
+    {
+      "id": "native-material-biomes-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:42:29.047687+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 8.263,
+          "logSha256": "3543e4c90bfb16290a164062a2dd3bf705da9654886b405214fba01dbcf09be5"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:47.589Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.186,
+          "checkSha256": "45a943b3c95817b64375530e9952d16ecc9f5965e35d7c86740de6b798d1ba1a",
+          "logSha256": "ce88f895b1461db22e79114ea8ab1fa8a27a886c0fc097219424c5dc2370c304"
+        }
+      ]
+    },
+    {
+      "id": "native-merge-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:42:37.311637+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 7.052,
+          "logSha256": "b0a6d1cf9d504e18a3bff8b0425a08980b609ac54fc10fded067b4089bfb814c"
+        }
+      ]
+    },
+    {
+      "id": "native-mode-generation-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:42:44.364233+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 20.404,
+          "logSha256": "ad27dc3ec7731952cb4cc2d57109e42f1af761cc2ee40936a16515279fee40d9"
+        }
+      ]
+    },
+    {
+      "id": "native-modes-volume-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:04.768599+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 7.996,
+          "logSha256": "bd78ae697aaf221d0aed18417c402b2a6aaf318e3909ed9acbc5d6f03ee97788"
+        },
+        {
+          "startedAt": "2026-10-24T00:49:56.777Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 20.075,
+          "checkSha256": "2292c16c3ec496d1c9d3db5f2c0a0c7928178e445bcfad27a6944ec29e6ce1d8",
+          "logSha256": "a5ce6cd3354d1679d2245e732d0ad41d9ff8b0bb8e2560a4e401f8dd4c3113e7"
+        }
+      ]
+    },
+    {
+      "id": "native-neighborhood-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:12.764988+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 10.008,
+          "logSha256": "d6055990041ae2ceb796463ccc6332ef968cf9594221e8b1c917a0ed9d4818fd"
+        },
+        {
+          "startedAt": "2026-10-24T00:50:16.853Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.755,
+          "checkSha256": "6a666d5db201be9da3e4bcb5b1b55675f46d571dc09a4638153ccdbaea6767c3",
+          "logSha256": "e7d609264275352ab7eabc6cc42cee046854ba2b275682863201418980ad1c3a"
+        }
+      ]
+    },
+    {
+      "id": "native-noise-cache-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:22.774024+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 13.428,
+          "logSha256": "dd48a77809276ba089f6fb5310a5e827aa62ca08a06b2328cbea78f241f71949"
+        }
+      ]
+    },
+    {
+      "id": "native-noise-persistence-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:36.202782+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 11.485,
+          "logSha256": "551a82143286ece29f042c0e8fd074a858cad546837a6ed43ceb3013c4ab18af"
+        }
+      ]
+    },
+    {
+      "id": "native-object-session-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:47.688257+00:00",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 5.435,
+          "logSha256": "898da4089b6a9ecfa158b8b00762d8b48fe9573d0f4abacaff28e013b5d24840"
+        },
+        {
+          "startedAt": "2026-10-24T00:50:26.609Z",
+          "status": "fail",
+          "exitCode": 1,
+          "seconds": 4.779,
+          "checkSha256": "94e90cbfae0e399543ac5c18c8e5b1dbf8f74da4d20de6e06493e47abed64d55",
+          "logSha256": "898da4089b6a9ecfa158b8b00762d8b48fe9573d0f4abacaff28e013b5d24840"
+        },
+        {
+          "startedAt": "2026-10-24T00:51:13.625Z",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 14.7,
+          "checkSha256": "6ee0b3342c588ba4ad9e04d8072afa475f98f90e3359c2848803434952a3c3df",
+          "logSha256": "ee95b82c0e644d8f1cd60a88a5608db75e62fdb1af59b6f342496d304c66d3c0"
+        }
+      ]
+    },
+    {
+      "id": "native-object-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:43:53.124437+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.691,
+          "logSha256": "4415bc32ea5bc893d2068e515554df36e07fb64798841c0101be51886d361a33"
+        }
+      ]
+    },
+    {
+      "id": "native-overworld-mode-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:01.815848+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 11.549,
+          "logSha256": "1a4ccf1b6906c83ee3c3fd6e23e114c06844434ff13085400fa4dfb4efe5d101"
+        }
+      ]
+    },
+    {
+      "id": "native-overworld-terrain-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:13.365212+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 15.592,
+          "logSha256": "17417acaf025d3846a032bf678aad669cd76f413156df7b13b4af797b2b8a692"
+        }
+      ]
+    },
+    {
+      "id": "native-placement-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:28.957783+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.087,
+          "logSha256": "1384bd32e4450186d57e49d90b2d646a49802d36b5ea3d092a4d93600ef8fd85"
+        }
+      ]
+    },
+    {
+      "id": "native-placement-smoke.mjs--roots",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:38.045696+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.758,
+          "logSha256": "1384bd32e4450186d57e49d90b2d646a49802d36b5ea3d092a4d93600ef8fd85"
+        }
+      ]
+    },
+    {
+      "id": "native-png-inputs-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:46.804357+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.984,
+          "logSha256": "0ec41ddc3afc059fd9920f0553d8e4c492bb707eb1c6b6cf71d074b6d9304da1"
+        }
+      ]
+    },
+    {
+      "id": "native-png-metadata-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:55.788766+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 2.187,
+          "logSha256": "b0c53c7617a833a544723d8577c0406ddf6aaaf75c7a610c65e27f087f3ea637"
+        }
+      ]
+    },
+    {
+      "id": "native-png-modes-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:57.976636+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 1.977,
+          "logSha256": "f0016bbd2a582d9b3e25b22a396a333170a4a2dd6d825d2b5dfc942562f3d661"
+        }
+      ]
+    },
+    {
+      "id": "native-procedural-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:44:59.954632+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.269,
+          "logSha256": "0ad75c22cb303aa689e347c0840e2f84fa9101da312c1ee9e5a0d14d2ebe8a15"
+        }
+      ]
+    },
+    {
+      "id": "native-region-spans-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:45:08.224604+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.535,
+          "logSha256": "4d6245a0a044fced988a3bb07911f023d21f7bc2a4e595ab89d906c4092df96b"
+        }
+      ]
+    },
+    {
+      "id": "native-rotated-placement-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:45:18.760797+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 10.521,
+          "logSha256": "e5b6e8f5c6a5f8b0caaf8450aff7e6999e75ab4b2b60593500d516a2c024b683"
+        }
+      ]
+    },
+    {
+      "id": "native-rotation-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:45:29.282838+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 7.265,
+          "logSha256": "b85c67d8570494cbbca96c6d8ef28e1ab5fb7bb79153a321759da538442da1e3"
+        }
+      ]
+    },
+    {
+      "id": "native-rounding-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:45:36.548943+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 1.47,
+          "logSha256": "1e7944c9db97f312f9ff3b3631ec74e38c9399e8b590c08d4155cf85a572b403"
+        }
+      ]
+    },
+    {
+      "id": "native-ruins-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:45:38.019711+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 32.772,
+          "logSha256": "08375f42c222416fa4fa3704b58c2244de389f610d1635cdf4ac8aa766335db6"
+        }
+      ]
+    },
+    {
+      "id": "native-source-plan-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:46:10.792549+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.01,
+          "logSha256": "3c8a0217470f3b312ed6db8d457946ddc769365518c40c3cda5c236066f04e2c"
+        }
+      ]
+    },
+    {
+      "id": "native-source-scatter-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:46:19.803152+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 9.894,
+          "logSha256": "4bab1ad45fbf2eba406144183c1e5d357ea5251271f446c77294ae6efff7edd9"
+        }
+      ]
+    },
+    {
+      "id": "native-studio-layout-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:46:29.698345+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 21.198,
+          "logSha256": "a6bb2de4934bfa30b0490514dadb20dd71ce115a22f93b0248bfcc3c61aadb2d"
+        }
+      ]
+    },
+    {
+      "id": "native-subterrain-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:46:50.896666+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 14.809,
+          "logSha256": "21c038e03b0e6839931eb945999253704765d7480b818cc19f8c74ccd1f1bddc"
+        }
+      ]
+    },
+    {
+      "id": "native-tiles-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:47:05.706861+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 14.811,
+          "logSha256": "b8e0e866f48bab79ec4e1a7189d240f65c798ab5c170b1e2c8ed444a0b9e38a1"
+        }
+      ]
+    },
+    {
+      "id": "native-voxel-noise-persistence-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:47:20.518627+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.97,
+          "logSha256": "b73ee04a09beb07ca3cd4503823b8c32e44a01c759a521210ee79cfee09bf1be"
+        }
+      ]
+    },
+    {
+      "id": "resource-pattern-groups-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:47:29.489126+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 1.068,
+          "logSha256": "f6245f1897c7f0689eef090038c87eb98529b69cc00ade917560c9949fe229ce"
+        }
+      ]
+    },
+    {
+      "id": "restored-engine-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:47:30.557652+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.359,
+          "logSha256": "9d8aa2f4d4e017f3349595a54735bed57ec7f7e267b2f7020f6bb103868b7b7e"
+        }
+      ]
+    },
+    {
+      "id": "terrain-starter-smoke.mjs",
+      "status": "pass",
+      "attempts": [
+        {
+          "startedAt": "2026-10-24T00:47:38.917594+00:00",
+          "status": "pass",
+          "exitCode": 0,
+          "seconds": 8.457,
+          "logSha256": "d4e1f4179ad76ee6248b0839580f2c6fd0acdbb284bc948927f9ddbd23b4d714"
+        }
+      ]
+    }
+  ],
+  "finalPackageChecks": [
+    {
+      "id": "source-syntax",
+      "startedAt": "2026-10-24T00:52:20.409Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 15.122,
+      "checkSha256": "27042fb354cc28f5f360dbf7c74a971c218510e0d8006c7dc456a440a888346c",
+      "logSha256": "3aef1a99c3371235f898f7fefbfb01e6f34f7f1a3e66be471069bec1ce3d08fc"
+    },
+    {
+      "id": "development-package",
+      "startedAt": "2026-10-24T00:52:35.533Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.356,
+      "checkSha256": "0bd1e00da29b08c25cca415c4449db3ce90a4728d19cf4255e53e8c7c76afa2d",
+      "logSha256": "d7049ea6bd265af94137bbaa165154ffd4e97f20541593ee0f5993a6b6f6e161"
+    },
+    {
+      "id": "deployment-smoke.mjs",
+      "startedAt": "2026-10-24T00:52:35.890Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.215,
+      "checkSha256": "cd42caab720ab0ee7d9999cc5e79515eb0cf071810fae5927df34df4e005f523",
+      "logSha256": "e02711d17f3cf746569d91aa601b72db80daa2ab9b6c2c05a4d56a30f6dd0a65"
+    },
+    {
+      "id": "standalone-render-smoke.mjs",
+      "startedAt": "2026-10-24T00:52:36.106Z",
+      "status": "pass",
+      "exitCode": 0,
+      "seconds": 0.142,
+      "checkSha256": "e61b41de5679d767d8873e124058291934d2e8d1487f001cab5bcb43c3749c74",
+      "logSha256": "d3922deb3944d09fb3de761ec8b89a42c5a90c43bd842240894c4a8856e460a2"
+    }
+  ],
+  "realHttpAcceptance": {
+    "recordedAt": "2026-10-24T00:49:15.883Z",
+    "result": "pass",
+    "requests": 51,
+    "realHttp": true,
+    "disposablePack": true,
+    "authentication": true,
+    "hostAndOriginRefusals": true,
+    "inputErrorsAre4xx": true,
+    "invalidUtf8Refused": true,
+    "exactLongAndUnknownFields": true,
+    "concurrentSaveOneWinner": true,
+    "backupRestoreAndOperations": true,
+    "binaryZipRoundtrip": true,
+    "symlinkBoundary": true,
+    "restartPersistence": true,
+    "browserVerified": false,
+    "webGpuVerified": false,
+    "dockerVerified": false,
+    "fullTerrainParity": false,
+    "serverSha256": "7593a6df024040009ac7861d906c3db85720ccc0a63f8b806575260e9716833b"
+  },
+  "sourceRefresh": {
+    "recordedAt": "2026-10-24T00:52:20.295185+00:00",
+    "result": "pass",
+    "entriesCompared": 5597,
+    "changedEntries": [
+      "package.json",
+      "tools/engine-build/bundle-source.py"
+    ],
+    "allNativeSourcesAndAlgorithmsUnchanged": true,
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "previousSourceSha256": "400bcd2f4c6abb77f9a854473fa01b38accd17894bd8b7d19aaebc712762f14c",
+    "sourceSha256": "845581d025e64e78a4a56ddc733f9bd2191b96593364954b2086a50514b3c39a",
+    "compiledWasmRebuilt": false,
+    "excludedPythonBytecodeCaches": true
+  },
+  "engine": {
+    "irisCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "volmLibCandidate": "210705c5ab1321dc74b86b48457fd6d5e0452944",
+    "wasmSha256": "9e384b4b6862c997599102c303f1802431a395a93d3a3fc726308a04d0251a0e",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "845581d025e64e78a4a56ddc733f9bd2191b96593364954b2086a50514b3c39a"
+  },
+  "fixturePreparation": {
+    "registryTypes": 20,
+    "registryStates": 252,
+    "placementPairs": 400,
+    "productionRegistryExported": false,
+    "largeStatePairSweeps": false,
+    "clientReferences": "Tiny original client material, flat/fluid lighting and mip captures restored locally.",
+    "browserAttempts": 0
+  },
+  "corrections": [
+    "Actual module bindings in VM mesh hosts, structured-cloned worker messages, browser host globals and region stubs.",
+    "Current retained-region/cache/greedy/metadata/texture-slot behavior replaces stale pre-feature harness expectations.",
+    "Native 4.3.5 canopy mutation argument and required engine-input identity in the isolated continuation/cache Wasm probe.",
+    "Fresh bounded native/client fixtures and explicit authorized F8thful archive argument.",
+    "Reruns write local output rather than changing committed historical evidence.",
+    "HTTP boundary validates pack/resource paths and object envelopes; invalid UTF-8 refuses before text decoding."
+  ],
+  "openGates": [
+    {
+      "gate": "Native original all-style checksum",
+      "status": "known failing, unresolved",
+      "executedThisRun": true,
+      "expected": "5059606393854142913",
+      "observed": "3659164368724912644",
+      "evidence": "docs/evidence/native-noise-checksum-4.3.5-2026-10-23.json",
+      "expectedAssertionUnchanged": true,
+      "result": {
+        "successful": false,
+        "runCount": 1,
+        "failureCount": 1,
+        "failures": [
+          {
+            "test": "allStylesRetainPinnedSamples(art.arcane.iris.generation.noise.NoiseSeedCohesionTest)",
+            "exception": "java.lang.AssertionError",
+            "message": "All noise style samples expected:<5059606393854142913> but was:<3659164368724912644>"
+          }
+        ]
+      }
+    },
+    {
+      "gate": "Shipping native dependency/schema/registry provenance",
+      "status": "unqualified; development identities do not fill shipping pins"
+    },
+    {
+      "gate": "Complete required terrain/rendering option and interaction parity",
+      "status": "unqualified; passing selected fixtures does not establish every pack or option"
+    },
+    {
+      "gate": "Actual browser/Wasm worker, WebGPU/raster/layout/storage and measured performance",
+      "status": "manual; user will test locally"
+    },
+    {
+      "gate": "Actual Docker execution and container persistence",
+      "status": "manual; runtime unavailable"
+    },
+    {
+      "gate": "Required default full target compatibility and redistribution review",
+      "status": "open; local supplied defaults tested but not redistributed"
+    }
+  ],
+  "reproduce": "npm run verify -- --f8thful /path/to/authorized-original.zip",
+  "rawLogs": "Local .local-tools/comprehensive-2026-10-24/; hashes retained here, full log payloads are not committed.",
+  "notes": [
+    "A correction pass reruns failed checks and adds engine/JSON linkage; already passing native checks are retained rather than needlessly repeated.",
+    "Subcheck templates can retain their original authored date labels. Actual execution times are the startedAt fields in this report.",
+    "The native Wasm/runtime are unchanged. Only package.json and the source bundler differ in the refreshed corresponding-source archive.",
+    "The original native baseline assertion was executed once as an explicit additional final verification check and failed. The full runner includes it and propagates exit 1."
+  ],
+  "sourceSha256": {
+    "apps/server/index.mjs": "7593a6df024040009ac7861d906c3db85720ccc0a63f8b806575260e9716833b",
+    "package.json": "f4b0e22fabd26939fac4e12a61f0e9e3ead01a97c7f65fc748f43fcce60c55b5",
+    "tools/verify-app.mjs": "d28cb8681aecf53078e68c11aed522b217700018597bf0144e73cc304cc0d1a3",
+    "tools/engine-build/bundle-source.py": "af573c67efd6eeb76ef9816e70b1b9bac1c0f060a9306233d9d54d92ff169212",
+    "tools/checks/mesh-worker-host.mjs": "8688804c4d1ba06d9cdefd91c8861e258d6aab88f674e07e7f6d50ebfd150be4",
+    "tools/checks/server-acceptance.mjs": "f471cc1d88dd6628c41a58226d7dcd519cf88b16597504afce55867202e57898",
+    "tools/checks/NativeObjectSessionProbe.java": "b2ba41fa76a21ec2be38ded859555ffcc0c64dbe405bdd79f6cbed3e606f85f2"
+  },
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "dockerVerified": false,
+  "fullTerrainParity": false,
+  "releaseReady": false,
+  "projectFinished": false,
+  "nativeBaseline": {
+    "id": "native-noise-checksum.mjs",
+    "startedAt": "2026-10-24T00:54:15.615Z",
+    "status": "fail",
+    "exitCode": 1,
+    "seconds": 1.947,
+    "checkSha256": "21d731e5fed328718b77df59ea69e51841bfa551487c6a10bc504aae787b1fb9",
+    "logSha256": "8fb43052b32cbfffa2696ccf5dba5667432c786ff5368a7a1a91de49260c99c6",
+    "reference": {
+      "date": "2026-10-23",
+      "scope": "single-original-native-noise-checksum",
+      "irisCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+      "volmLibCandidate": "210705c5ab1321dc74b86b48457fd6d5e0452944",
+      "buildProfile": "terrain-no-eco-items",
+      "fixtureSha256": "23d6b42737ea66ffbef73306629d8e4b5a2aae95d037f010e1c2fd54a5173fd5",
+      "runnerSha256": "3e5076599440ae1be98e44abfedb006696afee487b72b3d09949a3495dfcb482",
+      "classHashes": {
+        "art/arcane/iris/generation/noise/NoiseStyle.class": "d881cb605f0d5555cf7d96fbda3a5cde336a1b0808dcc8b35d54e92729784707",
+        "art/arcane/volmlib/util/noise/CNG.class": "a591a6965d69103f73bd1d0e95821ea4a5ed2cabd3eb6a59f4e2ed8494cb25d4",
+        "art/arcane/volmlib/util/math/RNG.class": "a514ef99dd495e5619ecc250ae11aa7aec4a9a9afcf67464f2416078c2faa196"
+      },
+      "jars": [
+        {
+          "name": "lombok-1.18.46.jar",
+          "bytes": 2045364,
+          "sha256": "01f7b1a015e33e2b62d5f5f37053306357ab1415fd181fcba7794f5d198c1126"
+        },
+        {
+          "name": "paper-api-26.1.2.build.74-stable.jar",
+          "bytes": 2841287,
+          "sha256": "66d38ebfcc4fde9241d925f5cf78b68cf39d93ecb9c99c263961ba7485a3c3bf"
+        },
+        {
+          "name": "log4j-core-2.26.1.jar",
+          "bytes": 2015459,
+          "sha256": "2ec8c3bf5a6d7c89be8620116a2fc973f7dda1ad0261ad393c4d4726edfd3dcb"
+        },
+        {
+          "name": "log4j-api-2.26.1.jar",
+          "bytes": 351428,
+          "sha256": "f1810a4704ccce019d02bba029dc02a4f2ac0c997f647b465e7d409c1927f822"
+        },
+        {
+          "name": "guava-33.6.0-jre.jar",
+          "bytes": 3064793,
+          "sha256": "dc573e1fca4fd5454f4a5fd3d7da2df03002876a4175bafc14a95980dd7713b3"
+        },
+        {
+          "name": "nexo-1.25.0.jar",
+          "bytes": 2445461,
+          "sha256": "21a45702160a84f4b046928d084ecef27235d06487eb5fd4abacb0a69dc9abed"
+        },
+        {
+          "name": "oraxen-1.218.0.jar",
+          "bytes": 2695292,
+          "sha256": "c87601da12725e434dff30495d4ba70d721fb7eb65333877b3c334b059851536"
+        },
+        {
+          "name": "itemsadder-api-4.0.17.jar",
+          "bytes": 55965,
+          "sha256": "38decfbfc093f0c05596d9468cf8540dd7ec7750923c4a2e393366027b356fdf"
+        },
+        {
+          "name": "SCore-5.25.3.9.jar",
+          "bytes": 3373289,
+          "sha256": "15e2ef9ecd78534dd463f66f2957c65c470630900868ab66930c2a8aba626a08"
+        },
+        {
+          "name": "MMOItems-API-6.10.1-SNAPSHOT.jar",
+          "bytes": 1436867,
+          "sha256": "e6153223a325850afce0ccd86748540b822e77e9850512ab40e27d9dc49e6d30"
+        },
+        {
+          "name": "MythicLib-dist-1.7.1-SNAPSHOT.jar",
+          "bytes": 2648076,
+          "sha256": "225aa7f75d4e6e6ae6b3ad87a7ca678c025c027f00374ab1062275d24f3a73c9"
+        },
+        {
+          "name": "Mythic-Dist-5.12.1.jar",
+          "bytes": 20242096,
+          "sha256": "3781927033898c75b0c4e21a8eee1756ca822d80160430c3da9de760c9137cd1"
+        },
+        {
+          "name": "MythicCrucible-Dist-2.2.0.jar",
+          "bytes": 14113376,
+          "sha256": "9d54340905df5df02fa83ee3bc30c4f5b18bcda352dec866b2ac960744c90690"
+        },
+        {
+          "name": "kgenerators-core-7.3.jar",
+          "bytes": 1701146,
+          "sha256": "ea7055146f20bc10f5db5d727e55dd7812bdd3fb43d14402aebf62930fdb7c24"
+        },
+        {
+          "name": "multiverse-core-5.8.0.jar",
+          "bytes": 4624388,
+          "sha256": "c527d9e21a25a71cb2442ac1f1bfd3a8a1efb7d89e0cb0e6a94f600304fde6c1"
+        },
+        {
+          "name": "craft-engine-core-26.8.2.jar",
+          "bytes": 5776359,
+          "sha256": "2e0318554644ebbac3d42d8388c00e6fa71810171b9523c087bfa9eb87b833db"
+        },
+        {
+          "name": "craft-engine-bukkit-26.8.2.jar",
+          "bytes": 2155776,
+          "sha256": "ac8e8b58c62ace9df59d3c52cb3678eb12e0831a6e7679a4756a981a78241246"
+        },
+        {
+          "name": "spigot-2.1.9.jar",
+          "bytes": 6936,
+          "sha256": "e10c3da03271a69c754b7d5fa1568a1af22495033ad52b1a5b0bb235dab9343d"
+        },
+        {
+          "name": "toml4j-0.7.2.jar",
+          "bytes": 62621,
+          "sha256": "f5475e63e7e89e5db62223489aec7a56bd303543772077a17c2cb54c19ca3a20"
+        },
+        {
+          "name": "bungeecord-chat-1.21-R0.2-deprecated+build.21.jar",
+          "bytes": 168064,
+          "sha256": "ce930b3ee048520a0ab538eb8d1627b301367fc1b300837235387aded6d89ba1"
+        },
+        {
+          "name": "creative-serializer-minecraft-1.14.1.jar",
+          "bytes": 147665,
+          "sha256": "b74d3a6ece93bd68efb832de9a7a5790843d6aa177531179ec698bab3833d20c"
+        },
+        {
+          "name": "creative-server-1.14.1.jar",
+          "bytes": 23024,
+          "sha256": "0714a79689d1fe31f539c8e41a1ed2f7aeb6de97928ad76ff311eb86cd00284e"
+        },
+        {
+          "name": "creative-api-1.14.1.jar",
+          "bytes": 368583,
+          "sha256": "ed0cc14cb011467c247b51a76cc7840d6814804e61061829ed42457f5dfe4846"
+        },
+        {
+          "name": "adventure-text-minimessage-4.26.1.jar",
+          "bytes": 193786,
+          "sha256": "1d43451e9af473252dc8af3e8084238d5ce68ad43af0e3b7383eb3d4b63fff9f"
+        },
+        {
+          "name": "adventure-text-serializer-legacy-4.26.1.jar",
+          "bytes": 29940,
+          "sha256": "721107bc213572454df1bfbe438dba630e30457550c750b7a154b35dc3264aa8"
+        },
+        {
+          "name": "adventure-text-serializer-plain-4.26.1.jar",
+          "bytes": 13032,
+          "sha256": "39b9bfe5790f645605ff5464382c0e062476f48f9bfb2548801f275f12faf405"
+        },
+        {
+          "name": "adventure-text-logger-slf4j-4.26.1.jar",
+          "bytes": 19939,
+          "sha256": "009a99518d9b4f0ec54665f209724813bf98a2c1ff020aeabcf34a3699fd1dfa"
+        },
+        {
+          "name": "adventure-text-serializer-json-4.26.1.jar",
+          "bytes": 17034,
+          "sha256": "55c64b4333d5d2968a0125b8f29dae7cfba15392d5f99f78dbaea711cb0d4dc2"
+        },
+        {
+          "name": "adventure-api-4.26.1.jar",
+          "bytes": 454911,
+          "sha256": "551e536b9ea868f30e72c7900a309b35124ee7d4889fa3b3aed0910299751a26"
+        },
+        {
+          "name": "adventure-key-4.26.1.jar",
+          "bytes": 11368,
+          "sha256": "eec172d63db77b40eb7abeeb25f65eedea89bd30264d057b68b12fecb731be5e"
+        },
+        {
+          "name": "adventure-text-serializer-gson-4.26.1.jar",
+          "bytes": 66479,
+          "sha256": "e4a908dedc4acb4305083d916d362ddc2b21ecf452d577a0be665280bddae9fc"
+        },
+        {
+          "name": "gson-2.14.0.jar",
+          "bytes": 313604,
+          "sha256": "2cbd119bf1961c28788310963dc80ba65f58cdeec1dd139c8bdb1240faa2c36f"
+        },
+        {
+          "name": "concurrentlinkedhashmap-lru-1.4.2.jar",
+          "bytes": 116565,
+          "sha256": "56a95fb5b54c661a7efde073b8792f63a8c317e389102673d8d976c7c8f36945"
+        },
+        {
+          "name": "caffeine-3.2.4.jar",
+          "bytes": 1029147,
+          "sha256": "9d9d2cfd681fd9272ded3d27c9930db12f89f732345975aa113ebc223bbf1224"
+        },
+        {
+          "name": "paralithic-0.8.1.jar",
+          "bytes": 88965,
+          "sha256": "ed4224311e2e16af68ddede5bf7312f27f0517f454d1fed3c1977bf5e74bd13b"
+        },
+        {
+          "name": "paperlib-1.0.8.jar",
+          "bytes": 26948,
+          "sha256": "63916eda827d2f24da8705a21c5584c28c38adb9b111b537bf4ffc0a2bc6a443"
+        },
+        {
+          "name": "bstats-bukkit-3.2.1.jar",
+          "bytes": 4318,
+          "sha256": "9506152619165f4aa7df9768d755f3c2c9ff8e95a3ccc5ded34cb49b87b50dd4"
+        },
+        {
+          "name": "commons-io-2.22.0.jar",
+          "bytes": 609182,
+          "sha256": "2b9a7b1f726fb86216dbd2c8321eabe0221dbd5b1be81c18e1cb53811b104758"
+        },
+        {
+          "name": "maven-resolver-provider-3.9.6.jar",
+          "bytes": 74416,
+          "sha256": "73b00b244b7b9e285654a45e765892bf5d369da77d42b5b4b5429122ed198a33"
+        },
+        {
+          "name": "maven-model-builder-3.9.6.jar",
+          "bytes": 198399,
+          "sha256": "5f96dafbc411ee4b1e8426368d0d31d05ab5a4dace69808143142a0017598721"
+        },
+        {
+          "name": "maven-artifact-3.9.6.jar",
+          "bytes": 58708,
+          "sha256": "ad7a0fb408f8e47585ccc0d0011e0b501d93bfc9888d369bbd4a043d19475073"
+        },
+        {
+          "name": "commons-lang3-3.20.0.jar",
+          "bytes": 713862,
+          "sha256": "69e5c9fa35da7a51a5fd2099dfe56a2d8d32cf233e2f6d770e796146440263f4"
+        },
+        {
+          "name": "oshi-core-6.9.0.jar",
+          "bytes": 1022125,
+          "sha256": "b29ba9bce041e6ea822203d5b5a692660c87551241510ebc76eedffe684844c7"
+        },
+        {
+          "name": "lz4-java-1.8.1.jar",
+          "bytes": 683071,
+          "sha256": "1de8ff91b90fba9d4896b8617ed3594c2e4390d321d5a92c34f80e62e406c1b0"
+        },
+        {
+          "name": "jlibdeflate-0.2.0.jar",
+          "bytes": 297939,
+          "sha256": "db5ba08f964c265ddb8f17dec1a8dcb206132a4b68afe2a60206b7adaa9b2b80"
+        },
+        {
+          "name": "fastutil-8.5.18.jar",
+          "bytes": 23965563,
+          "sha256": "9094ae67d01d0ad246f886f11ad557fc2e79c72cbf3feed83e1512a8ae90a74a"
+        },
+        {
+          "name": "zt-zip-1.18.2.jar",
+          "bytes": 114406,
+          "sha256": "6330946d07c42b39aefad49f8318dee096a7fb5d0d57227e8feb59167bb17cff"
+        },
+        {
+          "name": "asm-9.10.1.jar",
+          "bytes": 126151,
+          "sha256": "ed825d10ab1399c8c0cb669e688cf0c8c82629b4c8399b58352b68e92ca10fcb"
+        },
+        {
+          "name": "byte-buddy-1.18.11.jar",
+          "bytes": 4656510,
+          "sha256": "e32f454c2c1f4aca982f9ec764ed892d9a6eee7e8a77f435cbdd180f6ffdb821"
+        },
+        {
+          "name": "byte-buddy-agent-1.18.11.jar",
+          "bytes": 267557,
+          "sha256": "780b3601c34150ab9fb822673c472f7229c1041e8e2a12facf6a5de9ba7a2d64"
+        },
+        {
+          "name": "dom4j-2.2.0.jar",
+          "bytes": 331953,
+          "sha256": "3fae79e081096e1410645eb3557c63b79ca266d510ab479889511109becd1690"
+        },
+        {
+          "name": "jaxen-2.0.6.jar",
+          "bytes": 225431,
+          "sha256": "3e2a755b283fd492fa4be204294c7abb7cd63ac94fb366baab9c7bb9afb00b6d"
+        },
+        {
+          "name": "snakeyaml-2.2.jar",
+          "bytes": 334352,
+          "sha256": "1467931448a0817696ae2805b7b8b20bfb082652bf9c4efaed528930dc49389b"
+        },
+        {
+          "name": "joml-1.10.8.jar",
+          "bytes": 778846,
+          "sha256": "bf19510145178df82cd3bd37edd514c13f411531ec5545299fd3abcbc98fe7c2"
+        },
+        {
+          "name": "maven-resolver-impl-1.9.18.jar",
+          "bytes": 317884,
+          "sha256": "6bb9c90d007098004749c867da2eaf5785fc1139907718749c1097bdb2929bf8"
+        },
+        {
+          "name": "maven-resolver-named-locks-1.9.18.jar",
+          "bytes": 37917,
+          "sha256": "098de7bbc5b0b26c3eff74ac30ffba6680fdab9bf4aebab95c3f5e2fe9eaeea8"
+        },
+        {
+          "name": "slf4j-api-2.0.17.jar",
+          "bytes": 69908,
+          "sha256": "7b751d952061954d5abfed7181c1f645d336091b679891591d63329c622eb832"
+        },
+        {
+          "name": "brigadier-1.3.10.jar",
+          "bytes": 80082,
+          "sha256": "c8ee4136e474ac7723ca2b432ec8d1a2bc88ef7d1ec57c314ba9e33cdc83dd75"
+        },
+        {
+          "name": "option-1.1.0.jar",
+          "bytes": 32200,
+          "sha256": "97b69b4b17dfe02217c9131ad342564cbc9aebd04c75eb689639b5f78fd4b11c"
+        },
+        {
+          "name": "jspecify-1.0.0.jar",
+          "bytes": 3819,
+          "sha256": "1fad6e6be7557781e4d33729d49ae1cdc8fdda6fe477bb0cc68ce351eafdfbab"
+        },
+        {
+          "name": "checker-qual-3.49.2.jar",
+          "bytes": 238217,
+          "sha256": "33b1d8b2c4b00f7d4f4b4931424274f3f729474ce3a87cea09a879976a1dcaeb"
+        },
+        {
+          "name": "biz.aQute.bnd.annotation-7.1.0.jar",
+          "bytes": 102646,
+          "sha256": "f69c2de3a695c113d125ac8053c92a680a3ce9d02ea25845095cf2d4626a7663"
+        },
+        {
+          "name": "error_prone_annotations-2.49.0.jar",
+          "bytes": 20255,
+          "sha256": "3b1003e51b8ae56fdbd7c71073e81d1683b97e6c4dff5a9151164d59b769d13c"
+        },
+        {
+          "name": "org.osgi.annotation.bundle-2.0.0.jar",
+          "bytes": 29130,
+          "sha256": "b9c9546ec5be3ebc2e85ba4919150ad76d64594805282fc895133a47d264a7ae"
+        },
+        {
+          "name": "org.osgi.annotation.versioning-1.1.2.jar",
+          "bytes": 15077,
+          "sha256": "f51f235e80df8ffbc30ef1b557b6ea38a696632d675404ec117e952978b8b863"
+        },
+        {
+          "name": "failureaccess-1.0.3.jar",
+          "bytes": 10763,
+          "sha256": "cbfc3906b19b8f55dd7cfd6dfe0aa4532e834250d7f080bd8d211a3e246b59cb"
+        },
+        {
+          "name": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+          "bytes": 2199,
+          "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99"
+        },
+        {
+          "name": "j2objc-annotations-3.1.jar",
+          "bytes": 16762,
+          "sha256": "84d3a150518485f8140ea99b8a985656749629f6433c92b80c75b36aba3b099b"
+        },
+        {
+          "name": "protectionlib-1.0.8.jar",
+          "bytes": 44418,
+          "sha256": "4335e1c8d23e97738f41b7992254b3673f8f4543dc567b68a878f4650562cd73"
+        },
+        {
+          "name": "kotlin-stdlib-2.0.21.jar",
+          "bytes": 1747660,
+          "sha256": "f31cc53f105a7e48c093683bbd5437561d1233920513774b470805641bedbc09"
+        },
+        {
+          "name": "runtime-2.1.9.jar",
+          "bytes": 172721,
+          "sha256": "225982d1c3eea914ff0360dabc3282eb4f5cc5a0528d6c11a108559a13ac810a"
+        },
+        {
+          "name": "examination-string-1.3.0.jar",
+          "bytes": 13135,
+          "sha256": "7d01fc25a4bb3af0e1662685455f4541fbf4626216ea5846e455c1491e156b8c"
+        },
+        {
+          "name": "examination-api-1.3.0.jar",
+          "bytes": 23446,
+          "sha256": "c9237ffecb05428f6eff86216246ac70ce0b47b04c08ea7ca35020fde57f8492"
+        },
+        {
+          "name": "annotations-26.0.2-1.jar",
+          "bytes": 31170,
+          "sha256": "2037be378980d3ba9333e97955f3b2cde392aa124d04ca73ce2eee6657199297"
+        },
+        {
+          "name": "bstats-base-3.2.1.jar",
+          "bytes": 22388,
+          "sha256": "ea9af6291004e1e7b1ae820105c48803f513ffdd0229edfd5f2402ea7e8ff9a0"
+        },
+        {
+          "name": "jna-platform-5.17.0.jar",
+          "bytes": 1378617,
+          "sha256": "b7e3d46c87bad2eb409b0e704916bcd81206168e357312dfddd0e253679cd9e0"
+        },
+        {
+          "name": "jna-5.17.0.jar",
+          "bytes": 2002589,
+          "sha256": "b3a9408e7c51e08ef0e3bfcc08f443f6ec0f6191ba8cd7c18d53d2b22e5bdbc0"
+        },
+        {
+          "name": "maven-model-3.9.6.jar",
+          "bytes": 217563,
+          "sha256": "4f8f07fdb6b8701fa89a23a2edf830808fd65892d90cce40c0e6df7c8f2fcb62"
+        },
+        {
+          "name": "maven-repository-metadata-3.9.6.jar",
+          "bytes": 28440,
+          "sha256": "e047a67b204c434994253e2ab5bdff5fe8cb7ada9316ac3e754c39f900ea847b"
+        },
+        {
+          "name": "maven-resolver-spi-1.9.18.jar",
+          "bytes": 51715,
+          "sha256": "d364fce9a17b0e0b073c26efa92af95b29c00c42943dced4a1168a7923fd3fe1"
+        },
+        {
+          "name": "maven-resolver-util-1.9.18.jar",
+          "bytes": 196023,
+          "sha256": "2eb0ea667bc489384478231dda7516407d4b5b22a138077229871de9362a7ae2"
+        },
+        {
+          "name": "maven-resolver-api-1.9.18.jar",
+          "bytes": 157111,
+          "sha256": "ebfb9e1dfeea3c2017905184581e007874b4eaac9d28bfffcfe5133d70ac6339"
+        },
+        {
+          "name": "plexus-utils-3.5.1.jar",
+          "bytes": 269335,
+          "sha256": "86e0255d4c879c61b4833ed7f13124e8bb679df47debb127326e7db7dd49a07b"
+        },
+        {
+          "name": "javax.inject-1.jar",
+          "bytes": 2497,
+          "sha256": "91c77044a50c481636c32d916fd89c9118a72195390452c81065080f957de7ff"
+        },
+        {
+          "name": "org.osgi.resource-1.0.0.jar",
+          "bytes": 33028,
+          "sha256": "81fc50f1f1d38a4af28e131907d4afe213249aab05060484edca0e60c4af9b4a"
+        },
+        {
+          "name": "org.osgi.service.serviceloader-1.0.0.jar",
+          "bytes": 12109,
+          "sha256": "8f876ce2a9aa4e95b1f1952950255103e2487425050a654f3285447ba601c154"
+        },
+        {
+          "name": "plexus-interpolation-1.26.jar",
+          "bytes": 85348,
+          "sha256": "b3b5412ce17889103ea564bcdfcf9fb3dfa540344ffeac6b538a73c9d7182662"
+        },
+        {
+          "name": "maven-builder-support-3.9.6.jar",
+          "bytes": 14347,
+          "sha256": "e1f4d2784459ce8a34b9dae1829a1999b569e483e21ee9faa7368691e729296e"
+        },
+        {
+          "name": "org.eclipse.sisu.inject-0.9.0.M2.jar",
+          "bytes": 424617,
+          "sha256": "9b62bcfc352a2ec87da8b01e37c952a54d358bbb1af3f212648aeafe7ab2dbb5"
+        },
+        {
+          "name": "auto-service-annotations-1.1.1.jar",
+          "bytes": 3172,
+          "sha256": "16a76dd00a2650568447f5d6e3a9e2c809d9a42367d56b45215cfb89731f4d24"
+        },
+        {
+          "name": "iris-spi-4.3.5.jar",
+          "bytes": 34898,
+          "sha256": "3818e88b574a14ca73d569f70835c74c28c2c79ecf935988da8a95636582c607"
+        },
+        {
+          "name": "native-api-local-SNAPSHOT.jar",
+          "bytes": 194315,
+          "sha256": "ae9811600d80c54e3e6550d0996b56679c4eba55fa6a52e3333575a2085ece61"
+        },
+        {
+          "name": "native-terrain-api-local-SNAPSHOT.jar",
+          "bytes": 47761,
+          "sha256": "e3ee453f1f467d28178cd593cdca99213c7267d21a763776171d5fc1bae30470"
+        },
+        {
+          "name": "shared-local-SNAPSHOT.jar",
+          "bytes": 2167857,
+          "sha256": "15207d64bcc11b727b20c3ba2757ea40595454bd3ea360aba86d11e067fd310b"
+        },
+        {
+          "name": "junit-4.13.2.jar",
+          "bytes": 384581,
+          "sha256": "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3"
+        },
+        {
+          "name": "hamcrest-core-1.3.jar",
+          "bytes": 45024,
+          "sha256": "66fdef91e9739348df7a096aa384a5685f4e875584cce89386a7a47251c4d8e9"
+        }
+      ],
+      "result": {
+        "successful": false,
+        "runCount": 1,
+        "failureCount": 1,
+        "failures": [
+          {
+            "test": "allStylesRetainPinnedSamples(art.arcane.iris.generation.noise.NoiseSeedCohesionTest)",
+            "exception": "java.lang.AssertionError",
+            "message": "All noise style samples expected:<5059606393854142913> but was:<3659164368724912644>"
+          }
+        ]
+      },
+      "expectedAssertionUnchanged": true,
+      "registryExport": false,
+      "statePairChecks": 0,
+      "browserVerified": false,
+      "releaseReferenceQualified": false
+    }
+  }
+}

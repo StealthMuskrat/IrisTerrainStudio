@@ -1,0 +1,163 @@
+{
+  "scope": "native-isolated-procedural-development-targeted",
+  "date": "2026-10-20",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "validation": {
+    "result": "pass",
+    "fixtures": 1,
+    "familiesChecked": 2,
+    "variantsPerFamily": 1,
+    "blockProbes": 4,
+    "workerGenerations": 3,
+    "results": [
+      {
+        "family": "trees",
+        "key": "procedural/tree/small-oak#0",
+        "blockCount": 95,
+        "origin": [
+          -3,
+          -2,
+          -3
+        ],
+        "size": [
+          7,
+          7,
+          7
+        ],
+        "probes": [
+          [
+            -3,
+            2,
+            0,
+            "minecraft:oak_leaves[distance=4,persistent=false,waterlogged=false]"
+          ],
+          [
+            0,
+            -1,
+            0,
+            "minecraft:oak_log[axis=y]"
+          ]
+        ],
+        "seed": "9007199254740993"
+      },
+      {
+        "family": "formations",
+        "key": "procedural/small-rock#0",
+        "blockCount": 28,
+        "origin": [
+          -1,
+          0,
+          -1
+        ],
+        "size": [
+          3,
+          4,
+          3
+        ],
+        "probes": [
+          [
+            -1,
+            0,
+            -1,
+            "minecraft:stone"
+          ],
+          [
+            -1,
+            0,
+            0,
+            "minecraft:stone"
+          ]
+        ],
+        "seed": "17"
+      }
+    ],
+    "resources": [
+      {
+        "path": "dimensions/terrain3d.json",
+        "sha256": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba"
+      },
+      {
+        "path": "regions/ledges.json",
+        "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+      },
+      {
+        "path": "biomes/ledges.json",
+        "sha256": "15c10d4f9525cec598e70a122073493b41771a8d87b39d59f9bf733504df4f2c"
+      },
+      {
+        "path": "generators/flat.json",
+        "sha256": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10"
+      }
+    ],
+    "wasmSha256": "fc29887a8334c157753f058be04376c3a4f606fb03732510dd42be99e44929c5",
+    "sourceSha256": "2d871022ec67f7a2112e12fe72ff0bf324b8ec356fa7603eb4d507434270d414",
+    "checks": [
+      "native descriptors and exact long seed",
+      "native pool key, bounds and block count",
+      "four material probes",
+      "native plausible leaf state",
+      "typed volume and local coordinates",
+      "cache reuse",
+      "native input ownership released after serialization",
+      "out-of-range variant refusal"
+    ],
+    "worldPlacementVerified": false,
+    "browserVerified": false,
+    "unverifiedFamilies": [
+      "coral",
+      "fungi",
+      "crystals"
+    ]
+  },
+  "additionalChecks": {
+    "proceduralCancellation": "Two mock in-flight requests terminate their worker immediately and obtain fresh workers; no geometry executed",
+    "entryIndex": "Rejects 2^32 before the Java int boundary"
+  },
+  "registry": {
+    "manifestSha256": "579b7e6e4eb36cf3c3c64219358ae241ceaec76489343d6291d72ff6980ac05e",
+    "sourceServerJarSha256": "934b1fe09a33e10566da51033e092fbd3c682c60b2a925f7d82eabeac16f7054",
+    "registryParityVerified": false
+  },
+  "sourceFiles": [
+    {
+      "path": "tools/checks/native-procedural-smoke.mjs",
+      "sha256": "cfc3b02849a95aab7f991ba3e4ef2b82f68ec28c000bfd08ea46c0c08d05ead0"
+    },
+    {
+      "path": "tools/checks/NativeProceduralLinkCheck.java",
+      "sha256": "d3c194c20f4bc7f78fedcff2ac2832824ba74017ec26af75dae6f058bf21f65e"
+    },
+    {
+      "path": "tools/checks/procedural-cancel-smoke.mjs",
+      "sha256": "54ae7d2dd61be6d08ee11d9491e5771c714669142fafa731ae6e63ffce3a72a7"
+    },
+    {
+      "path": "apps/web/workers/iris-worker.js",
+      "sha256": "90d6cbb0a927032d9d6d20439cbb29c569396f44409011bb5469c5b378b237c3"
+    },
+    {
+      "path": "packages/iris-engine/client.mjs",
+      "sha256": "5098a0bcf42c39c693280d2965005f531e5954a93775940b760c2c8f36f8d957"
+    },
+    {
+      "path": "apps/web/main.mjs",
+      "sha256": "fe23fdbdae0ce73dfd38215a389c56c78f27663448eeffa5b0ec098ada73e11d"
+    },
+    {
+      "path": "apps/web/index.html",
+      "sha256": "e83e650a0564bf028d1be1c4abb4dd638c985fcd01e8e5349f6de8675ae90283"
+    }
+  ],
+  "fullGeometryParityVerified": false,
+  "browserVerified": false,
+  "placementConnected": false,
+  "limitations": [
+    "Only one small oak and one boulder pool are checked with four material probes; complete variant geometry/options are unqualified",
+    "Coral, fungi and crystal families are connected but not exercised by this targeted fixture",
+    "No world placement, collision replay, floating/cave placement or content matter qualification",
+    "Imported conventional structures, jigsaw and procedural ruins are outside this preview",
+    "Preview pools are limited to eight variants, 262144 newly inserted canvas-map entries, 256 blocks per output axis and 1048576 volume cells",
+    "Native debug-file flag is disabled by an explicit worker host boundary",
+    "Native checksum/dependency/release provenance and browser/GPU/asset gates remain open"
+  ]
+}

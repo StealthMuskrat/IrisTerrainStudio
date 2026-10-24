@@ -1,0 +1,90 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "local-native-memory-pack-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engineBuild": {
+    "wasmSha256": "1a19ae271e226a072f875c4db5d10863b007780847bd66e602d5e210174f3430",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "b120b1b10fb7f48070ea897f7ec68b83d922b0d71f7fb4c5a00db54b3b5f9b38",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "fixture": {
+    "source": "Unchanged pinned Iris probe/src/test/resources/terrain3d-pack",
+    "files": {
+      "biomes/ledges.json": "83ffc89dfaa758be9b67b43c5044c97e9457fbe189796b49bd446ad51d526f90",
+      "dimensions/terrain3d.json": "35e698b382f7fee8b39edc877c6e12ff3c9b1a870a3812cc6ff9055e265a34ba",
+      "generators/flat.json": "1e1ed991b4fd1c99f74972365d0f72bf275aadd4b94289ca20e1a0e8495ecd10",
+      "regions/ledges.json": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+    }
+  },
+  "focusedCheck": {
+    "command": "node tools/checks/memory-pack-link.mjs",
+    "result": "pass",
+    "coverage": [
+      "Four actual fixture resources loaded through native data objects and memory ResourceLoader API in Node Wasm",
+      "Native owner/load-key assignment, dotted fallback lookup, missing names and path boundary",
+      "Exported predicate metadata, native partial-property mask matching and ore conversions",
+      "Dynamic registry key coverage and native property descriptor consistency"
+    ],
+    "excluded": [
+      "No terrain generation",
+      "No browser/GPU execution",
+      "No complete native parser or configuration conformance",
+      "No native/browser terrain comparison",
+      "No full application verification"
+    ]
+  },
+  "registry": {
+    "sourceServerJarSha256": "841f58fe2a961c24705720054db0cc671bc7760db1e0e6992ed463b19cb8aa89",
+    "files": {
+      "blocks.json": {
+        "sha256": "f0dc818bc1dc0547feccbb0c7707bcdcb2cba699f09859aa3286068e3a236d54",
+        "sourceReportSha256": "7a0de8aaf7b04d00c40b8ffdc4cfe75184cff2e821d336a020573201867105a4",
+        "bytes": 3753935
+      },
+      "registries.json": {
+        "sha256": "9bf25314dd593ee4e48a79c88af57dc749b8320d43653512de87a52ca748e947",
+        "sourceReportSha256": "6516af3f795065942317b87fc7ee005bfa5a65bfe560eb5053edc9b414ad3711",
+        "bytes": 357890
+      },
+      "native-predicates.json": {
+        "sha256": "cb4ea6a0dfca404276a80fb17b2ec9d84c7e3332d78a6794b0317185b1c4312f",
+        "bytes": 636871
+      },
+      "native-registries.json": {
+        "sha256": "e7fb7a840b5962fe7bb1e4851119dc2680a484d52e804f8d4b1fea09a81e10ce",
+        "bytes": 163290
+      }
+    },
+    "keyCounts": {
+      "blocks": 1286,
+      "biomes": 67,
+      "structures": 52,
+      "items": 1658,
+      "entities": 161,
+      "enchantments": 43,
+      "potionEffects": 40
+    },
+    "sharedPropertyGroups": 122,
+    "lootTablesExported": false
+  },
+  "implementation": [
+    "Immutable raw JSON snapshot with exact numeric tokens",
+    "IrisData initialization and ResourceLoader IO adapted to browser worker memory; native configuration constructors retained",
+    "Lazy snippets loaded from sealed snapshot",
+    "Native unready ContentGate branch reports incomplete compatibility; no terrain qualification implied",
+    "Actual native registry keys and state predicate reports exported using unmodified headless bootstrap/registry loaders and NativeRegistryAccess",
+    "Inspector action uses current unsaved resource and other saved pack JSON resources"
+  ],
+  "limitations": [
+    "Native Java platform registry adapter and reflection compatibility walker are not linked",
+    "Image maps, expressions, binary objects/images/matter, static-object validation and persistent float caches remain unavailable",
+    "JavaScript state parsing supports simple unquoted property syntax; full Minecraft parser forms are unqualified",
+    "Complete terrain composition, browser verification and release checks remain unfinished"
+  ]
+}

@@ -1,13 +1,13 @@
 {
   "formatVersion": 1,
-  "verifiedAt": "2026-10-20",
+  "verifiedAt": "2026-10-23",
   "iris": {
     "repository": "https://github.com/VolmitSoftware/Iris",
-    "version": "4.3.4",
-    "tag": "4.3.4-26.1.2-26.3",
-    "commit": "c3a9449a026078c44a87c9776766f54a67779392",
-    "tree": "95b910b97fa75c29b3e98cd4f32bc2a40276dcb3",
-    "releaseUrl": "https://github.com/VolmitSoftware/Iris/releases/tag/4.3.4-26.1.2-26.3"
+    "version": "4.3.5",
+    "tag": "4.3.5-26.1.2-26.3",
+    "commit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "tree": "4b721a531ad265a330b7cab13cec46a8119d891b",
+    "releaseUrl": "https://github.com/VolmitSoftware/Iris/releases/tag/4.3.5-26.1.2-26.3"
   },
   "minecraft": {
     "version": "26.3",
@@ -23,18 +23,18 @@
     "resolution": "Upstream uses master-SNAPSHOT or an unpinned local composite checkout."
   },
   "schemas": {
-    "sourceCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+    "sourceCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
     "bundleSha256": null
   },
   "browserCompiler": {
     "name": "TeaVM",
-    "version": null,
+    "version": "0.16.0",
     "backend": "wasm-gc",
-    "status": "not-compiled"
+    "status": "compiled-development-browser-qualification-pending"
   },
   "assets": {
-    "f8thfulSha256": null,
-    "vanillaBaselineSha256": null
+    "f8thfulSha256": "2b07f25eba57e340f421a8ee3e927d0c7239244d19cabe5ef89c32ea2ea48977",
+    "vanillaBaselineSha256": "4af418c4e5728947df1aaa90e2f346a7c729c275bbea3a06fb1cdd41f453e832"
   },
   "sources": [
     {
@@ -43,7 +43,7 @@
     },
     {
       "path": "core/build.gradle",
-      "gitBlobSha": "abaab4f4ebf85f895d3e24519de88b617346349a"
+      "gitBlobSha": "ba53e472a2b5bf16e19428c00c90c52558460af8"
     },
     {
       "path": "core/src/main/java/art/arcane/iris/generation/noise/NoiseStyle.java",
@@ -51,7 +51,7 @@
     },
     {
       "path": "core/src/main/java/art/arcane/iris/generation/runtime/IrisEngine.java",
-      "gitBlobSha": "3074fbe9f5f8b22605661346d692b430367db781"
+      "gitBlobSha": "2db689d429452e70452114539c04722d32eb06b8"
     },
     {
       "path": "core/src/main/java/art/arcane/iris/generation/runtime/SeedManager.java",
@@ -71,7 +71,7 @@
     },
     {
       "path": "gradle.properties",
-      "gitBlobSha": "d5745b3e0afafc0af52cd468f49c771830681b2e"
+      "gitBlobSha": "363ffb00600b01421a2abd8b8b9b1cb68ef0218c"
     },
     {
       "path": "gradle/libs.versions.toml",
@@ -95,7 +95,7 @@
     },
     {
       "path": "settings.gradle",
-      "gitBlobSha": "d5fa041aa089bd423dbffc742aadc737a09278b2"
+      "gitBlobSha": "fa2892f4fe2713593832fdf31b85606dab3deff3"
     }
   ],
   "readiness": {
@@ -109,8 +109,7 @@
       "Resolve native all-style checksum mismatch: expected 5059606393854142913, observed 3659164368724912644.",
       "Export and hash the matching schemas and Minecraft 26.3 block registry.",
       "Compile and execute an actual Iris/VolmLib generation path in a browser worker.",
-      "Produce native/browser reference captures and pass exact comparisons.",
-      "F8thful.zip and an authorized vanilla asset baseline were not attached."
+      "Produce native/browser reference captures and pass exact comparisons."
     ]
   }
 }

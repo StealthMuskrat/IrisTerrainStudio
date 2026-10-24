@@ -1,0 +1,23 @@
+# Native hydrology publication in registered Overworld modes
+
+The registered Overworld terrain and terrain/content previews now retain the original `MantleHydrologyComponent.generateLayer`, its publication compiler and publication writer. This continues the earlier column-planning boundary; it does not add a replacement pool, river or fluid algorithm.
+
+## Native ordering and storage
+
+The original component registration retains the TERRAIN phase, priority and CARVED prerequisite. Original ChunkContext prefill prepares hydrology columns before native matter planning. Native matter scheduling publishes original surface block states, hydrology cave cells and fluid update markers. Original carve/guard/material resolution and content matter insertion consume those values in the existing registered stage order. The terrain-only preview still stops before native content insertion; its output is an intermediate stage, not a completed fluid-material preview.
+
+The worker redirects only the component's three writer-storage handles and two storage-height calls. Compile-time counts guard those pinned boundaries. Original HydrologyCaveMatter and UpdateMatter codecs now have explicit worker construction and registration. The owned sparse section classifier accepts original HydrologyCaveCell and MatterUpdate values; unconnected types still refuse.
+
+A hydrology scope borrows the registered mode's existing native host and prepared store. Its close releases its own admission binding; the registered mode retains responsibility for host/storage/session teardown. Existing 49 prepared chunks remain available to the native scheduler; hydrology can admit additional sparse containment chunks within the existing 256-chunk and conservative cell bounds. Root/call admission wraps the whole operation. After the native compiler samples its 18 × 18 column halo, one admission hook charges the existing layer count times world height, cumulatively limited to 1,048,576 per operation. This projected layer-cell charge does not probe blocks and is not an actual sample count, heap or execution-time guarantee. Original sampling and publication decisions remain unchanged. Source cache ownership and native stage observers remain in place. Before serializing center-chunk diagnostics, the worker selects that chunk again because native containment input loading can change the active sparse-storage cursor.
+
+## Preview ownership and scope
+
+Actual native publication counts and worker planning/carving admission metadata accompany existing typed block and physical-biome volume transport. Counts inspect published sparse matter slices; they do not compare all terrain cells or qualify performance. Shared/persistent hydrology caches, saved-world services, native history/REAL/world lifecycle, active custom contributions and imported placements retain their existing restrictions.
+
+Only registered Overworld routes admit active hydrology. Separate scalar/material/cave/procedural intermediate previews continue to refuse because their setup and ordering do not publish the complete native prerequisites. A separate surface-feature planning map is now connected; it does not replace the registered material stages. The existing one-column dimension inspector remains a separate development diagnostic. Native voxel data can be inspected independently of the unfinished client fluid/tint rendering adapters.
+
+## Qualification
+
+One small authored standing-pool fixture and one seed pass twelve selected block/physical-biome comparisons through the original JVM modes and actual compiled worker/client paths. Both routes publish 75 native seal-guard cells and select the expected lava cell. Each cold route admits four planning roots/calls and charges 15,488 projected publication layer-cells. Client reuse, older-module/intermediate refusal, failed-preview lease/scope cleanup and fresh-context recovery pass. These samples admit zero containment carving chunks and zero fluid updates: those adapters are linked but their execution/refusal are not qualified here. No full volume/state comparison, broad suite or GitHub workflow ran. See [batch evidence](../evidence/native-hydrology-matter-2026-10-22.json). Flowing rivers, underground/deep fluids, every hydrology option, interaction coverage, real browser/GPU and complete terrain/release qualification remain open.
+
+A later [containment inspection batch](HYDROLOGY_CONTAINMENT_INSPECTION.md) exercises accepted deep-fluid containment and original wet/dry/guard matter, adds section/profile summaries and fixes transport of explicitly admitted distant CARVED inputs. The earlier pool evidence above remains scoped to its original inputs/module. Falling-fluid/update execution and full options remain open.

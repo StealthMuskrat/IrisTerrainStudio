@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-20",
+  "scope": "focused local development export linkage, not browser or terrain qualification",
+  "execution": "Native Temurin 25.0.4.1+1 and Node 24.19.0 Wasm GC",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "wasmSha256": "af1835872c9b7f16b9e01e964b23ae26ae438e21eec00f9788fb94d08894e34a",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "sourceSha256AtBuild": "dd9e8288c6588af75f73ce9381c76a791223c26d410cb5ef5c98a97a0bf71bcc",
+  "focusedResult": {
+    "enumNames": 186,
+    "scalarSamples": 3,
+    "seedDerivations": 1,
+    "nativeJdkAdapterComparisons": 1152,
+    "mismatches": 0
+  },
+  "commands": [
+    "npm run engine:build -- --reuse-native-inputs",
+    "node tools/checks/engine-link.mjs"
+  ],
+  "nativeCoreBuild": "success; Test tasks disabled; plugin slimJar packaging excluded from subsequent browser builds",
+  "unverified": [
+    "Native/browser complete style coverage",
+    "Browser worker and UI execution for the new module",
+    "Native/browser layer and composite-generator coverage",
+    "World terrain and voxel generation",
+    "Release dependency provenance"
+  ],
+  "notes": [
+    "Ranged-integer semantics at the two native noise-offset calls initially differed; an exact pinned-JDK adapter resolved the focused sample mismatches.",
+    "New SplittableRandom adapter checked against native JDK calls; full browser qualification remains pending.",
+    "Generation remains client-only. No GitHub workflow was dispatched for this checkpoint."
+  ]
+}

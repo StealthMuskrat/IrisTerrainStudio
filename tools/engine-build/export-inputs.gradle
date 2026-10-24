@@ -1,0 +1,64 @@
+import java.security.MessageDigest
+def browserInputProfile = System.getenv('STUDIO_BROWSER_INPUT_PROFILE') ?: 'full'
+if (!(browserInputProfile in ['full', 'terrain-no-eco-items'])) throw new GradleException('Unknown browser native-input profile')
+gradle.beforeProject { project ->
+    if (project.path == ':core' && browserInputProfile == 'terrain-no-eco-items') {
+        project.afterEvaluate {
+            project.configurations.compileOnly.dependencies.removeAll { it.group == 'com.willfp' && it.name == 'eco' }
+            project.sourceSets.main.java.exclude('art/arcane/iris/integration/data/EcoItemsDataProvider.java')
+        }
+    }
+    project.tasks.withType(org.gradle.api.tasks.testing.Test).configureEach { enabled = false }
+}
+gradle.projectsEvaluated {
+    def nativeProject = gradle.rootProject.findProject(':native:v26_3_R1')
+    if (nativeProject != null) {
+        nativeProject.tasks.register('studioRegistryInputs') {
+            dependsOn(nativeProject.tasks.named('paperweightUserdevSetup'))
+            doLast {
+                def files = nativeProject.sourceSets.main.compileClasspath.files.findAll { it.exists() }
+                def output = new File(System.getenv('IRIS_REGISTRY_INPUTS'))
+                output.parentFile.mkdirs()
+                output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+                    formatVersion: 1, scope: 'minecraft-26.3-development-registry-export',
+                    volmLibCandidate: '210705c5ab1321dc74b86b48457fd6d5e0452944',
+                    releaseMatchVerified: false,
+                    classpath: files.collect { file -> [path: file.absolutePath,
+                        sha256: file.isFile() ? HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(file.bytes)) : null] }
+                ]))
+            }
+        }
+    }
+    def core = gradle.rootProject.findProject(':core')
+    if (core == null) return
+    // The browser compiler consumes classes, not the Bukkit plugin's dynamic
+    // library-download metadata. Avoid packaging/network work unrelated to it.
+    core.tasks.matching { it.name == 'slimJar' }.configureEach { enabled = false }
+    core.tasks.register('studioBrowserEngineInputs') {
+        dependsOn(core.tasks.named('classes'))
+        doLast {
+            if (browserInputProfile == 'terrain-no-eco-items') {
+                core.sourceSets.main.output.classesDirs.files.each { directory ->
+                    if (new File(directory, 'art/arcane/iris/integration/data/EcoItemsDataProvider.class').exists()) {
+                        throw new GradleException('Excluded EcoItems provider remains in compiled output; clean the native core output before this profile')
+                    }
+                }
+            }
+            def files = (core.sourceSets.main.output + core.sourceSets.main.compileClasspath + core.sourceSets.main.runtimeClasspath).files
+            def entries = files.findAll { it.exists() }.collect { file ->
+                [path: file.absolutePath, directory: file.isDirectory(), sha256: file.isFile() ?
+                    HexFormat.of().formatHex(MessageDigest.getInstance('SHA-256').digest(file.bytes)) : null]
+            }
+            def output = new File(System.getenv('IRIS_ENGINE_INPUTS'))
+            output.parentFile.mkdirs()
+            output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([
+                formatVersion: 1, scope: 'development-browser-engine-build',
+                buildProfile: browserInputProfile,
+                excludedSources: browserInputProfile == 'terrain-no-eco-items' ? ['core/src/main/java/art/arcane/iris/integration/data/EcoItemsDataProvider.java'] : [],
+                excludedDependencies: browserInputProfile == 'terrain-no-eco-items' ? ['com.willfp:eco:2026.27'] : [],
+                irisCommit: 'c3359e0a16438b1bb8468901c6171dcefdf63f7f',
+                volmLibCandidate: '210705c5ab1321dc74b86b48457fd6d5e0452944',
+                releaseMatchVerified: false, classpath: entries]))
+        }
+    }
+}

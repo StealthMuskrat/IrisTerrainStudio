@@ -1,0 +1,367 @@
+{
+  "recordedAt": "2026-10-24T02:20:43.034611+00:00",
+  "clientDate": "2026-10-23",
+  "clientTimezone": "America/Toronto",
+  "scope": "Unchanged real Overworld pack capacity and focused regressions",
+  "source": {
+    "repository": "https://github.com/IrisDimensions/overworld",
+    "commit": "1d3cf8a93f5c4a586a8465baeff2b1b5f76b4fe3",
+    "tree": "1525af2df6566afdcf6c6fc878f65c22ab7a6753",
+    "version": 4016,
+    "checkoutUnchanged": true
+  },
+  "applicationParentCommit": "f42b2419b5f9f7c123e4012a7805658e8ac90c1d",
+  "before": {
+    "normalSnapshot": {
+      "status": "fail",
+      "resources": 5594,
+      "limit": 4096,
+      "error": "Native pack resource count is invalid or exceeds 4,096 resources.",
+      "readsBeforeRefusal": 0
+    },
+    "jsonPngOnlyDiagnostic": [
+      {
+        "field": "regions",
+        "status": "pass",
+        "scope": "iris-region-selection-development",
+        "values": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "categories": [
+          "prismatics"
+        ],
+        "samples": [
+          {
+            "x": -8,
+            "z": -8,
+            "value": "prismatics"
+          },
+          {
+            "x": 8,
+            "z": -8,
+            "value": "prismatics"
+          },
+          {
+            "x": -8,
+            "z": 8,
+            "value": "prismatics"
+          },
+          {
+            "x": 8,
+            "z": 8,
+            "value": "prismatics"
+          }
+        ]
+      },
+      {
+        "field": "terrain",
+        "status": "fail",
+        "error": "Custom biome authoring context exceeds 128 definitions"
+      },
+      {
+        "field": "overworld-mode",
+        "status": "fail",
+        "error": "Custom biome authoring context exceeds 128 definitions"
+      }
+    ],
+    "projectedCellGuard": {
+      "status": "source-derived; not executed before custom-biome refusal",
+      "required": 9633792,
+      "limit": 8388608
+    }
+  },
+  "after": {
+    "files": {
+      "result": "pass",
+      "fileRoundtrip": "pass",
+      "files": 8124,
+      "bytes": 56488473,
+      "allFileBytesPreserved": true,
+      "packContentSha256": "2b99f09ace348cfae1b6b5a48f3a710009f7e86e5b16da08524b17653c799a85",
+      "dimension": {
+        "key": "overworld",
+        "version": 4016,
+        "height": 768,
+        "minY": -256,
+        "maxY": 512,
+        "declaredRegions": 12,
+        "importedStructurePlacements": 1
+      },
+      "normalSnapshot": {
+        "status": "pass",
+        "resources": 5594,
+        "limit": 16384,
+        "byteLimit": 268435456,
+        "bytes": 56462317,
+        "resourcesRead": 5594
+      }
+    },
+    "worker": {
+      "profile": "Full native pack snapshot, including every object binary; original input bytes unchanged",
+      "resources": 5594,
+      "bytes": 56462317,
+      "actualWasmWorkerClient": true,
+      "wasmSha256": "3b221caf47afe2408121f4fcce9b777f64d8b165868efa360db4eb0de41b23d1",
+      "registrySha256": "edee8466689fe367d2a34d8bdb5b546040b9598ee32d5e79cb661deebd79ba30",
+      "tests": [
+        {
+          "field": "regions",
+          "status": "pass",
+          "scope": "iris-region-selection-development",
+          "values": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "categories": [
+            "prismatics"
+          ],
+          "samples": [
+            {
+              "x": -8,
+              "z": -8,
+              "value": "prismatics"
+            },
+            {
+              "x": 8,
+              "z": -8,
+              "value": "prismatics"
+            },
+            {
+              "x": -8,
+              "z": 8,
+              "value": "prismatics"
+            },
+            {
+              "x": 8,
+              "z": 8,
+              "value": "prismatics"
+            }
+          ]
+        },
+        {
+          "field": "terrain",
+          "status": "fail",
+          "error": "Complete hydrology terrain previews are not connected for this intermediate path. Use the registered Overworld preview or inspect one hydrology column."
+        },
+        {
+          "field": "overworld-mode",
+          "status": "fail",
+          "error": "Imported object placements in guarded procedural source previews is not connected in the browser engine."
+        }
+      ],
+      "preparations": [
+        {
+          "key": "overworld",
+          "customBiomes": 146,
+          "customBiomeBytes": 343290,
+          "minHeight": -256,
+          "maxHeight": 512
+        },
+        {
+          "key": "overworld",
+          "customBiomes": 146,
+          "customBiomeBytes": 343290,
+          "minHeight": -256,
+          "maxHeight": 512
+        }
+      ],
+      "browserVerified": false,
+      "fullTerrainParity": false,
+      "inspection": {
+        "found": true,
+        "compatibilityReady": true,
+        "key": "overworld",
+        "type": "Dimension",
+        "folder": "dimensions",
+        "excluded": false,
+        "findings": []
+      },
+      "proceduralVariant": {
+        "status": "pass",
+        "poolSize": 24,
+        "selectedVariant": 23,
+        "volumeCells": 10,
+        "occupiedBlocks": 6
+      },
+      "packLoadSupported": true,
+      "customBiomeCapacity": "pass",
+      "lifecycleAfterFailure": {
+        "prepared": false
+      },
+      "selectedNativeRegionsCompared": 4
+    },
+    "reusedNativeRegions": {
+      "result": "pass",
+      "executed": {
+        "code": 0,
+        "signal": null
+      },
+      "seeds": [
+        "813753"
+      ],
+      "points": [
+        [
+          -8,
+          -8
+        ],
+        [
+          8,
+          -8
+        ],
+        [
+          -8,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "profile": "terrain-no-eco-items",
+      "referenceSourceSha256": "ac031d875966fa8f99b034d7517defccafb8e34074186c6d1819f3818edf1516",
+      "packResourcesUnchanged": true,
+      "browserVerified": false,
+      "fullTerrainParity": false,
+      "regionOnly": true,
+      "reference": [
+        [
+          [
+            "prismatics",
+            "prismatics",
+            "prismatics",
+            "prismatics",
+            "prismatics"
+          ]
+        ]
+      ]
+    },
+    "reusedNativeScalarReference": {
+      "result": "fail",
+      "executed": {
+        "code": 1,
+        "signal": null
+      },
+      "seeds": [
+        "813753"
+      ],
+      "points": [
+        [
+          -8,
+          -8
+        ],
+        [
+          8,
+          -8
+        ],
+        [
+          -8,
+          8
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "profile": "terrain-no-eco-items",
+      "referenceSourceSha256": "c3a369df9ee4b50fe3062b22fbea426574566b643c5d5e36fc635351432c706d",
+      "packResourcesUnchanged": true,
+      "browserVerified": false,
+      "fullTerrainParity": false,
+      "error": [
+        "[09:55:33 INFO]: [STDERR]: java.lang.IllegalStateException: [Unused early hydrology owner -2,-2 failed to prepare., java.lang.IllegalStateException: No native cave host]",
+        "[09:55:33 INFO]: [STDERR]: \tat jdk.proxy1/jdk.proxy1.$Proxy21.reportError(Unknown Source)",
+        "[09:55:33 INFO]: [STDERR]: \tat art.arcane.iris.spi.IrisLogging.reportError(Unknown Source)",
+        "[09:55:33 INFO]: [STDERR]: java.lang.IllegalStateException: No native cave host",
+        "[09:55:33 INFO]: [STDERR]: java.lang.IllegalStateException: [Unused early hydrology owner 0,-2 failed to prepare., java.lang.IllegalStateException: No native cave host]",
+        "[09:55:33 INFO]: [STDERR]: \tat jdk.proxy1/jdk.proxy1.$Proxy21.reportError(Unknown Source)",
+        "[09:55:33 INFO]: [STDERR]: \tat art.arcane.iris.spi.IrisLogging.reportError(Unknown Source)",
+        "[09:55:33 INFO]: [STDERR]: java.lang.IllegalStateException: No native cave host"
+      ]
+    }
+  },
+  "artifacts": {
+    "irisCommit": "c3359e0a16438b1bb8468901c6171dcefdf63f7f",
+    "wasmSha256": "3b221caf47afe2408121f4fcce9b777f64d8b165868efa360db4eb0de41b23d1",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "61f7f4cb2d07214bfa7c6561b9dd310d1c7f145ae17ae312d60f69b1c1a04b0b"
+  },
+  "focusedLogs": {
+    "custom-biome-regression.log": {
+      "sha256": "bf748ec45413eaa669504048d66d31cccb1db0b69ae5144d13aa935044adb2f7",
+      "lastLine": "Native custom biomes pass: two identities/definitions, four physical keys, two materials, eight native colors, actual worker/client/model/fluid paths and owned refusal/recovery."
+    },
+    "procedural-regression.log": {
+      "sha256": "0ad75c22cb303aa689e347c0840e2f84fa9101da312c1ee9e5a0d14d2ebe8a15",
+      "lastLine": "Targeted native procedural smoke passed: two tiny baked variants, four block probes, worker/client metadata and cache reuse. No terrain sweep."
+    },
+    "overworld-mode-regression.log": {
+      "sha256": "1a4ccf1b6906c83ee3c3fd6e23e114c06844434ff13085400fa4dfb4efe5d101",
+      "lastLine": "Overworld mode passed: six selected blocks/biomes, four terrain/nine content stages, native procedural insertion and component/PLANNED flags, content failure cleanup and controlled cancellation."
+    },
+    "snapshot-regression.log": {
+      "sha256": "b3e3174c2fe598193e3fe2a7a4aed5efd9d32121bd1d1d2af2f18282eecf49e1",
+      "lastLine": "Image snapshot/worker contract passed: native folder and owned PNG capture, routing, raw-band registration and stale async cleanup. Mock API."
+    },
+    "standalone-build.log": {
+      "sha256": "d7049ea6bd265af94137bbaa165154ffd4e97f20541593ee0f5993a6b6f6e161",
+      "lastLine": "Verified development engine files included. Full terrain qualification remains incomplete."
+    },
+    "standalone-delivery.log": {
+      "sha256": "d3922deb3944d09fb3de761ec8b89a42c5a90c43bd842240894c4a8856e460a2",
+      "lastLine": "{\"result\":\"pass\",\"modules\":14,\"healthAndDiagnosticsControl\":true}"
+    },
+    "standalone-http.log": {
+      "sha256": "e02711d17f3cf746569d91aa601b72db80daa2ab9b6c2c05a4d56a30f6dd0a65",
+      "lastLine": "Standalone package: liveness, authentication, native creation, module/source assets, restart persistence and stale-save refusal pass. Docker execution is unavailable."
+    },
+    "procedural-limits-engine-build.log": {
+      "sha256": "3abb18bd2680a6e057bbba7a4421932778113e673991ba79582915b4a4d29144",
+      "lastLine": "Iris browser module compiled. Final native/browser qualification remains required."
+    }
+  },
+  "detailedReportHashes": {
+    ".local-tools/overworld-pack/results/acceptance/files.json": "c371fc2602367b5d456900d77037835d549a1bd52ac6c8b00b77ae12cae98713",
+    ".local-tools/overworld-pack/results/acceptance/wasm.json": "04b54b9e9654d88db6cba63a4386cc4d321c05b74c57de131cebb0503a7966cc",
+    ".local-tools/overworld-pack/results/limits/files.json": "f911be4bba8aef8f8ada8ae2191367400540f04de8df66bb3a788a60a86f0a52",
+    ".local-tools/overworld-pack/results/limits/wasm.json": "5024809ef9c5db5fc55599c1f821814000276e5c014b42794ea6514f9c41043c"
+  },
+  "sourceHashes": {
+    "apps/web/main.mjs": "a0f47abcc6117c649b7bdb3550159c142dd78475424e2073f181cf19cc25e4a9",
+    "apps/web/workers/iris-worker.js": "b124704018c510d0fd8eb43568cc093d81b3cb2f72c4be57191b20d571f99c1f",
+    "docs/DEVELOPMENT.md": "0d79bcc5abda7335f2af62d8ddb3951061263e5cc2c869160f80c84600ddf9d1",
+    "packages/iris-engine/client.mjs": "01d5db0830a757670c040a591cb47986c9f8337a28a69c196888ec45fb3ddbee",
+    "packages/iris-engine/custom-biomes.mjs": "b28f71f2ba435680be048251353fbbb0ac66389bdd5b8cf6284530e769d9c270",
+    "packages/iris-engine/java/studio/engine/biome/WorkerCustomBiomes.java": "22abf8b9baccd8e0a4c97c5dd5db7274e5eb56c2e96a71eeeabebdf3f6086a30",
+    "packages/iris-engine/java/studio/engine/pack/MemoryPack.java": "9565e2bd83f55a7f39a8cde313202faefd365ff47f93be38978822c2e143aae6",
+    "packages/iris-engine/java/studio/engine/terrain/OverworldTerrainStage.java": "e68316d90341b4a9e06a21c1a258e4ff7a0109d136ba785ef7614945b9ae6f63",
+    "packages/iris-engine/java/studio/engine/terrain/ProceduralPreview.java": "5153da3c150bc38fb2ce75f1ea5618451fe756208883832ec0062e5e63500fc3",
+    "packages/iris-engine/java/studio/engine/terrain/ProceduralSourcePreview.java": "5537e306f47372dadd255a124887fc40ff677a468f9c2983e23fa874e0d3163b",
+    "packages/iris-engine/java/studio/engine/terrain/TerrainCarvingComponent.java": "f68b3c8ffd9b67709108724785362ad3f340d3c5c7d8cba3f415b39c2c01c7e3",
+    "packages/iris-engine/java/studio/engine/terrain/WorkerProceduralMap.java": "19880da576ed9e5ea307a35138013d92cfae499e5d4c41d54796854832b7653a",
+    "packages/iris-engine/pack-snapshot.mjs": "5d19db01e999f81f9b83a30362397c96f30bb7687d10c0ea14da061302947c18",
+    "tools/checks/NativeTerrainLinkCheck.java": "ac031d875966fa8f99b034d7517defccafb8e34074186c6d1819f3818edf1516",
+    "tools/checks/overworld-pack-acceptance.mjs": "bb471e8fbb36356fb6d155897545b214d7320bd51ee8a03dacaad4a279cec527"
+  },
+  "packLoadSupported": true,
+  "fullPackGenerationSupported": false,
+  "fullAcceptanceResult": "fail: imported-object generation and native scalar reference host remain unavailable",
+  "browserVerified": false,
+  "webGpuVerified": false,
+  "fullTerrainParity": false,
+  "productionRegistryExportRan": false,
+  "broadSuiteRan": false,
+  "projectFinished": false
+}

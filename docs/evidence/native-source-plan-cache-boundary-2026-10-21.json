@@ -1,0 +1,109 @@
+{
+  "scope": "isolated-native-source-plan-cache-boundary",
+  "result": "pass",
+  "recordedAt": "2026-10-21T12:03:57.565Z",
+  "results": {
+    "lifecycle": {
+      "lookups": 10,
+      "builds": 2,
+      "replays": 1,
+      "drained": 1,
+      "retired": 1,
+      "retained": 0,
+      "emptyBuildsAfterClear": 2,
+      "oversizedBuilds": 2,
+      "recursiveBuilds": 2,
+      "recursiveWaits": 1
+    },
+    "host": {
+      "store": true,
+      "counter": true,
+      "completion": true
+    }
+  },
+  "wasmSha256": "6c04187aa80a1367744362dc78a6f82fcd8796f6df801becba4aa1f157aabec5",
+  "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+  "inputs": [
+    {
+      "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/mantle/ObjectSourcePlanCache.java",
+      "sha256": "f910aff856b944ba1dab951e0a2a797b2f063d15e93845f295e564b06c646f42"
+    },
+    {
+      "path": ".upstream/Iris/core/src/main/java/art/arcane/iris/generation/cache/Cache.java",
+      "sha256": "df142d349b6a1f2d25cbd8c8b517c9c303c8921a3a8d06198021f4de6d8ff9f1"
+    },
+    {
+      "path": ".upstream/VolmLib/shared/src/main/java/art/arcane/volmlib/util/cache/CacheKey.java",
+      "sha256": "6aecaddf3dde6a9bc373687330fdfeaffc0c48d0354273ec4fb213e0497f9632"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/cache/SourcePlanCachePlugin.java",
+      "sha256": "54eaec05fef008f57f65992a0c3daaf5685bf2c9dca68ce3d8669437e699ef8a"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/UnsupportedPlatform.java",
+      "sha256": "ec6db3621d1b3a863e556395c0cb7a9dbb0d40ebde0610963b0b10e6212bd5d1"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/cache/WorkerSourcePlanStore.java",
+      "sha256": "91c1cf3563215a29888dab8a7f8abcf0f8f99ef74e95e18500a7a7597dd1a7a6"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/cache/WorkerPlanCompletion.java",
+      "sha256": "b8e538230619486537bd81b0f3fba862f295d7e0fa662956511adae550936a82"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/cache/WorkerPlanCompletionException.java",
+      "sha256": "52a4ab96419584ca8989c3f9cd9ab93875a8cadd130e2190d8aff602d3c47194"
+    },
+    {
+      "path": "packages/iris-engine/java/studio/engine/cache/WorkerPlanCounter.java",
+      "sha256": "8347e0696f0644dd3795d58cf670ccc3bf8d466951522510c31c270b27e44540"
+    },
+    {
+      "path": "tools/checks/cache-fixtures/art/arcane/iris/generation/mantle/ObjectSourcePlan.java",
+      "sha256": "fbf441a26db832bbf48bc82a4cb52ac6fe6dd534d9e6132d3334dff51338d4d4"
+    },
+    {
+      "path": "tools/checks/cache-fixtures/org/bukkit/Chunk.java",
+      "sha256": "1b3d488c5fcbf9fbef9539549a51f945fd72f7d4b6e5065b461a65263870d6de"
+    },
+    {
+      "path": "tools/checks/SourcePlanCacheProbe.java",
+      "sha256": "da19ee5bb79a31cb937f5b1bc01b186e5e1a03a7dc07bbe47f4663a3bae018ad"
+    }
+  ],
+  "caffeine": {
+    "version": "3.2.4",
+    "sha256": "9d9d2cfd681fd9272ded3d27c9930db12f89f732345975aa113ebc223bbf1224"
+  },
+  "teavm": "0.16.0",
+  "planFixtureIsNativeImplementation": false,
+  "terrainGenerationVerified": false,
+  "productionCacheIntegrationVerified": false,
+  "browserVerified": false,
+  "registryExportExecuted": false,
+  "date": "2026-10-21",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "sourceIdentitiesVerified": true,
+  "validationCommand": "node tools/checks/source-plan-cache-boundary.mjs",
+  "nativeBuildAttempt": {
+    "result": "blocked",
+    "dependency": "com.willfp:eco:2026.27",
+    "server": "https://repo.auxilor.io/repository/maven-releases/",
+    "httpStatus": 521,
+    "phase": "resolve core compile classpath",
+    "testTasksExecuted": false,
+    "registryExportExecuted": false
+  },
+  "limits": [
+    "The cache source, Cache facade and CacheKey hash helpers are pinned unmodified source; ObjectSourcePlan is a controlled test-only ABI fixture, not the native compression/generation implementation.",
+    "The Bukkit Chunk interface is a test-only compile surface for an unused CacheKey overload; no Chunk or world is accessed.",
+    "The worker storage uses synchronous weight accounting and oldest-access eviction; Caffeine eviction-policy parity is not claimed. Native source-plan claim/drain/rebuild/visitor algorithms are retained.",
+    "Weights are native estimates when used with real plans, not measurements of actual worker heap usage.",
+    "The checked cache uses explicit positive budgets. The default JVM heap-derived constructor, cross-thread waits, actual source-plan integration, continuation persistence, complete terrain/browser/GPU and release qualification remain unverified.",
+    "Ordinary procedural previews remain uncached. The existing unavailable component-cache boundary remains intact.",
+    "No full suite, registry/state/pair sweep or GitHub workflow was run."
+  ]
+}

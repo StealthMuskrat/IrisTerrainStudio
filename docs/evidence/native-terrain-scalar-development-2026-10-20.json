@@ -1,0 +1,331 @@
+{
+  "formatVersion": 1,
+  "recordedAt": "2026-10-20",
+  "scope": "native-biome-and-procedural-height-development",
+  "irisCommit": "c3a9449a026078c44a87c9776766f54a67779392",
+  "volmLibCandidate": "e971ae0176d4d50dff5bd483b2b0d2cc2a77c1ac",
+  "releaseMatchVerified": false,
+  "terrainParityVerified": false,
+  "browserExecuted": false,
+  "engine": {
+    "wasmSha256": "1754ea493becc3ead60b958ecc43d0e221041decbcd758626e615192c695aab7",
+    "runtimeSha256": "4fa1e0e0d686cc6e0a0d111e606cb876f7168bd695d9e3d639e7d5684453089b",
+    "sourceSha256": "f70a513936900c0b000ae32876d5eb9d954555a60d2041170e17c0e3120a567b",
+    "configInventorySha256": "d853d767d6ecb0d13206e2f5e2d79c0b9292d179e79c2ad467918e31082bceab"
+  },
+  "nativeReferenceSha256": "5f74ea18a61f6bbefbcb19569ea9d0c81f0100339514b9fcb217a9d819a368d5",
+  "focusedCheck": {
+    "command": "node tools/checks/native-terrain-link.mjs",
+    "result": "pass",
+    "surfaceBiomeChoices": 384,
+    "exactHeightBitComparisons": 384,
+    "worldSeeds": [
+      "0",
+      "1",
+      "-9007199254740993",
+      "9223372036854775807"
+    ],
+    "coordinates": [
+      [
+        0,
+        0
+      ],
+      [
+        17.25,
+        -3.5
+      ],
+      [
+        -128.5,
+        64.25
+      ],
+      [
+        -4096,
+        4096
+      ],
+      [
+        8192.5,
+        -8192.25
+      ],
+      [
+        30000000,
+        0
+      ],
+      [
+        -29999999,
+        42
+      ],
+      [
+        256,
+        192
+      ],
+      [
+        1024,
+        2048
+      ],
+      [
+        -512,
+        -2048
+      ],
+      [
+        100000,
+        -100000
+      ],
+      [
+        3.14159,
+        2.71828
+      ]
+    ],
+    "inputs": [
+      {
+        "name": "flat",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 227,
+            "sha256": "7e2dc7a902ab97389cb4b54025ba6cc762f193b2c668aafe2a3652b1a6abdecb"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 197,
+            "sha256": "95c54f94c54c58fb77c413b01d847d1e9de8362242ae1a1bda7e95bffcb0e5f2"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 119,
+            "sha256": "16a4c9f81a32e7f69468f2a7989a5d4633d523cb9f6aca027015cc7a7f3a20a9"
+          }
+        ]
+      },
+      {
+        "name": "noise",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 228,
+            "sha256": "99cc93efe1b746cf7ff88e38b0cc0d0f47e04e51689d4683b1f7aad72e0fde75"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 196,
+            "sha256": "3b51c5ac1af43bc9ed313813ad2869105ad0f380eadb8584702089b01bdde146"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          }
+        ]
+      },
+      {
+        "name": "children",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 228,
+            "sha256": "99cc93efe1b746cf7ff88e38b0cc0d0f47e04e51689d4683b1f7aad72e0fde75"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 286,
+            "sha256": "342984a421f19795bc0feb4f5a07e1dd12bbd00ba2c915cf1145e8fac766f9a5"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          },
+          {
+            "path": "biomes/child.json",
+            "bytes": 195,
+            "sha256": "3d0bad98904b5de4c7b45ffa01f4ad8b42b308d48b74c136574449895c7245c6"
+          }
+        ]
+      },
+      {
+        "name": "mixed-pools",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 296,
+            "sha256": "726ffb37eb394e9548fdf622f7f23bb90363e44f349d1df926e42ef7767e84d5"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 86,
+            "sha256": "134dbb7a8f2bf793038db45ecdc43bb15dd8c114e7ab50f433af66704f9c2222"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 286,
+            "sha256": "342984a421f19795bc0feb4f5a07e1dd12bbd00ba2c915cf1145e8fac766f9a5"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          },
+          {
+            "path": "biomes/child.json",
+            "bytes": 195,
+            "sha256": "3d0bad98904b5de4c7b45ffa01f4ad8b42b308d48b74c136574449895c7245c6"
+          },
+          {
+            "path": "biomes/sea.json",
+            "bytes": 276,
+            "sha256": "fc2191231a0c8c0f09510d36c4aaf20a3855ec6661a73eeb7fe0f603fedebb2e"
+          }
+        ]
+      },
+      {
+        "name": "focus",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 247,
+            "sha256": "4435aab42def5aaf71e145624ca20494ed89e6abb0c4f37713f73454a1635ede"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 196,
+            "sha256": "3b51c5ac1af43bc9ed313813ad2869105ad0f380eadb8584702089b01bdde146"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          },
+          {
+            "path": "biomes/isolated.json",
+            "bytes": 198,
+            "sha256": "742c4bc36d9914b5e499dd793de9d8caa907bd5e0bc0f68b0d1119f625e28853"
+          }
+        ]
+      },
+      {
+        "name": "negative-minimum",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 230,
+            "sha256": "577107021922252e0261cba92df36bfbacdf1aada59efc00acbcd1ecab76c747"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 196,
+            "sha256": "3b51c5ac1af43bc9ed313813ad2869105ad0f380eadb8584702089b01bdde146"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          }
+        ]
+      },
+      {
+        "name": "multiple-generators",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 228,
+            "sha256": "99cc93efe1b746cf7ff88e38b0cc0d0f47e04e51689d4683b1f7aad72e0fde75"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 239,
+            "sha256": "6a428e325f4d6a6f71f4754b104d2eb6bc8de3b4bde58e90f5f3559406797e7a"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          },
+          {
+            "path": "generators/secondary.json",
+            "bytes": 135,
+            "sha256": "0a8bfb6f1f694e86c55c5af8002a62bf3e1f7fc15cf2d8c89e4c72c325a9ea36"
+          }
+        ]
+      },
+      {
+        "name": "coarse-sampling",
+        "resources": [
+          {
+            "path": "dimensions/terrain3d.json",
+            "bytes": 280,
+            "sha256": "b43a98d0c4fa14f1981e51256b6306e6085d8708e0457a4793fb25b99da47515"
+          },
+          {
+            "path": "regions/ledges.json",
+            "bytes": 107,
+            "sha256": "375298fd06edff5bd2204c1d2c72b2488e6f2a8b8590537c1f532ca89c0ce84d"
+          },
+          {
+            "path": "biomes/ledges.json",
+            "bytes": 196,
+            "sha256": "3b51c5ac1af43bc9ed313813ad2869105ad0f380eadb8584702089b01bdde146"
+          },
+          {
+            "path": "generators/flat.json",
+            "bytes": 139,
+            "sha256": "248a853ae2ddc140b5aac953587331ace495ad0b06eeb16bbef3d40b45cf4e63"
+          }
+        ]
+      }
+    ],
+    "oracle": "Unmodified native IrisComplex and native Minecraft registry helpers in a JVM host with explicit dimension/data/seed fields; browser uses the same unchanged native composition methods with worker platform adapters.",
+    "numericComparison": "Raw IEEE-754 float64 height bits, before display world-Y offset; exact native biome keys.",
+    "guards": [
+      "Native min/max-height metadata agrees with the pack",
+      "Volumetric input refuses the unconnected runtime",
+      "Failed preparation leaves no usable stale terrain"
+    ]
+  },
+  "implementation": [
+    "Native IrisComplex construction and surface-biome/procedural-height stream exports",
+    "Fail-closed generated engine and host interface boundaries, including unconnected interface defaults",
+    "Actual native settings constructor defaults; server settings IO unavailable",
+    "Bounded worker memoization, private-array operations, nullable runtime-owned memoization references",
+    "JDK immutable-map lookup at the pinned TeaVM empty-copy remainder defect",
+    "Existing verified UUID helpers extended for native stream UUID bit construction",
+    "Editor/worker native biome and height maps, signed world seeds, raw snapshot loading and world minimum-Y display offset"
+  ],
+  "limitations": [
+    "No full browser/GPU verification",
+    "No complete pack, terrain or release qualification",
+    "Volumetric terrain, hydrology, transitions, transforms and upper/stacked dimensions explicitly unsupported",
+    "Studio buffet terrain remains unsupported; region-only layout remains available",
+    "Custom settings/registries, complete class-library conformance and performance remain unqualified",
+    "Voxel material generation and remaining terrain systems are not connected",
+    "No comprehensive program suite or GitHub workflow was run"
+  ]
+}

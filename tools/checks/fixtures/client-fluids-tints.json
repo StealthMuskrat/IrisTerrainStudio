@@ -1,0 +1,30 @@
+{
+  "fluids": [
+    {"name":"isolated source", "position":[0,64,0],"block":{"id":"minecraft:water","properties":{"level":"0"}},"neighbors":[]},
+    {"name":"slope and slab occlusion", "position":[15,64,-1],"block":{"id":"minecraft:water","properties":{"level":"2"}},"neighbors":[{"at":[0,0,-1],"block":{"id":"minecraft:water","properties":{"level":"4"}}},{"at":[1,0,0],"block":{"id":"minecraft:water","properties":{"level":"0"}}},{"at":[0,0,1],"block":{"id":"minecraft:oak_slab","properties":{"type":"bottom","waterlogged":"false"}}},{"at":[0,-1,0],"block":{"id":"minecraft:stone"}}]},
+    {"name":"waterlogged slab and glass overlay", "position":[-17,30,16],"block":{"id":"minecraft:oak_slab","properties":{"type":"bottom","waterlogged":"true"}},"neighbors":[{"at":[0,0,-1],"block":{"id":"minecraft:glass"}},{"at":[1,0,0],"block":{"id":"minecraft:oak_leaves","properties":{"distance":"7","persistent":"false","waterlogged":"false"}}}]},
+    {"name":"falling lava beside wall", "position":[3,-12,5],"block":{"id":"minecraft:lava","properties":{"level":"8"}},"neighbors":[{"at":[1,0,0],"block":{"id":"minecraft:stone"}},{"at":[0,-1,1],"block":{"id":"minecraft:lava","properties":{"level":"3"}}}]},
+    {"name":"covered column", "position":[2,10,2],"block":{"id":"minecraft:water","properties":{"level":"0"}},"neighbors":[{"at":[0,1,0],"block":{"id":"minecraft:water","properties":{"level":"0"}}},{"at":[0,-1,0],"block":{"id":"minecraft:water","properties":{"level":"0"}}}]}
+  ],
+  "materials": [
+    {"layers":[{"face":"block/stone"}],"slot":"#face"},
+    {"layers":[{"face":{"sprite":"block/stone","force_translucent":true}}],"slot":"face"},
+    {"layers":[{"replacement":{"sprite":"block/glass","force_translucent":true}},{"face":"#replacement","replacement":"block/stone"}],"slot":"#face"}
+  ],
+  "tints": [
+    {"block":{"id":"minecraft:grass_block"},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:grass_block"},"biome":"minecraft:dark_forest","position":[-17,64,31],"layer":0},
+    {"block":{"id":"minecraft:short_grass"},"biome":"minecraft:swamp","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:short_grass"},"biome":"minecraft:swamp","position":[400,64,-900],"layer":0},
+    {"block":{"id":"minecraft:tall_grass","properties":{"half":"upper"}},"biome":"minecraft:plains","position":[2,65,2],"layer":0},
+    {"block":{"id":"minecraft:oak_leaves"},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:leaf_litter"},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:water_cauldron"},"biome":"minecraft:swamp","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:redstone_wire","properties":{"power":"9"}},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:melon_stem","properties":{"age":"5"}},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:lily_pad"},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:spruce_leaves"},"biome":"minecraft:plains","position":[0,64,0],"layer":0},
+    {"block":{"id":"minecraft:pink_petals"},"biome":"minecraft:plains","position":[0,64,0],"layer":1},
+    {"block":{"id":"minecraft:stone"},"biome":"minecraft:plains","position":[0,64,0],"layer":7}
+  ]
+}
