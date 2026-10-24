@@ -9,12 +9,13 @@ export class GpuSession {
       const gpu=await this.createGpu();
       if(this.disposed){gpu.device.destroy();throw new DOMException('GPU session disposed.','AbortError');}
       this.gpu=gpu;gpu.ready=false;
-      gpu.device.lost.then(info=>{
+      const fail=error=>{
         if(this.disposed||this.lost)return;this.lost=true;
-        this.lossError=new Error('WebGPU device lost: '+(info.message||info.reason||'Unknown reason')+'. Recover WebGPU to restore retained previews. Pack editing remains available.');
-        this.onLost?.(this.lossError);
-      });
-      this.uncaptured=event=>{if(!this.disposed&&!this.lost)this.onError?.(new Error('WebGPU: '+(event.error?.message||'Uncaptured rendering error.')));};
+        gpu.ready=false;this.lossError=error;
+        if(this.onLost)this.onLost(error);else{this.dispose();this.onError?.(error);}
+      };
+      gpu.device.lost.then(info=>fail(new Error('WebGPU device lost: '+(info.message||info.reason||'Unknown reason')+'. Recover WebGPU to restore retained previews. Pack editing remains available.')));
+      this.uncaptured=event=>fail(new Error('WebGPU rendering failed: '+(event.error?.message||'Uncaptured rendering error.')+' Recover WebGPU to restore retained previews. Pack editing remains available.'));
       gpu.device.addEventListener('uncapturederror',this.uncaptured);
       const checked=await validateGpuOperation(gpu.device,'WebGPU startup',()=>{this.map=this.createMap(gpu);this.world=this.createWorld(gpu);});
       if(this.disposed||this.lost)throw new DOMException('GPU startup was interrupted.','AbortError');

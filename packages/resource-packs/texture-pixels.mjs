@@ -1,7 +1,7 @@
 import{decodeNativePng}from'../iris-engine/png.mjs';
 // PNG raster channels go directly to RGBA8; no canvas color conversion or premultiplied alpha.
 export async function decodeTexturePng(bytes){
-  const image=await decodeNativePng(bytes,{packedGrayTransparency:'png'}),{width,height,channels,samples,palette,bitDepth}=image,pixels=new Uint8Array(width*height*4),step=bitDepth===16?2:1;
+  const image=await decodeNativePng(bytes,{packedGrayTransparency:'png',metadataPolicy:'minecraft'}),{width,height,channels,samples,palette,bitDepth}=image,pixels=new Uint8Array(width*height*4),step=bitDepth===16?2:1;
   for(let i=0;i<width*height;i++){
     const out=i*4,at=i*channels*step;
     if(palette){pixels.set(palette.subarray(samples[i]*4,samples[i]*4+4),out);continue;}

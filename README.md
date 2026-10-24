@@ -71,6 +71,8 @@ Registered terrain previews offer **1×1, 2×2 or 4×4 chunks**, with a 4,194,30
 
 3D previews offer camera navigation, sections/cutaways, block/biome/region cells, model-surface picking, face selection and retained metadata/downloads. Resource-pack rendering includes contextual variants/multipart models, native transforms/UV lock/offsets, fluids, tints, face culling/material cutoffs, animated mipmapped textures and flat cardinal shading. Conservative static opaque cube merging retains individual-cell picking. Diagnostic cells are explicitly separate from Minecraft appearance.
 
+Native image-map inspection explains how PNG profile/HDR/animation metadata is read by the pinned JDK policy. Resource-pack filters accept bounded grouped alternatives and repetitions. [Input behavior and limits](docs/research/NATIVE_PNG_AND_FILTERS.md).
+
 Use **Rendering diagnostics…** to inspect or download notices for the displayed preview. GPU startup waits for shader and pipeline validation; empty model definitions are reported and remain inspectable in Block ID cells. [Validation behavior and limits](docs/research/RENDERING_VALIDATION.md).
 
 Native adapters cover the recorded volumetric, cave, subterrain, hydrology, surface/deposit/decorator, procedural object/tree/ruin and bounded layered/Studio/custom-biome authoring routes. The [compatibility matrix](docs/COMPATIBILITY.md) identifies unsupported combinations and qualification limits. Imported conventional structures, gameplay and saved-world transition services are outside ordinary terrain authoring. Complete in-scope options, client rendering and native/browser parity remain open; selected Node/Wasm checks do not constitute browser execution.

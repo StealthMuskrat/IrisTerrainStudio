@@ -1157,3 +1157,7 @@ Registered native previews assemble up to four destinations per axis without sub
 ## Rendering startup and diagnostic reports
 
 GPU startup now waits for shader compilation diagnostics and scoped pipeline/allocation errors before publishing readiness. The shared device's scopes are popped synchronously before waiting, and failed or disposed startup releases both renderers. The UI exposes downloadable notices for the displayed volume, including empty native model definitions. A scalar-publication regression introduced with chunk areas is corrected. See [behavior and focused commands](research/RENDERING_VALIDATION.md) and [evidence](evidence/rendering-validation-2026-10-23.json). Actual browser/GPU and complete reference/release qualification remain required.
+
+## Native PNG metadata and grouped resource filters
+
+The native image host now follows the original JDK’s static default-IDAT behavior for color/animation ancillary chunks and reports the source policy during inspection. Texture loading retains its separate admission boundary. Filters now use bounded Thompson states for grouping/repetition and native ASCII character-class parsing; unsupported Java constructs still refuse. Focused original JDK/Iris/Wasm/worker and Java predicate checks pass without terrain generation, registry export or state enumeration. See [commands, implementation and limits](research/NATIVE_PNG_AND_FILTERS.md).

@@ -48,7 +48,7 @@ async function registry(api,engineManifest){
     const installed=JSON.parse(api.installRegistry(new TextDecoder('utf-8',{fatal:true}).decode(bytes)));if(installed.blocks!==manifest.blocks||installed.states!==manifest.states)throw new Error('Native registry state coverage differs from the export manifest.');return {...installed,sourceSha256:record.sha256};
   })().catch(error=>{registryRuntime=null;throw error;});return registryRuntime;
 }
-async function registerSnapshot(api,snapshot,isCurrent=()=>true){
+async function registerSnapshot(api,snapshot,isCurrent=()=>true,imageSources=null){
   if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
   const paths=new Set();let budget=0;
   for(const resource of snapshot.resources){
@@ -56,7 +56,7 @@ async function registerSnapshot(api,snapshot,isCurrent=()=>true){
     if(paths.has(resource.path))throw new Error('Duplicate native pack resource.');paths.add(resource.path);
     if(resource.bytes!==undefined){
       const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');
-      let payload=bytes,image;if(/^images\/.+\.png$/.test(resource.path)){const{decodeNativePng}=await import('/packages/iris-engine/png.mjs');image=await decodeNativePng(bytes);if(!isCurrent())return false;payload=image.samples;}
+      let payload=bytes,image;if(/^images\/.+\.png$/.test(resource.path)){const{decodeNativePng}=await import('/packages/iris-engine/png.mjs');image=await decodeNativePng(bytes);if(!isCurrent())return false;payload=image.samples;if(imageSources)imageSources.set(resource.path,image.sourceMetadata?{path:resource.path,...image.sourceMetadata}:null);}
       const parts=[];for(let i=0;i<payload.length;i+=16384)parts.push(String.fromCharCode(...payload.subarray(i,i+16384)));if(image?.palette)api.registerPackIndexedImage(resource.path,image.width,image.height,image.bitDepth,parts.join(''),String.fromCharCode(...image.palette));else if(image)api.registerPackImage(resource.path,image.width,image.height,image.channels,image.bitDepth,parts.join(''));else api.registerPackObject(resource.path,parts.join(''));
     }else{
       if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
@@ -124,7 +124,7 @@ async function handleMessage({data},emit=(message,transfers)=>self.postMessage(m
       }finally{if(active===id)clearContext(api);}return;
     }
     if(data.kind==='inspect-pack'){
-      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;clearContext(api);try{if(!await registerSnapshot(api,data.snapshot,()=>active===id))return;const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{if(active===id)clearContext(api);}return;
+      if(active!==id)return;if(typeof api.installRegistry!=='function')throw new Error('Rebuild the local Iris engine to enable native compatibility checks.');await registry(api,manifest);if(active!==id)return;clearContext(api);try{const imageSources=new Map();if(!await registerSnapshot(api,data.snapshot,()=>active===id,imageSources))return;const snapshot=JSON.parse(api.openPack()),resource=JSON.parse(api.inspectPackResource(data.folder,data.name));if(data.folder==='images'&&resource.found){let path='images/'+data.name+'.png';if(!imageSources.has(path)&&!data.name.includes('/'))path=[...imageSources.keys()].filter(path=>!path.slice(7).includes('/')&&path.slice(7).split('.')[0]===data.name).sort()[0];const source=imageSources.get(path);if(source)resource.pngSource=source;}self.postMessage({kind:'info',id,info:{...snapshot,resource,scope:'native-authoring-resource-load',terrainParityVerified:false}});}finally{if(active===id)clearContext(api);}return;
     }
     if(active!==id)return;
     const started=performance.now(),options=data.options,{width,height,x,y,z,span,seed}=options,depth=span*height/width;

@@ -2,17 +2,19 @@ import {crc32} from '../shared/zip.mjs';
 // Raw PNG bands for native IrisImage; no canvas, resampling or premultiplication.
 // Filtering/Adam7 follow PNG; raster/color-model shape follows the pinned JDK PNG reader.
 const MAX_DECODED_BYTES=16*1024*1024;
+const COLOR_METADATA=new Set(['iCCP','cICP','mDCV','cLLI']),ANIMATION_METADATA=new Set(['acTL','fcTL','fdAT']);
 const ADAM7=[[0,0,8,8],[4,0,8,8],[0,4,4,8],[2,0,4,4],[0,2,2,4],[1,0,2,2],[0,1,1,2]];
 function prediction(filter,left,up,diagonal){
   if(filter===1)return left;if(filter===2)return up;if(filter===3)return Math.floor((left+up)/2);
   if(filter===4){const p=left+up-diagonal,a=Math.abs(p-left),b=Math.abs(p-up),c=Math.abs(p-diagonal);return a<=b&&a<=c?left:b<=c?up:diagonal;}return 0;
 }
-export async function decodeNativePng(input,{packedGrayTransparency='jdk'}={}){
+export async function decodeNativePng(input,{packedGrayTransparency='jdk',metadataPolicy='native-jdk'}={}){
   if(!['jdk','png'].includes(packedGrayTransparency))throw new Error('Unknown packed grayscale transparency policy.');
+  if(!['native-jdk','minecraft'].includes(metadataPolicy))throw new Error('Unknown PNG metadata policy.');
   if(!(input instanceof Uint8Array)||input.length<33||input.length>8*1024*1024)throw new Error('PNG exceeds its 8 MiB input budget or is truncated.');
   const bytes=input,view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),signature=[137,80,78,71,13,10,26,10];
   if(signature.some((value,index)=>bytes[index]!==value))throw new Error('Native image source must be PNG.');
-  let offset=8,width,height,inputChannels,bitDepth,color,interlace,ended=false,dataStarted=false,dataEnded=false,palette,transparency,compressedBytes=0;const pieces=[];
+  let offset=8,width,height,inputChannels,bitDepth,color,interlace,ended=false,dataStarted=false,dataEnded=false,palette,transparency,compressedBytes=0;const pieces=[],colorMetadata=new Set(),animationMetadata=new Set();
   while(offset<bytes.length){
     if(offset+12>bytes.length)throw new Error('Truncated PNG chunk.');const length=view.getUint32(offset);if(length>bytes.length-offset-12)throw new Error('Truncated PNG chunk payload.');
     const type=String.fromCharCode(...bytes.subarray(offset+4,offset+8)),start=offset+8,end=start+length;
@@ -39,7 +41,13 @@ export async function decodeNativePng(input,{packedGrayTransparency='jdk'}={}){
           if(length!==(color===0?2:6))throw new Error('PNG transparency key has an invalid channel count.');
           transparency=Array.from({length:inputChannels},(_,i)=>view.getUint16(start+2*i));if(transparency.some(sample=>sample>2**bitDepth-1))throw new Error('PNG transparency key exceeds its source bit depth.');
         }else throw new Error('PNG alpha-channel images cannot contain a transparency key.');
-      }else if(['acTL','fcTL','fdAT','iCCP','cICP','mDCV','cLLI'].includes(type))throw new Error(`PNG ${type} image semantics are not connected in the native worker.`);
+      }else if(COLOR_METADATA.has(type)||ANIMATION_METADATA.has(type)){
+        // ImageIO's pinned PNG reader uses the default IDAT image and standard
+        // raster color models. It does not inflate ICC profiles or APNG frames.
+        // Keep Minecraft texture admission separate until its client path is qualified.
+        if(metadataPolicy==='minecraft')throw new Error(`PNG ${type} image semantics are not connected for Minecraft textures.`);
+        (COLOR_METADATA.has(type)?colorMetadata:animationMetadata).add(type);
+      }
       else if(type[0]===type[0].toUpperCase())throw new Error(`Unsupported PNG critical chunk: ${type}`);
     }offset=end+4;
   }
@@ -88,5 +96,5 @@ export async function decodeNativePng(input,{packedGrayTransparency='jdk'}={}){
       [row,previous]=[previous,row];
     }
   }
-  return{width,height,channels,bitDepth:outputDepth,samples,...(indexedPalette?{palette:indexedPalette}:{})};
+  return{width,height,channels,bitDepth:outputDepth,samples,...(indexedPalette?{palette:indexedPalette}:{}),...(colorMetadata.size||animationMetadata.size?{sourceMetadata:{policy:'jdk-png-default-image',colorChunks:[...colorMetadata],animationChunks:[...animationMetadata]}}:{})};
 }

@@ -1,6 +1,6 @@
 # Project status
 
-As of 2026-10-23. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
+As of 2026-10-24. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
 
 ## Completion audit and current batch
 
@@ -10,6 +10,10 @@ The project remains in development. The current work connects pinned client reso
 - Worker layer contexts have explicit height/reference/cache bounds and failure/release cleanup. Volume metadata identifies layers; scalar fields remain host-dimension samples. Standalone cave/component diagnostics refuse stacks because their intermediate ordering is incomplete.
 - Four small authored packs, one seed, eight native columns and sixteen selected block/physical-biome probes match Java through the actual module and worker/client code under Node. Rejected configurations and recovery are checked. No registry/state/pair or whole-chunk comparison ran. Actual browser/GPU and complete options remain unqualified. [Layer evidence](evidence/native-dimension-layers-2026-10-22.json).
 - An offline local asset tool verifies the official Minecraft 26.3 client identity and embedded format 97.1, retaining original assets in a deterministic local ZIP with provenance. The existing pack loader resolves three selected dependency roots/26 files; wrong input preserves existing output. No assets are redistributed. F8thful and remaining client rendering adapters are still needed. [Asset evidence](evidence/local-vanilla-assets-2026-10-22.json).
+
+Uncaptured asynchronous GPU errors now invalidate the rendering session and use the retained-data recovery flow. The previous toast-only path could leave an invalid display marked usable. Committed and pending generated data survive, and recovery does not regenerate terrain. Controlled device/application checks cover the fault, recovery and duplicate-loss suppression; actual GPU behavior remains unqualified.
+
+Native PNG image maps now follow the pinned JDK’s default-image behavior for ICC, HDR and APNG metadata, with retained source-policy notes in image inspection. Minecraft texture admission stays separate. Resource-pack filters support bounded groups, nested alternatives, counted/reluctant repetitions, absolute anchors and native ASCII classes through non-backtracking matching. Six two-pixel sources match 48 raw bands and twelve original native map samples through actual Wasm/worker transport; nineteen expressions match 78 original Java predicate answers. Source refresh changes only the PNG host adapter; native Wasm is unchanged. [Scope](research/NATIVE_PNG_AND_FILTERS.md) and [evidence](evidence/native-png-and-filters-2026-10-24.json).
 
 The current [rendering validation](research/RENDERING_VALIDATION.md) fixes scalar preview publication after the chunk-area addition, gates GPU startup on asynchronous shader/pipeline/allocation diagnostics, and exposes downloadable notices for empty or missing models and other displayed rendering problems. Focused controlled-device/application checks and one original vanilla chest model through the actual Node mesh worker pass. This does not qualify WGSL compilation, browser UI, GPU rasterization or the native reference. [Evidence](evidence/rendering-validation-2026-10-23.json).
 
