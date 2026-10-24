@@ -1,0 +1,18 @@
+{
+  "scope": "browser-shared-file-route",
+  "clientDate": "2026-10-23",
+  "clientTimezone": "America/Toronto",
+  "result": "blocked-before-navigation",
+  "action": "Open workspace browser-verification HTML via synchronized browser file path",
+  "policyResult": "Browser Use rejected this action due to browser security policy",
+  "reason": "Requested URL protocol is not allowed. Allowed protocols are http: and https:.",
+  "prohibition": "Do not attempt the same outcome via workaround, indirect execution, raw CDP/browser commands, alternate browser surfaces or policy circumvention.",
+  "engineFilesUploaded": false,
+  "browserEngineExecuted": false,
+  "gpuTestsExecuted": false,
+  "fullProgramVerified": false,
+  "safeContinuation": "A permitted, reachable HTTP(S) deployment of the application or a workspace with working local browser/GPU/Docker execution.",
+  "nativeReferenceChecksumStillUnresolved": true,
+  "projectFinished": false,
+  "recordedAt": "2026-10-24T00:15:10.718698+00:00"
+}

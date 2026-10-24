@@ -1,6 +1,6 @@
 # Project status
 
-As of 2026-10-24. **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
+As of 2026-10-23 (America/Toronto). **Local application implementation is in progress. Native/browser terrain qualification remains blocked.** The user requested larger local development batches, a few targeted behavior checks and small samples only when needed, checkpoint pushes and full verification after development. GitHub workflows are manual.
 
 ## Completion audit and current batch
 
@@ -10,6 +10,8 @@ The project remains in development. The current work connects pinned client reso
 - Worker layer contexts have explicit height/reference/cache bounds and failure/release cleanup. Volume metadata identifies layers; scalar fields remain host-dimension samples. Standalone cave/component diagnostics refuse stacks because their intermediate ordering is incomplete.
 - Four small authored packs, one seed, eight native columns and sixteen selected block/physical-biome probes match Java through the actual module and worker/client code under Node. Rejected configurations and recovery are checked. No registry/state/pair or whole-chunk comparison ran. Actual browser/GPU and complete options remain unqualified. [Layer evidence](evidence/native-dimension-layers-2026-10-22.json).
 - An offline local asset tool verifies the official Minecraft 26.3 client identity and embedded format 97.1, retaining original assets in a deterministic local ZIP with provenance. The existing pack loader resolves three selected dependency roots/26 files; wrong input preserves existing output. No assets are redistributed. F8thful and remaining client rendering adapters are still needed. [Asset evidence](evidence/local-vanilla-assets-2026-10-22.json).
+
+The shared-file browser handoff was rejected before navigation by the browser URL policy: only HTTP(S) is allowed, and indirect workarounds are explicitly prohibited. No engine file upload, browser engine execution or GPU test occurred. Completion needs a permitted reachable HTTP(S) application deployment or a workspace with working local browser/GPU/Docker execution, plus the unresolved native reference qualification. [Blocked-route evidence](evidence/browser-file-route-2026-10-23.json).
 
 Uncaptured asynchronous GPU errors now invalidate the rendering session and use the retained-data recovery flow. The previous toast-only path could leave an invalid display marked usable. Committed and pending generated data survive, and recovery does not regenerate terrain. Controlled device/application checks cover the fault, recovery and duplicate-loss suppression; actual GPU behavior remains unqualified.
 
