@@ -49,28 +49,28 @@ async function registry(api,engineManifest){
   })().catch(error=>{registryRuntime=null;throw error;});return registryRuntime;
 }
 async function registerSnapshot(api,snapshot,isCurrent=()=>true,imageSources=null){
-  if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
+  if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>16384)throw new Error('Invalid native pack snapshot.');
   const paths=new Set();let budget=0;
   for(const resource of snapshot.resources){
     if(!isCurrent())return false;
     if(paths.has(resource.path))throw new Error('Duplicate native pack resource.');paths.add(resource.path);
     if(resource.bytes!==undefined){
-      const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');
+      const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>256*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');
       let payload=bytes,image;if(/^images\/.+\.png$/.test(resource.path)){const{decodeNativePng}=await import('/packages/iris-engine/png.mjs');image=await decodeNativePng(bytes);if(!isCurrent())return false;payload=image.samples;if(imageSources)imageSources.set(resource.path,image.sourceMetadata?{path:resource.path,...image.sourceMetadata}:null);}
       const parts=[];for(let i=0;i<payload.length;i+=16384)parts.push(String.fromCharCode(...payload.subarray(i,i+16384)));if(image?.palette)api.registerPackIndexedImage(resource.path,image.width,image.height,image.bitDepth,parts.join(''),String.fromCharCode(...image.palette));else if(image)api.registerPackImage(resource.path,image.width,image.height,image.channels,image.bitDepth,parts.join(''));else api.registerPackObject(resource.path,parts.join(''));
     }else{
-      if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
+      if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>256*1024*1024)throw new Error('Native pack transport exceeds its text budget.');api.registerPackResource(resource.path,resource.text);
     }
   }return true;
 }
 // Hash bounded resources separately so an unchanged snapshot can retain one native terrain context.
 async function terrainContextKey(options,manifest){
-  const snapshot=options.packSnapshot;if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
+  const snapshot=options.packSnapshot;if(!snapshot||!Array.isArray(snapshot.resources)||snapshot.resources.length>16384)throw new Error('Invalid native pack snapshot.');
   const resources=[],paths=new Set();let budget=0;
   for(const resource of snapshot.resources){
     if(typeof resource.path!=='string'||paths.has(resource.path))throw new Error('Invalid or duplicate native pack resource.');paths.add(resource.path);
-    if(resource.bytes!==undefined){const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');resources.push([resource.path,'bytes',bytes.byteLength,await digest(bytes)]);}
-    else{if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack transport exceeds its text budget.');resources.push([resource.path,'text',await digest(new TextEncoder().encode(resource.text))]);}
+    if(resource.bytes!==undefined){const bytes=resource.bytes;if(!ArrayBuffer.isView(bytes)||Object.prototype.toString.call(bytes)!=='[object Uint8Array]'||bytes.byteLength>8*1024*1024||(budget+=bytes.byteLength)>256*1024*1024)throw new Error('Native binary asset transport exceeds its byte budget.');resources.push([resource.path,'bytes',bytes.byteLength,await digest(bytes)]);}
+    else{if(typeof resource.text!=='string'||resource.text.length>4*1024*1024||(budget+=resource.text.length*2)>256*1024*1024)throw new Error('Native pack transport exceeds its text budget.');resources.push([resource.path,'text',await digest(new TextEncoder().encode(resource.text))]);}
   }
   return digest(new TextEncoder().encode(JSON.stringify([manifest.wasmSha256,options.dimensionKey,options.seed,options.buffet===true,resources])));
 }

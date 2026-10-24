@@ -16,7 +16,7 @@ public final class OverworldTerrainStage {
     private static String execute(BrowserTerrainEngine engine,int x,int z,boolean generate)throws IOException{
         int height=engine.getHeight();
         if(!engine.getDimension().getMode().getType().name().equals("OVERWORLD"))throw studio.engine.UnsupportedPlatform.unavailable("Overworld terrain registration requires an Overworld dimension");
-        if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999936||Math.abs((long)z)>29999936||height<16||height>4096||(height&15)!=0||(long)height*256*49>8388608)throw new IllegalArgumentException("Native Overworld terrain window exceeds worker bounds");
+        if((x&15)!=0||(z&15)!=0||Math.abs((long)x)>29999936||Math.abs((long)z)>29999936||height<16||height>4096||(height&15)!=0||(long)height*256*49>33554432)throw new IllegalArgumentException("Native Overworld terrain window exceeds worker bounds");
         WorkerProceduralMap.begin();int cx=x>>4,cz=z>>4;boolean runtimeBound=false,matterBound=false;
         boolean hydrology=engine.getComplex().getHydrologyRuntime()!=null,hydrologyBudget=false;
         studio.engine.hydrology.WorkerHydrologyMatter hydrologyMatter=null;

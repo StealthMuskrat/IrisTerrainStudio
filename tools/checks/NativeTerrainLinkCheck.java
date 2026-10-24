@@ -48,6 +48,15 @@ public final class NativeTerrainLinkCheck {
                     var checks=request.getAsJsonObject("dimensionImageChecks");var selected=data.getDimensionLoader().load("terrain3d");var inspection=Class.forName("studio.engine.image.DimensionImageMaps");var imageMaps=inspection.getConstructor(IrisData.class,IrisDimension.class).newInstance(data,selected);var row=new JsonObject();row.add("description",JsonParser.parseString((String)inspection.getMethod("describe").invoke(imageMaps)));var values=new JsonArray();for(var point:checks.getAsJsonArray("points")){var xy=point.getAsJsonArray();values.add(JsonParser.parseString((String)inspection.getMethod("sample",double.class,double.class).invoke(imageMaps,xy.get(0).getAsDouble(),xy.get(1).getAsDouble())));}row.add("samples",values);result.add(row);
                 }
                 IrisDimension dimension=data.getDimensionLoader().load(request.has("dimensionKey")?request.get("dimensionKey").getAsString():"terrain3d");if(dimension==null||dimension.isCompatExcluded())throw new IllegalStateException("Native dimension unavailable");
+                // Region selection does not require a terrain/hydrology runtime or cave host.
+                // Keep this oracle independent when a real pack exceeds the scalar host boundary.
+                if(request.has("regionOnly")&&request.get("regionOnly").getAsBoolean()){
+                    JsonArray selections=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
+                        long complex=new SeedManager(Long.parseLong(seed.getAsString())).getComplex();
+                        var regions=RegionSelection.restore(new RegionSelection.Snapshot(dimension,data,complex,false));
+                        JsonArray selected=new JsonArray();for(JsonElement point:request.getAsJsonArray("points")){var xy=point.getAsJsonArray();selected.add(regions.get(xy.get(0).getAsDouble(),xy.get(1).getAsDouble()).getLoadKey());}selections.add(selected);
+                    }result.add(selections);continue;
+                }
                 JsonArray pack=new JsonArray();for(JsonElement seed:request.getAsJsonArray("seeds")){
                     SeedManager seeds=new SeedManager(Long.parseLong(seed.getAsString()));IrisComplex[] runtime={null};UpperDimensionContext[] upper={null};DimensionStackContext[] stack={null};var sessions=new GenerationSessionManager();EngineMetrics metrics=new EngineMetrics(16);var world=art.arcane.iris.world.IrisWorld.builder().minHeight(dimension.getMinHeight()).maxHeight(dimension.getMaxHeight()).seed(Long.parseLong(seed.getAsString())).build();
                     Engine engine=(Engine)Proxy.newProxyInstance(Engine.class.getClassLoader(),new Class<?>[]{Engine.class},(self,method,values)->switch(method.getName()){

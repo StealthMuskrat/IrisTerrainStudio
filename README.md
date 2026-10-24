@@ -4,6 +4,8 @@ A self-hosted browser workspace for creating, editing and inspecting real Iris t
 
 **Development application.** Pack editing, generation adapters and rendering modules are implemented for the documented subsets. Complete supported-terrain parity, actual application browser/GPU qualification, performance and Docker verification remain unfinished. No approximate terrain is substituted. See [current status](docs/STATUS.md), [compatibility](docs/COMPATIBILITY.md) and the [completion sequence](docs/ROADMAP.md#remaining-completion-sequence-2026-10-23).
 
+The unchanged Overworld 4016 pack passes full file import/export, native snapshot loading and custom-biome preparation with increased capacity budgets. Complete terrain preview still encounters unsupported imported-object placement. See [Overworld capacity and checks](docs/research/OVERWORLD_PACK_CAPACITY.md).
+
 ## Start locally
 
 Use **Node.js 24**. No npm install is needed.

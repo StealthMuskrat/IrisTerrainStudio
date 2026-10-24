@@ -58,7 +58,7 @@ public final class ProceduralPreview {
         if(!folder.equals("biomes")&&!folder.equals("regions"))throw new IllegalArgumentException("Choose a native biome or region");
         pack.open();pack.requireGenerationReady();IrisRegistrant resource=pack.load(folder,key);if(resource==null||resource.isCompatExcluded())throw new IllegalArgumentException("Native procedural source is missing or excluded");
         var values=family(settings(resource),family);if(values==null||index<0||index>=values.size()||values.get(index)==null)throw new IllegalArgumentException("Native procedural entry is missing");
-        var placement=values.get(index);if(variants(placement)>8)throw new IllegalArgumentException("Isolated previews support pools of at most eight native variants");
+        var placement=values.get(index);if(variants(placement)>128)throw new IllegalArgumentException("Isolated previews support pools of at most 128 native variants");
         if(variant<0||variant>=variants(placement))throw new IllegalArgumentException("Native variant index is outside its configured pool");
         admit(placement);var pool=placement.getVariantObjects(pack.open());if(pool==null||variant>=pool.size())throw new IllegalArgumentException("Native generator did not produce the requested baked variant");
         return new Selection(placement,pool.get(variant),pool.size());

@@ -48,7 +48,7 @@ public final class WorkerCustomBiomes {
         if(registry==null||!"minecraft:worldgen/biome".equals(category))throw new IllegalStateException("Custom biome names require an owned authoring context");
         if(!physical.matches("iris:biomes/[a-f0-9]{64}")||!readable.matches("[a-z0-9_.-]+:[a-z0-9/._-]+"))throw new IllegalArgumentException("Invalid custom biome resource name");
         String previous=names.get(physical);if(previous!=null&&!previous.equals(readable))throw new IllegalArgumentException("Custom biome already has a different readable name");
-        if(previous==null&&names.size()>=128)throw new IllegalArgumentException("Custom biome authoring context exceeds 128 definitions");names.put(physical,readable);
+        if(previous==null&&names.size()>=1024)throw new IllegalArgumentException("Custom biome authoring context exceeds 1024 definitions");names.put(physical,readable);
     }
     public static void prepare(IrisDimension dimension){
         if(registry==null)throw new IllegalStateException("Custom biomes require an owned registry");
@@ -60,8 +60,8 @@ public final class WorkerCustomBiomes {
                 String key=GenerationRegistryContractFactory.customBiomeResourceKey(dimension.getLoadKey(),custom,data.getContentGate());
                 if(definitions.containsKey(key))continue;
                 String json=custom.generateJson(new DataFixerV263(),data.getContentGate());
-                if(json.length()>65536||json.length()>1048576-characters)throw new IllegalArgumentException("Custom biome definitions exceed their bounded JSON budget");
-                if(definitions.size()>=128)throw new IllegalArgumentException("Custom biome authoring context exceeds 128 definitions");
+                if(json.length()>65536||json.length()>8388608-characters)throw new IllegalArgumentException("Custom biome definitions exceed their bounded JSON budget");
+                if(definitions.size()>=1024)throw new IllegalArgumentException("Custom biome authoring context exceeds 1024 definitions");
                 definitions.put(key,new Definition(dimension.getLoadKey(),custom.getId(),json));characters+=json.length();
             }
         }

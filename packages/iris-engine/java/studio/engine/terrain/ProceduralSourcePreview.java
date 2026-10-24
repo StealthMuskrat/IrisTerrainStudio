@@ -30,8 +30,8 @@ public final class ProceduralSourcePreview {
         if(objects==null)return;
         for(var entry:objects.getAllPlacements()){
             if(entry==null)throw unsupported("Null procedural placement");
-            if((attempts[0]+=Math.max(1,entry.getDensity()))>64||entry.getDensity()>64)throw unsupported("More than 64 configured procedural attempts in the source preview");
-            if(ProceduralPreview.variants(entry)>8)throw unsupported("More than eight baked variants per procedural entry");
+            if((attempts[0]+=Math.max(1,entry.getDensity()))>16384||entry.getDensity()>256)throw unsupported("More than 16,384 configured procedural attempts or 256 attempts in one entry in the source preview");
+            if(ProceduralPreview.variants(entry)>128)throw unsupported("More than 128 baked variants per procedural entry");
             ProceduralPreview.admit(entry);
             IrisObjectPlacement placement=entry.asPlacement();
             if(!placement.getAllowedCollisions().isEmpty()||!placement.getForbiddenCollisions().isEmpty())throw unsupported("Cross-source procedural collision rules");

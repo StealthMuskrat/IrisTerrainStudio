@@ -91,19 +91,19 @@ export class GenerationClient extends EventTarget {
     if(['regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','procedural-source','procedural-neighborhood','material-finish-stage','subterrain-finish-stage','procedural-placement','caves','hydrology'].includes(request.field)&&(!options.packSnapshot||typeof options.dimensionKey!=='string'||!options.dimensionKey))throw new Error('Choose a dimension and capture its native pack resources before generating native dimension fields.');
     if(request.field!=='procedural-object'&&!['regions','terrain','biomes','density','terrain-stage','terrain-mode-stage','terrain-mode','overworld-terrain','overworld-mode','biome-stage','cave-stage','carving-stage','post-stage','floating-stage','cave-decoration-stage','deposit-stage','procedural-source','procedural-neighborhood','material-finish-stage','subterrain-finish-stage','procedural-placement','caves','hydrology'].includes(request.field)&&irisStyles.has(request.field)&&!options.configured&&!options.generator&&!options.nativeConfig&&(typeof options.style!=='string'||!/^[A-Z][A-Z0-9_]*$/.test(options.style)))throw new Error('Choose an Iris noise style.');
     if(['procedural-object','procedural-placement'].includes(request.field)){
-      const p=options.procedural;if(!options.packSnapshot||!p||!['biomes','regions'].includes(p.folder)||typeof p.key!=='string'||!p.key||!['trees','formations','coral','fungi','crystals','ruins'].includes(p.family)||!Number.isSafeInteger(p.index)||p.index<0||p.index>=4096||!Number.isInteger(p.variant)||p.variant<0||p.variant>=8)throw new Error('Choose a native procedural entry and baked variant from a biome or region.');
+      const p=options.procedural;if(!options.packSnapshot||!p||!['biomes','regions'].includes(p.folder)||typeof p.key!=='string'||!p.key||!['trees','formations','coral','fungi','crystals','ruins'].includes(p.family)||!Number.isSafeInteger(p.index)||p.index<0||p.index>=4096||!Number.isInteger(p.variant)||p.variant<0||p.variant>=128)throw new Error('Choose a native procedural entry and baked variant from a biome or region.');
     }
     // Hash byte content directly; JSON.stringify(Uint8Array) expands each byte into an object property.
     let cacheOptions=options;
     if(options.packSnapshot){
-      if(!Array.isArray(options.packSnapshot.resources)||options.packSnapshot.resources.length>4096)throw new Error('Invalid native pack snapshot.');
+      if(!Array.isArray(options.packSnapshot.resources)||options.packSnapshot.resources.length>16384)throw new Error('Invalid native pack snapshot.');
       const resources=[];let budget=0;
       for(const resource of options.packSnapshot.resources){
         if(resource.bytes!==undefined){
-          if(!(resource.bytes instanceof Uint8Array)||resource.bytes.byteLength>8*1024*1024||(budget+=resource.bytes.byteLength)>64*1024*1024)throw new Error('Native binary asset exceeds its snapshot byte budget.');
+          if(!(resource.bytes instanceof Uint8Array)||resource.bytes.byteLength>8*1024*1024||(budget+=resource.bytes.byteLength)>256*1024*1024)throw new Error('Native binary asset exceeds its snapshot byte budget.');
           // Own the input throughout hashing and worker dispatch, even if a caller edits its buffer.
           const bytes=resource.bytes.slice();resources.push({path:resource.path,bytes,sha256:[...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(value=>value.toString(16).padStart(2,'0')).join('')});
-        }else{if(typeof resource.text!=='string'||(budget+=resource.text.length*2)>64*1024*1024)throw new Error('Native pack exceeds its text budget.');resources.push({...resource});}
+        }else{if(typeof resource.text!=='string'||(budget+=resource.text.length*2)>256*1024*1024)throw new Error('Native pack exceeds its text budget.');resources.push({...resource});}
       }
       options.packSnapshot={...options.packSnapshot,resources};
       cacheOptions={...options,packSnapshot:{...options.packSnapshot,resources:resources.map(resource=>resource.bytes?{path:resource.path,byteLength:resource.bytes.byteLength,sha256:resource.sha256}:resource)}};

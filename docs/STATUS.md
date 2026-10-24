@@ -2,6 +2,10 @@
 
 As of 2026-10-23 (America/Toronto). **Comprehensive available local verification has completed: 115 passing groups, one known failing native baseline, and blocked release prerequisites. Native/browser terrain qualification remains open.** Earlier development used larger local batches and focused checks; the user will perform browser/GPU testing on their own machine. GitHub workflows remain manual.
 
+## Real Overworld pack capacity
+
+The unchanged Overworld 4016 pack now imports/exports all 8,124 files and loads all 5,594 native snapshot resources, including 4,662 object binaries. Capture/client/worker/native budgets now admit 16,384 resources and 256 MiB, 1,024 custom biomes, 128 procedural variants and a 33,554,432-cell projected terrain window. Actual Wasm/worker/client preparation publishes 146 custom biome definitions at height 768; four region probes match Java, and real pool variant 23 of 24 previews successfully. Focused regressions and rebuilt standalone HTTP checks pass. Full generation still refuses imported-object placement; intermediate scalar hydrology and the original native scalar reference host remain unavailable. No full terrain/browser/GPU pass is claimed. See [capacity scope](research/OVERWORLD_PACK_CAPACITY.md) and [evidence](evidence/overworld-pack-capacity-2026-10-23.json).
+
 ## Comprehensive verification
 
 The application pass completes 58 automated groups with no failures, including 22 core tests, 13 Python tests, parsing of 270 JavaScript files, the actual HTTP/server and standalone distribution, authorized local assets, editor ownership, stored geometry/picking and controlled GPU recovery. Another 57 native/client/worker groups pass after harness/setup corrections. Four final package follow-ups pass. The original checksum assertion was rerun once and still fails unchanged. See the [verification report](VERIFICATION.md) and [individual results](evidence/comprehensive-local-verification-2026-10-23.json); actual browser/GPU, whole-terrain and release qualification are not claimed.

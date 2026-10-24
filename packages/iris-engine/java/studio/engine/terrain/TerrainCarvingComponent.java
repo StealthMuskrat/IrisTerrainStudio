@@ -42,7 +42,7 @@ public final class TerrainCarvingComponent {
         boolean neighbors=stage==Stage.NEIGHBOR_SCATTER,scatter=stage==Stage.SOURCE_SCATTER,content=placement!=null||scatter||neighbors;
         var neighborhood=neighbors?art.arcane.iris.generation.mantle.WorkerObjectTransactions.prepareNeighborhood(engine.getMantle()):null;
         int radius=neighbors?neighborhood.inputChunkRadius():1,limit=neighbors?(2*radius+1)*(2*radius+1):content?9:5;
-        if(neighbors&&((long)height*256*limit>8388608||Math.abs((long)x)+(radius<<4)+15>30000000||Math.abs((long)z)+(radius<<4)+15>30000000))throw new IllegalArgumentException("Procedural neighborhood exceeds its worker volume or coordinate budget");
+        if(neighbors&&((long)height*256*limit>33554432||Math.abs((long)x)+(radius<<4)+15>30000000||Math.abs((long)z)+(radius<<4)+15>30000000))throw new IllegalArgumentException("Procedural neighborhood exceeds its worker volume or coordinate budget");
         int cx=x>>4,cz=z>>4;WorkerCaveStorage.begin(height,cx,cz,limit);
         art.arcane.iris.generation.mantle.WorkerObjectTransactions.Result placementResult=null;art.arcane.iris.generation.mantle.WorkerObjectSession.Pass cachePass=null;
         try {

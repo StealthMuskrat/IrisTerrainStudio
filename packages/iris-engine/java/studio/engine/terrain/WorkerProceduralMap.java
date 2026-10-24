@@ -22,13 +22,13 @@ public final class WorkerProceduralMap<K,V> extends HashMap<K,V> {
     public static String caveSearchStatistics(){return "{\"columnWorkCharged\":"+caveSearchWork+",\"workLimit\":"+CAVE_SEARCH_LIMIT+"}";}
     @Override public V put(K key,V value){
         if(!active)throw new IllegalStateException("Native procedural canvas requires an owned preview");
-        if(!containsKey(key)&&++entries>262144)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
+        if(!containsKey(key)&&++entries>4194304)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
         return super.put(key,value);
     }
     @Override public void putAll(Map<? extends K,? extends V> values){
         if(!active)throw new IllegalStateException("Native procedural canvas requires an owned preview");
         int added=0;for(K key:values.keySet())if(!containsKey(key))added++;
-        if(added>262144-entries)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
+        if(added>4194304-entries)throw new IllegalArgumentException("Procedural preview exceeds its native canvas entry budget");
         entries+=added;
         // Preserve HashMap.putAll capacity/iteration behavior; repeated put calls can change it.
         super.putAll(values);

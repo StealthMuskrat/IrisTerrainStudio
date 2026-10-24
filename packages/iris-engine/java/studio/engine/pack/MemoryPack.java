@@ -46,7 +46,7 @@ public final class MemoryPack {
         validatePath(path);
         if(text==null||text.length()>4*1024*1024)throw new IllegalArgumentException("Pack resource exceeds the native reader text budget");
         String prior=resources.get(path);int total=bytes+2*(text.length()-(prior==null?0:prior.length()));
-        if((resourceCount()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        if((resourceCount()>=16384&&prior==null)||total>256*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
         resources.put(path,text);bytes=total;
     }
     public void registerObject(String path,String binary){
@@ -54,7 +54,7 @@ public final class MemoryPack {
         validateObjectPath(path);
         if(binary==null||binary.length()>8*1024*1024)throw new IllegalArgumentException("Native object exceeds 8 MiB");
         byte[] prior=objects.get(path);int total=bytes+binary.length()-(prior==null?0:prior.length);
-        if((resourceCount()>=4096&&prior==null)||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        if((resourceCount()>=16384&&prior==null)||total>256*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
         byte[] value=new byte[binary.length()];for(int i=0;i<value.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Object transport must contain bytes");value[i]=(byte)c;}
         objects.put(path,value);bytes=total;
     }
@@ -64,7 +64,7 @@ public final class MemoryPack {
         if(data!=null)throw new IllegalStateException("The native pack snapshot is sealed");validateImagePath(path);
         int size=binary==null?0:binary.length()+(palette==null?0:palette.length());
         if(binary==null||size>16*1024*1024)throw new IllegalArgumentException("Decoded image exceeds 16 MiB");
-        int total=bytes+size-imageSizes.getOrDefault(path,0);if((resourceCount()>=4096&&!images.containsKey(path))||total>64*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
+        int total=bytes+size-imageSizes.getOrDefault(path,0);if((resourceCount()>=16384&&!images.containsKey(path))||total>256*1024*1024)throw new IllegalArgumentException("Native pack snapshot exceeds its memory budget");
         var pixels=new studio.engine.image.WorkerImagePixels(width,height,channels,depth,imageBytes(binary),palette==null?null:imageBytes(palette));images.put(path,pixels);imageSizes.put(path,size);bytes=total;
     }
     private static byte[] imageBytes(String binary){byte[] samples=new byte[binary.length()];for(int i=0;i<samples.length;i++){char c=binary.charAt(i);if(c>255)throw new IllegalArgumentException("Image transport must contain bytes");samples[i]=(byte)c;}return samples;}
